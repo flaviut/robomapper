@@ -1,0 +1,35 @@
+# Keep private capture files out unless explicitly selected.
+/*
+!/.gitignore
+!/.gitattributes
+!/binaries/
+!/analysis/
+
+/analysis/*
+!/analysis/*.md
+!/analysis/*.py
+!/analysis/re/
+
+/analysis/re/*
+!/analysis/re/manifest.json
+!/analysis/re/lane-board.json
+!/analysis/re/tooling/
+!/analysis/re/annotations/
+!/analysis/re/decompiled/
+
+/analysis/re/tooling/*
+!/analysis/re/tooling/*.py
+!/analysis/re/tooling/*.java
+!/analysis/re/tooling/*.md
+!/analysis/re/tooling/schema.json
+!/analysis/re/tooling/examples/
+
+# Analysis databases, caches and logs are reproducible local state.
+*.gpr
+*.rep/
+*.lock
+*.lock.*
+*.log
+*.class
+__pycache__/
+*.py[cod]

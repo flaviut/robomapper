@@ -1,0 +1,646 @@
+{
+  "firmware": "4.3.5_1612",
+  "source": "unpacked rootfs",
+  "scope": "Vendor ELF files and aliases under /opt/rockrobo; MCU payloads in firmware/img",
+  "files": [
+    {
+      "path": "opt/rockrobo/cleaner/bin/AppProxy",
+      "kind": "elf",
+      "size": 1056436,
+      "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/bin/RoboController",
+      "kind": "elf",
+      "size": 306320,
+      "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/bin/RoboControllerM",
+      "kind": "elf",
+      "size": 376416,
+      "sha256": "f55b491f05e365dad6eb472a40e913b0d0a0c45a01969d413292423265720da7"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/bin/RoboControllerR",
+      "kind": "elf",
+      "size": 306320,
+      "sha256": "61466c3700c3f02d571d64ac97068117f7e321b35e73f4a8a5695ed5e39cebc8"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/bin/SysUpdate",
+      "kind": "elf",
+      "size": 101452,
+      "sha256": "d97fd8e531b393bbfc2f015d7a665651d88af2459c5dc5de03d899f96385b9d6"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/bin/rr_loader",
+      "kind": "elf",
+      "size": 69356,
+      "sha256": "020d6d7de7d282ecec3e845e4664113b11df82656701d42de7e901595c5f5125"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libblcommon.so",
+      "kind": "elf",
+      "size": 9688,
+      "sha256": "3484b63e853d39eec7a663185bf47dce6c53b702b505b9cbfb9b5a298ae08890"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libcares.so",
+      "kind": "elf",
+      "size": 46836,
+      "sha256": "f563d31fa2807233e2aee21bdcef29650fcbcdb635bc7a6e514d4675dab8d129",
+      "target": "libcares.so.2.1.0"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libcares.so.2",
+      "kind": "elf",
+      "size": 46836,
+      "sha256": "f563d31fa2807233e2aee21bdcef29650fcbcdb635bc7a6e514d4675dab8d129",
+      "target": "libcares.so.2.1.0"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libcares.so.2.1.0",
+      "kind": "elf",
+      "size": 46836,
+      "sha256": "f563d31fa2807233e2aee21bdcef29650fcbcdb635bc7a6e514d4675dab8d129"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libcarpetdetector.so",
+      "kind": "elf",
+      "size": 26444,
+      "sha256": "ecd356b55135d6d10214794df6ee81ac06db088d6160ec2b86fb6403e0caafd4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libconfig++.so",
+      "kind": "elf",
+      "size": 55184,
+      "sha256": "078002a424bf9e040b916c77efe34fcc8e54ffe8df944d2698682bbef77e9802",
+      "target": "libconfig++.so.9.1.3"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libconfig++.so.9",
+      "kind": "elf",
+      "size": 55184,
+      "sha256": "078002a424bf9e040b916c77efe34fcc8e54ffe8df944d2698682bbef77e9802",
+      "target": "libconfig++.so.9.1.3"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libconfig++.so.9.1.3",
+      "kind": "elf",
+      "size": 55184,
+      "sha256": "078002a424bf9e040b916c77efe34fcc8e54ffe8df944d2698682bbef77e9802"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libconfig.so",
+      "kind": "elf",
+      "size": 36600,
+      "sha256": "9d65edea3bc491ad806d4f747c9d493f69b7c1c58074109c0fce13cb18663cc8",
+      "target": "libconfig.so.9"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libconfig.so.9",
+      "kind": "elf",
+      "size": 36600,
+      "sha256": "9d65edea3bc491ad806d4f747c9d493f69b7c1c58074109c0fce13cb18663cc8",
+      "target": "libconfig.so.9.1.3"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libconfig.so.9.1.3",
+      "kind": "elf",
+      "size": 36600,
+      "sha256": "9d65edea3bc491ad806d4f747c9d493f69b7c1c58074109c0fce13cb18663cc8"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libgflags.so",
+      "kind": "elf",
+      "size": 88172,
+      "sha256": "477954dd156ed78acfab92b2c14ddb456b238bacb833f939679b72c94bbfd873",
+      "target": "libgflags.so.2.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libgflags.so.2.2",
+      "kind": "elf",
+      "size": 88172,
+      "sha256": "477954dd156ed78acfab92b2c14ddb456b238bacb833f939679b72c94bbfd873",
+      "target": "libgflags.so.2.2.1"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libgflags.so.2.2.1",
+      "kind": "elf",
+      "size": 88172,
+      "sha256": "477954dd156ed78acfab92b2c14ddb456b238bacb833f939679b72c94bbfd873"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libgflags_nothreads.so",
+      "kind": "elf",
+      "size": 84056,
+      "sha256": "c8f3a344a7ccfad33ac4143652d992dd3590a271535a8eab676d2def95ece886",
+      "target": "libgflags_nothreads.so.2.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libgflags_nothreads.so.2.2",
+      "kind": "elf",
+      "size": 84056,
+      "sha256": "c8f3a344a7ccfad33ac4143652d992dd3590a271535a8eab676d2def95ece886",
+      "target": "libgflags_nothreads.so.2.2.1"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libgflags_nothreads.so.2.2.1",
+      "kind": "elf",
+      "size": 84056,
+      "sha256": "c8f3a344a7ccfad33ac4143652d992dd3590a271535a8eab676d2def95ece886"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libglog.so",
+      "kind": "elf",
+      "size": 130332,
+      "sha256": "b1d0e02f6ab3cd5ccf53ef309e8de148f23329913848ef9f6558fa61c2a5e8d6",
+      "target": "libglog.so.0"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libglog.so.0",
+      "kind": "elf",
+      "size": 130332,
+      "sha256": "b1d0e02f6ab3cd5ccf53ef309e8de148f23329913848ef9f6558fa61c2a5e8d6",
+      "target": "libglog.so.0.3.5"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libglog.so.0.3.5",
+      "kind": "elf",
+      "size": 130332,
+      "sha256": "b1d0e02f6ab3cd5ccf53ef309e8de148f23329913848ef9f6558fa61c2a5e8d6"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_core.so",
+      "kind": "elf",
+      "size": 1500940,
+      "sha256": "9ba7b603faf324a301d0012959c6a3c110aeb3f69fbff62054e5d17db72c9cfd",
+      "target": "libopencv_core.so.3.4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_core.so.3.4",
+      "kind": "elf",
+      "size": 1500940,
+      "sha256": "9ba7b603faf324a301d0012959c6a3c110aeb3f69fbff62054e5d17db72c9cfd",
+      "target": "libopencv_core.so.3.4.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_core.so.3.4.2",
+      "kind": "elf",
+      "size": 1500940,
+      "sha256": "9ba7b603faf324a301d0012959c6a3c110aeb3f69fbff62054e5d17db72c9cfd"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_dnn.so",
+      "kind": "elf",
+      "size": 2290140,
+      "sha256": "185fec4a99fc00dee3bbfc5ed296e87540c788fbd9a5c6784ab223b4a31de4e0",
+      "target": "libopencv_dnn.so.3.4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_dnn.so.3.4",
+      "kind": "elf",
+      "size": 2290140,
+      "sha256": "185fec4a99fc00dee3bbfc5ed296e87540c788fbd9a5c6784ab223b4a31de4e0",
+      "target": "libopencv_dnn.so.3.4.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_dnn.so.3.4.2",
+      "kind": "elf",
+      "size": 2290140,
+      "sha256": "185fec4a99fc00dee3bbfc5ed296e87540c788fbd9a5c6784ab223b4a31de4e0"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_features2d.so",
+      "kind": "elf",
+      "size": 412036,
+      "sha256": "e417c132e08c143d23e31ee592514ae6e29471739633674f30eec064498f66c3",
+      "target": "libopencv_features2d.so.3.4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_features2d.so.3.4",
+      "kind": "elf",
+      "size": 412036,
+      "sha256": "e417c132e08c143d23e31ee592514ae6e29471739633674f30eec064498f66c3",
+      "target": "libopencv_features2d.so.3.4.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_features2d.so.3.4.2",
+      "kind": "elf",
+      "size": 412036,
+      "sha256": "e417c132e08c143d23e31ee592514ae6e29471739633674f30eec064498f66c3"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_highgui.so",
+      "kind": "elf",
+      "size": 30396,
+      "sha256": "4a96a0f8238ea85440a50ec45335f0741603b62ec25e4df8cbcca0576a2bb5e7",
+      "target": "libopencv_highgui.so.3.4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_highgui.so.3.4",
+      "kind": "elf",
+      "size": 30396,
+      "sha256": "4a96a0f8238ea85440a50ec45335f0741603b62ec25e4df8cbcca0576a2bb5e7",
+      "target": "libopencv_highgui.so.3.4.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_highgui.so.3.4.2",
+      "kind": "elf",
+      "size": 30396,
+      "sha256": "4a96a0f8238ea85440a50ec45335f0741603b62ec25e4df8cbcca0576a2bb5e7"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_imgcodecs.so",
+      "kind": "elf",
+      "size": 441128,
+      "sha256": "f020df8340cd8fb151e4fe9995c6d3ba3bd118e67399d1d72fdaa9d846a54255",
+      "target": "libopencv_imgcodecs.so.3.4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_imgcodecs.so.3.4",
+      "kind": "elf",
+      "size": 441128,
+      "sha256": "f020df8340cd8fb151e4fe9995c6d3ba3bd118e67399d1d72fdaa9d846a54255",
+      "target": "libopencv_imgcodecs.so.3.4.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_imgcodecs.so.3.4.2",
+      "kind": "elf",
+      "size": 441128,
+      "sha256": "f020df8340cd8fb151e4fe9995c6d3ba3bd118e67399d1d72fdaa9d846a54255"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_imgproc.so",
+      "kind": "elf",
+      "size": 1724908,
+      "sha256": "7c7abcf1084477bc37f8bee2817848391b9fe8a3bd6dc62dffd013b16a9f7245",
+      "target": "libopencv_imgproc.so.3.4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_imgproc.so.3.4",
+      "kind": "elf",
+      "size": 1724908,
+      "sha256": "7c7abcf1084477bc37f8bee2817848391b9fe8a3bd6dc62dffd013b16a9f7245",
+      "target": "libopencv_imgproc.so.3.4.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_imgproc.so.3.4.2",
+      "kind": "elf",
+      "size": 1724908,
+      "sha256": "7c7abcf1084477bc37f8bee2817848391b9fe8a3bd6dc62dffd013b16a9f7245"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_line_descriptor.so",
+      "kind": "elf",
+      "size": 117092,
+      "sha256": "bb22c67f3c694e701d42f6adf26c1b685a40d137a014647107e40c44af97ec19",
+      "target": "libopencv_line_descriptor.so.3.4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_line_descriptor.so.3.4",
+      "kind": "elf",
+      "size": 117092,
+      "sha256": "bb22c67f3c694e701d42f6adf26c1b685a40d137a014647107e40c44af97ec19",
+      "target": "libopencv_line_descriptor.so.3.4.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_line_descriptor.so.3.4.2",
+      "kind": "elf",
+      "size": 117092,
+      "sha256": "bb22c67f3c694e701d42f6adf26c1b685a40d137a014647107e40c44af97ec19"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_ml.so",
+      "kind": "elf",
+      "size": 449000,
+      "sha256": "554b20400fc87e2c8d45b6686fd01ba6957f776d60fd265b57bb0aff2e1617d9",
+      "target": "libopencv_ml.so.3.4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_ml.so.3.4",
+      "kind": "elf",
+      "size": 449000,
+      "sha256": "554b20400fc87e2c8d45b6686fd01ba6957f776d60fd265b57bb0aff2e1617d9",
+      "target": "libopencv_ml.so.3.4.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libopencv_ml.so.3.4.2",
+      "kind": "elf",
+      "size": 449000,
+      "sha256": "554b20400fc87e2c8d45b6686fd01ba6957f776d60fd265b57bb0aff2e1617d9"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libpkginfoapi.so",
+      "kind": "elf",
+      "size": 13888,
+      "sha256": "c0badd3cbfc794c83e30e63f5c3d9e491dab1fc88f594fb3bc089e7f651ab712"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libprotobuf-lite.so",
+      "kind": "elf",
+      "size": 291600,
+      "sha256": "61ebf8f71ab9aff20c10456a413194b7f2646ea845c80194c1fce1c2ee19c10c",
+      "target": "libprotobuf-lite.so.15.0.1"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libprotobuf-lite.so.15",
+      "kind": "elf",
+      "size": 291600,
+      "sha256": "61ebf8f71ab9aff20c10456a413194b7f2646ea845c80194c1fce1c2ee19c10c",
+      "target": "libprotobuf-lite.so.15.0.1"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libprotobuf-lite.so.15.0.1",
+      "kind": "elf",
+      "size": 291600,
+      "sha256": "61ebf8f71ab9aff20c10456a413194b7f2646ea845c80194c1fce1c2ee19c10c"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libprotobuf.so",
+      "kind": "elf",
+      "size": 2226296,
+      "sha256": "6de701c27682d64ad912e036f099bc9c569f8b821071ff4d8eb61aec9742e675",
+      "target": "libprotobuf.so.15.0.1"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libprotobuf.so.15",
+      "kind": "elf",
+      "size": 2226296,
+      "sha256": "6de701c27682d64ad912e036f099bc9c569f8b821071ff4d8eb61aec9742e675",
+      "target": "libprotobuf.so.15.0.1"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libprotobuf.so.15.0.1",
+      "kind": "elf",
+      "size": 2226296,
+      "sha256": "6de701c27682d64ad912e036f099bc9c569f8b821071ff4d8eb61aec9742e675"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libroboipc.so",
+      "kind": "elf",
+      "size": 53204,
+      "sha256": "a7a693c8edd37aa9367f680d2f742ef81f4b8007c97a7720fc02f35ded57a832"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librobopersist.so",
+      "kind": "elf",
+      "size": 146296,
+      "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libroomseg.so",
+      "kind": "elf",
+      "size": 261140,
+      "sha256": "6aeee6775d8cc8bb704d851555c8ad2fa970b3caca2f3d6e75db12a021052d2d",
+      "target": "libroomseg.so.0"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libroomseg.so.0",
+      "kind": "elf",
+      "size": 261140,
+      "sha256": "6aeee6775d8cc8bb704d851555c8ad2fa970b3caca2f3d6e75db12a021052d2d",
+      "target": "libroomseg.so.0.8.64"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libroomseg.so.0.8.64",
+      "kind": "elf",
+      "size": 261140,
+      "sha256": "6aeee6775d8cc8bb704d851555c8ad2fa970b3caca2f3d6e75db12a021052d2d"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librr_plugin_carpet.so",
+      "kind": "elf",
+      "size": 13996,
+      "sha256": "7908cb8e41e1615554c1040ea13e7792c4adf105afe1fe2818665686d50750b1"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librr_plugin_chassis.so",
+      "kind": "elf",
+      "size": 104572,
+      "sha256": "aa6091221e16f0c32456539c025361d78b698b5522258d4f2d6af0e162ed67c0"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librr_plugin_compass.so",
+      "kind": "elf",
+      "size": 22224,
+      "sha256": "5b808923e7fafe49017e8d2b8ab8d589b5ba0b6c12958e95be5cf75df8b18dc0"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librr_plugin_laser.so",
+      "kind": "elf",
+      "size": 67628,
+      "sha256": "c67773367db7bca4993f3aa5169b77e46b606bcd8ab9dcf6d9116406911d9563"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librr_plugin_logger.so",
+      "kind": "elf",
+      "size": 5544,
+      "sha256": "9b575d54f6f088e69354f0262df1c7f7fc9874227d848d507e5b83f66ebcad1b"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librr_plugin_support.so",
+      "kind": "elf",
+      "size": 13968,
+      "sha256": "564d8291ce9b615abfa12819342b18fda466585b20d36022ae18f7f413132ed5"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librrcurl.so",
+      "kind": "elf",
+      "size": 240328,
+      "sha256": "41a407aef954ebe702c68eb79369dd20cb71e51d7d130ad0dd89b7431b14cbb6",
+      "target": "librrcurl.so.4.3.0"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librrcurl.so.4",
+      "kind": "elf",
+      "size": 240328,
+      "sha256": "41a407aef954ebe702c68eb79369dd20cb71e51d7d130ad0dd89b7431b14cbb6",
+      "target": "librrcurl.so.4.3.0"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librrcurl.so.4.3.0",
+      "kind": "elf",
+      "size": 240328,
+      "sha256": "41a407aef954ebe702c68eb79369dd20cb71e51d7d130ad0dd89b7431b14cbb6"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librrlocale.so",
+      "kind": "elf",
+      "size": 203764,
+      "sha256": "de129cb9f048727028fe2b45d3996df0e779875f8574f714a94295d849a7380d"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librrlog.so",
+      "kind": "elf",
+      "size": 298656,
+      "sha256": "f08af1fb63f7e862748c42b64e4e9b955401f754bd19e6758065f11c485c4de8"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librrnavdrv.so",
+      "kind": "elf",
+      "size": 3187636,
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librrslamdrv.so",
+      "kind": "elf",
+      "size": 281212,
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librrsound.so",
+      "kind": "elf",
+      "size": 42676,
+      "sha256": "81c05560e528dc0e7b9f206b3f2889b8ca314877bf0a4feb61a40819da02e7d7"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/librrutils.so",
+      "kind": "elf",
+      "size": 18020,
+      "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libstat.so",
+      "kind": "elf",
+      "size": 597396,
+      "sha256": "c8e6139a496ab333069f6561c880a34032a17bc34b638b1f580e7751f0794345"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libuart_api.so",
+      "kind": "elf",
+      "size": 155052,
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529",
+      "target": "libuart_api.so.4"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libuart_api.so.4",
+      "kind": "elf",
+      "size": 155052,
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529",
+      "target": "libuart_api.so.4.0.2"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libuart_api.so.4.0.2",
+      "kind": "elf",
+      "size": 155052,
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529"
+    },
+    {
+      "path": "opt/rockrobo/cleaner/lib/libutilcommon.so",
+      "kind": "elf",
+      "size": 13976,
+      "sha256": "83136438bf671d1964c549fed4d334a81b05fb09230b0097bc618515bd7886c4"
+    },
+    {
+      "path": "opt/rockrobo/firmware/img/RR_TANOS-S_CARPET_AT421_C0.7_20211119-191717.bin",
+      "kind": "mcu-firmware",
+      "size": 16384,
+      "sha256": "378381e3fd42afcae0e92421fdd09f12fe4cb56938e9850e7b68ed50643f2ab0"
+    },
+    {
+      "path": "opt/rockrobo/firmware/img/RR_TANOS-S_CARPET_GD330_C0.7_20211119-191653.bin",
+      "kind": "mcu-firmware",
+      "size": 16384,
+      "sha256": "56fe6c1e1b3a691cfb9d727e91aebd0899ad7a2c1de676a307a94a5d91fa8959"
+    },
+    {
+      "path": "opt/rockrobo/firmware/img/RR_TANOS-S_CARPET_ST030_C0.7_20211119-191744.bin",
+      "kind": "mcu-firmware",
+      "size": 16384,
+      "sha256": "ee10a8c0dd6dbd58ef8998145dd833c8699e20aa7d77cba9f391354ce5624975"
+    },
+    {
+      "path": "opt/rockrobo/firmware/img/RR_TANOSS_MP_STM32.A14.G1_M4.0.1_RELEASE_20221102-212632_FULL.bin",
+      "kind": "mcu-firmware",
+      "size": 217072,
+      "sha256": "7d3ae25d8d6a138807e72d8a617fc47e7f6f1cd375c4736b31d3b8e80af4d915"
+    },
+    {
+      "path": "opt/rockrobo/firmware/img/RR_TANOSS_MP_STM32.A14.G3_M4.0.1_RELEASE_20221102-212739_FULL.bin",
+      "kind": "mcu-firmware",
+      "size": 217072,
+      "sha256": "c415a72cb15c3dec61181d67c1ad2010e82b10b7882853955ff6393cd01ae6c1"
+    },
+    {
+      "path": "opt/rockrobo/firmware/img/RR_TANOSS_MP_STM32.A14_M4.0.1_RELEASE_20221102-212526_INV_FULL.bin",
+      "kind": "mcu-firmware",
+      "size": 217072,
+      "sha256": "9915893497748f2c74d9bd7070b656d9e29843f3989b760d325706f6e34d2b97"
+    },
+    {
+      "path": "opt/rockrobo/firmware/img/RR_TANOSS_MP_STM32.A3.G1_M4.0.2_RELEASE_20221102-212320_FULL.bin",
+      "kind": "mcu-firmware",
+      "size": 217072,
+      "sha256": "5f5ec6256deef76f60b2acd3890aa6c02186a5e3c586af758c9f55b72be5decd"
+    },
+    {
+      "path": "opt/rockrobo/firmware/img/RR_TANOSS_MP_STM32.A3.G3_M4.0.2_RELEASE_20221102-212420_FULL.bin",
+      "kind": "mcu-firmware",
+      "size": 217072,
+      "sha256": "cc3014af3b9207f31878d9a926b2fb3af3b143d46a2fce9c1087c06ef528b72b"
+    },
+    {
+      "path": "opt/rockrobo/firmware/img/RR_TANOSS_MP_STM32.A3_M4.0.2_RELEASE_20221102-212220_INV_FULL.bin",
+      "kind": "mcu-firmware",
+      "size": 217072,
+      "sha256": "4fd47d7a480dddb82dbbec00344e3f33c67c6972c3e418bc7f07bbc0deefef28"
+    },
+    {
+      "path": "opt/rockrobo/firmware/uart_test",
+      "kind": "elf",
+      "size": 613488,
+      "sha256": "125a4a2def21bfb3ecdb383b09d07e39085e9d7a03cbe6b8ccbf3afdf7b730c7",
+      "target": "uart_test-4.0.2-20221102"
+    },
+    {
+      "path": "opt/rockrobo/firmware/uart_test-4.0.2-20221102",
+      "kind": "elf",
+      "size": 613488,
+      "sha256": "125a4a2def21bfb3ecdb383b09d07e39085e9d7a03cbe6b8ccbf3afdf7b730c7"
+    },
+    {
+      "path": "opt/rockrobo/miio/miio_client",
+      "kind": "elf",
+      "size": 117288,
+      "sha256": "6c71e51308e6c0a265c45d55beb0948b1dcad294a9c53b7ea6aa0d5c141ebecf"
+    },
+    {
+      "path": "opt/rockrobo/miio/miio_recv_line",
+      "kind": "elf",
+      "size": 3832,
+      "sha256": "ec9544d923b4b526c67dfaf06da0c3f17002a6b9d4331e0a4eaa59e37c53de3e"
+    },
+    {
+      "path": "opt/rockrobo/miio/miio_send_line",
+      "kind": "elf",
+      "size": 3916,
+      "sha256": "82f58f0cd2c3bfbccb24294c4e0abb5ad73f205a34ba68f263d1956df06ecb86"
+    },
+    {
+      "path": "opt/rockrobo/rriot/rriot_rr",
+      "kind": "elf",
+      "size": 203100,
+      "sha256": "824b3128856a3017085b391d690f210420be4e8023365a6e22597bc0f460ba3d"
+    },
+    {
+      "path": "opt/rockrobo/rrlog/rrlogd",
+      "kind": "elf",
+      "size": 299584,
+      "sha256": "470f7f7ecee7cb7b5cd3e0f4672b9aa841c7456963a54da9920e7b6beecc2c45"
+    },
+    {
+      "path": "opt/rockrobo/watchdog/WatchDoge",
+      "kind": "elf",
+      "size": 84328,
+      "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6"
+    },
+    {
+      "path": "opt/rockrobo/wlan/wlanmgr",
+      "kind": "elf",
+      "size": 38904,
+      "sha256": "a90a86f6b0028b34b9da75aed52900cd803d15edfa156bd33bf226efd2e0dec3"
+    }
+  ]
+}
