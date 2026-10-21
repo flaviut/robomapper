@@ -579,6 +579,82 @@
           "instruction": "add r7,sp,#0xe0",
           "bytes": "38af",
           "flows": []
+        },
+        {
+          "address": "0x00133236",
+          "instruction": "ldr r0,[sp,#0x40]",
+          "bytes": "1098",
+          "flows": []
+        },
+        {
+          "address": "0x00133238",
+          "instruction": "add r2,sp,#0x74",
+          "bytes": "1daa",
+          "flows": []
+        },
+        {
+          "address": "0x0013323a",
+          "instruction": "str.w r8,[sp,#0x4]",
+          "bytes": "cdf80480",
+          "flows": []
+        },
+        {
+          "address": "0x0013323e",
+          "instruction": "str r3,[sp,#0x8]",
+          "bytes": "0293",
+          "flows": []
+        },
+        {
+          "address": "0x00133240",
+          "instruction": "ldr r3,[sp,#0x44]",
+          "bytes": "119b",
+          "flows": []
+        },
+        {
+          "address": "0x00133242",
+          "instruction": "str r6,[sp,#0x0]",
+          "bytes": "0096",
+          "flows": []
+        },
+        {
+          "address": "0x00133244",
+          "instruction": "ldr r1,[sp,#0x30]",
+          "bytes": "0c99",
+          "flows": []
+        },
+        {
+          "address": "0x00133246",
+          "instruction": "mul r3,r3,r0",
+          "bytes": "03fb00f3",
+          "flows": []
+        },
+        {
+          "address": "0x0013324a",
+          "instruction": "str r7,[sp,#0xc]",
+          "bytes": "0397",
+          "flows": []
+        },
+        {
+          "address": "0x0013324c",
+          "instruction": "mov r0,r4",
+          "bytes": "2046",
+          "flows": []
+        },
+        {
+          "address": "0x0013324e",
+          "instruction": "bl 0x0013223c",
+          "bytes": "fef7f5ff",
+          "flows": [
+            "0x0013223c"
+          ]
+        },
+        {
+          "address": "0x00133252",
+          "instruction": "b 0x00133060",
+          "bytes": "05e7",
+          "flows": [
+            "0x00133060"
+          ]
         }
       ]
     },

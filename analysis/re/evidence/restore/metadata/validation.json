@@ -4,7 +4,7 @@
     "binaries": 2,
     "functions": 7,
     "instructions": 2132,
-    "claim_anchors": 195
+    "claim_anchors": 207
   },
   "limits": "Identity/bytes, interval arithmetic and recorded anchors only; not algorithm execution or runtime safety validation."
 }

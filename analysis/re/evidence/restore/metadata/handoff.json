@@ -1,0 +1,184 @@
+{
+  "version": 1,
+  "lane": "metadata",
+  "status": "first-bounded-slice-complete-static-only",
+  "base_commit": "4c804b4",
+  "commits": [
+    "ded21dc078a930fd74f65986c032e2bb313f3661"
+  ],
+  "handoff_commit": "Resolve the commit containing this file with git log -1 --format=%H -- analysis/re/evidence/restore/metadata/handoff.json; self-hash intentionally not embedded.",
+  "scope": "Segmentation persistence byte ranges, conditional ID reuse/regeneration and two captured map/segmentation/mapping consistency checks. Navigation IPC/startup and region 6/13/14 decoding excluded.",
+  "method": "Only static Ghidra export from two private copies of the closed baseline, exact tracked ELF byte/hash verification, host-side synthetic tests and read-only saved-data checks. No firmware execution, device access, internet research or new imports. No baseline/shared annotations changed; no function creation or renaming.",
+  "selected_entries": [
+    {
+      "program": "librrnavdrv.so",
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+      "tracked_input": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+      "loader": {
+        "format": "ELF",
+        "language": "ARM:LE:32:v8",
+        "compiler": "default",
+        "image_base": "0x0",
+        "source": "immutable baseline copied by retool.py; no new imports"
+      },
+      "selected_entries": [
+        "0x0012a35c",
+        "0x0012d22c",
+        "0x0013223c",
+        "0x00132c30"
+      ]
+    },
+    {
+      "program": "librobopersist.so",
+      "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+      "tracked_input": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librobopersist.so",
+      "loader": {
+        "format": "ELF",
+        "language": "ARM:LE:32:v8",
+        "compiler": "default",
+        "image_base": "0x0",
+        "source": "immutable baseline copied by retool.py; no new imports"
+      },
+      "selected_entries": [
+        "0x000157fc",
+        "0x00015898",
+        "0x00015c84"
+      ]
+    }
+  ],
+  "supported_conclusions": [
+    {
+      "id": "M01",
+      "kind": "instruction-backed",
+      "claim": "Full segmentation setter entry 0x157fc copies region 5 [0x31da0,0x131f44), size 0x1001a4. Grid-only setter entry 0x15898 copies [0x31da4,0x131db0), size 0x10000c. Thus grid-only preserves four leading bytes plus the 404-byte tail; full replacement does not. Neither copy range includes room mappings or restriction arrays. This is byte-range preservation, not semantic preservation.",
+      "evidence": [
+        "full-setter",
+        "grid-setter",
+        "validate.py interval assertions"
+      ]
+    },
+    {
+      "id": "M02",
+      "kind": "instruction-backed",
+      "claim": "Navigation 0x12a35c gets shared segmentation at interior 0x12a39a and copies grid data; dimensions produce centered offsets by signed integer division by 2 and negation before round. Function 0x132c30 calls rs::segment_gridmap at 0x132f44, then conditionally processes IDs through 0x13223c (call 0x13324e). Before full publish it allocates and zeroes 0x1001a4 bytes at 0x1330ea..0x133102, copies 0x10000c bytes to +4 at 0x133110, sets presence at 0x133118 and calls SetSharedSegmentMap at 0x13311a. The 404-byte tail is zero on this publish path, not inherited from the previous shared tail.",
+      "evidence": [
+        "load-existing-centered-grid",
+        "algorithm-and-postprocessing",
+        "zero-tail-full-publish"
+      ]
+    },
+    {
+      "id": "M03",
+      "kind": "instruction-backed-local-branch",
+      "claim": "In 0x13223c, old active-grid cells whose low six bits are 16..31 take a reuse branch (0x1324ba..0x1324d4). The write can regenerate bit 0x40 according to unresolved predicate 0x127804 (0x132488..0x132496). Other candidate labels can use a per-label byte mapping with IDs allocated from 1..15 (0x132450/0x132620..0x132634) and saturation to 15 (0x132956 onward). The branch is conditional, not a guarantee that segmentation preserves final room identity. Additional flood/postprocessing remains.",
+      "evidence": [
+        "conditional-old-id-reuse",
+        "new-id-allocation",
+        "exports/librrnavdrv.so/0x0012d22c.c",
+        "exports/librrnavdrv.so/0x00132c30.c"
+      ]
+    },
+    {
+      "id": "M04",
+      "kind": "instruction-backed",
+      "claim": "SetRoomIdMapping entry 0x15c84 independently copies 28-byte records, caps count to 32 and chooses the alternate array for enum value 1; default count/data are 0x131fac/0x131fb0 and alternate 0x13e9f0/0x13e9f4. Mapping IDs are read at record+24 by its logging loop. The public enum meaning, name encoding/termination and reconciliation of names after geometry changes are unresolved.",
+      "evidence": [
+        "separate-room-mapping",
+        "exports/librobopersist.so/0x00015c84.c"
+      ]
+    },
+    {
+      "id": "M05",
+      "kind": "saved-data-observation-not-firmware-proof",
+      "claim": "For captured flags 2/6 and application IDs 0/4, each 175890-cell IMAGE window agrees exactly with region-5 low-six-bit segmentation IDs using origin shifts +512 on both axes. Each pair has nine default mapping IDs covering all nonzero segmentation IDs; all are in the conditional 16..31 reuse range. Cell upper bits 0 and 0x40 both occur. The 404-byte tails are zero in both captures. This validates the captured relationship, not regeneration stability or arbitrary coordinate transforms. No names, coordinates or decoded payloads are committed.",
+      "evidence": [
+        "check_saved.py",
+        "saved-checks.json"
+      ]
+    }
+  ],
+  "edit_classes": [
+    {
+      "class": "byte-identical copy of matching captured state",
+      "status": "supported-format-preservation-only",
+      "rules": [
+        "Preserve grid origin, dimensions, resolution, all cell bits and all persistence/mapping/restriction/opaque bytes.",
+        "Use one coherent source snapshot; lifecycle/cache/transaction rules are external blockers. No runtime restore guarantee."
+      ]
+    },
+    {
+      "class": "same-size occupancy-only changes",
+      "status": "not-certified-navigation-safe",
+      "rules": [
+        "Keeping metadata unchanged is mechanically possible, but fixed dimensions do not establish unchanged room connectivity, areas, names or restrictions.",
+        "Checksum repair validates only the grid cell digest, not metadata consistency.",
+        "No proof in this slice that edited RRSLAM load invokes this segmentation path; do not assume automatic regeneration."
+      ]
+    },
+    {
+      "class": "resegment at unchanged geometry",
+      "status": "conditional-regeneration-path-established-not-preservation",
+      "rules": [
+        "Preserve/validate ID-to-name associations explicitly; local 16..31 reuse is conditional and 1..15 allocation exists.",
+        "Grid-only and full setters have different unknown-tail preservation rules. Do not clear unknown bytes merely to imitate this one native publish path.",
+        "Restriction bytes outside the segmentation copy survive physically, but their geometric meaning must still be validated."
+      ]
+    },
+    {
+      "class": "crop/pad/translate/rotate/scale/change origin or resolution; split/merge rooms",
+      "status": "unsupported-until-dependent-metadata-reconciled",
+      "rules": [
+        "Inference: a changed coordinate frame requires transformation/revalidation of coordinate-bearing state and ID associations, not merely checksum repair or grid dimension preservation.",
+        "Whether to regenerate each opaque region and how to transform each record is unresolved. No universal regeneration API is claimed."
+      ]
+    },
+    {
+      "class": "change names/restrictions/unknown fields",
+      "status": "not-a-validated-editor",
+      "rules": [
+        "Independent setter byte ranges do not establish encoding, termination, coordinate units or semantic validity. Preserve unknown ABI/layout bytes."
+      ]
+    }
+  ],
+  "validation_commands": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/metadata/validate.py",
+      "result": "passed",
+      "summary": "Two binary SHA256s, seven entry mappings/C hashes, 2132 instruction bytes and 207 focused claim anchors; half-open interval assertions."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/metadata/test_metadata.py -v",
+      "result": "passed",
+      "summary": "Four synthetic tests: compressed multipart/flagged-ID acceptance, mapping mismatch rejection, origin mismatch rejection, room mismatch rejection despite valid native checksum."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/metadata/check_saved.py --analysis-root /home/user/tmp/illegalplainape/analysis",
+      "result": "passed",
+      "summary": "Read-only original protobuf/zlib records and SQLite gzip messages; 175890 matching cells per pair; no decoded payload output."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/metadata/replay.py --out analysis/re/evidence/restore/metadata/scratch/replay-checked",
+      "result": "passed",
+      "summary": "Second new private baseline copy; seven C files and all selected records identical. Full private argv/logs in ignored output replay-result.json and invocation.json."
+    }
+  ],
+  "corrected_exploration": [
+    "Initial export requests used interior anchors 0x132f44 and 0x15840; harness rejected them without mutation. Inventory identified verified existing entries; no guessed function creation.",
+    "Initial saved checker incorrectly rejected encrypt=1. Existing persistence P05 and direct successful zlib decode establish that the capture flag does not imply ciphertext; checker corrected and synthetic multipart test added.",
+    "Default git whitespace check flagged untouched generated C whitespace. Lane-local .gitattributes matches existing shared generated-C policy rather than rewriting export bytes."
+  ],
+  "unresolved_dependencies": [
+    "Opaque regions 6, 13 and 14 remain unclassified here; cannot certify any semantic grid edit safe while their writer/reader dependencies are unknown.",
+    "rs::segment_gridmap implementation and complete postprocessing paths (0x12e95c/0x12e12c/0x12cb14 and dependencies) not traced; thresholds, ID promotion/reconciliation, bit-0x40 predicate and final ID stability unresolved.",
+    "No proof that grid file edit/load triggers segmentation, no full name/restriction reconciliation, unknown tail semantics and name ABI rules.",
+    "Odd-dimension/rotation/unit/rounding invariants not established beyond centered setup instructions and two 1024-square captured segmentation grids.",
+    "Concurrency, consistent backup completion, all-writer quiescence, IPC/startup, cache invalidation, power loss and hardware behavior remain external/runtime blockers."
+  ],
+  "next_bounded_targets": [
+    "Trace 0x12e95c/0x12e12c/0x12cb14 after ID mapping and identify any promotion from temporary IDs 1..15 to stable 16..31, plus the mapping writer responsible for names.",
+    "Classify one opaque region (begin with region 6 base+4/base+0x14 writer/reader dependencies), without full decoding of all three.",
+    "Identify a proven caller condition that invokes segmentation after a grid change, coordinating with the request-flow lane without modifying its seam."
+  ],
+  "privacy": "Only scripts, binary instruction records, labeled decompiler C, aggregate saved checks and conclusions tracked. Full inventories/projects/logs remain under ignored scratch; no captures, map payloads or names committed.",
+  "review_gate": "Independent reviewer required; this is a static-only first checkpoint, not deployment acceptance."
+}
