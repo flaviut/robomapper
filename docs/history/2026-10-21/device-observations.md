@@ -1,12 +1,14 @@
 # Device observations for offline map maintenance
 
+> Historical record, retained as written. Later findings supersede some conclusions. Do not reuse its PIDs, staging paths or launch commands. See the [history index](../README.md) and [demonstrated backup procedure](../../guides/stopped-backup.md).
+
 The running S7 matches the planned Linux process, library and map-file layout, but its saved MCU version is **STM32 A14.G1, M4.0.1**, not the preferred A3.G1/M4.0.2 package name. The full heartbeat-loss consumer was previously inspected for A3.G1; the A14.G1 comparison covered the heartbeat value conversion, not that complete consumer. The next useful step is to establish the A14.G1 behavior locally and prepare the native caller before considering a service stop.
 
 These observations were collected through read-only SSH to `root@valetudo-illegalplainape.local` on **October 21, 2026, 04:20–04:26 UTC**. Every connection used `BatchMode=yes`, `ConnectTimeout=10` and `StrictHostKeyChecking=yes`. No service, supervision file, map file, mount or boot setting was changed. No UART, watchdog or flash device was opened, and no robot command or firmware helper was executed. Ordinary SSH logging and filesystem access-time effects were not suppressed.
 
 ## MCU evidence and its limits
 
-`/run/shm/mcu_version` is a 57-byte regular file owned by `0:0`, mode `0644`, dated October 20 at 07:43, close to this boot. Its version label identifies **STM32, A14.G1, M4.0.1, release 20221102-132632**. This is saved runtime version evidence, rather than merely an image available in the firmware directory. It points to the packaged A14.G1 candidate discussed in [heartbeat control](MAP-HEARTBEAT-CONTROL.md), but it does not establish the exact bytes currently flashed.
+`/run/shm/mcu_version` is a 57-byte regular file owned by `0:0`, mode `0644`, dated October 20 at 07:43, close to this boot. Its version label identifies **STM32, A14.G1, M4.0.1, release 20221102-132632**. This is saved runtime version evidence, rather than merely an image available in the firmware directory. It points to the packaged A14.G1 candidate discussed in [heartbeat control](../../reference/services/heartbeat.md), but it does not establish the exact bytes currently flashed.
 
 No numeric MCU ID/JTAG or numeric gyro ID was recovered. `G1` is part of the saved version label; it is not a fresh gyro identification result. `/run/uart_test` was empty. Bounded watchdog and loader log excerpts, followed by targeted identification-pattern searches in those files, contained no MCU identification or upgrade result. The loader's open `MCU_normal.log` descriptor referred to a deleted, zero-length regular file. A bounded copy of one retained `MCU_normal…rr2.xz` archive did not decode as standard xz locally; no vendor decoder or target helper was run. Investigation stopped there rather than looking through unrelated device or credential files.
 
@@ -43,11 +45,11 @@ The following live MD5 values equal those of the corresponding saved rootfs file
 
 `/etc/inittab` independently respawns Dropbear and WatchDoge. The SSH listener has parent PID 1, separate from the map hosts and Valetudo. `adbd` is also running and has an inittab respawn entry, but no alternate recovery connection was exercised; the serial getty entry is commented out. SSH independence is observed, not proof of a pre-consumer rescue environment after a failed boot.
 
-`/etc/rc.local` launches `/mnt/reserve/_root.sh`, which starts Valetudo once in the background. No Valetudo restart loop appears in that script. The normal `ProcessList.conf` contains the observed map-host commands, plus `SysUpdate` and `rriot_rr`; WatchDoge remains the application restart source described in [service control](MAP-SERVICE-CONTROL.md). Neither rriot bridge nor `SysUpdate` was present in the process inventory. The `SysUpdate` executable is still installed, so absence during this observation is not a persistent update gate. A live rriot AppProxy respawner was not observed; its previously identified restart capability still matters if that bridge is enabled later.
+`/etc/rc.local` launches `/mnt/reserve/_root.sh`, which starts Valetudo once in the background. No Valetudo restart loop appears in that script. The normal `ProcessList.conf` contains the observed map-host commands, plus `SysUpdate` and `rriot_rr`; WatchDoge remains the application restart source described in [service control](../../reference/services/supervision.md). Neither rriot bridge nor `SysUpdate` was present in the process inventory. The `SysUpdate` executable is still installed, so absence during this observation is not a persistent update gate. A live rriot AppProxy respawner was not observed; its previously identified restart capability still matters if that bridge is enabled later.
 
 ## Storage and current map files
 
-`/mnt/data` is `/dev/nandl`, ext4, mounted read/write with ordered data. `/run` and `/run/shm` are tmpfs; `/run/shm` has a 102,400 KiB limit. `/dev/shm` points to `/run/shm`. The inspected `rcS` creates that layout, consistent with the cold-boot assumptions in the [file contract](MAP-FILE-CONTRACT.md). No inspected boot-hook excerpt showed a shared-buffer import; this was not an exhaustive audit of custom boot code.
+`/mnt/data` is `/dev/nandl`, ext4, mounted read/write with ordered data. `/run` and `/run/shm` are tmpfs; `/run/shm` has a 102,400 KiB limit. `/dev/shm` points to `/run/shm`. The inspected `rcS` creates that layout, consistent with the cold-boot assumptions in the [file contract](../../reference/maps/matching-set.md). No inspected boot-hook excerpt showed a shared-buffer import; this was not an exhaustive audit of custom boot code.
 
 All 17 final regular files below are owned by numeric `0:0`, mode `0644`, under `/mnt/data/rockrobo`. None is a symlink. `map/` is an empty directory owned by `0:0`, mode `0755`.
 

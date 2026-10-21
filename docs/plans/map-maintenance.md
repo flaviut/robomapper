@@ -1,8 +1,8 @@
 # Map maintenance: the concrete path
 
-For S7 firmware `4.3.5_1612`, stopping the application services, requesting MCU heartbeat hold-off, copying the matching map files and rebooting normally has worked. The [backup procedure](MAINTENANCE-PROCEDURE.md) gives the observed sequence and private archive location. The robot returned docked with no reported error. No map file was edited or restored.
+For S7 firmware `4.3.5_1612`, stopping the application services, requesting MCU heartbeat hold-off, copying the matching map files and rebooting normally has worked. The [backup procedure](../guides/stopped-backup.md) gives the observed sequence and private archive location. The robot returned docked with no reported error. No map file was edited or restored.
 
-The two earlier refusals exposed an exited loader record that still retained its process name. The helper now permits that name only for a positively identified zombie with a missing executable, while retaining every sibling-task and UART descriptor check. The third attempt completed the stopped backup. Its native return 0 confirms the framed exchange, not readback of the MCU setting; [the A14 explanation](A14-HEARTBEAT.md) follows the matching firmware's heartbeat handler.
+The two earlier refusals exposed an exited loader record that still retained its process name. The helper now permits that name only for a positively identified zombie with a missing executable, while retaining every sibling-task and UART descriptor check. The third attempt completed the stopped backup. Its native return 0 confirms the framed exchange, not readback of the MCU setting; [the A14 explanation](../reference/services/a14-heartbeat.md) follows the matching firmware's heartbeat handler.
 
 The sections below describe the broader replacement plan. Only the stop, untouched backup and normal return have been demonstrated; replacement and edited-map import remain separate work.
 
@@ -10,10 +10,10 @@ The sections below describe the broader replacement plan. Only the stop, untouch
 
 The helper has two small, distinct responsibilities, specified against existing device libraries:
 
-- [Application supervision](MAP-SERVICE-CONTROL.md): send WatchDoge event-8 exclusion content through the documented private native FIFO channel, without registering a second AppProxy receiver. Preserve the original exclusion file and enforce the 63-byte content bound. Do not send empty/short content: that selects destructive event 9. If the required content cannot fit, the documented maintenance-boot alternative avoids this limit but still needs the MCU gate on that boot.
-- [MCU supervision](MAP-HEARTBEAT-CONTROL.md): after the old loader/UART owner exits, call `rua_keep_mcu_heartbeat(-1)` and require return 0. This existing export handles temporary UART ownership, framing, retries and acknowledgment. Do not inject raw serial bytes or stop WatchDoge. The helper is staged privately for each session, not installed as a system command.
+- [Application supervision](../reference/services/supervision.md): send WatchDoge event-8 exclusion content through the documented private native FIFO channel, without registering a second AppProxy receiver. Preserve the original exclusion file and enforce the 63-byte content bound. Do not send empty/short content: that selects destructive event 9. If the required content cannot fit, the documented maintenance-boot alternative avoids this limit but still needs the MCU gate on that boot.
+- [MCU supervision](../reference/services/heartbeat.md): after the old loader/UART owner exits, call `rua_keep_mcu_heartbeat(-1)` and require return 0. This existing export handles temporary UART ownership, framing, retries and acknowledgment. Do not inject raw serial bytes or stop WatchDoge. The helper is staged privately for each session, not installed as a system command.
 
-The helper is in `tools/map-maint/`; [its instructions](MAINTENANCE-HELPER.md) explain how it was built against the robot's saved runtime libraries. It refuses malformed exclusion content and checks that the loader and UART owners are gone before requesting the hold-off. We have also traced the A14.G1 MCU's actual dispatch and consumer: −1 skips its missing-heartbeat handling. The reply confirms receipt of the framed request, not a readback of the stored value. The successful backup observed a service-off interval, but the reply itself is not semantic readback of the heartbeat setting.
+The helper is in `tools/map-maint/`; [its instructions](../reference/tools/map-maint.md) explain how it was built against the robot's saved runtime libraries. It refuses malformed exclusion content and checks that the loader and UART owners are gone before requesting the hold-off. We have also traced the A14.G1 MCU's actual dispatch and consumer: −1 skips its missing-heartbeat handling. The reply confirms receipt of the framed request, not a readback of the stored value. The successful backup observed a service-off interval, but the reply itself is not semantic readback of the heartbeat setting.
 
 ## 2. Obtain the offline window
 
@@ -27,7 +27,7 @@ The finite vendor hold-off value 120 is not used to budget this window. Its exac
 
 ## 3. Back up or restore the matching set
 
-Use the literal namespace and staging/quarantine procedure in [MAP-FILE-CONTRACT.md](MAP-FILE-CONTRACT.md). The captured set has 17 regular files and an empty `map/` directory, including:
+Use the literal namespace and staging/quarantine procedure in the [matching-set reference](../reference/maps/matching-set.md) and [restore plan](../guides/matching-set-restore.md). The captured set has 17 regular files and an empty `map/` directory, including:
 
 - Runtime `last_map` / `PersistData_1.data`.
 - Primary `user_map0` / `PersistData_2.data`.
@@ -40,7 +40,7 @@ For unchanged matching-set restore, no region decoding, SQL modification or segm
 
 ## 4. Keep the first edit bounded
 
-[MAP-EDIT-CONTRACT.md](MAP-EDIT-CONTRACT.md) specifies the exact encoding: preserve the 30-byte RRSLAM prefix/frame, alter only selected raw raster cells, and replace the trailing 16-byte `MD5(cells)`. Preserve persistence and spatial companions unchanged.
+The [edit constraints](../reference/maps/editing.md) specify the exact encoding: preserve the 30-byte RRSLAM prefix/frame, alter only selected raw raster cells, and replace the trailing 16-byte `MD5(cells)`. Preserve persistence and spatial companions unchanged.
 
 Cold startup can consume runtime flag 1 and catalog primary 2, so an active-map patch must account for both, not just `user_map0`. Historical captured copies were identical; that does not establish equality in the new stopped backup. Identify the actual selected maps and frames before preparing any patch, retain genuine backup flag 6 untouched, and do not apply offsets or bytes from one persistence file to another by assumption.
 
@@ -60,6 +60,6 @@ Per-file replacement is not multi-file atomic. Keep the complete quarantine for 
 
 Keep the acquired stopped backup unchanged and off-device. A replacement plan must identify the selected map and every affected companion, preserve a complete rollback set, and account for interruption between individual file writes. The demonstrated software recovery does not repair a partially installed set after power loss.
 
-The [vendor status investigation](VENDOR-STATUS.md) found no enabled cleaning timers. The completed backup started and ended docked at 88%, with the updater idle and no reported error or activity. Those readings expire: obtain fresh status and current process identities before another session.
+The [vendor status investigation](../history/2026-10-21/vendor-readiness.md) found no enabled cleaning timers. The completed backup started and ended docked at 88%, with the updater idle and no reported error or activity. Those readings expire: obtain fresh status and current process identities before another session.
 
 An unchanged matching-set restore or a small fixed-frame patch is the intended first write operation, not something already demonstrated. Do not assume the current runtime and primary persistence are identical. Connectivity, dimension or coordinate changes still lack a complete transformation and import sequence.

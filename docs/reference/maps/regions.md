@@ -1,8 +1,8 @@
 # Shared-memory region layouts
 
-After decoding the [persistence envelope](MAP-PERSISTENCE.md#protobuf-envelope) and decompressing its values, each shared-memory region is a firmware-specific binary buffer. Region IDs are independent of [map flags and filenames](MAP-STORAGE.md#map-flags-and-filenames).
+After decoding the [persistence envelope](persistence.md#protobuf-envelope) and decompressing its values, each shared-memory region is a firmware-specific binary buffer. Region IDs are independent of [map flags and filenames](storage.md#map-flags-and-filenames).
 
-These layouts apply to firmware `4.3.5_1612`. Offsets are relative to the decompressed region. Preserve unknown fields; this reference is not a recipe for transforming map geometry. The [edit contract](MAP-EDIT-CONTRACT.md) explains which changes require coordinated updates.
+These layouts apply to firmware `4.3.5_1612`. Offsets are relative to the decompressed region. Preserve unknown fields; this reference is not a recipe for transforming map geometry. The [edit contract](editing.md) explains which changes require coordinated updates.
 
 | Region | Bytes | Contents |
 | --- | ---: | --- |
@@ -88,13 +88,13 @@ display_x = round(application_x / 10)
 display_y = round((51200 - application_y) / 10)
 ```
 
-The [edit contract](MAP-EDIT-CONTRACT.md) follows the display-to-native conversion used by the room-edit handlers. These conversions do not establish a general rotation or frame-transformation procedure. Native cells and shared poses do not use the display's inverted y axis.
+The [edit contract](editing.md) follows the display-to-native conversion used by the room-edit handlers. These conversions do not establish a general rotation or frame-transformation procedure. Native cells and shared poses do not use the display's inverted y axis.
 
 ### Segmentation updates
 
 The firmware calls `rs::segment_gridmap` to calculate room segmentation, then builds a new segmentation structure and passes it to `SetSharedSegmentMap`. Other code updates just the grid portion.
 
-The [native room route](evidence/restore/room-reconcile/FINDINGS.md) can propagate labels and return replacement IDs, while AppProxy applies pending names in response order. That is not automatic reconciliation after loading an edited `RRSLAM` file. Room names are supplied separately through `SetRoomIdMapping`; recalculating boundaries alone does not restore names or restrictions.
+The [native room route](../../../analysis/re/evidence/restore/room-reconcile/FINDINGS.md) can propagate labels and return replacement IDs, while AppProxy applies pending names in response order. That is not automatic reconciliation after loading an edited `RRSLAM` file. Room names are supplied separately through `SetRoomIdMapping`; recalculating boundaries alone does not restore names or restrictions.
 
 **Code references:** `librobopersist.so` pose setters at `0x14754`/`0x1499e`; restriction setters at `0x15264`, `0x15562`, `0x15fee`; segmentation setter entries at `0x157fc`/`0x15898`; room-mapping setter entry at `0x15c84`. In `librrnavdrv.so`, segmentation grid setup is at `0x12a39a`, room calculation at `0x132f44`, and the call storing its result at `0x1330ea`.
 
@@ -161,7 +161,7 @@ Read the actual entries and `current_flag` rather than inferring selection from 
 
 The allocator searches flags 2–5 for primaries and 6–9 for backups. Although filenames exist for flags 10 and 11, the traced allocator does not return them.
 
-**Code references:** `librobopersist.so` initialization at `0xe0c4`; primary-list iteration at `0xe580`; backup lookup at `0xe614`; backup update at `0xe9fc`; insertion at `0xeb82`. See [map flags](MAP-STORAGE.md#map-flags-and-filenames) for filename conversion and the [file contract](MAP-FILE-CONTRACT.md) for startup and recovery selection.
+**Code references:** `librobopersist.so` initialization at `0xe0c4`; primary-list iteration at `0xe580`; backup lookup at `0xe614`; backup update at `0xe9fc`; insertion at `0xeb82`. See [map flags](storage.md#map-flags-and-filenames) for filename conversion and the [file contract](matching-set.md) for startup and recovery selection.
 
 ## Undecoded state
 

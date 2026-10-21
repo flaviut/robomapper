@@ -41,7 +41,7 @@ Use strict-trust SSH and the established read-only status and updater queries. P
 
 Identify the current service executables, arguments and process start times. Do not reuse PIDs from an earlier boot. Preserve the **current** `exclude_process.conf` independently, including whether it exists, its exact bytes, owner, mode and timestamp. Keep a private off-device copy and a separate on-robot copy outside `/mnt/data/rockrobo`.
 
-Build the [native helper](MAINTENANCE-HELPER.md) against the saved runtime. The successful binary's SHA256 is `fb75e397eb09c51aa1a0402918fe55c357363be5843e6e7f896e6b7d7d8987f0`. Prepare and inspect both the operation and recovery scripts before launching either.
+Build the [native helper](../reference/tools/map-maint.md) against the saved runtime. The successful binary's SHA256 is `fb75e397eb09c51aa1a0402918fe55c357363be5843e6e7f896e6b7d7d8987f0`. Prepare and inspect both the operation and recovery scripts before launching either.
 
 ## Stop, copy and return
 
@@ -51,7 +51,7 @@ Build the [native helper](MAINTENANCE-HELPER.md) against the saved runtime. The 
 
 3. **Wait for actual host exit, then request MCU hold-off.** Confirm the loader, controller, AppProxy and relevant bridges/updater have stopped while protected services remain alive. Exclusion delivery does not acknowledge exit or a completed save. Invoke `map-maint mcu-disable` once; require return 0 before copying. The helper checks every task and UART character-device ownership before using the vendor API. A zombie task with a missing executable no longer blocks solely because its name is `rr_loader`; its descriptors and every sibling are still checked. On refusal, capture the reported process/thread state and recover immediately without retrying or bypassing ownership checks.
 
-4. **Copy one stopped set.** Use the [finite file contract](MAP-FILE-CONTRACT.md), not a selection of convenient rasters. Include persistence, catalog, database and present sidecars, pose/config companions, vmaps, ownership/modes and recorded absence. Preserve interrupted work separately rather than treating it as current state. Check available space, keep consumers stopped throughout, and sync before writing a completion marker. The completed copy ran between the service-stop marker at 12:01:36 UTC and recovery at 12:01:41 UTC.
+4. **Copy one stopped set.** Use the [finite file contract](../reference/maps/matching-set.md), not a selection of convenient rasters. Include persistence, catalog, database and present sidecars, pose/config companions, vmaps, ownership/modes and recorded absence. Preserve interrupted work separately rather than treating it as current state. Check available space, keep consumers stopped throughout, and sync before writing a completion marker. The completed copy ran between the service-stop marker at 12:01:36 UTC and recovery at 12:01:41 UTC.
 
 5. **Restore supervision on disk and reboot normally.** Recovery ends only its identified private operations group, restores the original exclusion bytes and metadata, compares the bytes, syncs and requests `/sbin/reboot`. Do not send a live exclusion-clear request while key services are missing, rerun the startup launcher, signal WatchDoge or force reboot. A real reboot clears the old tmpfs map buffers.
 
@@ -59,7 +59,7 @@ Build the [native helper](MAINTENANCE-HELPER.md) against the saved runtime. The 
 
 ## Limits before editing or restoration
 
-This establishes a practical stopped-backup window and normal return. It does **not** demonstrate map replacement, an unchanged restore or edited-map import. Use the [maintenance plan](MAP-MAINTENANCE.md) and [edit contract](MAP-EDIT-CONTRACT.md) before planning writes. Do not assume current runtime and primary persistence match, change map coordinates, or invoke segmentation/restore RPCs as an automatic repair step.
+This establishes a practical stopped-backup window and normal return. It does **not** demonstrate map replacement, an unchanged restore or edited-map import. Use the [maintenance plan](../plans/map-maintenance.md) and [edit contract](../reference/maps/editing.md) before planning writes. Do not assume current runtime and primary persistence match, change map coordinates, or invoke segmentation/restore RPCs as an automatic repair step.
 
 Recovery remains software-only. Its 120-second deadline does not bound flash flushing or reboot time, and no independent rescue connection or power-loss repair hook has been demonstrated. Power loss before exclusion restoration can leave the vendor services excluded at the next boot. Keep uninterrupted power and independent originals; do not treat this route as interruption-safe installation.
 

@@ -1,6 +1,8 @@
 # Offline map maintenance: a practical service window
 
-Start with [the integrated maintenance path](MAP-MAINTENANCE.md). The component documents now trace MCU hold-off, native exclusion IPC, cold-start slot selection and room-command routing. This earlier feasibility assessment is retained as context; the integrated path states the remaining implementation and device inputs.
+> Historical record, retained as written. Later findings supersede some conclusions. Do not reuse its PIDs, staging paths or launch commands. See the [history index](README.md) and [demonstrated backup procedure](../guides/stopped-backup.md).
+
+Start with [the integrated maintenance path](../plans/map-maintenance.md). The component documents now trace MCU hold-off, native exclusion IPC, cold-start slot selection and room-command routing. This earlier feasibility assessment is retained as context; the integrated path states the remaining implementation and device inputs.
 
 **Conditional yes: stopping the map hosts is a realistic route to byte-preserving backup and matching-set restore. Small occupancy-only edits are plausible experiments; arbitrary room/geometry edits are not yet a supported offline operation.** We do not need a live-map transaction protocol or complete decoding of every persistence region to copy existing bytes.
 
@@ -15,11 +17,11 @@ This is a static feasibility finding for `4.3.5_1612`, **NOT a device-tested pro
 
 ## What stopping actually buys
 
-The [writer-host evidence](evidence/restore/writer-host/README.md) establishes that the embedded `rr_loader` configuration hosts SLAM and navigation, as well as chassis and other plugins. The saved normal `ProcessList.conf` launches `rr_loader -d`, `RoboController` and `AppProxy`. Confirm those defaults against the actual argv/modules once; do not assume a separate SLAM daemon must be found.
+The [writer-host evidence](../../analysis/re/evidence/restore/writer-host/README.md) establishes that the embedded `rr_loader` configuration hosts SLAM and navigation, as well as chassis and other plugins. The saved normal `ProcessList.conf` launches `rr_loader -d`, `RoboController` and `AppProxy`. Confirm those defaults against the actual argv/modules once; do not assume a separate SLAM daemon must be found.
 
 **Inference from process lifetime:** once the actual host has exited, its threads—including detached serializers—and private grid caches cannot keep writing or later overwrite replacement files. Exit also releases its mappings and descriptors. Stop the whole host, not just one plugin or one apparent foreground task. Include `RoboController`, `AppProxy`, any actual descendants/extra map users, and unsupervised command producers such as Valetudo. That is a bounded process/mapping observation, not a demand to prove universal concurrency safety.
 
-Exit does **not** make an interrupted save complete, repair stale grid/persistence/catalog/database companions, or remove named POSIX shared-memory objects. `PersistLoadMapInfo` (`librobopersist.so:0x1c620`) can load `/BufferedMapInfo` task data instead of disk; a dead process's private cache and a still-named shared object are different things. Robust mutex recovery is not fresh map initialization. See [persistence](MAP-PERSISTENCE.md) and [buffer lifecycle evidence](evidence/restore/consistency/handoff.json).
+Exit does **not** make an interrupted save complete, repair stale grid/persistence/catalog/database companions, or remove named POSIX shared-memory objects. `PersistLoadMapInfo` (`librobopersist.so:0x1c620`) can load `/BufferedMapInfo` task data instead of disk; a dead process's private cache and a still-named shared object are different things. Robust mutex recovery is not fresh map initialization. See [persistence](../reference/maps/persistence.md) and [buffer lifecycle evidence](../../analysis/re/evidence/restore/consistency/handoff.json).
 
 A real reboot is attractive because saved `rootfs/etc/init/rcS` mounts `/run` as tmpfs, creates `/run/shm`, and links `/dev/shm` there; `etc/fstab` also specifies tmpfs for `/run/shm`. **Inference:** a fresh boot discards these runtime buffers, unlike merely restarting services. This does not authorize deleting `/dev/shm` in a running system. Verify the actual mount layout before relying on it.
 
@@ -37,7 +39,7 @@ WatchDoge's exclusion mechanism is useful but sharp-edged:
 
 **Simpler cold-start candidate:** retain exclusions in the running supervisor throughout the copy/replacement window, prepare the persistent exclusion file for normal next boot **without reloading it into that supervisor**, then perform a controlled reboot. WatchDoge reads the file at startup and starts enabled records. This separates disk preparation from live re-enable and clears runtime shared memory. Leaving matching exclusions on disk and merely rebooting will keep services excluded; reboot alone is not an exclusion reset. Both restart variants need one observed no-replacement rehearsal before restoration.
 
-Sources: [lifecycle graph](evidence/restore/lifecycle/graph.json), `evidence/WatchDoge/selected.json` (`WdogMain`, `WdogReloadExclusions`, `WdogScanProcesses`, `WdogAdoptPid`), and saved `ProcessList*.conf`. The exact loaded list and environment remain a device observation.
+Sources: [lifecycle graph](../../analysis/re/evidence/restore/lifecycle/graph.json), `evidence/WatchDoge/selected.json` (`WdogMain`, `WdogReloadExclusions`, `WdogScanProcesses`, `WdogAdoptPid`), and saved `ProcessList*.conf`. The exact loaded list and environment remain a device observation.
 
 ## The hardware uncertainty is narrow, but real
 
@@ -53,9 +55,9 @@ For the captured map, native flags 1/2/6 correspond to runtime/primary/backup: `
 
 AppProxy opens `/rockrobo/robot.db` beneath its data base (`0x20440`) and stores application backup blobs there. Include present SQLite journal/WAL/SHM companions in the stopped snapshot; do not assume a main-file-only copy is enough or delete companions from a different epoch during restore. Capture their presence/absence as well as bytes. Clean database shutdown is preferable; a forced stop may leave recoverable transaction state. Preserve staging files separately as evidence of interruption, not as authoritative final map files.
 
-A stopped set can still contain different-aged native files. Accept a known-good idle snapshot for first rollback; stopping prevents **new** races, not historical inconsistency. [Backup dependencies](evidence/restore/backup-dependencies/dependencies.json) and [consistency dependencies](evidence/restore/consistency/dependencies.json) identify the relevant roles; later database/config findings supersede the earlier unknown-path entries.
+A stopped set can still contain different-aged native files. Accept a known-good idle snapshot for first rollback; stopping prevents **new** races, not historical inconsistency. [Backup dependencies](../../analysis/re/evidence/restore/backup-dependencies/dependencies.json) and [consistency dependencies](../../analysis/re/evidence/restore/consistency/dependencies.json) identify the relevant roles; later database/config findings supersede the earlier unknown-path entries.
 
-For occupancy edits, the [offline codec](../../tools/map-maint/map_codec.py) preserves the 30-byte RRSLAM v2 prefix and packs same-sized cells plus MD5 of cells. Preserve intermediate confidence values outside the selected patch; do not threshold the whole raster. This produces a format-shaped grid, not navigation approval. Include the runtime copy if it is the observed boot input—editing `user_map0` alone need not affect `LoadLastMap`, which requests flag 1. Keep genuine backup slots unedited for rollback. Room segmentation/mappings, poses and restrictions live separately; [room reconciliation](evidence/restore/room-reconcile/FINDINGS.md) shows occupancy-dependent label propagation, not guaranteed automatic preservation.
+For occupancy edits, the [offline codec](../../tools/map-maint/map_codec.py) preserves the 30-byte RRSLAM v2 prefix and packs same-sized cells plus MD5 of cells. Preserve intermediate confidence values outside the selected patch; do not threshold the whole raster. This produces a format-shaped grid, not navigation approval. Include the runtime copy if it is the observed boot input—editing `user_map0` alone need not affect `LoadLastMap`, which requests flag 1. Keep genuine backup slots unedited for rollback. Room segmentation/mappings, poses and restrictions live separately; [room reconciliation](../../analysis/re/evidence/restore/room-reconcile/FINDINGS.md) shows occupancy-dependent label propagation, not guaranteed automatic preservation.
 
 ## Candidate sequence — NOT device-tested
 

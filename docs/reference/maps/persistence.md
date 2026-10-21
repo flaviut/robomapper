@@ -2,7 +2,7 @@
 
 Map-dependent persistence uses a shared buffer and detached serializer; catalog persistence writes synchronously. Neither provides a transaction across the map files. A successful API return can precede disk replacement or coexist with a write failure.
 
-The addresses below refer to `librobopersist.so` in firmware `4.3.5_1612`. The [instruction-backed findings](evidence/components/persistence.json) link to the corresponding decompiled functions. For copying files without relying on save acknowledgments, use the [stopped-backup procedure](MAINTENANCE-PROCEDURE.md).
+The addresses below refer to `librobopersist.so` in firmware `4.3.5_1612`. The [instruction-backed findings](../../../analysis/re/evidence/components/persistence.json) link to the corresponding decompiled functions. For copying files without relying on save acknowledgments, use the [stopped-backup procedure](../../guides/stopped-backup.md).
 
 ## Protobuf envelope
 
@@ -32,7 +32,7 @@ message PersistData {
 }
 ```
 
-Region IDs describe payload types, not map flags or filename suffixes. The decompressed bytes have separate [region layouts](MAP-REGIONS.md); preserving the protobuf envelope alone does not preserve their meaning.
+Region IDs describe payload types, not map flags or filename suffixes. The decompressed bytes have separate [region layouts](regions.md); preserving the protobuf envelope alone does not preserve their meaning.
 
 ## Map-dependent saves
 
@@ -161,4 +161,4 @@ If files are copied immediately after the save API returns, they may be older th
 
 No transaction covering all these files was found in the examined code. Caller-specific replies must not be treated as set-wide durability acknowledgments without tracing their actual completion conditions. Task-capacity repair and cancellation are not flush or safe-shutdown protocols.
 
-Replacing files while buffers and grid caches remain active can cause a later load or save to use old state. The [maintenance procedure](MAINTENANCE-PROCEDURE.md) avoids those live races by stopping the hosts and rebooting after restoring supervision. The [file contract](MAP-FILE-CONTRACT.md) defines which companions belong together; a stopped copy preserves disk state but does not repair a previously interrupted save.
+Replacing files while buffers and grid caches remain active can cause a later load or save to use old state. The [maintenance procedure](../../guides/stopped-backup.md) avoids those live races by stopping the hosts and rebooting after restoring supervision. The [file contract](matching-set.md) defines which companions belong together; a stopped copy preserves disk state but does not repair a previously interrupted save.

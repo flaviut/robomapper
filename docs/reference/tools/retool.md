@@ -2,14 +2,16 @@
 
 Use one private copy of the saved baseline per component worker. `retool.py` reopens that copy, replays hash-bound annotations, and exports only the functions you select. It never runs firmware. C files are **decompiler output, not recovered source**, and need not compile.
 
-## Start in your own lane
+## Start in a private project
 
-Python 3 and the pinned local Ghidra installation are already available. No pip packages, Java PATH changes, GUI, or separate Ghidra setup are needed; the installed headless launcher supplies OpenJDK 21. Close your private project in the GUI before headless operations. Never open or modify the baseline itself.
+Use Python 3 and the Ghidra 12.0.4 installation pinned in the [manifest](../../../analysis/re/manifest.json). The harness selects its headless launcher and OpenJDK; no pip packages or Java PATH changes are needed. This copy workflow requires the local, untracked `analysis/re/baseline/` cache. Without it, use the [repository-only replay](../../research/static-recovery.md#artifacts-and-replay), which can import tracked binaries privately.
 
-Run these commands from your assigned writable lane directory:
+Close private projects before headless operations. Never open or modify the baseline itself. From the repository root, choose a new workspace:
 
 ```sh
-T=/home/user/tmp/illegalplainape/analysis/re/tooling
+T="$PWD/analysis/re/tooling"
+W=$(mktemp -d /tmp/retool.XXXXXX)
+cd "$W"
 P="$PWD/ghidra-project"
 python3 "$T/retool.py" copy "$P"
 python3 "$T/retool.py" run "$P" librobopersist.so \
@@ -20,16 +22,16 @@ The destination and every output directory must be new. A successful run prints 
 
 `selected.json` contains verified entry addresses, signatures, comments, caller addresses, instructions/bytes, Thumb state, and loader-derived entry file offsets. Each selected function has its own `0x........c` file with program identity, SHA256, and VA. `types.json` lists persisted `/shared` types. Add `--inventory` to write metadata for all functions and memory blocks **without** decompiling the whole binary.
 
-Program selectors are exact program names or full SHA256 values from `../baseline/index.json`:
+Program selectors are exact program names or full SHA256 values from the private project's copied `index.json`:
 
 - `librobopersist.so`, `librrslamdrv.so`, `librrnavdrv.so`, `librrutils.so`
 - `AppProxy`, `WatchDoge`, `libuart_api.so.4.0.2`
 
-All three manifest `libuart_api.so*` aliases map to the single resolved-content program `libuart_api.so.4.0.2`. `baseline-summary.json` links each program to its import log, inventory, architecture, image base, and executable ranges. The baseline is `../baseline/pinned.gpr` plus `pinned.rep`; the empty `.gpr` marker is normal. The harness copies both and the identity index.
+All three manifest `libuart_api.so*` aliases map to the single resolved-content program `libuart_api.so.4.0.2`. The tracked [baseline summary](../../../analysis/re/tooling/baseline-summary.json) records import, architecture, image-base and executable-range metadata. Its log paths may name untracked local artifacts. The cache is `analysis/re/baseline/pinned.gpr` plus `pinned.rep`; the empty `.gpr` marker is normal. The harness copies both and the identity index.
 
 ## Apply your findings, then reopen and recheck
 
-Keep one annotation document per binary SHA256. After writing your lane's `annotations.json` using the format below, run:
+Keep one annotation document per binary SHA256. After writing `annotations.json` in the private workspace using the format below, run:
 
 ```sh
 python3 "$T/retool.py" run "$P" librobopersist.so \
@@ -45,7 +47,7 @@ Compare the relevant `selected.json`, `types.json`, and C files. The harness emi
 
 ### Annotation format (version 1)
 
-`annotations.schema.json` is an editor/reference schema. Runtime checks reject unsupported fields, wrong hashes, non-entry/odd anchors, duplicate anchors, ambiguous names, and conflicting annotations. The following is the **smoke fixture**, not a component finding; artificial `ReSmoke*` names belong only in disposable smoke projects:
+The [annotation schema](../../../analysis/re/tooling/annotations.schema.json) is an editor/reference schema. Runtime checks reject unsupported fields, wrong hashes, non-entry/odd anchors, duplicate anchors, ambiguous names, and conflicting annotations. The following is the **smoke fixture**, not a component finding; artificial `ReSmoke*` names belong only in disposable smoke projects:
 
 ```json
 {
@@ -88,13 +90,13 @@ The verified librobopersist entry `0x1ab94` has file offset `0x1ab94`, ELF symbo
 
 ## Reproduce the disposable proof
 
-The reviewed proof is `smoke-proof-reviewed/evidence.json`; its projects are closed, private, and disposable. This command creates two new private baseline copies **only inside tooling**, imports no additional firmware, applies a rename/signature/shared type/comment, verifies caller C, reopens, replays onto the other copy, and checks rollback/rejection cases and pinned hashes:
+The historical reviewed proof was under `analysis/re/tooling/smoke-proof-reviewed/`; it is untracked local state. The command below creates two new private baseline copies **only inside tooling**, imports no additional firmware, applies a rename/signature/shared type/comment, verifies caller C, reopens, replays onto the other copy, and checks rollback/rejection cases and pinned hashes:
 
 ```sh
 python3 "$T/smoke_test.py" --out "$T/smoke-proof-$(date +%s)"
 ```
 
-To try the same documented apply/export path by hand, use another disposable tooling copy (not your component project):
+If the historical `smoke-proof-reviewed/annotations.json` fixture is available locally, use another disposable tooling copy for the same apply/export path by hand. These commands do not work from a clean checkout without that fixture:
 
 ```sh
 S="$T/smoke-doc-$(date +%s)"
@@ -110,6 +112,6 @@ The real caller at `0x142e4` has direct calls at `0x144a6` and `0x14dce`; both c
 
 ## Boundaries and diagnostics
 
-Local-variable renames, arbitrary instruction comments, automatic function creation, calling-convention changes, general C++ declarations, and multi-program atomic transactions are not supported. Apply one binary/document per invocation; keep cross-lane proposals reviewable as JSON. Ghidra's analysis/decompiler warnings remain in logs; inferred types and C output still require component-level instruction review.
+Local-variable renames, arbitrary instruction comments, automatic function creation, calling-convention changes, general C++ declarations, and multi-program atomic transactions are not supported. Apply one binary/document per invocation; keep shared proposals reviewable as JSON. Ghidra's analysis/decompiler warnings remain in logs; inferred types and C output still require component-level instruction review.
 
-`api-evidence.json` records the installed source archives/examples used to verify the APIs. The initial disposable import diagnostics under `smoke/import-persist` show why the default ET_DYN base was rejected and corrected; they are not the reviewed proof. `bootstrap/` contains all seven successful import logs and inventories; `bootstrap-index-finalization.json` records resolved alias normalization before handoff. Bootstrap is one-time and refuses an existing baseline. Do not rerun it, remove locks, or work around failed dependency/API checks: preserve logs and ask the parent. Parent review of the proof is required before parallel lanes launch.
+The tracked [API evidence](../../../analysis/re/tooling/api-evidence.json) records the installed source archives/examples used to verify the APIs. Historical `smoke/`, `bootstrap/` and bootstrap-finalization logs are untracked local state, not checkout requirements for reading the reference. Bootstrap is one-time and refuses an existing baseline. Do not rerun it over a cache, remove locks, or bypass failed dependency/API checks; preserve the logs and resolve the cause.

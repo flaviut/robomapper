@@ -1,10 +1,8 @@
-# Keep the MCU heartbeat alive during map maintenance
+# MCU heartbeat control
 
-**The concrete candidate maintenance mechanism is the existing UART API `rua_keep_mcu_heartbeat(-1)`, after the old loader has exited, while WatchDoge stays alive.** It requests an acknowledged disable of MCU missing-heartbeat supervision. The inspected chassis MCU candidate leaves `-1` unchanged and skips its heartbeat-loss handling indefinitely; all six packaged chassis candidates have the same `0`/`-1` conversion rule. This is conditional on the installed MCU accepting that protocol, not observed device behavior. No installed safe one-shot shell command for invoking the API was identified.
+After the loader and UART owners are gone, the native helper calls `rua_keep_mcu_heartbeat(-1)` while WatchDoge keeps the separate Linux watchdog alive. This API received transport acknowledgment during the [demonstrated stopped backup](../../guides/stopped-backup.md); the setting was not read back.
 
-Stopping `rr_loader` removes chassis as well as navigation and SLAM. Its normal finalizer sends a finite hold-off of 120, but SIGKILL bypasses it. Do not call disable while the normal chassis callback still runs: its next zero-valued heartbeat replaces that state. Leaving WatchDoge alive preserves only the separate Linux watchdog feeder.
-
-This is static inspection of saved `4.3.5_1612`, not a device procedure. No firmware was executed and no device was accessed. Source-root paths below mean `/home/user/tmp/illegalplainape`; only this document is changed.
+The [A14.G1 analysis](a14-heartbeat.md) connects the observed build label to the packaged sentinel handler. The A3 investigation below explains the original package comparison; it does not override that later identification. Stopping `rr_loader` removes chassis as well as map writers. Do not send hold-off before stopping chassis: its next raw-zero heartbeat replaces the sentinel.
 
 ## Confirmed configuration
 
@@ -17,7 +15,7 @@ The embedded loader configuration sets these chassis fields:
 | `heart_beat_timeout_from_mcu` | `10000` |
 | `heart_beat_timeout_to_slam` | `1000` |
 
-These are decoded defaults, not active-device observations. The configuration decoder in [writer-host/config_data.py](evidence/restore/writer-host/config_data.py) was used only to inspect saved configuration data through its existing host-native OpenSSL path. No keys or unrelated configuration are published. [Writer-host findings](evidence/restore/writer-host/README.md) establish that the saved normal argv is `rr_loader -d` and that `-c FILE` can override its embedded configuration. Chassis, SLAM and navigation normally share this process.
+These are decoded defaults, not active-device observations. The configuration decoder in [writer-host/config_data.py](../../../analysis/re/evidence/restore/writer-host/config_data.py) was used only to inspect saved configuration data through its existing host-native OpenSSL path. No keys or unrelated configuration are published. [Writer-host findings](../../../analysis/re/evidence/restore/writer-host/README.md) establish that the saved normal argv is `rr_loader -d` and that `-c FILE` can override its embedded configuration. Chassis, SLAM and navigation normally share this process.
 
 `librr_plugin_chassis.so` has SHA256 `aa6091221e16f0c32456539c025361d78b698b5522258d4f2d6af0e162ed67c0`; its `rr_load_plugin` entry is Thumb VA `0xddd4`. A private copy of the closed baseline was made with source-root `analysis/re/tooling/retool.py copy`, then this library was imported into that private `/tmp` project. The shared baseline was not opened.
 
@@ -33,7 +31,7 @@ The latter contains `/opt/rockrobo/firmware/img/`. This identifies a packaged pr
 
 ## What not to stop
 
-The [offline workflow](OFFLINE-MAP-WORKFLOW.md) and [service-control reference](MAP-SERVICE-CONTROL.md) trace WatchDoge's independent `/dev/watchdog` feed thread: requested timeout 16, feed every eight seconds. Leave that process running. Its exclusion SIGKILL path does not first call `rua_keep_mcu_heartbeat(120)`; its normal all-process-stop path does. Do not substitute either signal handling or an empty exclusion payload for a maintenance command.
+The [service-control reference](supervision.md) traces WatchDoge's independent `/dev/watchdog` feed thread: requested timeout 16, feed every eight seconds. Leave that process running. Its exclusion SIGKILL path does not first call `rua_keep_mcu_heartbeat(120)`; its normal all-process-stop path does. Do not substitute either signal handling or an empty exclusion payload for a maintenance command.
 
 ## Chassis initialization, sending and finalization
 
@@ -47,7 +45,7 @@ The baseline importer did not recognize several address-taken Thumb functions as
 
 ## Why the packaged image does not settle applicability
 
-WatchDoge `0x16b34` reads the named text file and passes its contents to `upgrade_mcu_if_not_match`. In `libuart_api.so.4.0.2:0xa4c0`, that function first calls `upgrade_mcu_normal`; result `-20` selects a fallback that obtains MCU identification (`0x7b1c`), calls `find_match_jtagId_firmware`, then uses the selected image. Therefore `MCU_FIRMWARE_MATCH` is a first choice, not a hardware identifier. The exact missing saved input is the running MCU's identification/architecture **and gyro ID**, not merely Linux firmware build 1612. `upgrade_mcu_normal:0xa2e4` reads those using `get_mcuId_gyroId_from_mcuUart`, converts MCU ID with `McuId_To_JtagId`, compares the image's JTAG and gyro IDs, and otherwise calls `find_match_jtagId_gyroId_firmware:0x99b0`. The fallback scanner `find_match_jtagId_firmware:0x970c` handles older identification. No active image is selected here.
+WatchDoge `0x16b34` reads the named text file and passes its contents to `upgrade_mcu_if_not_match`. In `libuart_api.so.4.0.2:0xa4c0`, that function first calls `upgrade_mcu_normal`; result `-20` selects a fallback that obtains MCU identification (`0x7b1c`), calls `find_match_jtagId_firmware`, then uses the selected image. Therefore `MCU_FIRMWARE_MATCH` is a first choice, not a hardware identifier. Updater hardware selection uses MCU identification/architecture **and gyro ID**, not merely Linux firmware build 1612. Those numeric IDs were not recovered; the later A14 build-label analysis does not require them as additional heartbeat discriminators. `upgrade_mcu_normal:0xa2e4` reads those using `get_mcuId_gyroId_from_mcuUart`, converts MCU ID with `McuId_To_JtagId`, compares the image's JTAG and gyro IDs, and otherwise calls `find_match_jtagId_gyroId_firmware:0x99b0`. The fallback scanner `find_match_jtagId_firmware:0x970c` handles older identification. This package-selection analysis alone does not identify the installed image; the later [A14 analysis](a14-heartbeat.md) uses its observed runtime label.
 
 ## What `0xd3`, 120 and −1 actually do
 
@@ -87,11 +85,11 @@ All six have identical original instruction bytes for the length-check prologue 
 
 Transport is not raw `echo` into a serial device. `sent_cmd:0x10a9c` adds command/length bytes; `sent_package:0x1084c` adds sequence/framing/checksum and distinguishes acknowledged from unacknowledged sends. `rua_uart_init:0x7144` opens/configures the TTY, obtains `flock(fd, LOCK_EX | LOCK_NB)`, opens the companion UART driver, performs its ioctl/mmap setup and clears the receive buffer. `init_uart` supplies `/dev/ttyS2`, `/dev/uart_mcu`, baud 1152000 and driver parameters. These initialization side effects and the exclusive lock are reasons **not** to inject a second owner while chassis is alive. The wrapper supports a temporary owner after chassis has closed/exited, rather than requiring a permanent replacement heartbeat daemon.
 
-The saved `firmware/uart_test-4.0.2-20221102` advertises an interactive `b` heartbeat toggle among factory controls. That is not a grounded standalone maintenance command: its broader startup/shutdown effects were not bounded, so it is not recommended. No saved target Python installation or safe installed one-shot CLI was established. A target-native caller of the exported API is therefore an explicit missing invocation component, not a shell command claimed to exist.
+The saved `firmware/uart_test-4.0.2-20221102` advertises an interactive `b` heartbeat toggle among factory controls. That is not a grounded standalone maintenance command: its broader startup/shutdown effects were not bounded, so it is not recommended. No saved target Python installation or safe installed one-shot CLI was established. The [native helper](../tools/map-maint.md) now supplies the target-native caller; no preinstalled vendor one-shot command was established.
 
 ## Candidate maintenance boundary
 
-This lane excludes map-file selection and edits. The host-control lane owns exclusions and process commands. Its finding that the public loader stop method does not provide a separate map-only shutdown rules out simply stopping nav/SLAM while leaving this **same** chassis instance alive. A new chassis-only loader configuration would be a different deployment requiring dependency/configuration work; it is not the recommended shortcut.
+[Supervision](supervision.md) owns exclusions and process commands; [plugin lifecycle](plugins.md) explains why the loader stop method cannot stop only map plugins while keeping this **same** chassis instance alive. A new chassis-only loader configuration would be a different deployment requiring dependency/configuration work; it is not the recommended shortcut.
 
 Use the following heartbeat prerequisite with the whole-host offline path:
 
@@ -103,4 +101,4 @@ Use the following heartbeat prerequisite with the whole-host offline path:
 
 **Boot with disk exclusions alone is not an indefinite rescue window.** WatchDoge startup temporarily initializes UART for MCU checks and later closes it (`WdogMain:0x142e4`, close before process startup); the regular zero-valued heartbeat producer is still the absent chassis plugin. No startup −1 request or persistent heartbeat exemption is established by editing exclusions. If maintenance occurs after a new boot, its gate must run the acknowledged −1 request on that boot before relying on an unbounded service-off window. Otherwise finish replacement before reboot and return to normal startup rather than booting into a chassis-free system for extended editing.
 
-The remaining input is bounded: an allowlisted installed MCU ID/JTAG, gyro ID and version (or confirmation that its relevant handler matches a packaged candidate), plus a target-native invocation route for the documented API. Return 0 is transport acknowledgment, not observation that a robot survives the window. No live behavior is promised here; no firmware execution, service changes, tests, suites, validators or new evidence infrastructure were performed. All extractions and focused Ghidra work stayed in `/tmp/map-heartbeat`; only this document is committed.
+For the observed robot, the later [A14 investigation](a14-heartbeat.md) resolves the build-label and sentinel branch, and the [backup procedure](../../guides/stopped-backup.md) records a completed service-off interval. Neither supplies semantic readback or installed flash-byte identity. Fresh readiness, actual host exit, UART ownership checks and independent recovery remain prerequisites for another session.

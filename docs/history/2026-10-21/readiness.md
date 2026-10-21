@@ -1,5 +1,7 @@
 # Current robot status before map maintenance
 
+> Historical record, retained as written. Later findings supersede some conclusions. Do not reuse its PIDs, staging paths or launch commands. See the [history index](../README.md) and [demonstrated backup procedure](../../guides/stopped-backup.md).
+
 **Do not stop the map services from this snapshot.** Valetudo reported **idle, 96% battery, discharging**, not docked or charging. There were no Valetudo schedules, but the vendor schedule file could not be interpreted within this read-only inspection. Valetudo's updater was idle; vendor firmware-update inactivity remains unconfirmed. These are reasons to leave the robot running, not to send a docking or status-refresh command.
 
 The observations below were made on **October 21, 2026, 04:34–04:39 UTC**. The useful status events arrived during a passive subscription from **04:37:22 to 04:38:32 UTC**. This snapshot expires: check readiness again immediately before any later stop. Nothing here authorizes stopping services, opening UART or replacing map files.
@@ -42,7 +44,7 @@ Version 2026.05.0 also has **Phoenix**, an internal `execve` restart path for me
 
 ## A reversible command gate for a later maintenance window
 
-The useful proposal is to **stop Valetudo without changing its timers or MQTT configuration, then exclude the vendor command producers together with the map hosts**. Simply killing `miio_client` would let WatchDoge restart it. Leave WatchDoge, logging, SSH and networking running. The [service-control explanation](MAP-SERVICE-CONTROL.md) covers the native sender, abrupt exclusion behavior and cold-start restoration; the [heartbeat explanation](MAP-HEARTBEAT-CONTROL.md) remains a separate requirement before relying on a loader-free interval.
+The useful proposal is to **stop Valetudo without changing its timers or MQTT configuration, then exclude the vendor command producers together with the map hosts**. Simply killing `miio_client` would let WatchDoge restart it. Leave WatchDoge, logging, SSH and networking running. The [service-control explanation](../../reference/services/supervision.md) covers the native sender, abrupt exclusion behavior and cold-start restoration; the [heartbeat explanation](../../reference/services/heartbeat.md) remains a separate requirement before relying on a loader-free interval.
 
 The current exclusion file still matched the original **19 bytes**, `rriot_tuya,rriot_rr`, with no trailing newline. Saving its exact bytes, presence, owner and mode independently of the map backup is necessary before any later exclusion request. Save Valetudo's launch details privately as well. Do not save or rewrite the whole configuration merely to turn schedules off.
 

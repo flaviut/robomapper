@@ -1,6 +1,8 @@
 # Vendor schedules and update readiness
 
-At **October 21, 2026, 04:49:59 UTC**, the robot reported **idle, 96% battery, no error and no cleaning, returning or locating activity**. The vendor updater answered **`idle`**. The saved vendor timers contain **zero enabled cleaning schedules and no next cleaning time**; their two enabled records are do-not-disturb guards, not cleaning commands. These observations close the saved-schedule and vendor-update questions left by the [earlier snapshot](CURRENT-ROBOT-STATUS.md), without stopping or moving the robot.
+> Historical record, retained as written. Later findings supersede some conclusions. Do not reuse its PIDs, staging paths or launch commands. See the [history index](../README.md) and [demonstrated backup procedure](../../guides/stopped-backup.md).
+
+At **October 21, 2026, 04:49:59 UTC**, the robot reported **idle, 96% battery, no error and no cleaning, returning or locating activity**. The vendor updater answered **`idle`**. The saved vendor timers contain **zero enabled cleaning schedules and no next cleaning time**; their two enabled records are do-not-disturb guards, not cleaning commands. These observations close the saved-schedule and vendor-update questions left by the [earlier snapshot](readiness.md), without stopping or moving the robot.
 
 The robot was **not reporting docked or charging**. Applying the exact deployed Valetudo status interpretation gives **discharging**, as before; this is not an independent charger measurement. At a reported 96%, charging is not inherently required for a short stopped interval, so lack of docking is not itself a reason to move the robot or a prerequisite for that interval. This does not promise a particular battery runtime, establish physical stillness, or authorize a service stop. The separate heartbeat, recovery and command-gating requirements still apply.
 

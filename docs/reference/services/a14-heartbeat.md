@@ -2,20 +2,20 @@
 
 **The packaged A14.G1 implementation preserves `-1` and returns before heartbeat-loss counting or reset.** Its initialized command table really does connect opcode `0xd3` to that handler. The observed runtime label identifies this A14.G1 build, including its timestamp: the eight-hour difference from the package filename is explained by the firmware's own formatting code, not evidence of another build.
 
-This supports preparing the existing `rua_keep_mcu_heartbeat(-1)` call for use **after the chassis/loader has exited**, with WatchDoge still running. It does not demonstrate a service-off interval on the robot. The acknowledgment is a sequence acknowledgment, not a readback of the sentinel; in this MCU it is queued before the heartbeat callback runs. Do not stop services or replace map files on the strength of this document alone.
+This supports preparing the existing `rua_keep_mcu_heartbeat(-1)` call for use **after the chassis/loader has exited**, with WatchDoge still running. This static analysis did not enter a service-off interval; the later [backup procedure](../../guides/stopped-backup.md) records one. The acknowledgment is a sequence acknowledgment, not a readback of the sentinel; in this MCU it is queued before the heartbeat callback runs. Do not stop services or replace map files on the strength of this document alone.
 
-This is local static work on saved firmware, continuing [the heartbeat investigation](MAP-HEARTBEAT-CONTROL.md) using [the observed device facts](DEVICE-FACTS.md). No SSH connection, device open, robot command, service change or firmware execution occurred. No tests, suites, validators, replay or review machinery were run. Only this document was added to the repository.
+This is local static work on saved firmware, continuing [the heartbeat investigation](heartbeat.md) using [the observed device facts](../../history/2026-10-21/device-observations.md). No SSH connection, device open, robot command, service change or firmware execution occurred. No tests, suites, validators, replay or review machinery were run. The findings below describe that static investigation.
 
 ## Which build the runtime label identifies
 
 The saved package contains six chassis images, plus three separate carpet images. The relevant chassis file is:
 
 ```text
-analysis/rootfs/opt/rockrobo/firmware/img/
+binaries/4.3.5_1612/opt/rockrobo/firmware/img/
 RR_TANOSS_MP_STM32.A14.G1_M4.0.1_RELEASE_20221102-212632_FULL.bin
 ```
 
-Paths beginning `analysis/rootfs` here are under `/home/user/tmp/illegalplainape`. Its SHA256 is `7d3ae25d8d6a138807e72d8a617fc47e7f6f1cd375c4736b31d3b8e80af4d915`. MCU addresses below are flash virtual addresses, equal to `0x08000000 + file offset`; callback pointers include the Thumb bit. Linux library addresses are ELF virtual addresses, not MCU addresses.
+The image is tracked in the repository. Its SHA256 is `7d3ae25d8d6a138807e72d8a617fc47e7f6f1cd375c4736b31d3b8e80af4d915`. MCU addresses below are flash virtual addresses, equal to `0x08000000 + file offset`; callback pointers include the Thumb bit. Linux library addresses are ELF virtual addresses, not MCU addresses.
 
 **Neither timestamp exists as an ASCII version string in this image.** Nor does a complete literal `A14` or `M4.0.1` string. The 64-byte firmware-information record starts at file offset `0x8000`. Its version subrecord starts at `0x801c`, holding the little-endian epoch **`0x63627008`**, or **November 2, 2022, 13:26:32 UTC**. The architecture bytes encode A14 and G1; the version bytes encode 4.0.1 and release status. This is structured metadata, not a filename copied into the firmware.
 
@@ -27,7 +27,7 @@ The runtime file also has a grounded producer. In saved WatchDoge, **`0x16864`**
 
 `check_version:0x10f9c` requests opcode **`0x80`**, expects 64 bytes and checks protocol-version fields. In the A14 image, the registered `0x80` callback at **`0x08012352`** sends 64 bytes from **`0x08008000`** in response opcode 1 (`0x080130c4` supplies the record pointer). This connects the image's structured record to the library formatter and the runtime file.
 
-The [prior device observation](DEVICE-FACTS.md#running-software-and-launch-paths) matched the saved loader, chassis plugin and UART library by MD5. WatchDoge itself was identified by executable path, not byte-compared; its saved binary has SHA256 `3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6`. The UART and chassis matches establish that their relevant saved Linux call paths apply to those observed binaries. The file-writing path above is established in saved WatchDoge, not newly observed as it executes. The exact A14.G1/release/version/epoch match is strong build-label evidence for the corresponding packaged MCU implementation. **It is not proof that every installed flash byte equals this image.** A modified MCU could preserve its version record, and a saved file can become stale.
+The [prior device observation](../../history/2026-10-21/device-observations.md#running-software-and-launch-paths) matched the saved loader, chassis plugin and UART library by MD5. WatchDoge itself was identified by executable path, not byte-compared; its saved binary has SHA256 `3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6`. The UART and chassis matches establish that their relevant saved Linux call paths apply to those observed binaries. The file-writing path above is established in saved WatchDoge, not newly observed as it executes. The exact A14.G1/release/version/epoch match is strong build-label evidence for the corresponding packaged MCU implementation. **It is not proof that every installed flash byte equals this image.** A modified MCU could preserve its version record, and a saved file can become stale.
 
 Numeric JTAG and gyro IDs are useful for the updater's hardware/image selection. They are **not an additional essential discriminator for this heartbeat analysis once the actual A14.G1 version record is known**. The relevant consumer is now traced for that variant rather than borrowed from A3.G1. Numeric IDs would not prove installed instruction bytes either. Nothing here justifies running an updater, flashing the preferred A3 package, or issuing extra hardware queries simply to obtain those numbers.
 
@@ -65,7 +65,7 @@ Closing sets the library's local stop flag, waits in 60 ms increments for local 
 
 **No firmware-update, flash, MCU-reset/GPIO-control or motor-control call is on this inspected userspace init/send/close path.** Those capabilities elsewhere in the library are not called merely by opening UART through this API. The only command it deliberately sends here is `0xd3` with the supplied four bytes, inside transport framing. The kernel driver's internal open/ioctl/release behavior was not reconstructed, so this is not a blanket claim about electrical effects or installed hardware behavior. It is a reason to use the existing vendor API and its temporary-owner lifecycle rather than a factory tool or an invented raw-serial sequence.
 
-This finding does not make chassis shutdown harmless during activity: chassis also handles motion and other protections. The [service-control plan](MAP-SERVICE-CONTROL.md) still requires a stationary, idle, update-free robot, blocked command producers, actual host exit, and WatchDoge's independent Linux watchdog feeder left running. No such interval was entered here.
+This finding does not make chassis shutdown harmless during activity: chassis also handles motion and other protections. The [service-control plan](supervision.md) still requires a stationary, idle, update-free robot, blocked command producers, actual host exit, and WatchDoge's independent Linux watchdog feeder left running. No such interval was entered here.
 
 ## What a successful acknowledgment means
 
@@ -79,8 +79,8 @@ Return 0 establishes that initialization succeeded enough to exchange a framed, 
 
 ## Reproducing the static findings
 
-Original firmware and the shared analysis baseline were left unchanged. Private copies, disassemblies and the bounded initialized-data extraction are in `/tmp/map-a14-heartbeat`. The previous lane's exported C files in `/tmp/map-heartbeat/uart-focused`, `uart-transport` and `mcu-match` were read only; its project was not opened. Current conclusions were tied back to original instructions with `arm-none-eabi-objdump`, ELF symbols/sections with `arm-none-eabi-readelf`, raw offsets with `xxd`, and SHA256 identities with `sha256sum`. No firmware or helper was run.
+Original firmware and the shared analysis baseline were left unchanged. Private copies, disassemblies and the bounded initialized-data extraction are in `/tmp/map-a14-heartbeat`. Earlier exported C files in `/tmp/map-heartbeat/uart-focused`, `uart-transport` and `mcu-match` were read only; its project was not opened. Current conclusions were tied back to original instructions with `arm-none-eabi-objdump`, ELF symbols/sections with `arm-none-eabi-readelf`, raw offsets with `xxd`, and SHA256 identities with `sha256sum`. No firmware or helper was run.
 
 For an independent instruction lookup, disassemble the A14 binary with `-D -b binary -marm -Mforce-thumb --adjust-vma=0x08000000`, restricting `--start-address`/`--stop-address` to the addresses above. In particular, the registration result depends on expanding the descriptor with the **actual `0x08033c30` initializer**, not treating the compressed bytes around file offset `0x34a1d` as an aligned raw callback table. The heartbeat record becomes `0xd3` and `0x08013443` at RAM `0x200057cc`.
 
-The remaining operational uncertainty is **installed behavior, not an unexplained A14 timestamp or missing A14 sentinel branch**. This lane supplied no helper and authorized no UART takeover. The parent can use these findings when deciding whether and how to proceed with the separately prepared native caller; the robot remains unchanged.
+The remaining operational uncertainty is **installed behavior, not an unexplained A14 timestamp or missing A14 sentinel branch**. This static analysis supplies no UART takeover procedure. Use the [native helper reference](../tools/map-maint.md) and [demonstrated backup guide](../../guides/stopped-backup.md) for the later operational work.
