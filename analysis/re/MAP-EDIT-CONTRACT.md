@@ -23,7 +23,7 @@ python3 /home/user/tmp/illegalplainape/analysis/map_codec.py export SNAPSHOT.map
 python3 /home/user/tmp/illegalplainape/analysis/map_codec.py pack SNAPSHOT.map /tmp/map-edited.pgm /tmp/map-candidate.map
 ```
 
-Both output paths must be new. Keep the original PGM unchanged as well. The codec checks its input dimensions and digest; it does not establish obstacle truth, robot clearance, room connectivity or correspondence with the captured persistence. No new editor or checker is introduced here.
+Both output paths must be new. Keep the original PGM unchanged as well. Native cell `(x,y)` is byte `30 + y*width + x`; no display-y inversion belongs in this PGM path. Source-root `ASSESSMENT.md`'s captured rendering is consistent with 0=free, 128=unknown, 255=occupied, but does not give a calibrated probability interpretation for intermediate values. Its PNG preview inverts occupancy for display: do not copy preview colors into native bytes. The codec checks its input dimensions and digest; it does not establish obstacle truth, robot clearance, room connectivity or correspondence with the captured persistence. No new editor or checker is introduced here.
 
 ## What each edit changes
 
@@ -34,6 +34,22 @@ Both output paths must be new. Keep the original PGM unchanged as well. The code
 | Room split/merge | Do not edit occupancy bytes to encode a room or manually renumber region-5 cells. Keep the occupancy frame and issue a vendor room operation after normal startup. | Native split/merge should own label generation and publication; the exact command path is being traced below. This is not a full automatic-resegmentation promise. |
 | Room rename / ID-to-name association | Use the vendor name operation with current room IDs and the full intended name set; do not hand-edit 28-byte persistence records. | AppProxy's successful-result writer reassigns IDs positionally, not by geometry. Caller ordering must match response ordering. |
 | Restrictions / poses | Preserve byte-for-byte for fixed-frame edits. If the intended patch conflicts with a zone, wall, dock or robot pose, stop rather than erase it as a side effect. | No general offline transform is supplied. Use ordinary vendor restriction controls where available; pose edits are not covered. |
+
+## Preserve these companion ranges for occupancy-only edits
+
+The following are **decompressed region-relative offsets**, not file offsets into the protobuf/zlib `PersistData` envelope. Copying the entire original persistence file is the recipe; these ranges explain why editing its convenient-looking room bytes is not included.
+
+| State to preserve | Region / byte locations |
+| --- | --- |
+| Robot and dock poses | Region 5 validity bytes `0x1`, `0xc`; records `[0x4,0xc)`, `[0x10,0x18)` |
+| Forbidden zones | Region 5 count `0x318e8`; vertices begin `0x318ec`, 16 bytes per quadrilateral, setter limit 50 |
+| Virtual walls | Region 5 count `0x31c0c`; records begin `0x31c10`, 8 bytes each, limit 50 |
+| Mop-forbidden zones | Region 5 count `0x132330`; vertices begin `0x132334`, 16 bytes each, limit 50 |
+| Room segmentation and both name arrays | Region 5 ranges detailed below; preserve outer presence, flags and tail too |
+| Other spatial state | All region 9 (`0x2460` bytes), region 10 (`0x15f98`), opaque regions 6/13/14, and all unknown bytes of region 5 |
+| Slot associations | Complete `SharedMultiMapInfo` / region 8 (`0x9c` bytes), including current flag and primary/backup pairing |
+
+There is no reason to recompress or repair persistence for the occupancy-only candidate. Native room operations instead update shared regions and use the native serializer; let it own protobuf part sizes, compression and file replacement. The RRSLAM cell MD5 does not cover any of these companions or even the RRSLAM header.
 
 ## Why segmentation is a separate state
 
@@ -68,7 +84,7 @@ Local source `/home/user/dev/co/Valetudo`, commit `5d905ec2239dd14bbc11ee3785837
 | Name rooms | `name_segment`, `[{miRoomId:"Name",robotRoomId:id}, ...]` | `0x59994`; `0x02033209`, 32-byte payload |
 | Read names | `get_room_mapping` | Existing Valetudo `fetchAndStoreSegmentNames()` supplies current IDs/names before rename. |
 
-`RoborockMapSegmentEditCapability.js` encodes split endpoints from display centimetres as `floor(x*10)`, `floor(51200-y*10)`. Firmware `0x563b4` requires five parameters, room ID <32, and endpoint values 0..51200 inclusive, then subtracts 25600 from each endpoint coordinate for native IPC. Use display coordinates only through that conversion; do not pass RRSLAM cell indices as millimetres. The merge handler accepts room IDs <32 and up to nine input IDs; the two-ID Valetudo operation is the bounded candidate. Native routines still decide whether the requested geometry can be split or merged.
+`RoborockMapSegmentEditCapability.js` encodes split endpoints from display centimetres as `floor(x*10)`, `floor(51200-y*10)`. Firmware `0x563b4` requires five parameters, room ID <32, and endpoint values 0..51200 inclusive, then subtracts 25600 from each endpoint coordinate for native IPC. Use display coordinates only through that conversion; do not pass RRSLAM cell indices as millimetres. The merge handler accepts room IDs <32 and up to nine input IDs; the two-ID Valetudo operation is the bounded candidate. Native routines still decide whether the requested geometry can be split or merged. This checkout's S7 autodetection explicitly accepts `roborock.vacuum.a14` and `roborock.vacuum.a15`; compatibility here is therefore grounded in the target model and firmware handlers, not borrowed from the older V1 implementation (which lacks these room capabilities).
 
 `RoborockMapSegmentRenameCapability.js` sends the changed room first, then its cached other names; it reads `get_room_mapping` after the reply. It rejects empty names or JS string length >23, but the native 24-byte copy limit is a **byte** limit. Use 1..23 ASCII bytes for the candidate rather than relying on that JS character limit for multibyte names. Refresh names before renaming and after each split/merge; do not feed a stale full-name cache back into the vendor.
 
@@ -76,11 +92,22 @@ Local source `/home/user/dev/co/Valetudo`, commit `5d905ec2239dd14bbc11ee3785837
 
 ## Actual regeneration entry and what room operations avoid
 
-The full algorithm is reached by worker **`0x696a8`**, calling `0x132c30` at **`0x696ea`** with the first two bytes of its task argument. Raw Thumb inspection of the dispatch region beginning **`0x6e1d8`** identifies event **`UPDATE_SEGMENT_MAP` (`0x61`)**: the `tbh` at `0x6e20a` selects `0x6eb60`; task slot `+0x4a8` must be absent or have status 3/4. The branch at `0x6f81e` constructs the worker with those bytes and the host object, storing Thumb pointer `0x696a9` at `0x6f852`. Thus this is a concrete scheduled regeneration entry, **not a file-reader side effect**. The original baseline has no function object spanning this dispatcher, so these dispatch claims are instruction-level, not newly recovered C.
+The full algorithm is reached by worker **`0x696a8`**, calling `0x132c30` at **`0x696e8`** with the first two bytes of its task argument. Raw Thumb inspection of the dispatch region beginning **`0x6e1d8`** identifies event **`UPDATE_SEGMENT_MAP` (`0x61`)**: the `tbh` at `0x6e20a` selects `0x6eb60`; task slot `+0x4a8` must be absent or have status 3/4. The branch at `0x6f81e` constructs the worker with those bytes and the host object, storing Thumb pointer `0x696a9` at `0x6f852`. Thus this is a concrete scheduled regeneration entry, **not a file-reader side effect**. The original baseline has no function object spanning this dispatcher, so these dispatch claims are instruction-level, not newly recovered C.
 
 Native **merge `0x12a56c`** and **split `0x131824`** instead load existing shared segmentation through `0x12a35c` and publish with `SetSharedSegmentMapGridData`. Merge chooses a supplied stable ID if present, otherwise obtains one, then rewrites selected low-six-bit labels while preserving `0x40`. Split runs its line/geometry routines and publishes the resulting grid. Neither routine calls `rs::segment_gridmap`. They operate on existing room segmentation and are the simpler alternative to reimplementing the full segmentation algorithm, **but do not rebuild room ownership from arbitrary replacement occupancy**.
 
 The hybrid decision is therefore concrete: **small fixed-frame occupancy patch + existing coherent labels + ordinary vendor split/merge/rename** is a bounded candidate. **Topology-changing raster replacement + presumed automatic resegmentation/reconciliation is not.** A new doorway, a filled passage, disconnected room islands, a new wing or a changed frame exceeds the first candidate even when dimensions and MD5 match. No static path traced here shows that a cold load alone schedules event `0x61`, or that `manual_segment_map`'s controller request schedules it against the newly loaded grid. The missing edge is specifically the controller `0x01033111` handler to native `UPDATE_SEGMENT_MAP`, not the existence of the algorithm or its task caller.
+
+## Bounded candidate after the service window
+
+1. Stage only the selected fixed-frame occupancy patch with the existing codec; preserve the untouched matching set and genuine backup. Reject the candidate if its intended meaning requires a changed doorway, disconnected room, map extent, origin, dock/pose or restriction geometry.
+2. Use the other lanes' established stopped-writer replacement and cold-start path. Keep automatic cleaning and other command producers gated; this document supplies no live IPC shell sender or supervision commands.
+3. Once the intended map is loaded, obtain its **current** room IDs and name mapping through the ordinary client. Do not reuse IDs from a cached screenshot or pre-edit response. If existing room labels are absent/incoherent, stop the hybrid path; split/merge is not a substitute for full regeneration.
+4. If room boundaries alone need adjustment, use one ordinary split or two-room merge at a time, with the encoding above. Let the native operation publish the label grid; then refresh the map and names before the next operation. Preserve the occupancy raster during these label operations; they are not obstacle editing commands.
+5. Rename using a full refreshed list, unique current IDs and 1..23 ASCII bytes per name. Keep this first candidate to at most 16 rooms (the native stable-ID pool is 16..31), preferably the captured smaller room set. Retain the vendor `oldId`/`newId` association and refresh again: naming a temporary room can promote its ID. On failure, reacquire the current IDs instead of resending stale ones.
+6. Allow ordinary native saves to settle before a later stopped snapshot. Preserve the resulting native matching set as a new state, separate from the original rollback set. A command reply or digest match alone is not evidence that the robot can safely navigate the edited geometry.
+
+This path avoids implementing segmentation **only while the original occupancy frame and useful segmentation remain coherent**. Never delete a real obstacle to make a desired split succeed, or infer that a label merge opens a physical doorway.
 
 ## Where this checkpoint stops
 
