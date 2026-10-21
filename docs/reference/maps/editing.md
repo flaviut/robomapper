@@ -2,7 +2,7 @@
 
 For firmware `4.3.5_1612`, the bounded offline candidate is a **small occupancy/confidence patch in an existing RRSLAM frame**, followed, if needed, by ordinary vendor room operations. Do not transplant structs from OpenSLAM, change coordinate frames, or paint room IDs into the occupancy raster. A correct digest establishes file integrity, not navigation safety. A false-free patch over a real obstacle is dangerous even when every byte-level constraint holds.
 
-Map editing and restoration remain unperformed. The [maintenance procedure](../../guides/stopped-backup.md) demonstrates service stop, untouched backup and normal reboot; it does not establish safe import of an edited map. Keep original firmware and backup data unchanged while preparing a candidate.
+Map editing remains unperformed. The [maintenance procedure](../../guides/stopped-backup.md) demonstrates service stop, untouched backup and normal reboot; a later [unchanged restore](../../history/2026-10-21/unchanged-restore.md) also passed. Neither establishes safe import of an edited map. Keep original firmware and backup data unchanged while preparing a candidate.
 
 ## First bounded edit
 

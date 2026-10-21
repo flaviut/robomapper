@@ -1,10 +1,10 @@
 # Map maintenance: the concrete path
 
-For S7 firmware `4.3.5_1612`, stopping the application services, requesting MCU heartbeat hold-off, copying the matching map files and rebooting normally has worked. The [backup procedure](../guides/stopped-backup.md) gives the observed sequence and private archive location. The robot returned docked with no reported error. No map file was edited or restored.
+For S7 firmware `4.3.5_1612`, stopping the application services, requesting MCU heartbeat hold-off, copying the matching map files and rebooting normally has worked. The [backup procedure](../guides/stopped-backup.md) gives the observed sequence and private archive location. The robot returned docked with no reported error. A later [unchanged restore](../history/2026-10-21/unchanged-restore.md) reinstalled a fresh stopped set and returned with identical map layers/entities and native map/catalog bytes. No map edit was tested.
 
 The two earlier refusals exposed an exited loader record that still retained its process name. The helper now permits that name only for a positively identified zombie with a missing executable, while retaining every sibling-task and UART descriptor check. The third attempt completed the stopped backup. Its native return 0 confirms the framed exchange, not readback of the MCU setting; [the A14 explanation](../reference/services/a14-heartbeat.md) follows the matching firmware's heartbeat handler.
 
-The sections below describe the broader replacement plan. Only the stop, untouched backup and normal return have been demonstrated; replacement and edited-map import remain separate work.
+The sections below cover maintenance and the remaining edit plan. Stopped backup and unchanged reinstallation have passed; edited-map import remains separate work. Use the [cleaned scripts](../reference/tools/matching-set.md) for file operations and recovery requirements, with fresh boot-specific stop checks.
 
 ## 1. Have the helper ready before stopping anything
 
@@ -62,4 +62,4 @@ Keep the acquired stopped backup unchanged and off-device. A replacement plan mu
 
 The [vendor status investigation](../history/2026-10-21/vendor-readiness.md) found no enabled cleaning timers. The completed backup started and ended docked at 88%, with the updater idle and no reported error or activity. Those readings expire: obtain fresh status and current process identities before another session.
 
-An unchanged matching-set restore or a small fixed-frame patch is the intended first write operation, not something already demonstrated. Do not assume the current runtime and primary persistence are identical. Connectivity, dimension or coordinate changes still lack a complete transformation and import sequence.
+Unchanged matching-set reinstallation has passed. A small fixed-frame patch is a possible next write, not an already demonstrated import. Do not assume the current runtime and primary persistence are identical. Connectivity, dimension or coordinate changes still lack a complete transformation and import sequence.

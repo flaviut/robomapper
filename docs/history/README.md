@@ -15,7 +15,9 @@ Times below are UTC.
 5. **After the first attempt — [Refusal analysis](2026-10-21/first-refusal.md).** Explains why executable-only absence and task-name checks could disagree. That first log did not identify the refusing task; the analysis added diagnostics, not a zombie exception.
 6. **12:01–12:03 — [Completed stopped backup](../guides/stopped-backup.md).** After a second refusal and a narrow zombie-check correction, the third attempt acquired an untouched stopped set and returned normally. The guide records the archive hash and private off-device location; the [helper reference](../reference/tools/map-maint.md#requesting-mcu-hold-off) describes the current guard.
 
-The committed narrative covers the first attempt in detail and summarizes the later successful run. Exact operation scripts, logs and map backups are private, not a generic launch kit. No restore or map edit was performed.
+7. **13:18–13:20 — [Unchanged restore](2026-10-21/unchanged-restore.md).** A fresh stopped backup was verified off-device, reinstalled byte-for-byte and loaded by normal reboot. All map layers/entities matched; no rollback or map edit was needed. Valetudo briefly showed its startup placeholder before the real map arrived.
+
+Exact device-run launchers, logs and map backups remain private. The [cleaned scripts](../reference/tools/matching-set.md) provide file operations and bounded recovery/orchestration without stale PIDs or credentials; they have not been rerun on the device. Edited-map import remains untested.
 
 ## Reading historical evidence
 

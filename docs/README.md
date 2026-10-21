@@ -6,7 +6,7 @@ Findings for Roborock S7 firmware **`4.3.5_1612`**, with device observations fro
 
 Stopping the map hosts, requesting MCU heartbeat hold-off, copying an untouched matching set, restoring supervision and rebooting normally succeeded on October 21, 2026. The [stopped-backup guide](guides/stopped-backup.md) records that sequence and the private backup's identity. The heartbeat reply was a transport acknowledgment, not readback of the MCU setting.
 
-**No map replacement, unchanged restore or edited-map import has been demonstrated.** The [maintenance plan](plans/map-maintenance.md) separates those next steps from the completed backup. Fresh readiness and ownership checks are required for every session; historical PIDs and status readings expire.
+A later [unchanged restore](history/2026-10-21/unchanged-restore.md) reinstalled a fresh stopped set and rebooted normally. All 11 loaded map layers and all entities matched the pre-test map; native map/persistence files and catalog also matched on disk. **Edited-map import remains untested.** Fresh readiness and ownership checks are required for every session; historical PIDs and status readings expire.
 
 ## Map formats and state
 
@@ -28,7 +28,7 @@ pose/config companions  other startup and recovery inputs
 - [Cold-start selection](reference/maps/startup.md) follows runtime/primary selection, backup recovery and cache lifetime.
 - [Edit constraints](reference/maps/editing.md) bounds occupancy-only changes; [room operations](reference/maps/room-operations.md) follows split, merge, naming, ID promotion and full regeneration.
 
-To prepare bytes locally, use the [raster-edit guide](guides/raster-edit.md). For proposed whole-set installation, use the [untested restore plan](guides/matching-set-restore.md). Neither is evidence of safe navigation after an edit.
+To prepare bytes locally, use the [raster-edit guide](guides/raster-edit.md). For whole-set installation, use the [restore guide](guides/matching-set-restore.md) and [matching-set scripts](reference/tools/matching-set.md). Unchanged reinstallation is not evidence of safe navigation after an edit.
 
 ## Services and watchdogs
 
@@ -52,4 +52,4 @@ Private captures, saved rootfs files, build outputs and Ghidra projects are not 
 
 ## Investigation history
 
-The [history index](history/README.md) orders the feasibility assessment, readiness observations and refused first attempt. It points to the later successful backup without treating earlier conclusions or one-shot launch commands as current guidance.
+The [history index](history/README.md) orders the feasibility assessment, readiness observations and refused first attempt. It includes the successful backup and unchanged restore without treating earlier conclusions or one-shot launch commands as current guidance.

@@ -1,6 +1,6 @@
 # Map matching-set reference
 
-Preserve one complete disk epoch from the same robot and firmware (`4.3.5_1612`), including recorded absence and present SQLite sidecars. A raster alone is not a saved map. The [backup guide](../../guides/stopped-backup.md) demonstrates untouched acquisition; [whole-set restoration](../../guides/matching-set-restore.md) remains untested.
+Preserve one complete disk epoch from the same robot and firmware (`4.3.5_1612`), including recorded absence and present SQLite sidecars. A raster alone is not a saved map. The [backup guide](../../guides/stopped-backup.md) demonstrates untouched acquisition; [whole-set restoration](../../guides/matching-set-restore.md) has passed an unchanged, newly acquired snapshot test. Older-map restoration and edited-map import remain untested.
 
 ## Captured map identity and database
 

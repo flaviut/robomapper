@@ -2,7 +2,7 @@
 
 An S7 map is a set of files, not just an occupancy raster. The raster stores occupancy/confidence cells; persistence stores room labels, restrictions, poses and other state. The catalog selects primary/backup associations, and SQLite holds application-facing messages and history. Preserve the [whole matching set](matching-set.md) when backing up or restoring.
 
-This reference covers firmware `4.3.5_1612`. For the demonstrated service stop and untouched backup, use the [maintenance procedure](../../guides/stopped-backup.md). Edited-map loading and restoration have not been demonstrated.
+This reference covers firmware `4.3.5_1612`. For the demonstrated service stop and untouched backup, use the [maintenance procedure](../../guides/stopped-backup.md). [Unchanged reinstallation](../../history/2026-10-21/unchanged-restore.md) has passed; edited-map loading remains untested.
 
 ## Map flags and filenames
 

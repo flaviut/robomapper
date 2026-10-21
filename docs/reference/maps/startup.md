@@ -1,6 +1,6 @@
 # Cold-start map selection and cache lifetime
 
-A normal boot can consume both runtime flag 1 and the catalog-selected primary. Reboot clears old tmpfs buffers under the observed mount layout; it does not choose a single authoritative slot. These are static findings for S7 firmware `4.3.5_1612`, not a demonstrated restore.
+A normal boot can consume both runtime flag 1 and the catalog-selected primary. Reboot clears old tmpfs buffers under the observed mount layout; it does not choose a single authoritative slot. These are static findings for S7 firmware `4.3.5_1612`. A later [unchanged restore](../../history/2026-10-21/unchanged-restore.md) confirmed normal cold startup loaded the same map; it did not trace every startup branch.
 
 ## Cold-start facts established so far
 

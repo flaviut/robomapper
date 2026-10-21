@@ -59,7 +59,7 @@ Build the [native helper](../reference/tools/map-maint.md) against the saved run
 
 ## Limits before editing or restoration
 
-This establishes a practical stopped-backup window and normal return. It does **not** demonstrate map replacement, an unchanged restore or edited-map import. Use the [maintenance plan](../plans/map-maintenance.md) and [edit contract](../reference/maps/editing.md) before planning writes. Do not assume current runtime and primary persistence match, change map coordinates, or invoke segmentation/restore RPCs as an automatic repair step.
+This backup established a practical stopped window and normal return without replacing files. A later [unchanged restore](../history/2026-10-21/unchanged-restore.md) reinstalled a fresh snapshot and loaded the same map after reboot. Edited-map import remains untested; use the [restore guide](matching-set-restore.md) and [cleaned scripts](../reference/tools/matching-set.md) for the additional verification and rollback requirements. Use the [maintenance plan](../plans/map-maintenance.md) and [edit contract](../reference/maps/editing.md) before planning writes. Do not assume current runtime and primary persistence match, change map coordinates, or invoke segmentation/restore RPCs as an automatic repair step.
 
 Recovery remains software-only. Its 120-second deadline does not bound flash flushing or reboot time, and no independent rescue connection or power-loss repair hook has been demonstrated. Power loss before exclusion restoration can leave the vendor services excluded at the next boot. Keep uninterrupted power and independent originals; do not treat this route as interruption-safe installation.
 
