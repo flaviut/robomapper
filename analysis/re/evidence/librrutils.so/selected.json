@@ -1,0 +1,1414 @@
+[
+  {
+    "address": "0x000018a8",
+    "name": "rr_get_unused_persist_map_flag",
+    "qualified_name": "rr_get_unused_persist_map_flag",
+    "name_source": "ANALYSIS",
+    "signature": "MapPersistFlag rr_get_unused_persist_map_flag(bool want_backup)",
+    "signature_source": "USER_DEFINED",
+    "plate_comment": "Builds 12-element used array from nonzero primary entries and their nonzero backup bytes, via unlocked GetSharedUserMapInfo pointer. Returns first unused primary 2..5 (want_backup\u003d0) or backup 6..9 (nonzero), otherwise -1. GetBakMapFlagStartPos\u003d6 in librobopersist. No locking/reservation here; no checks before using loaded flag bytes as array indexes. Flags 10/11 are not allocator candidates.",
+    "body": "[[000018a8, 00001945]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      6312
+    ],
+    "callers": [],
+    "instructions": [
+      {
+        "address": "0x000018a8",
+        "instruction": "ldr r3,[0x00001948]",
+        "bytes": "274b",
+        "flows": []
+      },
+      {
+        "address": "0x000018aa",
+        "instruction": "movs r1,#0x0",
+        "bytes": "0021",
+        "flows": []
+      },
+      {
+        "address": "0x000018ac",
+        "instruction": "push {r4,r5,r6,r7,lr}",
+        "bytes": "f0b5",
+        "flows": []
+      },
+      {
+        "address": "0x000018ae",
+        "instruction": "add r3,pc",
+        "bytes": "7b44",
+        "flows": []
+      },
+      {
+        "address": "0x000018b0",
+        "instruction": "ldr r5,[0x0000194c]",
+        "bytes": "264d",
+        "flows": []
+      },
+      {
+        "address": "0x000018b2",
+        "instruction": "sub sp,#0x3c",
+        "bytes": "8fb0",
+        "flows": []
+      },
+      {
+        "address": "0x000018b4",
+        "instruction": "add r7,sp,#0x4",
+        "bytes": "01af",
+        "flows": []
+      },
+      {
+        "address": "0x000018b6",
+        "instruction": "movs r2,#0x30",
+        "bytes": "3022",
+        "flows": []
+      },
+      {
+        "address": "0x000018b8",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x000018ba",
+        "instruction": "ldr r6,[r3,r5]",
+        "bytes": "5e59",
+        "flows": []
+      },
+      {
+        "address": "0x000018bc",
+        "instruction": "mov r0,r7",
+        "bytes": "3846",
+        "flows": []
+      },
+      {
+        "address": "0x000018be",
+        "instruction": "movs r5,#0x1",
+        "bytes": "0125",
+        "flows": []
+      },
+      {
+        "address": "0x000018c0",
+        "instruction": "ldr r3,[r6,#0x0]",
+        "bytes": "3368",
+        "flows": []
+      },
+      {
+        "address": "0x000018c2",
+        "instruction": "str r3,[sp,#0x34]",
+        "bytes": "0d93",
+        "flows": []
+      },
+      {
+        "address": "0x000018c4",
+        "instruction": "blx 0x00001580",
+        "bytes": "fff75cee",
+        "flows": [
+          "0x00001580"
+        ]
+      },
+      {
+        "address": "0x000018c8",
+        "instruction": "blx 0x000015b4",
+        "bytes": "fff774ee",
+        "flows": [
+          "0x000015b4"
+        ]
+      },
+      {
+        "address": "0x000018cc",
+        "instruction": "add.w r1,r0,#0x90",
+        "bytes": "00f19001",
+        "flows": []
+      },
+      {
+        "address": "0x000018d0",
+        "instruction": "ldrb r3,[r0,#0x0]",
+        "bytes": "0378",
+        "flows": []
+      },
+      {
+        "address": "0x000018d2",
+        "instruction": "cbz r3,0x000018ec",
+        "bytes": "5bb1",
+        "flows": [
+          "0x000018ec"
+        ]
+      },
+      {
+        "address": "0x000018d4",
+        "instruction": "add.w lr,sp,#0x38",
+        "bytes": "0df1380e",
+        "flows": []
+      },
+      {
+        "address": "0x000018d8",
+        "instruction": "ldrb r2,[r0,#0x1]",
+        "bytes": "4278",
+        "flows": []
+      },
+      {
+        "address": "0x000018da",
+        "instruction": "add.w r3,lr,r3, lsl #0x2",
+        "bytes": "0eeb8303",
+        "flows": []
+      },
+      {
+        "address": "0x000018de",
+        "instruction": "str.w r5,[r3,#-0x34]",
+        "bytes": "43f8345c",
+        "flows": []
+      },
+      {
+        "address": "0x000018e2",
+        "instruction": "cbz r2,0x000018ec",
+        "bytes": "1ab1",
+        "flows": [
+          "0x000018ec"
+        ]
+      },
+      {
+        "address": "0x000018e4",
+        "instruction": "add.w r2,lr,r2, lsl #0x2",
+        "bytes": "0eeb8202",
+        "flows": []
+      },
+      {
+        "address": "0x000018e8",
+        "instruction": "str.w r5,[r2,#-0x34]",
+        "bytes": "42f8345c",
+        "flows": []
+      },
+      {
+        "address": "0x000018ec",
+        "instruction": "adds r0,#0x24",
+        "bytes": "2430",
+        "flows": []
+      },
+      {
+        "address": "0x000018ee",
+        "instruction": "cmp r0,r1",
+        "bytes": "8842",
+        "flows": []
+      },
+      {
+        "address": "0x000018f0",
+        "instruction": "bne 0x000018d0",
+        "bytes": "eed1",
+        "flows": [
+          "0x000018d0"
+        ]
+      },
+      {
+        "address": "0x000018f2",
+        "instruction": "cbnz r4,0x0000191e",
+        "bytes": "a4b9",
+        "flows": [
+          "0x0000191e"
+        ]
+      },
+      {
+        "address": "0x000018f4",
+        "instruction": "add r5,sp,#0x8",
+        "bytes": "02ad",
+        "flows": []
+      },
+      {
+        "address": "0x000018f6",
+        "instruction": "movs r4,#0x2",
+        "bytes": "0224",
+        "flows": []
+      },
+      {
+        "address": "0x000018f8",
+        "instruction": "b 0x00001902",
+        "bytes": "03e0",
+        "flows": [
+          "0x00001902"
+        ]
+      },
+      {
+        "address": "0x000018fa",
+        "instruction": "ldr.w r3,[r5,#0x4]!",
+        "bytes": "55f8043f",
+        "flows": []
+      },
+      {
+        "address": "0x000018fe",
+        "instruction": "cbz r3,0x0000191a",
+        "bytes": "63b1",
+        "flows": [
+          "0x0000191a"
+        ]
+      },
+      {
+        "address": "0x00001900",
+        "instruction": "adds r4,#0x1",
+        "bytes": "0134",
+        "flows": []
+      },
+      {
+        "address": "0x00001902",
+        "instruction": "blx 0x000014d4",
+        "bytes": "fff7e8ed",
+        "flows": [
+          "0x000014d4"
+        ]
+      },
+      {
+        "address": "0x00001906",
+        "instruction": "cmp r4,r0",
+        "bytes": "8442",
+        "flows": []
+      },
+      {
+        "address": "0x00001908",
+        "instruction": "blt 0x000018fa",
+        "bytes": "f7db",
+        "flows": [
+          "0x000018fa"
+        ]
+      },
+      {
+        "address": "0x0000190a",
+        "instruction": "mov.w r0,#0xffffffff",
+        "bytes": "4ff0ff30",
+        "flows": []
+      },
+      {
+        "address": "0x0000190e",
+        "instruction": "ldr r2,[sp,#0x34]",
+        "bytes": "0d9a",
+        "flows": []
+      },
+      {
+        "address": "0x00001910",
+        "instruction": "ldr r3,[r6,#0x0]",
+        "bytes": "3368",
+        "flows": []
+      },
+      {
+        "address": "0x00001912",
+        "instruction": "cmp r2,r3",
+        "bytes": "9a42",
+        "flows": []
+      },
+      {
+        "address": "0x00001914",
+        "instruction": "bne 0x00001942",
+        "bytes": "15d1",
+        "flows": [
+          "0x00001942"
+        ]
+      },
+      {
+        "address": "0x00001916",
+        "instruction": "add sp,#0x3c",
+        "bytes": "0fb0",
+        "flows": []
+      },
+      {
+        "address": "0x00001918",
+        "instruction": "pop {r4,r5,r6,r7,pc}",
+        "bytes": "f0bd",
+        "flows": []
+      },
+      {
+        "address": "0x0000191a",
+        "instruction": "mov r0,r4",
+        "bytes": "2046",
+        "flows": []
+      },
+      {
+        "address": "0x0000191c",
+        "instruction": "b 0x0000190e",
+        "bytes": "f7e7",
+        "flows": [
+          "0x0000190e"
+        ]
+      },
+      {
+        "address": "0x0000191e",
+        "instruction": "blx 0x000014d4",
+        "bytes": "fff7daed",
+        "flows": [
+          "0x000014d4"
+        ]
+      },
+      {
+        "address": "0x00001922",
+        "instruction": "lsls r5,r0,#0x2",
+        "bytes": "8500",
+        "flows": []
+      },
+      {
+        "address": "0x00001924",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x00001926",
+        "instruction": "subs r5,#0x4",
+        "bytes": "043d",
+        "flows": []
+      },
+      {
+        "address": "0x00001928",
+        "instruction": "add r5,r7",
+        "bytes": "3d44",
+        "flows": []
+      },
+      {
+        "address": "0x0000192a",
+        "instruction": "b 0x00001936",
+        "bytes": "04e0",
+        "flows": [
+          "0x00001936"
+        ]
+      },
+      {
+        "address": "0x0000192c",
+        "instruction": "ldr.w r3,[r5,#0x4]!",
+        "bytes": "55f8043f",
+        "flows": []
+      },
+      {
+        "address": "0x00001930",
+        "instruction": "cmp r3,#0x0",
+        "bytes": "002b",
+        "flows": []
+      },
+      {
+        "address": "0x00001932",
+        "instruction": "beq 0x0000191a",
+        "bytes": "f2d0",
+        "flows": [
+          "0x0000191a"
+        ]
+      },
+      {
+        "address": "0x00001934",
+        "instruction": "adds r4,#0x1",
+        "bytes": "0134",
+        "flows": []
+      },
+      {
+        "address": "0x00001936",
+        "instruction": "blx 0x000014d4",
+        "bytes": "fff7ceed",
+        "flows": [
+          "0x000014d4"
+        ]
+      },
+      {
+        "address": "0x0000193a",
+        "instruction": "adds r0,#0x3",
+        "bytes": "0330",
+        "flows": []
+      },
+      {
+        "address": "0x0000193c",
+        "instruction": "cmp r4,r0",
+        "bytes": "8442",
+        "flows": []
+      },
+      {
+        "address": "0x0000193e",
+        "instruction": "ble 0x0000192c",
+        "bytes": "f5dd",
+        "flows": [
+          "0x0000192c"
+        ]
+      },
+      {
+        "address": "0x00001940",
+        "instruction": "b 0x0000190a",
+        "bytes": "e3e7",
+        "flows": [
+          "0x0000190a"
+        ]
+      },
+      {
+        "address": "0x00001942",
+        "instruction": "blx 0x000015f4",
+        "bytes": "fff758ee",
+        "flows": [
+          "0x000015f4"
+        ]
+      }
+    ],
+    "c_file": "0x000018a8.c"
+  },
+  {
+    "address": "0x00001950",
+    "name": "rr_get_multimap_flag_available",
+    "qualified_name": "rr_get_multimap_flag_available",
+    "name_source": "ANALYSIS",
+    "signature": "bool rr_get_multimap_flag_available(int mode)",
+    "signature_source": "USER_DEFINED",
+    "plate_comment": "Counts nonzero primary bytes from unlocked catalog pointer. Capacity limit is four only when mode\u003d\u003d1, otherwise one; returns count below limit. This is not slot reservation.",
+    "body": "[[00001950, 00001979]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      6480
+    ],
+    "callers": [],
+    "instructions": [
+      {
+        "address": "0x00001950",
+        "instruction": "push {r4,lr}",
+        "bytes": "10b5",
+        "flows": []
+      },
+      {
+        "address": "0x00001952",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x00001954",
+        "instruction": "blx 0x000015b4",
+        "bytes": "fff72eee",
+        "flows": [
+          "0x000015b4"
+        ]
+      },
+      {
+        "address": "0x00001958",
+        "instruction": "movs r3,#0x0",
+        "bytes": "0023",
+        "flows": []
+      },
+      {
+        "address": "0x0000195a",
+        "instruction": "mov r1,r3",
+        "bytes": "1946",
+        "flows": []
+      },
+      {
+        "address": "0x0000195c",
+        "instruction": "ldrb r2,[r0,r3]",
+        "bytes": "c25c",
+        "flows": []
+      },
+      {
+        "address": "0x0000195e",
+        "instruction": "adds r3,#0x24",
+        "bytes": "2433",
+        "flows": []
+      },
+      {
+        "address": "0x00001960",
+        "instruction": "cbz r2,0x00001964",
+        "bytes": "02b1",
+        "flows": [
+          "0x00001964"
+        ]
+      },
+      {
+        "address": "0x00001962",
+        "instruction": "adds r1,#0x1",
+        "bytes": "0131",
+        "flows": []
+      },
+      {
+        "address": "0x00001964",
+        "instruction": "cmp r3,#0x90",
+        "bytes": "902b",
+        "flows": []
+      },
+      {
+        "address": "0x00001966",
+        "instruction": "bne 0x0000195c",
+        "bytes": "f9d1",
+        "flows": [
+          "0x0000195c"
+        ]
+      },
+      {
+        "address": "0x00001968",
+        "instruction": "cmp r4,#0x1",
+        "bytes": "012c",
+        "flows": []
+      },
+      {
+        "address": "0x0000196a",
+        "instruction": "ite eq",
+        "bytes": "0cbf",
+        "flows": []
+      },
+      {
+        "address": "0x0000196c",
+        "instruction": "mov.eq r0,#0x4",
+        "bytes": "0420",
+        "flows": []
+      },
+      {
+        "address": "0x0000196e",
+        "instruction": "mov.ne r0,#0x1",
+        "bytes": "0120",
+        "flows": []
+      },
+      {
+        "address": "0x00001970",
+        "instruction": "cmp r1,r0",
+        "bytes": "8142",
+        "flows": []
+      },
+      {
+        "address": "0x00001972",
+        "instruction": "ite ge",
+        "bytes": "acbf",
+        "flows": []
+      },
+      {
+        "address": "0x00001974",
+        "instruction": "mov.ge r0,#0x0",
+        "bytes": "0020",
+        "flows": []
+      },
+      {
+        "address": "0x00001976",
+        "instruction": "mov.lt r0,#0x1",
+        "bytes": "0120",
+        "flows": []
+      },
+      {
+        "address": "0x00001978",
+        "instruction": "pop {r4,pc}",
+        "bytes": "10bd",
+        "flows": []
+      }
+    ],
+    "c_file": "0x00001950.c"
+  },
+  {
+    "address": "0x000019cc",
+    "name": "rr_get_available_bak_map_flag_for_multimap",
+    "qualified_name": "rr_get_available_bak_map_flag_for_multimap",
+    "name_source": "ANALYSIS",
+    "signature": "MapPersistFlag rr_get_available_bak_map_flag_for_multimap(MapPersistFlag primary_flag)",
+    "signature_source": "USER_DEFINED",
+    "plate_comment": "Copies each 0x24-byte entry from live unlocked catalog while scanning primary. If matching entry has nonzero backup byte, uses GetOldestMapFlagIndex (constant 0 in this build) to return that backup; otherwise tail-calls rr_get_unused_persist_map_flag(true). Imported helper receives start-of-array pointer, not selected copy; with constant index 0 this does not alter selection. No file-existence or validity check; environment/path buffer setup does not choose a file here.",
+    "body": "[[000014f8, 000014f9] [000019cc, 00001a87]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      6604
+    ],
+    "callers": [],
+    "instructions": [
+      {
+        "address": "0x000014f8",
+        "instruction": "bx pc",
+        "bytes": "7847",
+        "flows": [
+          "0x000014fc"
+        ]
+      },
+      {
+        "address": "0x000019cc",
+        "instruction": "ldr r3,[0x00001a88]",
+        "bytes": "2e4b",
+        "flows": []
+      },
+      {
+        "address": "0x000019ce",
+        "instruction": "ldr r2,[0x00001a8c]",
+        "bytes": "2f4a",
+        "flows": []
+      },
+      {
+        "address": "0x000019d0",
+        "instruction": "add r3,pc",
+        "bytes": "7b44",
+        "flows": []
+      },
+      {
+        "address": "0x000019d2",
+        "instruction": "push {r4,r5,r6,r7,r8,r9,r10,lr}",
+        "bytes": "2de9f047",
+        "flows": []
+      },
+      {
+        "address": "0x000019d6",
+        "instruction": "mov r8,r0",
+        "bytes": "8046",
+        "flows": []
+      },
+      {
+        "address": "0x000019d8",
+        "instruction": "ldr.w r9,[r3,r2]",
+        "bytes": "53f80290",
+        "flows": []
+      },
+      {
+        "address": "0x000019dc",
+        "instruction": "sub sp,#0xa8",
+        "bytes": "aab0",
+        "flows": []
+      },
+      {
+        "address": "0x000019de",
+        "instruction": "ldr r0,[0x00001a90]",
+        "bytes": "2c48",
+        "flows": []
+      },
+      {
+        "address": "0x000019e0",
+        "instruction": "ldr.w r3,[r9,#0x0]",
+        "bytes": "d9f80030",
+        "flows": []
+      },
+      {
+        "address": "0x000019e4",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x000019e6",
+        "instruction": "str r3,[sp,#0xa4]",
+        "bytes": "2993",
+        "flows": []
+      },
+      {
+        "address": "0x000019e8",
+        "instruction": "blx 0x0000169c",
+        "bytes": "fff758ee",
+        "flows": [
+          "0x0000169c"
+        ]
+      },
+      {
+        "address": "0x000019ec",
+        "instruction": "cbz r0,0x00001a50",
+        "bytes": "80b3",
+        "flows": [
+          "0x00001a50"
+        ]
+      },
+      {
+        "address": "0x000019ee",
+        "instruction": "mov r1,r0",
+        "bytes": "0146",
+        "flows": []
+      },
+      {
+        "address": "0x000019f0",
+        "instruction": "movs r2,#0x7f",
+        "bytes": "7f22",
+        "flows": []
+      },
+      {
+        "address": "0x000019f2",
+        "instruction": "add r0,sp,#0x24",
+        "bytes": "09a8",
+        "flows": []
+      },
+      {
+        "address": "0x000019f4",
+        "instruction": "blx 0x00001684",
+        "bytes": "fff746ee",
+        "flows": [
+          "0x00001684"
+        ]
+      },
+      {
+        "address": "0x000019f8",
+        "instruction": "blx 0x000015b4",
+        "bytes": "fff7dced",
+        "flows": [
+          "0x000015b4"
+        ]
+      },
+      {
+        "address": "0x000019fc",
+        "instruction": "mov r10,sp",
+        "bytes": "ea46",
+        "flows": []
+      },
+      {
+        "address": "0x000019fe",
+        "instruction": "movs r6,#0x0",
+        "bytes": "0026",
+        "flows": []
+      },
+      {
+        "address": "0x00001a00",
+        "instruction": "mov r12,r0",
+        "bytes": "8446",
+        "flows": []
+      },
+      {
+        "address": "0x00001a02",
+        "instruction": "add.w r4,r12,r6",
+        "bytes": "0ceb0604",
+        "flows": []
+      },
+      {
+        "address": "0x00001a06",
+        "instruction": "mov r7,r10",
+        "bytes": "5746",
+        "flows": []
+      },
+      {
+        "address": "0x00001a08",
+        "instruction": "add.w lr,r4,#0x20",
+        "bytes": "04f1200e",
+        "flows": []
+      },
+      {
+        "address": "0x00001a0c",
+        "instruction": "ldr r0,[r4,#0x0]",
+        "bytes": "2068",
+        "flows": []
+      },
+      {
+        "address": "0x00001a0e",
+        "instruction": "adds r4,#0x10",
+        "bytes": "1034",
+        "flows": []
+      },
+      {
+        "address": "0x00001a10",
+        "instruction": "ldr.w r1,[r4,#-0xc]",
+        "bytes": "54f80c1c",
+        "flows": []
+      },
+      {
+        "address": "0x00001a14",
+        "instruction": "mov r5,r7",
+        "bytes": "3d46",
+        "flows": []
+      },
+      {
+        "address": "0x00001a16",
+        "instruction": "ldr.w r2,[r4,#-0x8]",
+        "bytes": "54f8082c",
+        "flows": []
+      },
+      {
+        "address": "0x00001a1a",
+        "instruction": "adds r7,#0x10",
+        "bytes": "1037",
+        "flows": []
+      },
+      {
+        "address": "0x00001a1c",
+        "instruction": "ldr.w r3,[r4,#-0x4]",
+        "bytes": "54f8043c",
+        "flows": []
+      },
+      {
+        "address": "0x00001a20",
+        "instruction": "cmp r4,lr",
+        "bytes": "7445",
+        "flows": []
+      },
+      {
+        "address": "0x00001a22",
+        "instruction": "stmia r5!,{r0,r1,r2,r3}",
+        "bytes": "0fc5",
+        "flows": []
+      },
+      {
+        "address": "0x00001a24",
+        "instruction": "bne 0x00001a0c",
+        "bytes": "f2d1",
+        "flows": [
+          "0x00001a0c"
+        ]
+      },
+      {
+        "address": "0x00001a26",
+        "instruction": "ldr r0,[r4,#0x0]",
+        "bytes": "2068",
+        "flows": []
+      },
+      {
+        "address": "0x00001a28",
+        "instruction": "str r0,[r7,#0x0]",
+        "bytes": "3860",
+        "flows": []
+      },
+      {
+        "address": "0x00001a2a",
+        "instruction": "ldrb.w r3,[r12,r6,lsl #0x0]",
+        "bytes": "1cf80630",
+        "flows": []
+      },
+      {
+        "address": "0x00001a2e",
+        "instruction": "cbz r3,0x00001a34",
+        "bytes": "0bb1",
+        "flows": [
+          "0x00001a34"
+        ]
+      },
+      {
+        "address": "0x00001a30",
+        "instruction": "cmp r3,r8",
+        "bytes": "4345",
+        "flows": []
+      },
+      {
+        "address": "0x00001a32",
+        "instruction": "beq 0x00001a5e",
+        "bytes": "14d0",
+        "flows": [
+          "0x00001a5e"
+        ]
+      },
+      {
+        "address": "0x00001a34",
+        "instruction": "adds r6,#0x24",
+        "bytes": "2436",
+        "flows": []
+      },
+      {
+        "address": "0x00001a36",
+        "instruction": "cmp r6,#0x90",
+        "bytes": "902e",
+        "flows": []
+      },
+      {
+        "address": "0x00001a38",
+        "instruction": "bne 0x00001a02",
+        "bytes": "e3d1",
+        "flows": [
+          "0x00001a02"
+        ]
+      },
+      {
+        "address": "0x00001a3a",
+        "instruction": "ldr r2,[sp,#0xa4]",
+        "bytes": "299a",
+        "flows": []
+      },
+      {
+        "address": "0x00001a3c",
+        "instruction": "ldr.w r3,[r9,#0x0]",
+        "bytes": "d9f80030",
+        "flows": []
+      },
+      {
+        "address": "0x00001a40",
+        "instruction": "cmp r2,r3",
+        "bytes": "9a42",
+        "flows": []
+      },
+      {
+        "address": "0x00001a42",
+        "instruction": "bne 0x00001a84",
+        "bytes": "1fd1",
+        "flows": [
+          "0x00001a84"
+        ]
+      },
+      {
+        "address": "0x00001a44",
+        "instruction": "movs r0,#0x1",
+        "bytes": "0120",
+        "flows": []
+      },
+      {
+        "address": "0x00001a46",
+        "instruction": "add sp,#0xa8",
+        "bytes": "2ab0",
+        "flows": []
+      },
+      {
+        "address": "0x00001a48",
+        "instruction": "pop.w {r4,r5,r6,r7,r8,r9,r10,lr}",
+        "bytes": "bde8f047",
+        "flows": []
+      },
+      {
+        "address": "0x00001a4c",
+        "instruction": "b.w 0x000014f8",
+        "bytes": "fff754bd",
+        "flows": [
+          "0x000014f8"
+        ]
+      },
+      {
+        "address": "0x00001a50",
+        "instruction": "ldr r1,[0x00001a94]",
+        "bytes": "1049",
+        "flows": []
+      },
+      {
+        "address": "0x00001a52",
+        "instruction": "movs r2,#0x7f",
+        "bytes": "7f22",
+        "flows": []
+      },
+      {
+        "address": "0x00001a54",
+        "instruction": "add r0,sp,#0x24",
+        "bytes": "09a8",
+        "flows": []
+      },
+      {
+        "address": "0x00001a56",
+        "instruction": "add r1,pc",
+        "bytes": "7944",
+        "flows": []
+      },
+      {
+        "address": "0x00001a58",
+        "instruction": "blx 0x00001684",
+        "bytes": "fff714ee",
+        "flows": [
+          "0x00001684"
+        ]
+      },
+      {
+        "address": "0x00001a5c",
+        "instruction": "b 0x000019f8",
+        "bytes": "cce7",
+        "flows": [
+          "0x000019f8"
+        ]
+      },
+      {
+        "address": "0x00001a5e",
+        "instruction": "ldrb.w r3,[sp,#0x1]",
+        "bytes": "9df80130",
+        "flows": []
+      },
+      {
+        "address": "0x00001a62",
+        "instruction": "cmp r3,#0x0",
+        "bytes": "002b",
+        "flows": []
+      },
+      {
+        "address": "0x00001a64",
+        "instruction": "beq 0x00001a3a",
+        "bytes": "e9d0",
+        "flows": [
+          "0x00001a3a"
+        ]
+      },
+      {
+        "address": "0x00001a66",
+        "instruction": "mov r0,r12",
+        "bytes": "6046",
+        "flows": []
+      },
+      {
+        "address": "0x00001a68",
+        "instruction": "blx 0x0000160c",
+        "bytes": "fff7d0ed",
+        "flows": [
+          "0x0000160c"
+        ]
+      },
+      {
+        "address": "0x00001a6c",
+        "instruction": "ldr r2,[sp,#0xa4]",
+        "bytes": "299a",
+        "flows": []
+      },
+      {
+        "address": "0x00001a6e",
+        "instruction": "ldr.w r3,[r9,#0x0]",
+        "bytes": "d9f80030",
+        "flows": []
+      },
+      {
+        "address": "0x00001a72",
+        "instruction": "add r1,sp,#0xa8",
+        "bytes": "2aa9",
+        "flows": []
+      },
+      {
+        "address": "0x00001a74",
+        "instruction": "cmp r2,r3",
+        "bytes": "9a42",
+        "flows": []
+      },
+      {
+        "address": "0x00001a76",
+        "instruction": "add r0,r1",
+        "bytes": "0844",
+        "flows": []
+      },
+      {
+        "address": "0x00001a78",
+        "instruction": "ldrb.w r0,[r0,#-0xa7]",
+        "bytes": "10f8a70c",
+        "flows": []
+      },
+      {
+        "address": "0x00001a7c",
+        "instruction": "bne 0x00001a84",
+        "bytes": "02d1",
+        "flows": [
+          "0x00001a84"
+        ]
+      },
+      {
+        "address": "0x00001a7e",
+        "instruction": "add sp,#0xa8",
+        "bytes": "2ab0",
+        "flows": []
+      },
+      {
+        "address": "0x00001a80",
+        "instruction": "pop.w {r4,r5,r6,r7,r8,r9,r10,pc}",
+        "bytes": "bde8f087",
+        "flows": []
+      },
+      {
+        "address": "0x00001a84",
+        "instruction": "blx 0x000015f4",
+        "bytes": "fff7b6ed",
+        "flows": [
+          "0x000015f4"
+        ]
+      }
+    ],
+    "c_file": "0x000019cc.c"
+  },
+  {
+    "address": "0x00001ac0",
+    "name": "rr_check_mapflag_is_multimap",
+    "qualified_name": "rr_check_mapflag_is_multimap",
+    "name_source": "ANALYSIS",
+    "signature": "bool rr_check_mapflag_is_multimap(MapPersistFlag flag)",
+    "signature_source": "USER_DEFINED",
+    "plate_comment": "Returns 1 only for matching nonzero primary byte among four entries; reads unlocked catalog pointer and does not check any map file.",
+    "body": "[[00001ac0, 00001adf]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      6848
+    ],
+    "callers": [],
+    "instructions": [
+      {
+        "address": "0x00001ac0",
+        "instruction": "push {r4,lr}",
+        "bytes": "10b5",
+        "flows": []
+      },
+      {
+        "address": "0x00001ac2",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x00001ac4",
+        "instruction": "blx 0x000015b4",
+        "bytes": "fff776ed",
+        "flows": [
+          "0x000015b4"
+        ]
+      },
+      {
+        "address": "0x00001ac8",
+        "instruction": "movs r3,#0x0",
+        "bytes": "0023",
+        "flows": []
+      },
+      {
+        "address": "0x00001aca",
+        "instruction": "ldrb r2,[r0,r3]",
+        "bytes": "c25c",
+        "flows": []
+      },
+      {
+        "address": "0x00001acc",
+        "instruction": "adds r3,#0x24",
+        "bytes": "2433",
+        "flows": []
+      },
+      {
+        "address": "0x00001ace",
+        "instruction": "cbz r2,0x00001ad4",
+        "bytes": "0ab1",
+        "flows": [
+          "0x00001ad4"
+        ]
+      },
+      {
+        "address": "0x00001ad0",
+        "instruction": "cmp r2,r4",
+        "bytes": "a242",
+        "flows": []
+      },
+      {
+        "address": "0x00001ad2",
+        "instruction": "beq 0x00001adc",
+        "bytes": "03d0",
+        "flows": [
+          "0x00001adc"
+        ]
+      },
+      {
+        "address": "0x00001ad4",
+        "instruction": "cmp r3,#0x90",
+        "bytes": "902b",
+        "flows": []
+      },
+      {
+        "address": "0x00001ad6",
+        "instruction": "bne 0x00001aca",
+        "bytes": "f8d1",
+        "flows": [
+          "0x00001aca"
+        ]
+      },
+      {
+        "address": "0x00001ad8",
+        "instruction": "movs r0,#0x0",
+        "bytes": "0020",
+        "flows": []
+      },
+      {
+        "address": "0x00001ada",
+        "instruction": "pop {r4,pc}",
+        "bytes": "10bd",
+        "flows": []
+      },
+      {
+        "address": "0x00001adc",
+        "instruction": "movs r0,#0x1",
+        "bytes": "0120",
+        "flows": []
+      },
+      {
+        "address": "0x00001ade",
+        "instruction": "pop {r4,pc}",
+        "bytes": "10bd",
+        "flows": []
+      }
+    ],
+    "c_file": "0x00001ac0.c"
+  },
+  {
+    "address": "0x00001ae0",
+    "name": "rr_get_multimap_name",
+    "qualified_name": "rr_get_multimap_name",
+    "name_source": "ANALYSIS",
+    "signature": "char * rr_get_multimap_name(MapPersistFlag flag)",
+    "signature_source": "USER_DEFINED",
+    "plate_comment": "Returns matching entry+4 name-byte pointer or static fallback pointer; four entries, stride 0x24. Pointer is not locked and 32 stored name bytes need not be NUL-terminated; no validation/termination added here.",
+    "body": "[[00001ae0, 00001b01]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      6880
+    ],
+    "callers": [],
+    "instructions": [
+      {
+        "address": "0x00001ae0",
+        "instruction": "push {r4,lr}",
+        "bytes": "10b5",
+        "flows": []
+      },
+      {
+        "address": "0x00001ae2",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x00001ae4",
+        "instruction": "blx 0x000015b4",
+        "bytes": "fff766ed",
+        "flows": [
+          "0x000015b4"
+        ]
+      },
+      {
+        "address": "0x00001ae8",
+        "instruction": "add.w r2,r0,#0x90",
+        "bytes": "00f19002",
+        "flows": []
+      },
+      {
+        "address": "0x00001aec",
+        "instruction": "ldrb r3,[r0,#0x0]",
+        "bytes": "0378",
+        "flows": []
+      },
+      {
+        "address": "0x00001aee",
+        "instruction": "cmp r3,r4",
+        "bytes": "a342",
+        "flows": []
+      },
+      {
+        "address": "0x00001af0",
+        "instruction": "beq 0x00001afe",
+        "bytes": "05d0",
+        "flows": [
+          "0x00001afe"
+        ]
+      },
+      {
+        "address": "0x00001af2",
+        "instruction": "adds r0,#0x24",
+        "bytes": "2430",
+        "flows": []
+      },
+      {
+        "address": "0x00001af4",
+        "instruction": "cmp r0,r2",
+        "bytes": "9042",
+        "flows": []
+      },
+      {
+        "address": "0x00001af6",
+        "instruction": "bne 0x00001aec",
+        "bytes": "f9d1",
+        "flows": [
+          "0x00001aec"
+        ]
+      },
+      {
+        "address": "0x00001af8",
+        "instruction": "ldr r0,[0x00001b04]",
+        "bytes": "0248",
+        "flows": []
+      },
+      {
+        "address": "0x00001afa",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x00001afc",
+        "instruction": "pop {r4,pc}",
+        "bytes": "10bd",
+        "flows": []
+      },
+      {
+        "address": "0x00001afe",
+        "instruction": "adds r0,#0x4",
+        "bytes": "0430",
+        "flows": []
+      },
+      {
+        "address": "0x00001b00",
+        "instruction": "pop {r4,pc}",
+        "bytes": "10bd",
+        "flows": []
+      }
+    ],
+    "c_file": "0x00001ae0.c"
+  },
+  {
+    "address": "0x00001b08",
+    "name": "rr_get_multimap_by_bakmap",
+    "qualified_name": "rr_get_multimap_by_bakmap",
+    "name_source": "ANALYSIS",
+    "signature": "MapPersistFlag rr_get_multimap_by_bakmap(MapPersistFlag backup_flag)",
+    "signature_source": "USER_DEFINED",
+    "plate_comment": "Returns zero-extended primary byte for first matching backup byte, else -1. No nonzero-primary/backup check; reads unlocked pointer; passing zero can match an empty entry.",
+    "body": "[[00001b08, 00001b29]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      6920
+    ],
+    "callers": [],
+    "instructions": [
+      {
+        "address": "0x00001b08",
+        "instruction": "push {r4,lr}",
+        "bytes": "10b5",
+        "flows": []
+      },
+      {
+        "address": "0x00001b0a",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x00001b0c",
+        "instruction": "blx 0x000015b4",
+        "bytes": "fff752ed",
+        "flows": [
+          "0x000015b4"
+        ]
+      },
+      {
+        "address": "0x00001b10",
+        "instruction": "add.w r2,r0,#0x90",
+        "bytes": "00f19002",
+        "flows": []
+      },
+      {
+        "address": "0x00001b14",
+        "instruction": "ldrb r3,[r0,#0x1]",
+        "bytes": "4378",
+        "flows": []
+      },
+      {
+        "address": "0x00001b16",
+        "instruction": "cmp r4,r3",
+        "bytes": "9c42",
+        "flows": []
+      },
+      {
+        "address": "0x00001b18",
+        "instruction": "beq 0x00001b26",
+        "bytes": "05d0",
+        "flows": [
+          "0x00001b26"
+        ]
+      },
+      {
+        "address": "0x00001b1a",
+        "instruction": "adds r0,#0x24",
+        "bytes": "2430",
+        "flows": []
+      },
+      {
+        "address": "0x00001b1c",
+        "instruction": "cmp r0,r2",
+        "bytes": "9042",
+        "flows": []
+      },
+      {
+        "address": "0x00001b1e",
+        "instruction": "bne 0x00001b14",
+        "bytes": "f9d1",
+        "flows": [
+          "0x00001b14"
+        ]
+      },
+      {
+        "address": "0x00001b20",
+        "instruction": "mov.w r0,#0xffffffff",
+        "bytes": "4ff0ff30",
+        "flows": []
+      },
+      {
+        "address": "0x00001b24",
+        "instruction": "pop {r4,pc}",
+        "bytes": "10bd",
+        "flows": []
+      },
+      {
+        "address": "0x00001b26",
+        "instruction": "ldrb r0,[r0,#0x0]",
+        "bytes": "0078",
+        "flows": []
+      },
+      {
+        "address": "0x00001b28",
+        "instruction": "pop {r4,pc}",
+        "bytes": "10bd",
+        "flows": []
+      }
+    ],
+    "c_file": "0x00001b08.c"
+  }
+]

@@ -1,0 +1,52 @@
+{
+  "firmware": "4.3.5_1612",
+  "ghidra_home": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra",
+  "binaries": [
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librobopersist.so",
+      "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+      "size": 146296
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "size": 281212
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+      "size": 3187636
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrutils.so",
+      "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b",
+      "size": 18020
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/AppProxy",
+      "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+      "size": 1056436
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/watchdog/WatchDoge",
+      "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+      "size": 84328
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so",
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529",
+      "size": 155052
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so.4",
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529",
+      "size": 155052
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so.4.0.2",
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529",
+      "size": 155052
+    }
+  ],
+  "input_commit": "668cc07"
+}

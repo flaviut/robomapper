@@ -1,0 +1,434 @@
+{
+  "version": 1,
+  "status": "passed",
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/replay.py --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke",
+  "private_work": "/home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke",
+  "private_project": "/home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project/pinned.gpr",
+  "baseline_mode": "copied closed local baseline with shared retool.py",
+  "successful_command_count": 10,
+  "commands": [
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py copy /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "/home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project/pinned.gpr"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/recovery/recover.py /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project /home/user/tmp/illegalplainape/analysis/re/recovery/requests/AppProxy.json --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/recover-AppProxy",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "OK AppProxy: ok; /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/recover-AppProxy"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/recovery/recover.py /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project /home/user/tmp/illegalplainape/analysis/re/recovery/requests/WatchDoge.json --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/recover-WatchDoge",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "OK WatchDoge: ok; /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/recover-WatchDoge"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project librobopersist.so --annotations /home/user/tmp/illegalplainape/analysis/re/annotations/librobopersist.so.json --functions 0x0000e034 0x0000e08c 0x0000e0c4 0x0000e164 0x0000e210 0x0000e290 0x0000e314 0x0000e394 0x0000e424 0x0000e4a4 0x0000e534 0x0000e5cc 0x0000e668 0x0000e72c 0x0000e834 0x0000e924 0x0000e9a8 0x0000ea70 0x0000eb34 0x0000ebd8 0x00017664 0x00017750 0x000179bc 0x00017a70 0x00017ae8 0x00017bd8 0x00017cdc 0x00017da8 0x00017ee4 0x00018014 0x00018200 0x000185c0 0x000192c4 0x00019ba4 0x0001a410 0x0001a530 0x0001a860 0x0001a88c 0x0001a898 0x0001a990 0x0001ab94 0x0001b1c4 0x0001b564 0x0001bb20 0x0001c578 0x0001c620 0x0001cbf0 0x0001d0b8 0x0001d10c --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-librobopersist.so",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "OK librobopersist.so: /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-librobopersist.so"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project librrutils.so --annotations /home/user/tmp/illegalplainape/analysis/re/annotations/librrutils.so.json --functions 0x000018a8 0x00001950 0x000019cc 0x00001ac0 0x00001ae0 0x00001b08 --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-librrutils.so",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "OK librrutils.so: /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-librrutils.so"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project AppProxy --annotations /home/user/tmp/illegalplainape/analysis/re/annotations/AppProxy.json --functions 0x00022f84 0x00023070 0x00023210 0x00024050 0x00024450 0x000245f8 0x00039aa4 0x00039b08 0x00039b84 0x0003a430 0x0003a5c0 0x0003b908 0x0003c568 0x0003c5b4 0x0003c6bc 0x0003c7a0 0x0003cc74 0x00046e9c 0x0004705c 0x0004fbf8 0x00051628 0x00055500 0x00056a84 0x00068c14 0x00069c88 --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-AppProxy",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "OK AppProxy: /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-AppProxy"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project librrslamdrv.so --annotations /home/user/tmp/illegalplainape/analysis/re/annotations/librrslamdrv.so.json --functions 0x00003b64 0x00003c9c 0x000106f8 0x00012c34 0x000144d4 0x0001718c 0x0001aa98 0x0001ab84 0x0001b5c4 0x0001d21c 0x0001d42c 0x0001dd88 0x00021a94 0x00021ccc 0x00021d0c 0x00021d28 0x00021d2c 0x00021d50 0x00021d54 0x00021d8c 0x00021dc0 0x00021f14 0x00022030 0x00026a70 0x00026a90 0x00026b60 0x0002bc4c --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-librrslamdrv.so",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "OK librrslamdrv.so: /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-librrslamdrv.so"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project librrnavdrv.so --annotations /home/user/tmp/illegalplainape/analysis/re/annotations/librrnavdrv.so.json --functions 0x000663b8 0x0006640c 0x00066464 0x00067144 0x0006732c 0x00067484 0x00068428 0x0006905c 0x000705e8 0x0008339c 0x00083940 0x001a5fd4 0x001a5fdc 0x001a6018 0x001a60c4 0x001a621c 0x001a6374 0x0020c3d8 --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-librrnavdrv.so",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "OK librrnavdrv.so: /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-librrnavdrv.so"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project WatchDoge --annotations /home/user/tmp/illegalplainape/analysis/re/annotations/WatchDoge.json --functions 0x000142e4 0x00016eb8 0x000171e0 0x00017400 0x000174b8 0x00017510 0x00017624 0x0001779c 0x00017f68 0x00018400 0x00018bfc 0x000191c4 0x00019ae0 0x0001ac08 0x0001ac20 0x0001accc 0x0001ad68 0x0001aec8 0x0001af18 0x0001d074 0x0001dbe0 0x0001dffc 0x0001e09c 0x0001e75c 0x0001e7a8 0x0001eb14 0x0001ec38 --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-WatchDoge",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "OK WatchDoge: /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-WatchDoge"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/project libuart_api.so.4.0.2 --annotations /home/user/tmp/illegalplainape/analysis/re/annotations/libuart_api.so.4.0.2.json --functions 0x00011564 0x00011690 --out /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-libuart_api.so.4.0.2",
+      "exit_code": 0,
+      "result": "passed",
+      "summary": "OK libuart_api.so.4.0.2: /home/user/tmp/illegalplainape/analysis/re/canonical/replay-smoke/export-libuart_api.so.4.0.2"
+    }
+  ],
+  "programs": [
+    {
+      "program": "librobopersist.so",
+      "functions": 49,
+      "selected_semantic_equal": true,
+      "types_semantic_equal": true,
+      "all_c_byte_equal_to_run3": true
+    },
+    {
+      "program": "librrutils.so",
+      "functions": 6,
+      "selected_semantic_equal": true,
+      "types_semantic_equal": true,
+      "all_c_byte_equal_to_run3": true
+    },
+    {
+      "program": "AppProxy",
+      "functions": 25,
+      "selected_semantic_equal": true,
+      "types_semantic_equal": true,
+      "all_c_byte_equal_to_run3": true
+    },
+    {
+      "program": "librrslamdrv.so",
+      "functions": 27,
+      "selected_semantic_equal": true,
+      "types_semantic_equal": true,
+      "all_c_byte_equal_to_run3": true
+    },
+    {
+      "program": "librrnavdrv.so",
+      "functions": 18,
+      "selected_semantic_equal": true,
+      "types_semantic_equal": true,
+      "all_c_byte_equal_to_run3": true
+    },
+    {
+      "program": "WatchDoge",
+      "functions": 27,
+      "selected_semantic_equal": true,
+      "types_semantic_equal": true,
+      "all_c_byte_equal_to_run3": true
+    },
+    {
+      "program": "libuart_api.so.4.0.2",
+      "functions": 2,
+      "selected_semantic_equal": true,
+      "types_semantic_equal": true,
+      "all_c_byte_equal_to_run3": true
+    }
+  ],
+  "functions_compared": 154,
+  "source_dependencies": [
+    {
+      "path": "analysis/re/evidence/replay.py",
+      "sha256": "e4224f9a1fadb4e3867bba243b2694f4386e629ec87106e0c59d8b092d49b19d"
+    },
+    {
+      "path": "analysis/re/manifest.json",
+      "sha256": "bc237fa13abc7206a0e2038b63d0f3d9c8103c40bcc87500f2610d094a9dfd56"
+    },
+    {
+      "path": "analysis/re/evidence/index.json",
+      "sha256": "0ebf7911725fe6b7b92a836bba83ff68a0a5c57940487cb627c2305a95bd62e8"
+    },
+    {
+      "path": "analysis/re/tooling/retool.py",
+      "sha256": "c5c49fc8558d50191dddb95a49391c9e8eaa4f2bd87ca4af4660c09ca8f0a1e3"
+    },
+    {
+      "path": "analysis/re/tooling/ReTool.java",
+      "sha256": "13f656a6abb197b5f20f4d376b06648b3cb8e4919be178a2a99df4397c34b76f"
+    },
+    {
+      "path": "analysis/re/recovery/recover.py",
+      "sha256": "a0a894be5fc4da2d0a58bf8caa8f442b8cff90dfb14a793724acf037c894c52f"
+    },
+    {
+      "path": "analysis/re/recovery/scripts/RecoverBounded.java",
+      "sha256": "dfdb06634b88e8e69dace1222c97b8a6a504ccfe5eb2af7743ea5ce5df62e849"
+    },
+    {
+      "path": "analysis/re/annotations/librobopersist.so.json",
+      "sha256": "65bdb0f0fd3fd9012fad5058b6f0dc0202a9f6b0212d87e2947269973a640e9b"
+    },
+    {
+      "path": "analysis/re/annotations/librrutils.so.json",
+      "sha256": "6e26f10830bb2bfce07755afc6ed13565a7ec5295dd34e0e3dac7e185b3fd4a1"
+    },
+    {
+      "path": "analysis/re/annotations/AppProxy.json",
+      "sha256": "2b7e1bb2816333bf55832bfa34259cdb50065002d4dc8e3619033fd55393398e"
+    },
+    {
+      "path": "analysis/re/annotations/librrslamdrv.so.json",
+      "sha256": "2937230f01d05374ea5d4923bdce9b7ce03b38bdfa18a587442de42bfd973c06"
+    },
+    {
+      "path": "analysis/re/annotations/librrnavdrv.so.json",
+      "sha256": "b738db7698cedc9c5ecfb2251febe84be82b94577d2134fd909ecd44c0421d9c"
+    },
+    {
+      "path": "analysis/re/annotations/WatchDoge.json",
+      "sha256": "5de60df7e737c797c8991eed29cac860c2728049ff5589826a50dafd695f4b63"
+    },
+    {
+      "path": "analysis/re/annotations/libuart_api.so.4.0.2.json",
+      "sha256": "a6dcb64a098b4675c836af2ae4e11f20aa1b25acbadd6cf093b8c111310ca703"
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librobopersist.so",
+      "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c"
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a"
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475"
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrutils.so",
+      "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b"
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/AppProxy",
+      "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457"
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/watchdog/WatchDoge",
+      "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6"
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so",
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529"
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so.4",
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529"
+    },
+    {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so.4.0.2",
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529"
+    },
+    {
+      "path": "analysis/re/recovery/requests/AppProxy.json",
+      "sha256": "94220f28987e31e9e1491f7e850ecbab9ac603521b1fa875a03a55cee87d951e"
+    },
+    {
+      "path": "analysis/re/recovery/requests/WatchDoge.json",
+      "sha256": "9fad5cdc9f092201071070b53058379af1d210b040071b980711881fbf8f3acd"
+    }
+  ],
+  "dependencies_git_visible": true,
+  "dependency_note": "Visible, not necessarily staged/committed yet. No Git writes performed. Only index reproduction pointers changed after replay; function selection, identities and hashes were unchanged. Final dependency plan was rechecked without another Ghidra run.",
+  "comparison_reference": "canonical/run3/reopened-<program> and published final evidence",
+  "preserved_parent_snapshot_artifacts": 191,
+  "preserved_artifact_paths": [
+    "annotations/AppProxy.json",
+    "annotations/WatchDoge.json",
+    "annotations/librobopersist.so.json",
+    "annotations/librrnavdrv.so.json",
+    "annotations/librrslamdrv.so.json",
+    "annotations/librrutils.so.json",
+    "annotations/libuart_api.so.4.0.2.json",
+    "decompiled/AppProxy/0x00022f84.c",
+    "decompiled/AppProxy/0x00023070.c",
+    "decompiled/AppProxy/0x00023210.c",
+    "decompiled/AppProxy/0x00024050.c",
+    "decompiled/AppProxy/0x00024450.c",
+    "decompiled/AppProxy/0x000245f8.c",
+    "decompiled/AppProxy/0x00039aa4.c",
+    "decompiled/AppProxy/0x00039b08.c",
+    "decompiled/AppProxy/0x00039b84.c",
+    "decompiled/AppProxy/0x0003a430.c",
+    "decompiled/AppProxy/0x0003a5c0.c",
+    "decompiled/AppProxy/0x0003b908.c",
+    "decompiled/AppProxy/0x0003c568.c",
+    "decompiled/AppProxy/0x0003c5b4.c",
+    "decompiled/AppProxy/0x0003c6bc.c",
+    "decompiled/AppProxy/0x0003c7a0.c",
+    "decompiled/AppProxy/0x0003cc74.c",
+    "decompiled/AppProxy/0x00046e9c.c",
+    "decompiled/AppProxy/0x0004705c.c",
+    "decompiled/AppProxy/0x0004fbf8.c",
+    "decompiled/AppProxy/0x00051628.c",
+    "decompiled/AppProxy/0x00055500.c",
+    "decompiled/AppProxy/0x00056a84.c",
+    "decompiled/AppProxy/0x00068c14.c",
+    "decompiled/AppProxy/0x00069c88.c",
+    "decompiled/WatchDoge/0x000142e4.c",
+    "decompiled/WatchDoge/0x00016eb8.c",
+    "decompiled/WatchDoge/0x000171e0.c",
+    "decompiled/WatchDoge/0x00017400.c",
+    "decompiled/WatchDoge/0x000174b8.c",
+    "decompiled/WatchDoge/0x00017510.c",
+    "decompiled/WatchDoge/0x00017624.c",
+    "decompiled/WatchDoge/0x0001779c.c",
+    "decompiled/WatchDoge/0x00017f68.c",
+    "decompiled/WatchDoge/0x00018400.c",
+    "decompiled/WatchDoge/0x00018bfc.c",
+    "decompiled/WatchDoge/0x000191c4.c",
+    "decompiled/WatchDoge/0x00019ae0.c",
+    "decompiled/WatchDoge/0x0001ac08.c",
+    "decompiled/WatchDoge/0x0001ac20.c",
+    "decompiled/WatchDoge/0x0001accc.c",
+    "decompiled/WatchDoge/0x0001ad68.c",
+    "decompiled/WatchDoge/0x0001aec8.c",
+    "decompiled/WatchDoge/0x0001af18.c",
+    "decompiled/WatchDoge/0x0001d074.c",
+    "decompiled/WatchDoge/0x0001dbe0.c",
+    "decompiled/WatchDoge/0x0001dffc.c",
+    "decompiled/WatchDoge/0x0001e09c.c",
+    "decompiled/WatchDoge/0x0001e75c.c",
+    "decompiled/WatchDoge/0x0001e7a8.c",
+    "decompiled/WatchDoge/0x0001eb14.c",
+    "decompiled/WatchDoge/0x0001ec38.c",
+    "decompiled/librobopersist.so/0x0000e034.c",
+    "decompiled/librobopersist.so/0x0000e08c.c",
+    "decompiled/librobopersist.so/0x0000e0c4.c",
+    "decompiled/librobopersist.so/0x0000e164.c",
+    "decompiled/librobopersist.so/0x0000e210.c",
+    "decompiled/librobopersist.so/0x0000e290.c",
+    "decompiled/librobopersist.so/0x0000e314.c",
+    "decompiled/librobopersist.so/0x0000e394.c",
+    "decompiled/librobopersist.so/0x0000e424.c",
+    "decompiled/librobopersist.so/0x0000e4a4.c",
+    "decompiled/librobopersist.so/0x0000e534.c",
+    "decompiled/librobopersist.so/0x0000e5cc.c",
+    "decompiled/librobopersist.so/0x0000e668.c",
+    "decompiled/librobopersist.so/0x0000e72c.c",
+    "decompiled/librobopersist.so/0x0000e834.c",
+    "decompiled/librobopersist.so/0x0000e924.c",
+    "decompiled/librobopersist.so/0x0000e9a8.c",
+    "decompiled/librobopersist.so/0x0000ea70.c",
+    "decompiled/librobopersist.so/0x0000eb34.c",
+    "decompiled/librobopersist.so/0x0000ebd8.c",
+    "decompiled/librobopersist.so/0x00017664.c",
+    "decompiled/librobopersist.so/0x00017750.c",
+    "decompiled/librobopersist.so/0x000179bc.c",
+    "decompiled/librobopersist.so/0x00017a70.c",
+    "decompiled/librobopersist.so/0x00017ae8.c",
+    "decompiled/librobopersist.so/0x00017bd8.c",
+    "decompiled/librobopersist.so/0x00017cdc.c",
+    "decompiled/librobopersist.so/0x00017da8.c",
+    "decompiled/librobopersist.so/0x00017ee4.c",
+    "decompiled/librobopersist.so/0x00018014.c",
+    "decompiled/librobopersist.so/0x00018200.c",
+    "decompiled/librobopersist.so/0x000185c0.c",
+    "decompiled/librobopersist.so/0x000192c4.c",
+    "decompiled/librobopersist.so/0x00019ba4.c",
+    "decompiled/librobopersist.so/0x0001a410.c",
+    "decompiled/librobopersist.so/0x0001a530.c",
+    "decompiled/librobopersist.so/0x0001a860.c",
+    "decompiled/librobopersist.so/0x0001a88c.c",
+    "decompiled/librobopersist.so/0x0001a898.c",
+    "decompiled/librobopersist.so/0x0001a990.c",
+    "decompiled/librobopersist.so/0x0001ab94.c",
+    "decompiled/librobopersist.so/0x0001b1c4.c",
+    "decompiled/librobopersist.so/0x0001b564.c",
+    "decompiled/librobopersist.so/0x0001bb20.c",
+    "decompiled/librobopersist.so/0x0001c578.c",
+    "decompiled/librobopersist.so/0x0001c620.c",
+    "decompiled/librobopersist.so/0x0001cbf0.c",
+    "decompiled/librobopersist.so/0x0001d0b8.c",
+    "decompiled/librobopersist.so/0x0001d10c.c",
+    "decompiled/librrnavdrv.so/0x000663b8.c",
+    "decompiled/librrnavdrv.so/0x0006640c.c",
+    "decompiled/librrnavdrv.so/0x00066464.c",
+    "decompiled/librrnavdrv.so/0x00067144.c",
+    "decompiled/librrnavdrv.so/0x0006732c.c",
+    "decompiled/librrnavdrv.so/0x00067484.c",
+    "decompiled/librrnavdrv.so/0x00068428.c",
+    "decompiled/librrnavdrv.so/0x0006905c.c",
+    "decompiled/librrnavdrv.so/0x000705e8.c",
+    "decompiled/librrnavdrv.so/0x0008339c.c",
+    "decompiled/librrnavdrv.so/0x00083940.c",
+    "decompiled/librrnavdrv.so/0x001a5fd4.c",
+    "decompiled/librrnavdrv.so/0x001a5fdc.c",
+    "decompiled/librrnavdrv.so/0x001a6018.c",
+    "decompiled/librrnavdrv.so/0x001a60c4.c",
+    "decompiled/librrnavdrv.so/0x001a621c.c",
+    "decompiled/librrnavdrv.so/0x001a6374.c",
+    "decompiled/librrnavdrv.so/0x0020c3d8.c",
+    "decompiled/librrslamdrv.so/0x00003b64.c",
+    "decompiled/librrslamdrv.so/0x00003c9c.c",
+    "decompiled/librrslamdrv.so/0x000106f8.c",
+    "decompiled/librrslamdrv.so/0x00012c34.c",
+    "decompiled/librrslamdrv.so/0x000144d4.c",
+    "decompiled/librrslamdrv.so/0x0001718c.c",
+    "decompiled/librrslamdrv.so/0x0001aa98.c",
+    "decompiled/librrslamdrv.so/0x0001ab84.c",
+    "decompiled/librrslamdrv.so/0x0001b5c4.c",
+    "decompiled/librrslamdrv.so/0x0001d21c.c",
+    "decompiled/librrslamdrv.so/0x0001d42c.c",
+    "decompiled/librrslamdrv.so/0x0001dd88.c",
+    "decompiled/librrslamdrv.so/0x00021a94.c",
+    "decompiled/librrslamdrv.so/0x00021ccc.c",
+    "decompiled/librrslamdrv.so/0x00021d0c.c",
+    "decompiled/librrslamdrv.so/0x00021d28.c",
+    "decompiled/librrslamdrv.so/0x00021d2c.c",
+    "decompiled/librrslamdrv.so/0x00021d50.c",
+    "decompiled/librrslamdrv.so/0x00021d54.c",
+    "decompiled/librrslamdrv.so/0x00021d8c.c",
+    "decompiled/librrslamdrv.so/0x00021dc0.c",
+    "decompiled/librrslamdrv.so/0x00021f14.c",
+    "decompiled/librrslamdrv.so/0x00022030.c",
+    "decompiled/librrslamdrv.so/0x00026a70.c",
+    "decompiled/librrslamdrv.so/0x00026a90.c",
+    "decompiled/librrslamdrv.so/0x00026b60.c",
+    "decompiled/librrslamdrv.so/0x0002bc4c.c",
+    "decompiled/librrutils.so/0x000018a8.c",
+    "decompiled/librrutils.so/0x00001950.c",
+    "decompiled/librrutils.so/0x000019cc.c",
+    "decompiled/librrutils.so/0x00001ac0.c",
+    "decompiled/librrutils.so/0x00001ae0.c",
+    "decompiled/librrutils.so/0x00001b08.c",
+    "decompiled/libuart_api.so.4.0.2/0x00011564.c",
+    "decompiled/libuart_api.so.4.0.2/0x00011690.c",
+    "evidence/AppProxy/selected.json",
+    "evidence/AppProxy/types.json",
+    "evidence/WatchDoge/selected.json",
+    "evidence/WatchDoge/types.json",
+    "evidence/components/catalog.json",
+    "evidence/components/grid.json",
+    "evidence/components/orchestration.json",
+    "evidence/components/persistence.json",
+    "evidence/components/watchdoge.json",
+    "evidence/integrate.py",
+    "evidence/librobopersist.so/selected.json",
+    "evidence/librobopersist.so/types.json",
+    "evidence/librrnavdrv.so/selected.json",
+    "evidence/librrnavdrv.so/types.json",
+    "evidence/librrslamdrv.so/selected.json",
+    "evidence/librrslamdrv.so/types.json",
+    "evidence/librrutils.so/selected.json",
+    "evidence/librrutils.so/types.json",
+    "evidence/libuart_api.so.4.0.2/selected.json",
+    "evidence/libuart_api.so.4.0.2/types.json",
+    "evidence/recovery/assessment/AppProxy/evidence.txt",
+    "evidence/recovery/assessment/WatchDoge/evidence.txt",
+    "evidence/recovery/assessment/librrnavdrv.so/evidence.txt",
+    "evidence/recovery/handoff.json",
+    "evidence/recovery/integration-AppProxy/invocation.json",
+    "evidence/recovery/integration-AppProxy/result.json",
+    "evidence/recovery/integration-WatchDoge/invocation.json",
+    "evidence/recovery/integration-WatchDoge/result.json",
+    "evidence/recovery/proof-final/validation.json",
+    "evidence/validation.json"
+  ],
+  "essential_index_correction": {
+    "before_reproduction": "integrate.py",
+    "after_reproduction": "replay.py",
+    "reason": "Historical integration builder loads ignored lanes; delivery helper uses manifest/binaries, shared tooling, unchanged recovery sources/requests, merged annotations and final index only. Added historical-builder and replay-validation links."
+  },
+  "no_staged_files": true,
+  "closed_unlocked": true,
+  "untested": [
+    "No-cache private import branch not exercised; smoke used existing closed baseline."
+  ],
+  "original_integration_validation": "validation.json",
+  "review_gate": "Independent semantic review and parent acceptance still required."
+}

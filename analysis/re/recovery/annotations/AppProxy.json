@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+  "types": [],
+  "functions": [
+    {
+      "address": "0x3c5b4",
+      "name": "CatalogBackupExternal",
+      "plate_comment": "Recovered from original Thumb bytes with exact EHABI start 0x3c5b4 and next start 0x3c5ec. Dereferences r1 as external-ID pointer, adds 2, calls 0x3c568 with a selected-native-flag output initialized to -1, and returns that selected output minus 2. The helper boolean is not the wrapper return. No external-ID bounds, file validity or cross-process completion inferred.",
+      "expect": {
+        "name": "FUN_0003c5b4",
+        "plate_comment": null
+      }
+    }
+  ]
+}

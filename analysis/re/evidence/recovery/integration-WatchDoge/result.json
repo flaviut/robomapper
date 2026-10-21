@@ -1,0 +1,18 @@
+{
+  "entry": "0x0001af18",
+  "body": "[[0001af18, 0001af69]]",
+  "name": "FUN_0001af18",
+  "signature": "undefined FUN_0001af18()",
+  "plate_comment": null,
+  "instruction_count": 27,
+  "memory_sha256": "d7905c57cb07fcba9361d008374abb9ed58c70b36dc258bc96b6e5217f84bd9c",
+  "original_sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+  "existing_functions_sha256": "20650ef038886c39cb707bfe710137edd1dc48a55afbd00a675d33673af56b3f",
+  "no_existing_function_change": true,
+  "byte_identity": true,
+  "status": "ok",
+  "committed": true,
+  "semantic_before": "0f1d94319b0102a67c7f1507b99e377678151776acdbeddfe8954a7f8a6f9d94",
+  "semantic_after": "04e89afb15b0db5c2d5a57f7b9625eccc09169a7194a875e41e6f6a02ed70dd3",
+  "rejection_no_semantic_mutation": false
+}

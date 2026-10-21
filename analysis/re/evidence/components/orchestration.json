@@ -1,0 +1,2045 @@
+{
+  "version": 1,
+  "lane": "orchestration",
+  "method": "Authorized static reverse engineering only; no firmware/device execution. Existing prose was used as hypothesis, instruction exports as evidence.",
+  "programs": {
+    "librrnavdrv.so": {
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+      "source_path": "/home/user/tmp/illegalplainape/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+      "annotation_path": "annotations/librrnavdrv.so.json",
+      "annotation_sha256": "3052058f9cc2888daa873990dbe6726c7f48cf35b3d206e9e0bfe361997ed17d",
+      "entry_addresses": [
+        "0x00068428",
+        "0x001a621c",
+        "0x001a60c4",
+        "0x001a5fd4",
+        "0x001a6018",
+        "0x001a5fdc",
+        "0x001a6374",
+        "0x00067144",
+        "0x0006732c",
+        "0x00067484",
+        "0x000663b8",
+        "0x0006640c",
+        "0x00066464",
+        "0x0006905c",
+        "0x00083940",
+        "0x0008339c",
+        "0x0020c3d8",
+        "0x000705e8"
+      ],
+      "before_outputs": [
+        "nav-initial",
+        "nav-load-callers",
+        "nav-load-details",
+        "nav-message-boundary",
+        "nav-recovery-state",
+        "nav-requests-config",
+        "nav-save-startup"
+      ],
+      "apply_output": "nav-reconciled-apply",
+      "reopen_output": "nav-reconciled-reopen"
+    },
+    "AppProxy": {
+      "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+      "source_path": "/home/user/tmp/illegalplainape/binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/AppProxy",
+      "annotation_path": "annotations/AppProxy.json",
+      "annotation_sha256": "fa877676c3f9157f5c631dd947fecc9304c7796060c1d383b44cdac2a4390000",
+      "entry_addresses": [
+        "0x0004fbf8",
+        "0x00051628",
+        "0x0003cc74",
+        "0x00039b84",
+        "0x00068c14",
+        "0x0003c7a0",
+        "0x0003a5c0",
+        "0x0003a430",
+        "0x00022f84",
+        "0x00023070",
+        "0x00023210",
+        "0x00024450",
+        "0x00024050",
+        "0x000245f8",
+        "0x00056a84",
+        "0x00055500",
+        "0x00069c88",
+        "0x0004705c",
+        "0x00039aa4",
+        "0x00039b08",
+        "0x0003c6bc",
+        "0x00046e9c"
+      ],
+      "before_outputs": [
+        "app-db-send",
+        "app-dispatch",
+        "app-ipc-dispatch",
+        "app-load-io",
+        "app-load-results",
+        "app-load-steps",
+        "app-map-handlers",
+        "app-queue-replies-valid",
+        "app-queue-results",
+        "app-result-dispatch",
+        "app-save-handler"
+      ],
+      "apply_output": "app-reconciled-apply",
+      "reopen_output": "app-reconciled-reopen"
+    }
+  },
+  "scope": {
+    "owned": "librrnavdrv and AppProxy map callers; no librobopersist/librrslamdrv annotations",
+    "excluded_entries": [
+      "AppProxy:0x3b908",
+      "AppProxy:0x3c568 (near supplied0x3c5b4 wrapper anchor)"
+    ],
+    "type_ownership": [
+      "/shared/MapFlowBackupRowView (observed20-byte ABI view, not original C++ class)"
+    ]
+  },
+  "findings": [
+    {
+      "id": "load-order",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "LoadSLAMMap performs grid/interface load before flag/config changes and persistence load; failures do not roll back prior stages.",
+      "anchors": [
+        "librrnavdrv.so:0x68428"
+      ],
+      "details": [
+        "Core mutex at +0x2c8 and secondary manager mutex (from 0x170850) are acquired when thread-support global is nonzero; lock errors throw. It marks event/state 0x83, suspends selected workers, and calls SLAM virtual slot +0x10 before the grid wrapper.",
+        "0x68544 calls 0x1a621c. Zero wrapper result bypasses catalog/persistence and enters common cleanup. Wrapper 0x1a621c calls virtual +0x68, returns bool(result_code==0); unsigned result<=3 only selects log text.",
+        "Signed flag >1 at 0x6854e..0x68556 sets catalog current immediately. Flag==1 instead reconciles stored manager flag and current catalog flag. Negative/zero flags do not use either update branch.",
+        "0x68562 queries per-map state; 0x6856e or 0x687a0 adjusts core map-state/recovery bytes. 0x685a0 sets all map-using status to 0, 0x685aa sets selected map using status to 1, then filename wrapper 0x1a71b4 and PersistLoadMapInfo at 0x685ba.",
+        "Persistence false logs and returns zero through common cleanup, with no grid/catalog/config rollback in this function. Persistence true restores pose/downstream state; flag1 clears core recovery marker at 0x6891a; success value is one. Poses include signed halfword conversion, not unsigned coordinates.",
+        "Common cleanup resumes workers, restores the earlier manager condition, clears event 0x83 and unlocks. None of these caller observations proves disk durability or a transaction."
+      ],
+      "instruction_evidence": [
+        {
+          "program": "librrnavdrv.so",
+          "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+          "entry": "0x00068428",
+          "source": "nav-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x0006853e",
+              "instruction": "bl 0x001a6414",
+              "bytes": "3df169ff",
+              "flows": [
+                "0x001a6414"
+              ]
+            },
+            {
+              "address": "0x00068542",
+              "instruction": "mov r1,r5",
+              "bytes": "2946",
+              "flows": []
+            },
+            {
+              "address": "0x00068544",
+              "instruction": "bl 0x001a621c",
+              "bytes": "3df16afe",
+              "flows": [
+                "0x001a621c"
+              ]
+            },
+            {
+              "address": "0x00068548",
+              "instruction": "cmp r0,#0x0",
+              "bytes": "0028",
+              "flows": []
+            },
+            {
+              "address": "0x0006854a",
+              "instruction": "beq.w 0x00068710",
+              "bytes": "00f0e180",
+              "flows": [
+                "0x00068710"
+              ]
+            },
+            {
+              "address": "0x0006854e",
+              "instruction": "cmp r5,#0x1",
+              "bytes": "012d",
+              "flows": []
+            },
+            {
+              "address": "0x00068550",
+              "instruction": "ble.w 0x000687a6",
+              "bytes": "40f32981",
+              "flows": [
+                "0x000687a6"
+              ]
+            },
+            {
+              "address": "0x00068554",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x00068556",
+              "instruction": "blx 0x0003c314",
+              "bytes": "d3f7deee",
+              "flows": [
+                "0x0003c314"
+              ]
+            },
+            {
+              "address": "0x0006855a",
+              "instruction": "bl 0x001a6414",
+              "bytes": "3df15bff",
+              "flows": [
+                "0x001a6414"
+              ]
+            },
+            {
+              "address": "0x0006855e",
+              "instruction": "mov r1,r5",
+              "bytes": "2946",
+              "flows": []
+            },
+            {
+              "address": "0x00068560",
+              "instruction": "mov r7,r0",
+              "bytes": "0746",
+              "flows": []
+            },
+            {
+              "address": "0x00068562",
+              "instruction": "bl 0x001a7624",
+              "bytes": "3ff15ff8",
+              "flows": [
+                "0x001a7624"
+              ]
+            },
+            {
+              "address": "0x00068566",
+              "instruction": "cmp r0,#0x0",
+              "bytes": "0028",
+              "flows": []
+            },
+            {
+              "address": "0x00068568",
+              "instruction": "beq.w 0x0006879e",
+              "bytes": "00f01981",
+              "flows": [
+                "0x0006879e"
+              ]
+            },
+            {
+              "address": "0x0006856c",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0006856e",
+              "instruction": "bl 0x00066348",
+              "bytes": "fdf7ebfe",
+              "flows": [
+                "0x00066348"
+              ]
+            },
+            {
+              "address": "0x00068572",
+              "instruction": "ldr.w r1,[0x000689f8]",
+              "bytes": "dff88414",
+              "flows": []
+            },
+            {
+              "address": "0x00068576",
+              "instruction": "movw r3,#0x7e1",
+              "bytes": "40f2e173",
+              "flows": []
+            },
+            {
+              "address": "0x0006857a",
+              "instruction": "ldr.w r0,[0x000689fc]",
+              "bytes": "dff88004",
+              "flows": []
+            },
+            {
+              "address": "0x0006857e",
+              "instruction": "movs r2,#0x1",
+              "bytes": "0122",
+              "flows": []
+            },
+            {
+              "address": "0x00068580",
+              "instruction": "ldr.w lr,[0x00068a00]",
+              "bytes": "dff87ce4",
+              "flows": []
+            },
+            {
+              "address": "0x00068584",
+              "instruction": "add r1,pc",
+              "bytes": "7944",
+              "flows": []
+            },
+            {
+              "address": "0x00068586",
+              "instruction": "add r0,pc",
+              "bytes": "7844",
+              "flows": []
+            },
+            {
+              "address": "0x00068588",
+              "instruction": "str r1,[sp,#0x8]",
+              "bytes": "0291",
+              "flows": []
+            },
+            {
+              "address": "0x0006858a",
+              "instruction": "add lr,pc",
+              "bytes": "fe44",
+              "flows": []
+            },
+            {
+              "address": "0x0006858c",
+              "instruction": "str r0,[sp,#0x4]",
+              "bytes": "0190",
+              "flows": []
+            },
+            {
+              "address": "0x0006858e",
+              "instruction": "str r5,[sp,#0xc]",
+              "bytes": "0395",
+              "flows": []
+            },
+            {
+              "address": "0x00068590",
+              "instruction": "movs r1,#0x6",
+              "bytes": "0621",
+              "flows": []
+            },
+            {
+              "address": "0x00068592",
+              "instruction": "movs r0,#0x3",
+              "bytes": "0320",
+              "flows": []
+            },
+            {
+              "address": "0x00068594",
+              "instruction": "str.w lr,[sp,#0x0]",
+              "bytes": "cdf800e0",
+              "flows": []
+            },
+            {
+              "address": "0x00068598",
+              "instruction": "blx 0x0003c5b0",
+              "bytes": "d4f70ae8",
+              "flows": [
+                "0x0003c5b0"
+              ]
+            },
+            {
+              "address": "0x0006859c",
+              "instruction": "movs r1,#0x0",
+              "bytes": "0021",
+              "flows": []
+            },
+            {
+              "address": "0x0006859e",
+              "instruction": "mov r0,r7",
+              "bytes": "3846",
+              "flows": []
+            },
+            {
+              "address": "0x000685a0",
+              "instruction": "bl 0x001a69e0",
+              "bytes": "3ef11efa",
+              "flows": [
+                "0x001a69e0"
+              ]
+            },
+            {
+              "address": "0x000685a4",
+              "instruction": "mov r0,r7",
+              "bytes": "3846",
+              "flows": []
+            },
+            {
+              "address": "0x000685a6",
+              "instruction": "movs r2,#0x1",
+              "bytes": "0122",
+              "flows": []
+            },
+            {
+              "address": "0x000685a8",
+              "instruction": "mov r1,r5",
+              "bytes": "2946",
+              "flows": []
+            },
+            {
+              "address": "0x000685aa",
+              "instruction": "bl 0x001a771c",
+              "bytes": "3ff1b7f8",
+              "flows": [
+                "0x001a771c"
+              ]
+            },
+            {
+              "address": "0x000685ae",
+              "instruction": "mov r1,r5",
+              "bytes": "2946",
+              "flows": []
+            },
+            {
+              "address": "0x000685b0",
+              "instruction": "add r0,sp,#0x44",
+              "bytes": "11a8",
+              "flows": []
+            },
+            {
+              "address": "0x000685b2",
+              "instruction": "bl 0x001a71b4",
+              "bytes": "3ef1fffd",
+              "flows": [
+                "0x001a71b4"
+              ]
+            },
+            {
+              "address": "0x000685b6",
+              "instruction": "mov r1,r5",
+              "bytes": "2946",
+              "flows": []
+            },
+            {
+              "address": "0x000685b8",
+              "instruction": "ldr r0,[sp,#0x44]",
+              "bytes": "1198",
+              "flows": []
+            },
+            {
+              "address": "0x000685ba",
+              "instruction": "blx 0x0003d07c",
+              "bytes": "d4f760ed",
+              "flows": [
+                "0x0003d07c"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librrnavdrv.so",
+          "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+          "entry": "0x00068428",
+          "source": "nav-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x000687a6",
+              "instruction": "bne.w 0x0006855a",
+              "bytes": "7ff4d8ae",
+              "flows": [
+                "0x0006855a"
+              ]
+            },
+            {
+              "address": "0x000687aa",
+              "instruction": "bl 0x001a6414",
+              "bytes": "3df133fe",
+              "flows": [
+                "0x001a6414"
+              ]
+            },
+            {
+              "address": "0x000687ae",
+              "instruction": "bl 0x001a6018",
+              "bytes": "3df133fc",
+              "flows": [
+                "0x001a6018"
+              ]
+            },
+            {
+              "address": "0x000687b2",
+              "instruction": "str r0,[sp,#0x34]",
+              "bytes": "0d90",
+              "flows": []
+            },
+            {
+              "address": "0x000687b4",
+              "instruction": "bl 0x001a6414",
+              "bytes": "3df12efe",
+              "flows": [
+                "0x001a6414"
+              ]
+            },
+            {
+              "address": "0x000687b8",
+              "instruction": "bl 0x001a5fd4",
+              "bytes": "3df10cfc",
+              "flows": [
+                "0x001a5fd4"
+              ]
+            },
+            {
+              "address": "0x000687bc",
+              "instruction": "mov r7,r0",
+              "bytes": "0746",
+              "flows": []
+            },
+            {
+              "address": "0x000687be",
+              "instruction": "blx 0x0003c1dc",
+              "bytes": "d3f70eed",
+              "flows": [
+                "0x0003c1dc"
+              ]
+            },
+            {
+              "address": "0x000687c2",
+              "instruction": "str r0,[sp,#0x10]",
+              "bytes": "0490",
+              "flows": []
+            },
+            {
+              "address": "0x000687c4",
+              "instruction": "movw r3,#0x7ca",
+              "bytes": "40f2ca73",
+              "flows": []
+            },
+            {
+              "address": "0x000687c8",
+              "instruction": "ldr r0,[sp,#0x34]",
+              "bytes": "0d98",
+              "flows": []
+            },
+            {
+              "address": "0x000687ca",
+              "instruction": "movs r2,#0x1",
+              "bytes": "0122",
+              "flows": []
+            },
+            {
+              "address": "0x000687cc",
+              "instruction": "ldr r1,[0x00068a20]",
+              "bytes": "9449",
+              "flows": []
+            },
+            {
+              "address": "0x000687ce",
+              "instruction": "ldr.w r12,[0x00068a24]",
+              "bytes": "dff854c2",
+              "flows": []
+            },
+            {
+              "address": "0x000687d2",
+              "instruction": "ldr.w lr,[0x00068a28]",
+              "bytes": "dff854e2",
+              "flows": []
+            },
+            {
+              "address": "0x000687d6",
+              "instruction": "add r1,pc",
+              "bytes": "7944",
+              "flows": []
+            },
+            {
+              "address": "0x000687d8",
+              "instruction": "add r12,pc",
+              "bytes": "fc44",
+              "flows": []
+            },
+            {
+              "address": "0x000687da",
+              "instruction": "str r0,[sp,#0xc]",
+              "bytes": "0390",
+              "flows": []
+            },
+            {
+              "address": "0x000687dc",
+              "instruction": "add lr,pc",
+              "bytes": "fe44",
+              "flows": []
+            },
+            {
+              "address": "0x000687de",
+              "instruction": "str r1,[sp,#0x8]",
+              "bytes": "0291",
+              "flows": []
+            },
+            {
+              "address": "0x000687e0",
+              "instruction": "str r7,[sp,#0x14]",
+              "bytes": "0597",
+              "flows": []
+            },
+            {
+              "address": "0x000687e2",
+              "instruction": "movs r1,#0x7",
+              "bytes": "0721",
+              "flows": []
+            },
+            {
+              "address": "0x000687e4",
+              "instruction": "str.w r12,[sp,#0x4]",
+              "bytes": "cdf804c0",
+              "flows": []
+            },
+            {
+              "address": "0x000687e8",
+              "instruction": "movs r0,#0x3",
+              "bytes": "0320",
+              "flows": []
+            },
+            {
+              "address": "0x000687ea",
+              "instruction": "str.w lr,[sp,#0x0]",
+              "bytes": "cdf800e0",
+              "flows": []
+            },
+            {
+              "address": "0x000687ee",
+              "instruction": "blx 0x0003c5b0",
+              "bytes": "d3f7e0ee",
+              "flows": [
+                "0x0003c5b0"
+              ]
+            },
+            {
+              "address": "0x000687f2",
+              "instruction": "cmp r7,#0x0",
+              "bytes": "002f",
+              "flows": []
+            },
+            {
+              "address": "0x000687f4",
+              "instruction": "beq.w 0x00068938",
+              "bytes": "00f0a080",
+              "flows": [
+                "0x00068938"
+              ]
+            },
+            {
+              "address": "0x000687f8",
+              "instruction": "ldr r0,[sp,#0x34]",
+              "bytes": "0d98",
+              "flows": []
+            },
+            {
+              "address": "0x000687fa",
+              "instruction": "blx 0x0003c314",
+              "bytes": "d3f78ced",
+              "flows": [
+                "0x0003c314"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "last-map-flag-condition",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "The flag-1 catalog choice is an in-process initialized stored-flag predicate, not a direct disk/catalog-validity condition.",
+      "anchors": [
+        "librrnavdrv.so:0x1a6374",
+        "librrnavdrv.so:0x1a5fd4",
+        "librrnavdrv.so:0x1a6018",
+        "librrnavdrv.so:0x1a5fdc",
+        "librrnavdrv.so:0x687aa"
+      ],
+      "details": [
+        "Constructor clears byte manager+0x22 and sets stored word +0x28 to -1. Getter at 0x1a5fd4 is unsigned LDRB; getter 0x1a6018 loads +0x28.",
+        "0x1a5fdc writes +0x22=1 and +0x28=native_flag, then logs only. It is called following successful grid save for a destination >1; saving last-map destination1 records the catalog current flag.",
+        "Flag1 load: if +0x22 nonzero, SetSharedCurrentMapFlag(stored+0x28). If zero, GetSharedCurrentMapFlag is copied into manager via 0x1a5fdc. This can leave catalog current flag2 while files for flag1 were selected.",
+        "The initializer predicate does not alone show whether the associated catalog or grid files are valid or mutually consistent."
+      ],
+      "instruction_evidence": [
+        {
+          "program": "librrnavdrv.so",
+          "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+          "entry": "0x001a5fd4",
+          "source": "nav-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x001a5fd4",
+              "instruction": "ldrb.w r0,[r0,#0x22]",
+              "bytes": "90f82200",
+              "flows": []
+            },
+            {
+              "address": "0x001a5fd8",
+              "instruction": "bx lr",
+              "bytes": "7047",
+              "flows": []
+            }
+          ]
+        },
+        {
+          "program": "librrnavdrv.so",
+          "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+          "entry": "0x001a5fdc",
+          "source": "nav-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x001a5fdc",
+              "instruction": "push {r4,r5,r6,lr}",
+              "bytes": "70b5",
+              "flows": []
+            },
+            {
+              "address": "0x001a5fde",
+              "instruction": "sub sp,#0x10",
+              "bytes": "84b0",
+              "flows": []
+            },
+            {
+              "address": "0x001a5fe0",
+              "instruction": "ldr r6,[0x001a600c]",
+              "bytes": "0a4e",
+              "flows": []
+            },
+            {
+              "address": "0x001a5fe2",
+              "instruction": "movs r2,#0x1",
+              "bytes": "0122",
+              "flows": []
+            },
+            {
+              "address": "0x001a5fe4",
+              "instruction": "ldr r5,[0x001a6010]",
+              "bytes": "0a4d",
+              "flows": []
+            },
+            {
+              "address": "0x001a5fe6",
+              "instruction": "movs r3,#0x6c",
+              "bytes": "6c23",
+              "flows": []
+            },
+            {
+              "address": "0x001a5fe8",
+              "instruction": "ldr r4,[0x001a6014]",
+              "bytes": "0a4c",
+              "flows": []
+            },
+            {
+              "address": "0x001a5fea",
+              "instruction": "add r6,pc",
+              "bytes": "7e44",
+              "flows": []
+            },
+            {
+              "address": "0x001a5fec",
+              "instruction": "strb.w r2,[r0,#0x22]",
+              "bytes": "80f82220",
+              "flows": []
+            },
+            {
+              "address": "0x001a5ff0",
+              "instruction": "add r5,pc",
+              "bytes": "7d44",
+              "flows": []
+            },
+            {
+              "address": "0x001a5ff2",
+              "instruction": "str r1,[r0,#0x28]",
+              "bytes": "8162",
+              "flows": []
+            },
+            {
+              "address": "0x001a5ff4",
+              "instruction": "add r4,pc",
+              "bytes": "7c44",
+              "flows": []
+            },
+            {
+              "address": "0x001a5ff6",
+              "instruction": "str r1,[sp,#0xc]",
+              "bytes": "0391",
+              "flows": []
+            },
+            {
+              "address": "0x001a5ff8",
+              "instruction": "movs r0,#0x3",
+              "bytes": "0320",
+              "flows": []
+            },
+            {
+              "address": "0x001a5ffa",
+              "instruction": "movs r1,#0x6",
+              "bytes": "0621",
+              "flows": []
+            },
+            {
+              "address": "0x001a5ffc",
+              "instruction": "str r6,[sp,#0x8]",
+              "bytes": "0296",
+              "flows": []
+            },
+            {
+              "address": "0x001a5ffe",
+              "instruction": "stm sp,{r4,r5}",
+              "bytes": "8de83000",
+              "flows": []
+            }
+          ]
+        },
+        {
+          "program": "librrnavdrv.so",
+          "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+          "entry": "0x00068428",
+          "source": "nav-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x00068938",
+              "instruction": "bl 0x001a6414",
+              "bytes": "3df16cfd",
+              "flows": [
+                "0x001a6414"
+              ]
+            },
+            {
+              "address": "0x0006893c",
+              "instruction": "mov r7,r0",
+              "bytes": "0746",
+              "flows": []
+            },
+            {
+              "address": "0x0006893e",
+              "instruction": "blx 0x0003c1dc",
+              "bytes": "d3f74eec",
+              "flows": [
+                "0x0003c1dc"
+              ]
+            },
+            {
+              "address": "0x00068942",
+              "instruction": "mov r1,r0",
+              "bytes": "0146",
+              "flows": []
+            },
+            {
+              "address": "0x00068944",
+              "instruction": "mov r0,r7",
+              "bytes": "3846",
+              "flows": []
+            },
+            {
+              "address": "0x00068946",
+              "instruction": "bl 0x001a5fdc",
+              "bytes": "3df149fb",
+              "flows": [
+                "0x001a5fdc"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "save-order",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Native multi-save attempts grid/state stages sequentially, then persistence API acceptance; partial changes survive some failures.",
+      "anchors": [
+        "librrnavdrv.so:0x67144",
+        "librrnavdrv.so:0x6732c",
+        "librrnavdrv.so:0x67484"
+      ],
+      "details": [
+        "0x67144 rejects native flag1 when manager+0x1f or core+0x271 is set. If allowed, virtual grid save +0x6c is called through 0x1a60c4; only result_code==0 is success.",
+        "After successful grid save it stores the manager flag, snapshots shared robot/dock poses, and invokes per-map metadata/config helper 0x1a7488 under observed core+0x2e0 synchronization.",
+        "0x6732c locks core+0x2c8, calls 0x67144 for each destination, skips later stages after first false, and only if all succeed calls PersistSaveMapInfo(vector) at 0x673de. Earlier successful grid writes are not deleted on a subsequent grid-stage failure.",
+        "If PersistSaveMapInfo returns false, it iterates all flags and calls SLAM virtual +0x70 (delete); delete returns are ignored. Single-save 0x67484 does grid/state first then one-flag persistence and same delete-on-persistence-false behavior.",
+        "Calls into persistence/grid are ownership boundaries. This lane verifies API call order, not detached-writer finish, write success, fsync, or a cross-file commit."
+      ],
+      "instruction_evidence": [
+        {
+          "program": "librrnavdrv.so",
+          "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+          "entry": "0x0006732c",
+          "source": "nav-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x000673c4",
+              "instruction": "ldr.w r3,[r9,#0x0]",
+              "bytes": "d9f80030",
+              "flows": []
+            },
+            {
+              "address": "0x000673c8",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x000673ca",
+              "instruction": "bne 0x0006742e",
+              "bytes": "30d1",
+              "flows": [
+                "0x0006742e"
+              ]
+            },
+            {
+              "address": "0x000673cc",
+              "instruction": "add sp,#0x20",
+              "bytes": "08b0",
+              "flows": []
+            },
+            {
+              "address": "0x000673ce",
+              "instruction": "pop.w {r4,r5,r6,r7,r8,r9,r10,pc}",
+              "bytes": "bde8f087",
+              "flows": []
+            },
+            {
+              "address": "0x000673d2",
+              "instruction": "ldr r1,[r4,#0x0]",
+              "bytes": "2168",
+              "flows": []
+            },
+            {
+              "address": "0x000673d4",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x000673d6",
+              "instruction": "bl 0x00067144",
+              "bytes": "fff7b5fe",
+              "flows": [
+                "0x00067144"
+              ]
+            },
+            {
+              "address": "0x000673da",
+              "instruction": "b 0x000673aa",
+              "bytes": "e6e7",
+              "flows": [
+                "0x000673aa"
+              ]
+            },
+            {
+              "address": "0x000673dc",
+              "instruction": "mov r0,r7",
+              "bytes": "3846",
+              "flows": []
+            },
+            {
+              "address": "0x000673de",
+              "instruction": "blx 0x0003d8b4",
+              "bytes": "d6f76aea",
+              "flows": [
+                "0x0003d8b4"
+              ]
+            },
+            {
+              "address": "0x000673e2",
+              "instruction": "mov r4,r0",
+              "bytes": "0446",
+              "flows": []
+            },
+            {
+              "address": "0x000673e4",
+              "instruction": "cmp r0,#0x0",
+              "bytes": "0028",
+              "flows": []
+            },
+            {
+              "address": "0x000673e6",
+              "instruction": "bne 0x000673b4",
+              "bytes": "e5d1",
+              "flows": [
+                "0x000673b4"
+              ]
+            },
+            {
+              "address": "0x000673e8",
+              "instruction": "ldr r3,[0x00067478]",
+              "bytes": "234b",
+              "flows": []
+            },
+            {
+              "address": "0x000673ea",
+              "instruction": "movs r1,#0x3",
+              "bytes": "0321",
+              "flows": []
+            },
+            {
+              "address": "0x000673ec",
+              "instruction": "ldr r2,[0x0006747c]",
+              "bytes": "234a",
+              "flows": []
+            },
+            {
+              "address": "0x000673ee",
+              "instruction": "mov r0,r1",
+              "bytes": "0846",
+              "flows": []
+            },
+            {
+              "address": "0x000673f0",
+              "instruction": "ldr r4,[0x00067480]",
+              "bytes": "234c",
+              "flows": []
+            },
+            {
+              "address": "0x000673f2",
+              "instruction": "add r3,pc",
+              "bytes": "7b44",
+              "flows": []
+            },
+            {
+              "address": "0x000673f4",
+              "instruction": "add r2,pc",
+              "bytes": "7a44",
+              "flows": []
+            },
+            {
+              "address": "0x000673f6",
+              "instruction": "str r3,[sp,#0x8]",
+              "bytes": "0293",
+              "flows": []
+            },
+            {
+              "address": "0x000673f8",
+              "instruction": "add r4,pc",
+              "bytes": "7c44",
+              "flows": []
+            },
+            {
+              "address": "0x000673fa",
+              "instruction": "str r2,[sp,#0x4]",
+              "bytes": "0192",
+              "flows": []
+            },
+            {
+              "address": "0x000673fc",
+              "instruction": "movw r3,#0x71d",
+              "bytes": "40f21d73",
+              "flows": []
+            },
+            {
+              "address": "0x00067400",
+              "instruction": "movs r2,#0x1",
+              "bytes": "0122",
+              "flows": []
+            },
+            {
+              "address": "0x00067402",
+              "instruction": "str r4,[sp,#0x0]",
+              "bytes": "0094",
+              "flows": []
+            },
+            {
+              "address": "0x00067404",
+              "instruction": "blx 0x0003c5b0",
+              "bytes": "d5f7d4e8",
+              "flows": [
+                "0x0003c5b0"
+              ]
+            },
+            {
+              "address": "0x00067408",
+              "instruction": "ldm.w r7,{r4,r5}",
+              "bytes": "97e83000",
+              "flows": []
+            },
+            {
+              "address": "0x0006740c",
+              "instruction": "cmp r4,r5",
+              "bytes": "ac42",
+              "flows": []
+            },
+            {
+              "address": "0x0006740e",
+              "instruction": "beq 0x000673b2",
+              "bytes": "d0d0",
+              "flows": [
+                "0x000673b2"
+              ]
+            },
+            {
+              "address": "0x00067410",
+              "instruction": "ldr.w r6,[r4],#0x4",
+              "bytes": "54f8046b",
+              "flows": []
+            },
+            {
+              "address": "0x00067414",
+              "instruction": "bl 0x00205d68",
+              "bytes": "9ef1a8fc",
+              "flows": [
+                "0x00205d68"
+              ]
+            },
+            {
+              "address": "0x00067418",
+              "instruction": "ldr r3,[r0,#0x0]",
+              "bytes": "0368",
+              "flows": []
+            },
+            {
+              "address": "0x0006741a",
+              "instruction": "mov r1,r6",
+              "bytes": "3146",
+              "flows": []
+            },
+            {
+              "address": "0x0006741c",
+              "instruction": "ldr r3,[r3,#0x70]",
+              "bytes": "1b6f",
+              "flows": []
+            },
+            {
+              "address": "0x0006741e",
+              "instruction": "blx r3",
+              "bytes": "9847",
+              "flows": []
+            },
+            {
+              "address": "0x00067420",
+              "instruction": "cmp r5,r4",
+              "bytes": "a542",
+              "flows": []
+            },
+            {
+              "address": "0x00067422",
+              "instruction": "bne 0x00067410",
+              "bytes": "f5d1",
+              "flows": [
+                "0x00067410"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "startup-state-gaps",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Startup last-map seed 0x20bac0 is interior; existing instructions support candidate entry 0x20babc, but no baseline function exists.",
+      "anchors": [
+        "librrnavdrv.so:0x20babc",
+        "librrnavdrv.so:0x20bac0",
+        "librrnavdrv.so:0x20f960"
+      ],
+      "details": [
+        "0x20babc loads a PIC constant, 0x20babe sets r2=0, 0x20bac0 pushes registers, 0x20baca sets r1=1, then 0x20bad6 calls LoadSLAMMap(core,1,0). The first two instructions are needed by the body, so push alone is not the true-entry proof.",
+        "Constructor 0x20f57c installs Thumb pointer0x20babd at 0x20f960 for state3 (LoadLastMap). Reference and instruction dumps are in discovery-nav4, discovery-startup-final, discovery-boundary-nav.",
+        "Load false clears state+0x320/+0x321/+0x322 and sets +0x323 before subsequent state selection. Success also queries map1 metadata at 0x20bb48. Later state selection considers bytes +0x32a,+0x331,+0x320,+0x321,+0x322,+0x323,+0x31c.",
+        "String OnStateLoadLastMap at0x2bc8dc is referenced at0x20bbd8; common return at0x20bb40 and stack-check-fail call0x20bce6 bound the collected body. No function creation or startup C reconstruction was performed.",
+        "Preceding state selector starts at candidate0x20b780 (constructor Thumb pointer0x20b781); bytes0x20b778 are literal-pool words mistakenly decoded as instructions. Do not use0x20b778 as an entry."
+      ],
+      "instruction_evidence": []
+    },
+    {
+      "id": "recover-last-marker",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Core+0x271 prevents overwriting last-map while recovery is needed; the external configuration key mapping is unresolved.",
+      "anchors": [
+        "librrnavdrv.so:0x663b8",
+        "librrnavdrv.so:0x6640c",
+        "librrnavdrv.so:0x67144",
+        "librrnavdrv.so:0x20c3d8",
+        "librrnavdrv.so:0x705e8"
+      ],
+      "details": [
+        "0x663b8 sets byte+0x271 and0x6640c clears it with DMB barriers. Diagnostics name them SetNeededToRecoverLastMap and ResetNeededToRecoverLastMap.",
+        "Core initializer0x705e8 clears+0x271 at0x70756. Successful flag1 LoadSLAMMap clears it after persistence restore, and clear-map-state0x66464 also clears it.",
+        "In state callback0x20c3d8: if relocation unsuccessful and state+0x321 or+0x322 is set, marks state+0x324 and calls0x663b8 at0x20c500. Original floating-point/register/stack ABI is not reconstructed.",
+        "Already collected strings/map-strings.txt places need_recover_map and RoboController.runtime.need_recover_map in RoboController variants, not owned/pinned navigation/AppProxy. No binary-key-to-core-field proof is asserted; no expansion to those binaries."
+      ],
+      "instruction_evidence": []
+    },
+    {
+      "id": "ordinary-load-ack",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Ordinary load queues load then save-last, but reports ok without waiting for the final save result.",
+      "anchors": [
+        "AppProxy:0x625e8",
+        "AppProxy:0x4fbf8",
+        "AppProxy:0x3cc74",
+        "AppProxy:0x39b84",
+        "AppProxy:0x24450",
+        "AppProxy:0x4705c"
+      ],
+      "details": [
+        "Command registration0x637ba..0x637d4 maps load_multi_map to Thumb0x4fbf9. Handler validates access/state/params and external flag via catalog-owned0x3b908, computes native=external+2, creates series keyed by request words, appends callbacks0x3cc74 and0x39b84 and invokes0x24450.",
+        "First callback gates activity via0x3cc18, sends0x01033107, sends load0x02033204(native flag) through0x39aa4; returns1. One callback remains, so runner waits.",
+        "Accepted load result handled by0x56a84 requires length16 and result==1. It advances series; false results fail the pending series, not execute the save-last callback.",
+        "Save-last callback0x39b84 updates timestamp under proxy+0xf54, ClearCleanRouting, SetSharedCurrentMapFlag(native), sends save0x02033203(flag1) at0x39c1c and updates application map state0x8c46c; returns1.",
+        "Critical runner instructions0x24488..0x24498 compare deque begin/end AFTER popping callback: equal forces r0=0, otherwise r0&=1. The save-last step was last: its requested wait is overridden, causing immediate success callback even though no save result was received.",
+        "Configured success callback0x4705c calls response formatter0x46e9c with literal ok (0xf3398) and clears action lock. Formatter calls0x3f70c to hand response to sender. Transport/network internals are intentionally not followed.",
+        "This is a complete AppProxy-local command/queued-result/reply path, conditional on the externally supplied load result. The transport bridge to navigation and returned-result provenance remain unresolved, so it is not a request-to-hardware proof."
+      ],
+      "instruction_evidence": [
+        {
+          "program": "AppProxy",
+          "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+          "entry": "0x00024450",
+          "source": "app-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x00024478",
+              "instruction": "ldr r0,[r0,#0x0]",
+              "bytes": "0068",
+              "flows": []
+            },
+            {
+              "address": "0x0002447a",
+              "instruction": "ldr r2,[r0,#0x70]",
+              "bytes": "026f",
+              "flows": []
+            },
+            {
+              "address": "0x0002447c",
+              "instruction": "ldr r3,[r0,#0x60]",
+              "bytes": "036e",
+              "flows": []
+            },
+            {
+              "address": "0x0002447e",
+              "instruction": "str r0,[sp,#0x18]",
+              "bytes": "0690",
+              "flows": []
+            },
+            {
+              "address": "0x00024480",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x00024482",
+              "instruction": "beq 0x000244aa",
+              "bytes": "12d0",
+              "flows": [
+                "0x000244aa"
+              ]
+            },
+            {
+              "address": "0x00024484",
+              "instruction": "bl 0x00024050",
+              "bytes": "fff7e4fd",
+              "flows": [
+                "0x00024050"
+              ]
+            },
+            {
+              "address": "0x00024488",
+              "instruction": "ldr r2,[sp,#0x18]",
+              "bytes": "069a",
+              "flows": []
+            },
+            {
+              "address": "0x0002448a",
+              "instruction": "ldr r3,[r2,#0x60]",
+              "bytes": "136e",
+              "flows": []
+            },
+            {
+              "address": "0x0002448c",
+              "instruction": "ldr r2,[r2,#0x70]",
+              "bytes": "126f",
+              "flows": []
+            },
+            {
+              "address": "0x0002448e",
+              "instruction": "cmp r3,r2",
+              "bytes": "9342",
+              "flows": []
+            },
+            {
+              "address": "0x00024490",
+              "instruction": "ite eq",
+              "bytes": "0cbf",
+              "flows": []
+            },
+            {
+              "address": "0x00024492",
+              "instruction": "mov.eq r0,#0x0",
+              "bytes": "0020",
+              "flows": []
+            },
+            {
+              "address": "0x00024494",
+              "instruction": "and.ne r0,r0,#0x1",
+              "bytes": "00f00100",
+              "flows": []
+            },
+            {
+              "address": "0x00024498",
+              "instruction": "cbz r0,0x000244aa",
+              "bytes": "38b1",
+              "flows": [
+                "0x000244aa"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "AppProxy",
+          "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+          "entry": "0x00039b84",
+          "source": "app-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x00039c0c",
+              "instruction": "mov r0,r8",
+              "bytes": "4046",
+              "flows": []
+            },
+            {
+              "address": "0x00039c0e",
+              "instruction": "blx 0x00018068",
+              "bytes": "def72cea",
+              "flows": [
+                "0x00018068"
+              ]
+            },
+            {
+              "address": "0x00039c12",
+              "instruction": "ldr r0,[r4,#0x0]",
+              "bytes": "2068",
+              "flows": []
+            },
+            {
+              "address": "0x00039c14",
+              "instruction": "mov r2,r6",
+              "bytes": "3246",
+              "flows": []
+            },
+            {
+              "address": "0x00039c16",
+              "instruction": "mov r3,r7",
+              "bytes": "3b46",
+              "flows": []
+            },
+            {
+              "address": "0x00039c18",
+              "instruction": "str.w r9,[sp,#0x0]",
+              "bytes": "cdf80090",
+              "flows": []
+            },
+            {
+              "address": "0x00039c1c",
+              "instruction": "bl 0x00039b08",
+              "bytes": "fff774ff",
+              "flows": [
+                "0x00039b08"
+              ]
+            },
+            {
+              "address": "0x00039c20",
+              "instruction": "ldr r3,[r4,#0x0]",
+              "bytes": "2368",
+              "flows": []
+            },
+            {
+              "address": "0x00039c22",
+              "instruction": "ldr.w r0,[r3,#0x4e8]",
+              "bytes": "d3f8e804",
+              "flows": []
+            },
+            {
+              "address": "0x00039c26",
+              "instruction": "bl 0x0008c46c",
+              "bytes": "52f021fc",
+              "flows": [
+                "0x0008c46c"
+              ]
+            },
+            {
+              "address": "0x00039c2a",
+              "instruction": "mov r0,r9",
+              "bytes": "4846",
+              "flows": []
+            },
+            {
+              "address": "0x00039c2c",
+              "instruction": "add sp,#0x8",
+              "bytes": "02b0",
+              "flows": []
+            },
+            {
+              "address": "0x00039c2e",
+              "instruction": "pop.w {r4,r5,r6,r7,r8,r9,r10,pc}",
+              "bytes": "bde8f087",
+              "flows": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recovery-branches",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Recovery has no-op, ordinary-load fallback, and distinct-backup three-step branches with different completion meanings.",
+      "anchors": [
+        "AppProxy:0x51628",
+        "AppProxy:0x68c14",
+        "AppProxy:0x3c7a0",
+        "AppProxy:0x3a5c0",
+        "AppProxy:0x55500"
+      ],
+      "details": [
+        "Command recover_multi_map registered at0x6383a..0x63852 -> Thumb0x51629. Handler validates requested external flag, adds2, then calls catalog-owned0x3c568 with native request and an output slot. It compares selected_native-2 to requested_external.",
+        "If selected==requested and shared current==requested+2, immediately sends ok at0x519b8, no load/save/database operation. If selected==requested but current differs, uses the ordinary two-step load/save-last series and its early save acknowledgment.",
+        "If backup differs, validates request as primary and selection as backup through0x3b908, then queues0x68c14(load selected backup),0x3c7a0(save destination flags[1,requested_native]),0x3a5c0(DB). The selected backup is recomputed in the first callback; concurrent catalog changes are not ruled out.",
+        "0x68c14 calls destination helper0x68b48 before sending load. That helper forwards a flag vector to unresolved0x68ae8; do not claim cancellation completion or flush.",
+        "On successful load result,0x3c7a0 updates timestamp, routing and catalog current, then sends save-set0x02033212 via0x3c6bc with destinations[1,requested_native]. One DB callback remains, so runner honors returned1 and waits.",
+        "After accepted save-set result (0x55500 length16,result1), DB callback0x3a5c0 invokes0x3a430 and returns0 unconditionally. Then series success sends ok. This result covers reaching DB helper return, not a checked DB-write success or asynchronous persistence-file completion."
+      ],
+      "instruction_evidence": [
+        {
+          "program": "AppProxy",
+          "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+          "entry": "0x00051628",
+          "source": "app-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x00051740",
+              "instruction": "add.w r9,r7,#0x2",
+              "bytes": "07f10209",
+              "flows": []
+            },
+            {
+              "address": "0x00051744",
+              "instruction": "mov.w r3,#0xffffffff",
+              "bytes": "4ff0ff33",
+              "flows": []
+            },
+            {
+              "address": "0x00051748",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0005174a",
+              "instruction": "str.w r3,[r2,#-0x9c]!",
+              "bytes": "42f89c3d",
+              "flows": []
+            },
+            {
+              "address": "0x0005174e",
+              "instruction": "mov r1,r9",
+              "bytes": "4946",
+              "flows": []
+            },
+            {
+              "address": "0x00051750",
+              "instruction": "bl 0x0003c568",
+              "bytes": "eaf70aff",
+              "flows": [
+                "0x0003c568"
+              ]
+            },
+            {
+              "address": "0x00051754",
+              "instruction": "ldr r3,[sp,#0x44]",
+              "bytes": "119b",
+              "flows": []
+            },
+            {
+              "address": "0x00051756",
+              "instruction": "sub.w r8,r3,#0x2",
+              "bytes": "a3f10208",
+              "flows": []
+            },
+            {
+              "address": "0x0005175a",
+              "instruction": "cmp r7,r8",
+              "bytes": "4745",
+              "flows": []
+            },
+            {
+              "address": "0x0005175c",
+              "instruction": "beq.w 0x00051898",
+              "bytes": "00f09c80",
+              "flows": [
+                "0x00051898"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "AppProxy",
+          "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+          "entry": "0x0003a5c0",
+          "source": "app-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x0003a5e2",
+              "instruction": "ldr r0,[r5,#0x0]",
+              "bytes": "2868",
+              "flows": []
+            },
+            {
+              "address": "0x0003a5e4",
+              "instruction": "mov r1,r4",
+              "bytes": "2146",
+              "flows": []
+            },
+            {
+              "address": "0x0003a5e6",
+              "instruction": "bl 0x0003a430",
+              "bytes": "fff723ff",
+              "flows": [
+                "0x0003a430"
+              ]
+            },
+            {
+              "address": "0x0003a5ea",
+              "instruction": "movs r0,#0x0",
+              "bytes": "0020",
+              "flows": []
+            },
+            {
+              "address": "0x0003a5ec",
+              "instruction": "add sp,#0xc",
+              "bytes": "03b0",
+              "flows": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "database-ids-and-error-order",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Reached backup DB operations assign ID=native_flag-2; errors are logged but terminal recovery still advances.",
+      "anchors": [
+        "AppProxy:0x3a430",
+        "AppProxy:0x22f84",
+        "AppProxy:0x23070",
+        "AppProxy:0x23210"
+      ],
+      "details": [
+        "0x3a430 calls map-buffer preparation helper0x8cddc( map_object,1 ), then sets local external_id=native_flag-2. Blob pointer is map_object+0x30002c and size word map_object+0x48002c; scratch read capacity0x80000.",
+        "0x23070 selects existing bakmaps row. On read failure, insert0x22f84; on read success with blob_size0, also insert; nonzero blob_size uses update0x23210. Return codes control only logging in0x3a430; the wrapper is void and0x3a5c0 returns0 regardless.",
+        "Existing global SQL pointers verified in discovery-boundary-app/data.txt:0x12082c -> select id,map from bakmaps where id=?;0x120830 -> insert into bakmaps(id,map) values(?,?);0x120838 -> update bakmaps set map=? where id=?. Statement pointers database+0x138,+0x134,+0x140 respectively.",
+        "Insert/read/update lock database+0x160; insert/update expect step101, read expects100, then reset statements. Update binds signed ID via ASR r3,r2,#31.",
+        "Important failure discrepancy: update normal unlock uses the acquired+0x160 pointer, but error epilogue at0x2329e forms database+0x178 before pthread_mutex_unlock at0x232a2. This is an observed offset mismatch, not proof what the two mutex objects represent or a firmware repair.",
+        "No schema/history behavior beyond the reached bakmaps queries was explored. No SQLite transaction, WAL policy, sync mode or durability conclusion is claimed."
+      ],
+      "instruction_evidence": [
+        {
+          "program": "AppProxy",
+          "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+          "entry": "0x00023210",
+          "source": "app-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x00023210",
+              "instruction": "cmp r1,#0x0",
+              "bytes": "0029",
+              "flows": []
+            },
+            {
+              "address": "0x00023212",
+              "instruction": "beq 0x000232ec",
+              "bytes": "6bd0",
+              "flows": [
+                "0x000232ec"
+              ]
+            },
+            {
+              "address": "0x00023214",
+              "instruction": "push {r4,r5,r6,r7,lr}",
+              "bytes": "f0b5",
+              "flows": []
+            },
+            {
+              "address": "0x00023216",
+              "instruction": "add.w r6,r0,#0x160",
+              "bytes": "00f5b076",
+              "flows": []
+            },
+            {
+              "address": "0x0002321a",
+              "instruction": "sub sp,#0xc",
+              "bytes": "83b0",
+              "flows": []
+            },
+            {
+              "address": "0x0002321c",
+              "instruction": "mov r5,r1",
+              "bytes": "0d46",
+              "flows": []
+            },
+            {
+              "address": "0x0002321e",
+              "instruction": "mov r4,r0",
+              "bytes": "0446",
+              "flows": []
+            },
+            {
+              "address": "0x00023220",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x00023222",
+              "instruction": "blx 0x000185b0",
+              "bytes": "f5f7c6e9",
+              "flows": [
+                "0x000185b0"
+              ]
+            },
+            {
+              "address": "0x00023226",
+              "instruction": "mov.w r7,#0xffffffff",
+              "bytes": "4ff0ff37",
+              "flows": []
+            },
+            {
+              "address": "0x0002322a",
+              "instruction": "ldr r3,[r5,#0xc]",
+              "bytes": "eb68",
+              "flows": []
+            },
+            {
+              "address": "0x0002322c",
+              "instruction": "movs r1,#0x1",
+              "bytes": "0121",
+              "flows": []
+            },
+            {
+              "address": "0x0002322e",
+              "instruction": "ldr r2,[r5,#0x8]",
+              "bytes": "aa68",
+              "flows": []
+            },
+            {
+              "address": "0x00023230",
+              "instruction": "ldr.w r0,[r4,#0x140]",
+              "bytes": "d4f84001",
+              "flows": []
+            },
+            {
+              "address": "0x00023234",
+              "instruction": "str r7,[sp,#0x0]",
+              "bytes": "0097",
+              "flows": []
+            },
+            {
+              "address": "0x00023236",
+              "instruction": "bl 0x000a7fc8",
+              "bytes": "84f0c7fe",
+              "flows": [
+                "0x000a7fc8"
+              ]
+            },
+            {
+              "address": "0x0002323a",
+              "instruction": "cmp r0,#0x0",
+              "bytes": "0028",
+              "flows": []
+            },
+            {
+              "address": "0x0002323c",
+              "instruction": "bne 0x000232ac",
+              "bytes": "36d1",
+              "flows": [
+                "0x000232ac"
+              ]
+            },
+            {
+              "address": "0x0002323e",
+              "instruction": "ldr r2,[r5,#0x0]",
+              "bytes": "2a68",
+              "flows": []
+            },
+            {
+              "address": "0x00023240",
+              "instruction": "movs r1,#0x2",
+              "bytes": "0221",
+              "flows": []
+            },
+            {
+              "address": "0x00023242",
+              "instruction": "ldr.w r0,[r4,#0x140]",
+              "bytes": "d4f84001",
+              "flows": []
+            },
+            {
+              "address": "0x00023246",
+              "instruction": "asrs r3,r2,#0x1f",
+              "bytes": "d317",
+              "flows": []
+            },
+            {
+              "address": "0x00023248",
+              "instruction": "bl 0x000a80c0",
+              "bytes": "84f03aff",
+              "flows": [
+                "0x000a80c0"
+              ]
+            },
+            {
+              "address": "0x0002324c",
+              "instruction": "mov r5,r0",
+              "bytes": "0546",
+              "flows": []
+            },
+            {
+              "address": "0x0002324e",
+              "instruction": "cmp r0,#0x0",
+              "bytes": "0028",
+              "flows": []
+            },
+            {
+              "address": "0x00023250",
+              "instruction": "bne 0x000232cc",
+              "bytes": "3cd1",
+              "flows": [
+                "0x000232cc"
+              ]
+            },
+            {
+              "address": "0x00023252",
+              "instruction": "ldr.w r0,[r4,#0x140]",
+              "bytes": "d4f84001",
+              "flows": []
+            },
+            {
+              "address": "0x00023256",
+              "instruction": "bl 0x000cee04",
+              "bytes": "abf0d5fd",
+              "flows": [
+                "0x000cee04"
+              ]
+            },
+            {
+              "address": "0x0002325a",
+              "instruction": "cmp r0,#0x65",
+              "bytes": "6528",
+              "flows": []
+            },
+            {
+              "address": "0x0002325c",
+              "instruction": "bne 0x00023272",
+              "bytes": "09d1",
+              "flows": [
+                "0x00023272"
+              ]
+            },
+            {
+              "address": "0x0002325e",
+              "instruction": "ldr.w r0,[r4,#0x140]",
+              "bytes": "d4f84001",
+              "flows": []
+            },
+            {
+              "address": "0x00023262",
+              "instruction": "bl 0x000c79ac",
+              "bytes": "a4f0a3fb",
+              "flows": [
+                "0x000c79ac"
+              ]
+            },
+            {
+              "address": "0x00023266",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x00023268",
+              "instruction": "blx 0x000193a4",
+              "bytes": "f6f79ce8",
+              "flows": [
+                "0x000193a4"
+              ]
+            },
+            {
+              "address": "0x0002326c",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0002326e",
+              "instruction": "add sp,#0xc",
+              "bytes": "03b0",
+              "flows": []
+            }
+          ]
+        },
+        {
+          "program": "AppProxy",
+          "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+          "entry": "0x00023210",
+          "source": "app-reconciled-reopen/selected.json",
+          "instructions": [
+            {
+              "address": "0x00023290",
+              "instruction": "str r5,[sp,#0x4]",
+              "bytes": "0195",
+              "flows": []
+            },
+            {
+              "address": "0x00023292",
+              "instruction": "bl 0x00026228",
+              "bytes": "02f0c9ff",
+              "flows": [
+                "0x00026228"
+              ]
+            },
+            {
+              "address": "0x00023296",
+              "instruction": "ldr.w r0,[r4,#0x140]",
+              "bytes": "d4f84001",
+              "flows": []
+            },
+            {
+              "address": "0x0002329a",
+              "instruction": "bl 0x000c79ac",
+              "bytes": "a4f087fb",
+              "flows": [
+                "0x000c79ac"
+              ]
+            },
+            {
+              "address": "0x0002329e",
+              "instruction": "add.w r0,r4,#0x178",
+              "bytes": "04f5bc70",
+              "flows": []
+            },
+            {
+              "address": "0x000232a2",
+              "instruction": "blx 0x000193a4",
+              "bytes": "f6f780e8",
+              "flows": [
+                "0x000193a4"
+              ]
+            },
+            {
+              "address": "0x000232a6",
+              "instruction": "mov r0,r7",
+              "bytes": "3846",
+              "flows": []
+            },
+            {
+              "address": "0x000232a8",
+              "instruction": "add sp,#0xc",
+              "bytes": "03b0",
+              "flows": []
+            },
+            {
+              "address": "0x000232aa",
+              "instruction": "pop {r4,r5,r6,r7,pc}",
+              "bytes": "f0bd",
+              "flows": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "db-blob-meaning",
+      "status": "inferred",
+      "confidence": "bounded",
+      "summary": "The DB helper writes a current application-facing map buffer, not a native grid or persistence region record.",
+      "anchors": [
+        "AppProxy:0x3a430"
+      ],
+      "details": [
+        "Inference from bakmaps SQL, native-minus-two ID, application-map object buffer offsets and0x8cddc preparation call, consistent with existing ASSESSMENT analysis. This lane did not decompile the buffer-generation internals or verify its encoding. Do not use a DB blob as evidence native files were updated."
+      ],
+      "instruction_evidence": []
+    },
+    {
+      "id": "result-and-synchronization-boundaries",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Result handling advances/fails a keyed pending series; local locks are not a cross-process storage transaction.",
+      "anchors": [
+        "AppProxy:0x56a84",
+        "AppProxy:0x55500",
+        "AppProxy:0x69c88",
+        "AppProxy:0x24450",
+        "AppProxy:0x245f8"
+      ],
+      "details": [
+        "Result handlers compare payload length+8==16 and result+0x18==1. Request key low/high are+0xc/+0x10 and native flag is+0x14. Failure calls0x245f8 with text and deletes pending series; success calls0x24450. Legacy fallback processing only runs if keyed series was not handled.",
+        "0x69c88 is treated as single-map result handling based on legacy branches and series use; its diagnostics confusingly say load map result failed. Operation identity must not come from that copied string alone.",
+        "0x24450 removes completed series under mutex+0x4c; callback/step execution itself is outside this particular erase lock.0x24350 scans timeout paths under same mutex and calls configured timeout hook. These locks protect local bookkeeping, not all writers or files.",
+        "Error callback pointer Thumb0x4afa9 is installed in constructor0x63f90. Existing instructions at0x4afa8..0x4b01d send error through0x4ad88 and clear action lock; no baseline function exists, no generated error-callback C claimed."
+      ],
+      "instruction_evidence": []
+    },
+    {
+      "id": "startup-catalog-selector",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Exportable immediate startup paths are annotated, while missing startup state entries stay explicit.",
+      "anchors": [
+        "librrnavdrv.so:0x83940",
+        "librrnavdrv.so:0x8339c",
+        "librrnavdrv.so:0x6905c"
+      ],
+      "details": [
+        "0x83940 gates catalog-current loading on manager/lab/use-new-map branches and signed current>=2, calls0x68428 at0x83b8a; load failure enters reset state. It later initializes shared robot/dock poses, so do not equate it to the isolated last-map loader.",
+        "0x8339c calls LoadSLAMMap(core,-2,1), then SaveMap(core,1), then sets catalog current from saved manager word+0x30; load/save results are ignored.",
+        "0x6905c calls LoadSLAMMap(core,captured_flag,1) at0x69076 and stores result in completion capture+0x2c. Data0x304b78 points to Thumb0x683e1, which has neither defined baseline instructions nor a function. Raw bytes/proposal only; the final completion sender is not proven."
+      ],
+      "instruction_evidence": []
+    },
+    {
+      "id": "external-bridge",
+      "status": "unresolved",
+      "confidence": "unresolved",
+      "summary": "Nontrivial AppProxy IPC-to-navigation task/result bridge is not closed in pinned owned programs.",
+      "anchors": [
+        "AppProxy:0x39aa4",
+        "AppProxy:0x39b08",
+        "AppProxy:0x3c6bc",
+        "librrnavdrv.so:0x6905c"
+      ],
+      "details": [
+        "AppProxy load request0x02033204, save0x02033203, save-set0x02033212 are emitted with original request keys. Their dispatch through RoboController to navigation events, result-message ID registration and delivery back to AppProxy are not established end to end.",
+        "Only agreed missing entries are delegated centrally. No new function creation or ABI guesses were made to cover this bridge. Confirmed AppProxy result-dependent paths and confirmed navigation call order are separate pieces of evidence, not an invented atomic chain."
+      ],
+      "instruction_evidence": []
+    }
+  ],
+  "corrections_to_prior_prose": [
+    "ASSESSMENT seed0x20bac0 is interior. Candidate true entry0x20babc is supported by leading PIC/r2 initialization plus state registration; missing baseline function remains a gap.",
+    "ASSESSMENT unresolved flag1 selector is narrowed to manager+0x22 initialized flag, with manager+0x28 stored word; not an arbitrary catalog validity or disk-existence check.",
+    "SUPERVISION application load/recovery completion unknown is partially closed locally: ordinary load replies after load result and final save send, not final save result; distinct-backup recovery waits load/save-set results then invokes unchecked DB helper.",
+    "No-op recover success can report ok without performing any load/save/DB operation.",
+    "Earlier provisional lane comments described0x68b48 as cancellation/IPC. Final comments explicitly leave0x68ae8 helper semantics unresolved; no such cancellation proof exists in collected exports.",
+    "Earlier provisional lane comment mislocated the update error-unlock operand at0x232e2; actual instruction is0x2329e, followed by unlock0x232a2.",
+    "Do not interpret0x20b778 literal-pool bytes as a function entry; collected constructor points to0x20b781 (candidate even0x20b780).",
+    "Decompiler void defaults for grid/load/save/series helpers were corrected at ABI level only after inspecting preserved result registers and return paths. Unknown C++ layouts and ambiguous callback/startup ABIs remain unreconstructed."
+  ],
+  "unresolved_edges": [
+    "How the emitted AppProxy IPC is mapped by RoboController to navigation tasks/results, including exact result registration and correlation, remains unresolved.",
+    "Candidate missing startup0x20babc, completion callback0x683e0 and error callback0x4afa8 require central metadata recovery; no generated C for them is supplied.",
+    "need_recover_map configuration-key mapping is outside pinned owned inputs; relation to NavCore+0x271 is not proven.",
+    "Underlying grid virtual targets, persistence background completion, cross-process semaphore/buffer behavior, catalog setter disk semantics and disk durability require other lanes/integration; this lane does not equate API success with completed writes.",
+    "Destination helper0x68b48 ->0x68ae8 behavior remains unresolved. Backup selection is performed twice; no catalog-wide lock across the entire series was established.",
+    "0x69c88 single-map result identity is inferred from use/legacy branches despite misleading log strings; exact wire registration is unresolved.",
+    "Database failure-path mutex+0x178 versus acquired+0x160 discrepancy is confirmed at instruction level; resulting runtime behavior was not tested.",
+    "Other command strings save_map/get_multi_maps_list/get_multi_map/save_as_multi_map were bounded for registration/context only, not traced as complete alternative paths."
+  ],
+  "command_registration_context": [
+    {
+      "command": "save_map",
+      "handler": "0x5802c",
+      "registration_site": "0x6319e..0x631b6",
+      "coverage": "context export only"
+    },
+    {
+      "command": "get_multi_maps_list",
+      "handler": "0x434f0",
+      "registration_site": "0x63744..0x6375c",
+      "coverage": "context export only"
+    },
+    {
+      "command": "get_multi_map",
+      "handler": null,
+      "registration_site": "0x63770..0x6377e",
+      "coverage": "callback loaded from stack+4; not resolved further"
+    },
+    {
+      "command": "load_multi_map",
+      "handler": "0x4fbf8",
+      "coverage": "local command/queued-result/reply represented"
+    },
+    {
+      "command": "save_as_multi_map",
+      "handler": "0x57884",
+      "registration_site": "0x637e6..0x637fe",
+      "coverage": "context export only"
+    },
+    {
+      "command": "recover_multi_map",
+      "handler": "0x51628",
+      "coverage": "no-op/ordinary-fallback/distinct-backup local paths represented"
+    }
+  ],
+  "recovery_proposals": "recovery-proposals.json",
+  "infrastructure_failures": [
+    {
+      "output": "app-queue-replies",
+      "authoritative": false,
+      "diagnostic": {
+        "error": "java.lang.Exception: Absent/ambiguous function entry or non-executable anchor: 0x4afa8",
+        "status": "error",
+        "annotations_committed": false
+      }
+    },
+    {
+      "output": "nav-load-result",
+      "authoritative": false,
+      "diagnostic": {
+        "status": "error",
+        "error": "java.lang.Exception: Absent/ambiguous function entry or non-executable anchor: 0x683e0",
+        "annotations_committed": false
+      }
+    }
+  ],
+  "validation": "validation.json",
+  "commands": [
+    {
+      "command": "python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/ghidra-reconciled librrnavdrv.so --annotations /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/annotations/librrnavdrv.so.json --functions 0x00068428 0x001a621c 0x001a60c4 0x001a5fd4 0x001a6018 0x001a5fdc 0x001a6374 0x00067144 0x0006732c 0x00067484 0x000663b8 0x0006640c 0x00066464 0x0006905c 0x00083940 0x0008339c 0x0020c3d8 0x000705e8 --out /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/nav-reconciled-apply",
+      "result": "passed",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/ghidra-reconciled librrnavdrv.so --functions 0x00068428 0x001a621c 0x001a60c4 0x001a5fd4 0x001a6018 0x001a5fdc 0x001a6374 0x00067144 0x0006732c 0x00067484 0x000663b8 0x0006640c 0x00066464 0x0006905c 0x00083940 0x0008339c 0x0020c3d8 0x000705e8 --out /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/nav-reconciled-reopen",
+      "result": "passed",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/ghidra-reconciled AppProxy --annotations /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/annotations/AppProxy.json --functions 0x0004fbf8 0x00051628 0x0003cc74 0x00039b84 0x00068c14 0x0003c7a0 0x0003a5c0 0x0003a430 0x00022f84 0x00023070 0x00023210 0x00024450 0x00024050 0x000245f8 0x00056a84 0x00055500 0x00069c88 0x0004705c 0x00039aa4 0x00039b08 0x0003c6bc 0x00046e9c --out /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/app-reconciled-apply",
+      "result": "passed",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py run /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/ghidra-reconciled AppProxy --functions 0x0004fbf8 0x00051628 0x0003cc74 0x00039b84 0x00068c14 0x0003c7a0 0x0003a5c0 0x0003a430 0x00022f84 0x00023070 0x00023210 0x00024450 0x00024050 0x000245f8 0x00056a84 0x00055500 0x00069c88 0x0004705c 0x00039aa4 0x00039b08 0x0003c6bc 0x00046e9c --out /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/app-reconciled-reopen",
+      "result": "passed",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 build_annotations.py",
+      "result": "passed"
+    },
+    {
+      "command": "python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py copy /home/user/tmp/illegalplainape/analysis/re/lanes/orchestration/ghidra-reconciled",
+      "result": "passed"
+    },
+    {
+      "command": "python3 validate_artifacts.py (initial byte comparison of types.json)",
+      "result": "failed",
+      "diagnostic": "AppProxy types.json had JSON object-key ordering only; parsed definitions/length/path identical. Test corrected to semantic JSON equality; no Ghidra/source changes."
+    },
+    {
+      "command": "python3 validate_artifacts.py",
+      "result": "passed",
+      "summary": "267 checks; C byte-identical, selected/types semantic-equal after separate reopen, exact pristine expectations, no staged files."
+    }
+  ],
+  "limits": [
+    "Static checks do not prove robot runtime behavior.",
+    "No cross-file transaction or completed durable disk write is claimed.",
+    "No data captured from private rooms, credentials or unrelated device state was included.",
+    "Reconstructed names are inferred analysis names under30 characters; imported/surviving symbols were not replaced."
+  ],
+  "reconciliation": {
+    "script_latest": true,
+    "annotation_documents_regenerated": true,
+    "fresh_baseline_copy": "ghidra-reconciled",
+    "authoritative_outputs": [
+      "nav-reconciled-apply",
+      "nav-reconciled-reopen",
+      "app-reconciled-apply",
+      "app-reconciled-reopen"
+    ],
+    "all_prior_applied_final_reopened_directories": "superseded provisional exports retained as historical evidence; do not integrate their annotations/comments"
+  }
+}

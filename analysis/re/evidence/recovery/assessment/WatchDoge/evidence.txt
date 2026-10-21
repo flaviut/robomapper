@@ -1,0 +1,81 @@
+program=WatchDoge language=ARM:LE:32:v8
+block=.text(00013edc - 0001fd67)
+base_context=RegisterValue(contextreg): mask=0xc000000000000000 value=0x0000000000000000
+before=FUN_0001aec8 body=[[0001aec8, 0001af15]]
+after=FUN_0001af6c body=[[0001af6c, 0001b13f] [0001b154, 0001b427] [0001b43c, 0001b737] [0001b77e, 0001b789] [0001b81a, 0001b81d] [0001b864, 0001b86f]]
+0001af16 bytes=00bf context=0 ins=null data=null function=null
+0001af18 bytes=38b5 context=0 ins=null data=null function=null
+0001af1a bytes=03f0 context=0 ins=null data=null function=null
+0001af1c bytes=0dfc context=0 ins=null data=null function=null
+0001af1e bytes=44f2 context=0 ins=null data=null function=null
+0001af20 bytes=e455 context=0 ins=null data=null function=null
+0001af22 bytes=c0f2 context=0 ins=null data=null function=null
+0001af24 bytes=0305 context=0 ins=null data=null function=null
+0001af26 bytes=0246 context=0 ins=null data=null function=null
+0001af28 bytes=0b46 context=0 ins=null data=null function=null
+0001af2a bytes=0120 context=0 ins=null data=null function=null
+0001af2c bytes=40f6 context=0 ins=null data=null function=null
+0001af2e bytes=7c21 context=0 ins=null data=null function=null
+0001af30 bytes=c0f2 context=0 ins=null data=null function=null
+0001af32 bytes=0201 context=0 ins=null data=null function=null
+0001af34 bytes=f8f7 context=0 ins=null data=null function=null
+0001af36 bytes=eeee context=0 ins=null data=null function=null
+0001af38 bytes=44f2 context=0 ins=null data=null function=null
+0001af3a bytes=c833 context=0 ins=null data=null function=null
+0001af3c bytes=c0f2 context=0 ins=null data=null function=null
+0001af3e bytes=0303 context=0 ins=null data=null function=null
+0001af40 bytes=1868 context=0 ins=null data=null function=null
+0001af42 bytes=f8f7 context=0 ins=null data=null function=null
+0001af44 bytes=3cee context=0 ins=null data=null function=null
+0001af46 bytes=fff7 context=0 ins=null data=null function=null
+0001af48 bytes=47fe context=0 ins=null data=null function=null
+0001af4a bytes=fff7 context=0 ins=null data=null function=null
+0001af4c bytes=0dff context=0 ins=null data=null function=null
+0001af4e bytes=0123 context=0 ins=null data=null function=null
+0001af50 bytes=ab60 context=0 ins=null data=null function=null
+0001af52 bytes=fff7 context=0 ins=null data=null function=null
+0001af54 bytes=b9ff context=0 ins=null data=null function=null
+0001af56 bytes=0820 context=0 ins=null data=null function=null
+0001af58 bytes=f8f7 context=0 ins=null data=null function=null
+0001af5a bytes=7ceb context=0 ins=null data=null function=null
+0001af5c bytes=ac68 context=0 ins=null data=null function=null
+0001af5e bytes=002c context=0 ins=null data=null function=null
+0001af60 bytes=f7d1 context=0 ins=null data=null function=null
+0001af62 bytes=fff7 context=0 ins=null data=null function=null
+0001af64 bytes=5dfe context=0 ins=null data=null function=null
+0001af66 bytes=2046 context=0 ins=null data=null function=null
+0001af68 bytes=38bd context=0 ins=null data=null function=null
+0001af6a bytes=00bf context=0 ins=null data=null function=null
+0001af6c bytes=2de9 context=1 ins=push {r4,r5,r6,r7,r8,r9,r10,r11,lr} data=null function=FUN_0001af6c
+ IN From: 0001b9bc To: 0001af6c Type: UNCONDITIONAL_CALL Op: 0 DEFAULT
+ SYMBOL FUN_0001af6c source=DEFAULT
+PSEUDO THUMB (not database instructions):
+0001af18 push {r3,r4,r5,lr} bytes=38b5 flow=FALL_THROUGH targets=[] fall=0001af1a
+0001af1a bl 0x0001e738 bytes=03f00dfc flow=UNCONDITIONAL_CALL targets=[0001e738] fall=0001af1e
+0001af1e movw r5,#0x45e4 bytes=44f2e455 flow=FALL_THROUGH targets=[] fall=0001af22
+0001af22 movt r5,#0x3 bytes=c0f20305 flow=FALL_THROUGH targets=[] fall=0001af26
+0001af26 mov r2,r0 bytes=0246 flow=FALL_THROUGH targets=[] fall=0001af28
+0001af28 mov r3,r1 bytes=0b46 flow=FALL_THROUGH targets=[] fall=0001af2a
+0001af2a movs r0,#0x1 bytes=0120 flow=FALL_THROUGH targets=[] fall=0001af2c
+0001af2c movw r1,#0xa7c bytes=40f67c21 flow=FALL_THROUGH targets=[] fall=0001af30
+0001af30 movt r1,#0x2 bytes=c0f20201 flow=FALL_THROUGH targets=[] fall=0001af34
+0001af34 blx 0x00013d14 bytes=f8f7eeee flow=UNCONDITIONAL_CALL targets=[00013d14] fall=0001af38
+0001af38 movw r3,#0x43c8 bytes=44f2c833 flow=FALL_THROUGH targets=[] fall=0001af3c
+0001af3c movt r3,#0x3 bytes=c0f20303 flow=FALL_THROUGH targets=[] fall=0001af40
+0001af40 ldr r0,[r3,#0x0] bytes=1868 flow=FALL_THROUGH targets=[] fall=0001af42
+0001af42 blx 0x00013bbc bytes=f8f73cee flow=UNCONDITIONAL_CALL targets=[00013bbc] fall=0001af46
+0001af46 bl 0x0001abd8 bytes=fff747fe flow=UNCONDITIONAL_CALL targets=[0001abd8] fall=0001af4a
+0001af4a bl 0x0001ad68 bytes=fff70dff flow=UNCONDITIONAL_CALL targets=[0001ad68] fall=0001af4e
+0001af4e movs r3,#0x1 bytes=0123 flow=FALL_THROUGH targets=[] fall=0001af50
+0001af50 str r3,[r5,#0x8] bytes=ab60 flow=FALL_THROUGH targets=[] fall=0001af52
+0001af52 bl 0x0001aec8 bytes=fff7b9ff flow=UNCONDITIONAL_CALL targets=[0001aec8] fall=0001af56
+0001af56 movs r0,#0x8 bytes=0820 flow=FALL_THROUGH targets=[] fall=0001af58
+0001af58 blx 0x00013654 bytes=f8f77ceb flow=UNCONDITIONAL_CALL targets=[00013654] fall=0001af5c
+0001af5c ldr r4,[r5,#0x8] bytes=ac68 flow=FALL_THROUGH targets=[] fall=0001af5e
+0001af5e cmp r4,#0x0 bytes=002c flow=FALL_THROUGH targets=[] fall=0001af60
+0001af60 bne 0x0001af52 bytes=f7d1 flow=CONDITIONAL_JUMP targets=[0001af52] fall=0001af62
+0001af62 bl 0x0001ac20 bytes=fff75dfe flow=UNCONDITIONAL_CALL targets=[0001ac20] fall=0001af66
+0001af66 mov r0,r4 bytes=2046 flow=FALL_THROUGH targets=[] fall=0001af68
+0001af68 pop {r3,r4,r5,pc} bytes=38bd flow=TERMINATOR targets=[] fall=null
+0001af6a nop bytes=00bf flow=FALL_THROUGH targets=[] fall=0001af6c
+0001af6c push {r4,r5,r6,r7,r8,r9,r10,r11,lr} bytes=2de9f04f flow=FALL_THROUGH targets=[] fall=0001af70

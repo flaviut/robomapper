@@ -1,0 +1,126 @@
+{
+  "status": "passed",
+  "source_sha256": {
+    "recover.py": "a0a894be5fc4da2d0a58bf8caa8f442b8cff90dfb14a793724acf037c894c52f",
+    "scripts/RecoverBounded.java": "dfdb06634b88e8e69dace1222c97b8a6a504ccfe5eb2af7743ea5ce5df62e849",
+    "validate_recovery.py": "c7c7d4a4beecef8228477bba244b9cade073e72cd311ba3a65e0f2601e5ef30c"
+  },
+  "requests_sha256": {
+    "AppProxy": "94220f28987e31e9e1491f7e850ecbab9ac603521b1fa875a03a55cee87d951e",
+    "WatchDoge": "9fad5cdc9f092201071070b53058379af1d210b040071b980711881fbf8f3acd"
+  },
+  "copies": [
+    {
+      "copy": "a",
+      "program": "AppProxy",
+      "entry": "0x0003c5b4",
+      "body": "[[0003c5b4, 0003c5e9]]",
+      "instructions": 21,
+      "recovery": "a/recover-AppProxy/result.json",
+      "reopened_export": "a/reopened-AppProxy",
+      "existing_inventory_identical": true,
+      "persisted": true
+    },
+    {
+      "copy": "a",
+      "program": "WatchDoge",
+      "entry": "0x0001af18",
+      "body": "[[0001af18, 0001af69]]",
+      "instructions": 27,
+      "recovery": "a/recover-WatchDoge/result.json",
+      "reopened_export": "a/reopened-WatchDoge",
+      "existing_inventory_identical": true,
+      "persisted": true
+    },
+    {
+      "copy": "b",
+      "program": "AppProxy",
+      "entry": "0x0003c5b4",
+      "body": "[[0003c5b4, 0003c5e9]]",
+      "instructions": 21,
+      "recovery": "b/recover-AppProxy/result.json",
+      "reopened_export": "b/reopened-AppProxy",
+      "existing_inventory_identical": true,
+      "persisted": true
+    },
+    {
+      "copy": "b",
+      "program": "WatchDoge",
+      "entry": "0x0001af18",
+      "body": "[[0001af18, 0001af69]]",
+      "instructions": 27,
+      "recovery": "b/recover-WatchDoge/result.json",
+      "reopened_export": "b/reopened-WatchDoge",
+      "existing_inventory_identical": true,
+      "persisted": true
+    }
+  ],
+  "rejections": [
+    {
+      "test": "hash-mismatch",
+      "error": "java.lang.Exception: HASH_MISMATCH",
+      "no_semantic_mutation": true,
+      "result": "a/hash-mismatch/result.json"
+    },
+    {
+      "test": "entry-byte-mismatch",
+      "error": "java.lang.Exception: ENTRY_BYTES_MISMATCH",
+      "no_semantic_mutation": true,
+      "result": "a/entry-byte-mismatch/result.json"
+    },
+    {
+      "test": "odd-entry",
+      "error": "java.lang.Exception: ODD_ENTRY",
+      "no_semantic_mutation": true,
+      "result": "a/odd-entry/result.json"
+    },
+    {
+      "test": "wrong-even-entry",
+      "error": "java.lang.Exception: UNREVIEWED_ENTRY_OR_BOUND",
+      "no_semantic_mutation": true,
+      "result": "a/wrong-even-entry/result.json"
+    },
+    {
+      "test": "wrong-bound",
+      "error": "java.lang.Exception: UNREVIEWED_ENTRY_OR_BOUND",
+      "no_semantic_mutation": true,
+      "result": "a/wrong-bound/result.json"
+    },
+    {
+      "test": "unexpected-context-request",
+      "error": "java.lang.Exception: unreviewed expected context",
+      "no_semantic_mutation": true,
+      "result": "a/unexpected-context-request/result.json"
+    },
+    {
+      "test": "rollback-after-disassembly",
+      "error": "java.lang.Exception: instruction mismatch 0003c5e6",
+      "no_semantic_mutation": true,
+      "result": "a/rollback-after-disassembly/result.json"
+    },
+    {
+      "test": "existing-conflict-AppProxy",
+      "no_semantic_mutation": true,
+      "error": "java.lang.Exception: CODE_OR_DATA_CONFLICT 0003c5b4"
+    },
+    {
+      "test": "existing-conflict-WatchDoge",
+      "no_semantic_mutation": true,
+      "error": "java.lang.Exception: CODE_OR_DATA_CONFLICT 0001af18"
+    }
+  ],
+  "baseline_tree_identical": true,
+  "binary_files_identical": true,
+  "binary_sha256": {
+    "AppProxy": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+    "WatchDoge": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6"
+  },
+  "cross_copy_c_selected_types_identical": true,
+  "close_reopen_without_replay_identical": true,
+  "annotations": {
+    "AppProxy": "annotations/AppProxy.json",
+    "WatchDoge": "annotations/WatchDoge.json"
+  },
+  "no_git_commands": true,
+  "no_staging_performed": true
+}

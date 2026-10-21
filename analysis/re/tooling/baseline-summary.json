@@ -1,0 +1,425 @@
+{
+  "status": "ready-for-review",
+  "project": "/home/user/tmp/illegalplainape/analysis/re/baseline/pinned.gpr",
+  "immutable_after_bootstrap": true,
+  "closed_unlocked": true,
+  "bootstrap_command": "python3 retool.py bootstrap > bootstrap-driver.log 2>&1",
+  "binary_count": 7,
+  "manifest_identity_count": 9,
+  "index": "/home/user/tmp/illegalplainape/analysis/re/baseline/index.json",
+  "programs": [
+    {
+      "invocation": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/AppProxy/invocation.json",
+      "inventory": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/AppProxy/inventory.json",
+      "program": "AppProxy",
+      "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x00010000",
+      "executable_ranges": [
+        {
+          "name": ".init",
+          "start": "0x00017e1c",
+          "end": "0x00017e27",
+          "sources": [
+            {
+              "start": "0x00017e1c",
+              "end": "0x00017e27",
+              "file_offset": 32284
+            }
+          ]
+        },
+        {
+          "name": ".plt",
+          "start": "0x00017e28",
+          "end": "0x00019513",
+          "sources": [
+            {
+              "start": "0x00017e28",
+              "end": "0x00019513",
+              "file_offset": 32296
+            }
+          ]
+        },
+        {
+          "name": ".text",
+          "start": "0x00019518",
+          "end": "0x000ea84f",
+          "sources": [
+            {
+              "start": "0x00019518",
+              "end": "0x000ea84f",
+              "file_offset": 38168
+            }
+          ]
+        },
+        {
+          "name": ".fini",
+          "start": "0x000ea850",
+          "end": "0x000ea857",
+          "sources": [
+            {
+              "start": "0x000ea850",
+              "end": "0x000ea857",
+              "file_offset": 895056
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "invocation": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/WatchDoge/invocation.json",
+      "inventory": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/WatchDoge/inventory.json",
+      "program": "WatchDoge",
+      "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x00010000",
+      "executable_ranges": [
+        {
+          "name": ".init",
+          "start": "0x00013574",
+          "end": "0x0001357f",
+          "sources": [
+            {
+              "start": "0x00013574",
+              "end": "0x0001357f",
+              "file_offset": 13684
+            }
+          ]
+        },
+        {
+          "name": ".plt",
+          "start": "0x00013580",
+          "end": "0x00013edb",
+          "sources": [
+            {
+              "start": "0x00013580",
+              "end": "0x00013edb",
+              "file_offset": 13696
+            }
+          ]
+        },
+        {
+          "name": ".text",
+          "start": "0x00013edc",
+          "end": "0x0001fd67",
+          "sources": [
+            {
+              "start": "0x00013edc",
+              "end": "0x0001fd67",
+              "file_offset": 16092
+            }
+          ]
+        },
+        {
+          "name": ".fini",
+          "start": "0x0001fd68",
+          "end": "0x0001fd6f",
+          "sources": [
+            {
+              "start": "0x0001fd68",
+              "end": "0x0001fd6f",
+              "file_offset": 64872
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "invocation": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/librobopersist.so/invocation.json",
+      "inventory": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/librobopersist.so/inventory.json",
+      "program": "librobopersist.so",
+      "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x00000000",
+      "executable_ranges": [
+        {
+          "name": ".init",
+          "start": "0x0000cedc",
+          "end": "0x0000cee7",
+          "sources": [
+            {
+              "start": "0x0000cedc",
+              "end": "0x0000cee7",
+              "file_offset": 52956
+            }
+          ]
+        },
+        {
+          "name": ".plt",
+          "start": "0x0000cee8",
+          "end": "0x0000dd5f",
+          "sources": [
+            {
+              "start": "0x0000cee8",
+              "end": "0x0000dd5f",
+              "file_offset": 52968
+            }
+          ]
+        },
+        {
+          "name": ".text",
+          "start": "0x0000dd60",
+          "end": "0x0001e763",
+          "sources": [
+            {
+              "start": "0x0000dd60",
+              "end": "0x0001e763",
+              "file_offset": 56672
+            }
+          ]
+        },
+        {
+          "name": ".fini",
+          "start": "0x0001e764",
+          "end": "0x0001e76b",
+          "sources": [
+            {
+              "start": "0x0001e764",
+              "end": "0x0001e76b",
+              "file_offset": 124772
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "invocation": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/librrnavdrv.so/invocation.json",
+      "inventory": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/librrnavdrv.so/inventory.json",
+      "program": "librrnavdrv.so",
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x00000000",
+      "executable_ranges": [
+        {
+          "name": ".init",
+          "start": "0x0003c024",
+          "end": "0x0003c02f",
+          "sources": [
+            {
+              "start": "0x0003c024",
+              "end": "0x0003c02f",
+              "file_offset": 245796
+            }
+          ]
+        },
+        {
+          "name": ".plt",
+          "start": "0x0003c030",
+          "end": "0x0003dd2b",
+          "sources": [
+            {
+              "start": "0x0003c030",
+              "end": "0x0003dd2b",
+              "file_offset": 245808
+            }
+          ]
+        },
+        {
+          "name": ".text",
+          "start": "0x0003dd30",
+          "end": "0x0026c07b",
+          "sources": [
+            {
+              "start": "0x0003dd30",
+              "end": "0x0026c07b",
+              "file_offset": 253232
+            }
+          ]
+        },
+        {
+          "name": ".fini",
+          "start": "0x0026c07c",
+          "end": "0x0026c083",
+          "sources": [
+            {
+              "start": "0x0026c07c",
+              "end": "0x0026c083",
+              "file_offset": 2539644
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "invocation": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/librrslamdrv.so/invocation.json",
+      "inventory": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/librrslamdrv.so/inventory.json",
+      "program": "librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x00000000",
+      "executable_ranges": [
+        {
+          "name": ".init",
+          "start": "0x00003624",
+          "end": "0x0000362f",
+          "sources": [
+            {
+              "start": "0x00003624",
+              "end": "0x0000362f",
+              "file_offset": 13860
+            }
+          ]
+        },
+        {
+          "name": ".plt",
+          "start": "0x00003630",
+          "end": "0x00003d53",
+          "sources": [
+            {
+              "start": "0x00003630",
+              "end": "0x00003d53",
+              "file_offset": 13872
+            }
+          ]
+        },
+        {
+          "name": ".text",
+          "start": "0x00003d58",
+          "end": "0x0003c3db",
+          "sources": [
+            {
+              "start": "0x00003d58",
+              "end": "0x0003c3db",
+              "file_offset": 15704
+            }
+          ]
+        },
+        {
+          "name": ".fini",
+          "start": "0x0003c3dc",
+          "end": "0x0003c3e3",
+          "sources": [
+            {
+              "start": "0x0003c3dc",
+              "end": "0x0003c3e3",
+              "file_offset": 246748
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "invocation": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/librrutils.so/invocation.json",
+      "inventory": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/librrutils.so/inventory.json",
+      "program": "librrutils.so",
+      "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b",
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x00000000",
+      "executable_ranges": [
+        {
+          "name": ".init",
+          "start": "0x000014b4",
+          "end": "0x000014bf",
+          "sources": [
+            {
+              "start": "0x000014b4",
+              "end": "0x000014bf",
+              "file_offset": 5300
+            }
+          ]
+        },
+        {
+          "name": ".plt",
+          "start": "0x000014c0",
+          "end": "0x000016cf",
+          "sources": [
+            {
+              "start": "0x000014c0",
+              "end": "0x000016cf",
+              "file_offset": 5312
+            }
+          ]
+        },
+        {
+          "name": ".text",
+          "start": "0x000016d0",
+          "end": "0x00002acb",
+          "sources": [
+            {
+              "start": "0x000016d0",
+              "end": "0x00002acb",
+              "file_offset": 5840
+            }
+          ]
+        },
+        {
+          "name": ".fini",
+          "start": "0x00002acc",
+          "end": "0x00002ad3",
+          "sources": [
+            {
+              "start": "0x00002acc",
+              "end": "0x00002ad3",
+              "file_offset": 10956
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "invocation": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/libuart_api.so/invocation.json",
+      "inventory": "/home/user/tmp/illegalplainape/analysis/re/tooling/bootstrap/libuart_api.so/inventory.json",
+      "program": "libuart_api.so.4.0.2",
+      "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529",
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x00000000",
+      "executable_ranges": [
+        {
+          "name": ".init",
+          "start": "0x00004c30",
+          "end": "0x00004c3b",
+          "sources": [
+            {
+              "start": "0x00004c30",
+              "end": "0x00004c3b",
+              "file_offset": 19504
+            }
+          ]
+        },
+        {
+          "name": ".plt",
+          "start": "0x00004c3c",
+          "end": "0x00005747",
+          "sources": [
+            {
+              "start": "0x00004c3c",
+              "end": "0x00005747",
+              "file_offset": 19516
+            }
+          ]
+        },
+        {
+          "name": ".text",
+          "start": "0x00005748",
+          "end": "0x0001e89f",
+          "sources": [
+            {
+              "start": "0x00005748",
+              "end": "0x0001e89f",
+              "file_offset": 22344
+            }
+          ]
+        },
+        {
+          "name": ".fini",
+          "start": "0x0001e8a0",
+          "end": "0x0001e8a7",
+          "sources": [
+            {
+              "start": "0x0001e8a0",
+              "end": "0x0001e8a7",
+              "file_offset": 125088
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

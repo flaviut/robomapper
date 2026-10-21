@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned Ghidra annotations v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "sha256"],
+  "properties": {
+    "version": {"const": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "declaration"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"},
+          "declaration": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "functions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["address"],
+        "properties": {
+          "address": {"type": "string", "pattern": "^0x[0-9a-fA-F]*[02468aAcCeE]$"},
+          "name": {"type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"},
+          "signature": {"type": "string", "minLength": 1},
+          "plate_comment": {"type": ["string", "null"]},
+          "expect": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {"type": "string"},
+              "signature": {"type": "string"},
+              "plate_comment": {"type": ["string", "null"]}
+            }
+          }
+        }
+      }
+    }
+  }
+}

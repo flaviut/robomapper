@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529",
+  "types": [],
+  "functions": [
+    {
+      "address": "0x00011564",
+      "signature": "int rua_keep_mcu_heartbeat(int value)",
+      "plate_comment": "Command encoding only: int value==0 becomes 60, otherwise preserve all 32 bits; sent_cmd_sigle_thread(0xd3,4,&value,1), up to three attempts with 20ms sleeps after failures. Returns 0 on nonnegative sender result, negative init/send error otherwise. If UART was not already initialized, initializes and closes it locally. Target is little-endian ARM32, so four-byte -1 is ff ff ff ff. No periodic heartbeat production is established here; MCU meaning of 60/120/-1, sender completion semantics, reset safety and active producer remain unresolved.",
+      "expect": {
+        "signature": "undefined rua_keep_mcu_heartbeat()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x00011690",
+      "signature": "int disable_mcu_heartbeat(void)",
+      "plate_comment": "Surviving symbol preserved. Tail-calls rua_keep_mcu_heartbeat(-1), transmitting command 0xd3 with four bytes ff ff ff ff if send succeeds. Name does not prove MCU/kernel behavior or safe indefinite map-writer stop. Returns callee result.",
+      "expect": {
+        "signature": "undefined disable_mcu_heartbeat()",
+        "plate_comment": null
+      }
+    }
+  ]
+}

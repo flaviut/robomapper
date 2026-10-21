@@ -1,0 +1,132 @@
+[
+  {
+    "program": "librrnavdrv.so",
+    "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+    "candidate": "0x20bac0",
+    "entry_offset": "0x20bac0",
+    "entry_bytes": "f0b57b44ae4d8db004460121",
+    "pt_loads": [
+      {
+        "offset": "0x0",
+        "va": "0x0",
+        "filesz": "0x2f3b30",
+        "memsz": "0x2f3b30",
+        "flags": 5
+      },
+      {
+        "offset": "0x2f3f30",
+        "va": "0x303f30",
+        "filesz": "0x15e90",
+        "memsz": "0x1f0e04",
+        "flags": 6
+      }
+    ],
+    "pointer_occurrences": {
+      "0x20bac0": [],
+      "0x20bac1": [],
+      "0x20babc": [],
+      "0x20babd": []
+    },
+    "near_symbols": [],
+    "near_relocations": [],
+    "near_unwind": [
+      {
+        "table_va": "0x2f1b9c",
+        "function_start": "0x20babc",
+        "unwind": "0x7fff12b0"
+      }
+    ]
+  },
+  {
+    "program": "AppProxy",
+    "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+    "candidate": "0x3c5b4",
+    "entry_offset": "0x2c5b4",
+    "entry_bytes": "30b541f6c814c0f2120483b0",
+    "pt_loads": [
+      {
+        "offset": "0x0",
+        "va": "0x10000",
+        "filesz": "0xff1fc",
+        "memsz": "0xff1fc",
+        "flags": 5
+      },
+      {
+        "offset": "0xffd7c",
+        "va": "0x11fd7c",
+        "filesz": "0x1acc",
+        "memsz": "0x2847d0",
+        "flags": 6
+      }
+    ],
+    "pointer_occurrences": {
+      "0x3c5b4": [],
+      "0x3c5b5": []
+    },
+    "near_symbols": [],
+    "near_relocations": [],
+    "near_unwind": [
+      {
+        "table_va": "0x10df20",
+        "function_start": "0x3c568",
+        "unwind": "0x8001aab0"
+      },
+      {
+        "table_va": "0x10df28",
+        "function_start": "0x3c5b4",
+        "unwind": "0x8002a9b0"
+      },
+      {
+        "table_va": "0x10df30",
+        "function_start": "0x3c5ec",
+        "unwind": "0x8008abb0"
+      }
+    ]
+  },
+  {
+    "program": "WatchDoge",
+    "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+    "candidate": "0x1af18",
+    "entry_offset": "0xaf18",
+    "entry_bytes": "38b503f00dfc44f2e455c0f2",
+    "pt_loads": [
+      {
+        "offset": "0x0",
+        "va": "0x10000",
+        "filesz": "0x13264",
+        "memsz": "0x13264",
+        "flags": 5
+      },
+      {
+        "offset": "0x13e68",
+        "va": "0x33e68",
+        "filesz": "0x4d8",
+        "memsz": "0xe60",
+        "flags": 6
+      }
+    ],
+    "pointer_occurrences": {
+      "0x1af18": [],
+      "0x1af19": []
+    },
+    "near_symbols": [],
+    "near_relocations": [],
+    "near_unwind": [
+      {
+        "table_va": "0x230a8",
+        "function_start": "0x1aec8",
+        "unwind": "0x80a8b0b0"
+      },
+      {
+        "table_va": "0x230b0",
+        "function_start": "0x1af18",
+        "unwind": "0x80b108a9"
+      },
+      {
+        "table_va": "0x230b8",
+        "function_start": "0x1af6c",
+        "unwind": "0x7ffffbd0"
+      }
+    ]
+  }
+]

@@ -1,0 +1,3633 @@
+{
+  "version": 1,
+  "lane": "grid",
+  "method": "Authorized static analysis and read-only saved-data checks only. No device access, original firmware execution, or deployment.",
+  "identity": {
+    "program": "librrslamdrv.so",
+    "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+    "binary_path": "/home/user/tmp/illegalplainape/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrslamdrv.so",
+    "image_base": "0x00000000",
+    "language": "ARM:LE:32:v8",
+    "compiler": "default"
+  },
+  "sources_read": [
+    "analysis/ASSESSMENT.md",
+    "analysis/slam-save.txt",
+    "analysis/slam-load.txt",
+    "analysis/map_codec.py",
+    "analysis/storage-traces.txt",
+    "analysis/storage-validation.json",
+    "analysis/re/manifest.json",
+    "analysis/re/tooling/README.md"
+  ],
+  "findings": [
+    {
+      "id": "packed-v2-format",
+      "status": "confirmed",
+      "confidence": "high",
+      "program": "librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "function_entries": [
+        "0x1ab84",
+        "0x1d42c",
+        "0x1d21c"
+      ],
+      "interpretation": "Disk prefix is 30 bytes, not an aligned memory grid object. Writer emits 10-byte RRSLAM/version2/header-length20 prefix then 20-byte scale20,left,top,width,height block. Dispatcher checks both magic fragments, uint16 version and header length. V2 body checks scale20. All multibyte disk fields are little endian; origins are signed int32, dimensions raw uint32.",
+      "instruction_evidence": [
+        {
+          "address": "0x0001abc0",
+          "instruction": "movs r1,#0x2",
+          "bytes": "0221",
+          "flows": []
+        },
+        {
+          "address": "0x0001abc2",
+          "instruction": "strh.w r1,[sp,#0x46]",
+          "bytes": "adf84610",
+          "flows": []
+        },
+        {
+          "address": "0x0001abcc",
+          "instruction": "strh.w r5,[sp,#0x48]",
+          "bytes": "adf84850",
+          "flows": []
+        },
+        {
+          "address": "0x0001abd0",
+          "instruction": "ldm.w r3,{r0,r1}",
+          "bytes": "93e80300",
+          "flows": []
+        },
+        {
+          "address": "0x0001abde",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e9f75ee8",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001ac00",
+          "instruction": "str r5,[sp,#0x2c]",
+          "bytes": "0b95",
+          "flows": []
+        },
+        {
+          "address": "0x0001ac72",
+          "instruction": "movs r2,#0x14",
+          "bytes": "1422",
+          "flows": []
+        },
+        {
+          "address": "0x0001ac78",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e9f710e8",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001d492",
+          "instruction": "cmp r2,r3",
+          "bytes": "9a42",
+          "flows": []
+        },
+        {
+          "address": "0x0001d4a4",
+          "instruction": "cmp r2,r3",
+          "bytes": "9a42",
+          "flows": []
+        },
+        {
+          "address": "0x0001d4ac",
+          "instruction": "cmp r3,#0x2",
+          "bytes": "022b",
+          "flows": []
+        },
+        {
+          "address": "0x0001d4c8",
+          "instruction": "cmp r3,#0x14",
+          "bytes": "142b",
+          "flows": []
+        },
+        {
+          "address": "0x0001d4ce",
+          "instruction": "bl 0x0001d21c",
+          "bytes": "fff7a5fe",
+          "flows": [
+            "0x0001d21c"
+          ]
+        },
+        {
+          "address": "0x0001d230",
+          "instruction": "movs r2,#0x14",
+          "bytes": "1422",
+          "flows": []
+        },
+        {
+          "address": "0x0001d29c",
+          "instruction": "cmp r4,#0x14",
+          "bytes": "142c",
+          "flows": []
+        }
+      ],
+      "limits": [
+        "GridDiskHeaderV2 uses only byte arrays: exact offsets and alignment1, no forced packing pragma or aligned uint32 overlay.",
+        "Unknown magic goes to older-format helper0x1ca54; version1/header36 goes to0x1cf60; legacy decoding is intentionally outside bounded recovery."
+      ]
+    },
+    {
+      "id": "cell-copy-and-digest",
+      "status": "confirmed",
+      "confidence": "high",
+      "program": "librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "function_entries": [
+        "0x1ab84",
+        "0x1d21c",
+        "0x21a94",
+        "0x1aa98"
+      ],
+      "interpretation": "Cell block is width*height bytes in row-major order, followed by 16-byte MD5-compatible digest over cell block only. Every digest word must match before v2 modifies target. Writer extracts metadata.view relative to metadata.bounds. Reader clears full existing cells to0x80, re-centers bounds, installs/merges file view, then copies rows using full bounds stride.",
+      "instruction_evidence": [
+        {
+          "address": "0x0001ac90",
+          "instruction": "mul r5,r5,r3",
+          "bytes": "05fb03f5",
+          "flows": []
+        },
+        {
+          "address": "0x0001acd4",
+          "instruction": "ldr.w r0,[r8,#0x4]",
+          "bytes": "d8f80400",
+          "flows": []
+        },
+        {
+          "address": "0x0001acde",
+          "instruction": "mla r0,r0,r5,r9",
+          "bytes": "00fb0590",
+          "flows": []
+        },
+        {
+          "address": "0x0001acf6",
+          "instruction": "ldrb.w r2,[r4],#0x1",
+          "bytes": "14f8012b",
+          "flows": []
+        },
+        {
+          "address": "0x0001acfc",
+          "instruction": "strb.w r2,[r3,#0x1]!",
+          "bytes": "03f8012f",
+          "flows": []
+        },
+        {
+          "address": "0x0001ad14",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e8f7c2ef",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001ad2e",
+          "instruction": "bl 0x00021a94",
+          "bytes": "06f0b1fe",
+          "flows": [
+            "0x00021a94"
+          ]
+        },
+        {
+          "address": "0x0001ad34",
+          "instruction": "movs r2,#0x10",
+          "bytes": "1022",
+          "flows": []
+        },
+        {
+          "address": "0x0001ad38",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e8f7b0ef",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001d2ba",
+          "instruction": "mul r10,r3,r2",
+          "bytes": "03fb02fa",
+          "flows": []
+        },
+        {
+          "address": "0x0001d2e8",
+          "instruction": "blx 0x00003b64",
+          "bytes": "e6f73cec",
+          "flows": [
+            "0x00003b64"
+          ]
+        },
+        {
+          "address": "0x0001d302",
+          "instruction": "blx 0x00003b64",
+          "bytes": "e6f730ec",
+          "flows": [
+            "0x00003b64"
+          ]
+        },
+        {
+          "address": "0x0001d31c",
+          "instruction": "bl 0x00021a94",
+          "bytes": "04f0bafb",
+          "flows": [
+            "0x00021a94"
+          ]
+        },
+        {
+          "address": "0x0001d324",
+          "instruction": "cmp r2,r3",
+          "bytes": "9a42",
+          "flows": []
+        },
+        {
+          "address": "0x0001d33e",
+          "instruction": "cmp r2,r3",
+          "bytes": "9a42",
+          "flows": []
+        },
+        {
+          "address": "0x0001d346",
+          "instruction": "cmp r2,r3",
+          "bytes": "9a42",
+          "flows": []
+        },
+        {
+          "address": "0x0001d34e",
+          "instruction": "cmp r2,r3",
+          "bytes": "9a42",
+          "flows": []
+        },
+        {
+          "address": "0x0001d366",
+          "instruction": "bl 0x0001aa98",
+          "bytes": "fdf797fb",
+          "flows": [
+            "0x0001aa98"
+          ]
+        },
+        {
+          "address": "0x0001d386",
+          "instruction": "bl 0x00022030",
+          "bytes": "04f053fe",
+          "flows": [
+            "0x00022030"
+          ]
+        },
+        {
+          "address": "0x0001d3c2",
+          "instruction": "mla r0,r0,r10,r11",
+          "bytes": "00fb0ab0",
+          "flows": []
+        },
+        {
+          "address": "0x0001d3d6",
+          "instruction": "ldrb.w r3,[r4],#0x1",
+          "bytes": "14f8013b",
+          "flows": []
+        },
+        {
+          "address": "0x0001d3dc",
+          "instruction": "strb.w r3,[r0,#0x1]!",
+          "bytes": "00f8013f",
+          "flows": []
+        }
+      ],
+      "limits": [
+        "No explicit reader dimensions/overflow/allocation-bounds validation or trailing-file-length validation was found in these paths.",
+        "Positive width copy guard is signed; row loop uses unsigned height. Width*height is low32-bit MUL. Do not claim malformed files are safe.",
+        "Digest routine IV bytes at VA0x3f434:0123456789abcdeffedcba9876543210. NULL cells produces zero digest; high bit-length word forced0, so ordinary-grid MD5 equivalence must not be extended to huge inputs."
+      ]
+    },
+    {
+      "id": "format-failure-not-load-status",
+      "status": "inferred",
+      "confidence": "high",
+      "program": "librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "function_entries": [
+        "0x1d21c",
+        "0x1d42c",
+        "0x1dd88",
+        "0x144d4"
+      ],
+      "interpretation": "Static path inference: an intact but unsupported-scale/version/header-length or wrong-digest file can leave stream state good while cells are not accepted. Cache loader can then retain initialized0x80 buffer with valid1, and future cache hits bypass disk. A nonzero file-loader return alone does not prove format acceptance.",
+      "instruction_evidence": [
+        {
+          "address": "0x0001d29c",
+          "instruction": "cmp r4,#0x14",
+          "bytes": "142c",
+          "flows": []
+        },
+        {
+          "address": "0x0001d2a0",
+          "instruction": "ldr r4,[r5,#0x0]",
+          "bytes": "2c68",
+          "flows": []
+        },
+        {
+          "address": "0x0001d2a4",
+          "instruction": "mov r0,r4",
+          "bytes": "2046",
+          "flows": []
+        },
+        {
+          "address": "0x0001d324",
+          "instruction": "cmp r2,r3",
+          "bytes": "9a42",
+          "flows": []
+        },
+        {
+          "address": "0x0001d326",
+          "instruction": "beq 0x0001d33a",
+          "bytes": "08d0",
+          "flows": [
+            "0x0001d33a"
+          ]
+        },
+        {
+          "address": "0x0001d328",
+          "instruction": "ldr r4,[r5,#0x0]",
+          "bytes": "2c68",
+          "flows": []
+        },
+        {
+          "address": "0x0001d32e",
+          "instruction": "mov r0,r6",
+          "bytes": "3046",
+          "flows": []
+        },
+        {
+          "address": "0x0001d334",
+          "instruction": "b 0x0001d2a2",
+          "bytes": "b5e7",
+          "flows": [
+            "0x0001d2a2"
+          ]
+        },
+        {
+          "address": "0x0001d4b2",
+          "instruction": "bne 0x0001d45a",
+          "bytes": "d2d1",
+          "flows": [
+            "0x0001d45a"
+          ]
+        },
+        {
+          "address": "0x0001d4ca",
+          "instruction": "bne 0x0001d45a",
+          "bytes": "c6d1",
+          "flows": [
+            "0x0001d45a"
+          ]
+        },
+        {
+          "address": "0x0001469a",
+          "instruction": "ldr.w r3,[r4,#0xa4]",
+          "bytes": "d4f8a430",
+          "flows": []
+        },
+        {
+          "address": "0x0001469e",
+          "instruction": "tst r3,#0x5",
+          "bytes": "13f0050f",
+          "flows": []
+        }
+      ],
+      "limits": [
+        "This is static control-flow reasoning, not a firmware runtime test.",
+        "Intermediate stream checks mask bit1 only; outer file wrappers mask5. Short-read handling depends on C++ stream state and is not asserted safe."
+      ]
+    },
+    {
+      "id": "filename-selection",
+      "status": "confirmed",
+      "confidence": "high",
+      "program": "librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "function_entries": [
+        "0x26b60",
+        "0x26a70"
+      ],
+      "interpretation": "String-slot accessor is store+4*(flag+18), not a C-string pointer. Flag0 mobility_test_map;1 last_map;2..11 user_map(flag-2);12 /dev/shm/tmp_map. Constructor also creates a separate first12 vmap path family. No flag validation in accessor. Saved cell cache index flag+11 is distinct from filename slot index flag+18.",
+      "instruction_evidence": [
+        {
+          "address": "0x00026a70",
+          "instruction": "ldr r3,[r1,#0x0]",
+          "bytes": "0b68",
+          "flows": []
+        },
+        {
+          "address": "0x00026a72",
+          "instruction": "adds r3,#0x12",
+          "bytes": "1233",
+          "flows": []
+        },
+        {
+          "address": "0x00026a74",
+          "instruction": "add.w r0,r0,r3, lsl #0x2",
+          "bytes": "00eb8300",
+          "flows": []
+        },
+        {
+          "address": "0x00026a78",
+          "instruction": "bx lr",
+          "bytes": "7047",
+          "flows": []
+        }
+      ],
+      "limits": [
+        "Literal addresses and decoded nonprivate path strings recorded separately below; .rodata uses loader VA=file offset here, verified against inventory, not assumed globally."
+      ]
+    },
+    {
+      "id": "cache-hit-and-drop",
+      "status": "confirmed",
+      "confidence": "high",
+      "program": "librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "function_entries": [
+        "0x1dd88",
+        "0x1b5c4",
+        "0x26a90",
+        "0x106f8"
+      ],
+      "interpretation": "Saved-buffer lookup indexes flag+11. Populated cell pointer returns immediately without disk read. Miss allocates1024x1024 cells, centered bounds, fill0x80, selects filename string, reads via dispatcher. Allocation/open/outer stream failure drops cache slot and sets result valid0. Drop clears pointer before delete[], zeroes36-byte metadata. Bulk drop loops flags1..11 inclusive, excluding0 and12.",
+      "instruction_evidence": [
+        {
+          "address": "0x0001b5de",
+          "instruction": "ldr.w r2,[r2,r1,lsl #0x2]",
+          "bytes": "52f82120",
+          "flows": []
+        },
+        {
+          "address": "0x0001b5e6",
+          "instruction": "cbz r2,0x0001b608",
+          "bytes": "7ab1",
+          "flows": [
+            "0x0001b608"
+          ]
+        },
+        {
+          "address": "0x0001b5ee",
+          "instruction": "movs r2,#0x1",
+          "bytes": "0122",
+          "flows": []
+        },
+        {
+          "address": "0x0001b5f2",
+          "instruction": "mla r1,r0,r1,r3",
+          "bytes": "00fb0131",
+          "flows": []
+        },
+        {
+          "address": "0x0001b5f6",
+          "instruction": "str r1,[r4,#0x4]",
+          "bytes": "6160",
+          "flows": []
+        },
+        {
+          "address": "0x00026aea",
+          "instruction": "ldr.w r0,[r3,r4,lsl #0x2]",
+          "bytes": "53f82400",
+          "flows": []
+        },
+        {
+          "address": "0x00026aee",
+          "instruction": "str.w r2,[r3,r4,lsl #0x2]",
+          "bytes": "43f82420",
+          "flows": []
+        },
+        {
+          "address": "0x00026af2",
+          "instruction": "cbz r0,0x00026af8",
+          "bytes": "08b1",
+          "flows": [
+            "0x00026af8"
+          ]
+        },
+        {
+          "address": "0x00026b14",
+          "instruction": "mov r2,r8",
+          "bytes": "4246",
+          "flows": []
+        },
+        {
+          "address": "0x00026b1a",
+          "instruction": "blx 0x00003874",
+          "bytes": "dcf7acee",
+          "flows": [
+            "0x00003874"
+          ]
+        }
+      ],
+      "limits": [
+        "No file unlink/rename in drop functions; caches and files are separate.",
+        "No locks inside lookup/allocation/drop functions were observed. Outer caller synchronization is unresolved; string reference-count atomics do not lock grid caches."
+      ]
+    },
+    {
+      "id": "fresh-read-branch",
+      "status": "confirmed",
+      "confidence": "high",
+      "program": "librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "function_entries": [
+        "0x1718c",
+        "0x106f8",
+        "0x1dd88"
+      ],
+      "interpretation": "One existing boundary function calls bulk cache-drop before selected saved-buffer read at0x175b8/0x175cc and after copying at0x17646. A separate reset branch drops at0x172f2. This establishes a fresh-cache branch, not universal reload behavior.",
+      "instruction_evidence": [
+        {
+          "address": "0x000172f2",
+          "instruction": "bl 0x000106f8",
+          "bytes": "f9f701fa",
+          "flows": [
+            "0x000106f8"
+          ]
+        },
+        {
+          "address": "0x000175b8",
+          "instruction": "bl 0x000106f8",
+          "bytes": "f9f79ef8",
+          "flows": [
+            "0x000106f8"
+          ]
+        },
+        {
+          "address": "0x000175c0",
+          "instruction": "ldr r3,[r4,r5]",
+          "bytes": "6359",
+          "flows": []
+        },
+        {
+          "address": "0x000175c4",
+          "instruction": "ldr r3,[r3,#0x4]",
+          "bytes": "5b68",
+          "flows": []
+        },
+        {
+          "address": "0x000175cc",
+          "instruction": "bl 0x0001dd88",
+          "bytes": "06f0dcfb",
+          "flows": [
+            "0x0001dd88"
+          ]
+        },
+        {
+          "address": "0x000175d0",
+          "instruction": "ldrb.w r3,[sp,#0x64]",
+          "bytes": "9df86430",
+          "flows": []
+        },
+        {
+          "address": "0x00017646",
+          "instruction": "bl 0x000106f8",
+          "bytes": "f9f757f8",
+          "flows": [
+            "0x000106f8"
+          ]
+        }
+      ],
+      "limits": [
+        "Boundary owner state/branch semantics and transform calculations remain unknown; no algorithm expansion performed.",
+        "Boundary0x1718c retains FUN_0001718c and unknown signature; only comment was added. Decompiled owner-relative imported-symbol string aliases are artifacts, not claimed object layouts."
+      ]
+    },
+    {
+      "id": "save-close-and-ack-boundary",
+      "status": "confirmed",
+      "confidence": "high",
+      "program": "librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "function_entries": [
+        "0x12c34",
+        "0x144d4",
+        "0x1ab84"
+      ],
+      "interpretation": "Runtime-save wrapper always obtains manager slot11 and writes to caller-supplied string filename in output mode0x10. Return bool is captured from state&5 before filebuf.close; close return ignored. Read-file wrapper behaves similarly in input mode8. No rename/fsync or saved-cache invalidation in save wrapper. These return values are not map-set transaction or durability acknowledgments.",
+      "instruction_evidence": [
+        {
+          "address": "0x00012c98",
+          "instruction": "movs r6,#0xb",
+          "bytes": "0b26",
+          "flows": []
+        },
+        {
+          "address": "0x00012c9e",
+          "instruction": "bl 0x0001b5c4",
+          "bytes": "08f091fc",
+          "flows": [
+            "0x0001b5c4"
+          ]
+        },
+        {
+          "address": "0x00012d08",
+          "instruction": "movs r2,#0x10",
+          "bytes": "1022",
+          "flows": []
+        },
+        {
+          "address": "0x00012d10",
+          "instruction": "blx 0x0000392c",
+          "bytes": "f0f70cee",
+          "flows": [
+            "0x0000392c"
+          ]
+        },
+        {
+          "address": "0x00012d88",
+          "instruction": "blx 0x000036cc",
+          "bytes": "f0f7a0ec",
+          "flows": [
+            "0x000036cc"
+          ]
+        },
+        {
+          "address": "0x00012dbc",
+          "instruction": "mov r0,r9",
+          "bytes": "4846",
+          "flows": []
+        },
+        {
+          "address": "0x00012dce",
+          "instruction": "bl 0x0001ab84",
+          "bytes": "07f0d9fe",
+          "flows": [
+            "0x0001ab84"
+          ]
+        },
+        {
+          "address": "0x00012dd2",
+          "instruction": "ldr.w r3,[r4,#0xa0]",
+          "bytes": "d4f8a030",
+          "flows": []
+        },
+        {
+          "address": "0x00012dd6",
+          "instruction": "tst r3,#0x5",
+          "bytes": "13f0050f",
+          "flows": []
+        },
+        {
+          "address": "0x00012ddc",
+          "instruction": "mov.eq.w r9,#0x1",
+          "bytes": "4ff00109",
+          "flows": []
+        },
+        {
+          "address": "0x00012de0",
+          "instruction": "mov.ne.w r9,#0x0",
+          "bytes": "4ff00009",
+          "flows": []
+        },
+        {
+          "address": "0x0001469e",
+          "instruction": "tst r3,#0x5",
+          "bytes": "13f0050f",
+          "flows": []
+        },
+        {
+          "address": "0x000146a4",
+          "instruction": "mov.eq r7,#0x1",
+          "bytes": "0127",
+          "flows": []
+        }
+      ],
+      "limits": [
+        "GridSaveRuntime first argument remains explicitly unknown/unused. It does not choose a flag; caller0x92e0 owns broader selection/order and is outside this bounded recovery.",
+        "No robot runtime or power-failure behavior tested."
+      ]
+    },
+    {
+      "id": "abi-and-observed-memory-types",
+      "status": "confirmed",
+      "confidence": "high",
+      "program": "librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "function_entries": [
+        "0x3b64",
+        "0x3c9c",
+        "0x21d0c",
+        "0x21d28",
+        "0x21d2c",
+        "0x21d50",
+        "0x21d54"
+      ],
+      "interpretation": "Corrected surviving stream read/write prototypes to explicit this(r0), buffer(r1), count(r2), preserving names. Grid* types model only storage-observed ABI: rectangle16, metadata36 with last4 unknown, ref12 with padding/unknown3, read-context8. These are effective storage views, not original C++ layout recovery.",
+      "instruction_evidence": [
+        {
+          "address": "0x0001abdc",
+          "instruction": "add r1,sp,#0x40",
+          "bytes": "10a9",
+          "flows": []
+        },
+        {
+          "address": "0x0001abde",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e9f75ee8",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001ac72",
+          "instruction": "movs r2,#0x14",
+          "bytes": "1422",
+          "flows": []
+        },
+        {
+          "address": "0x0001ac74",
+          "instruction": "add r1,sp,#0x2c",
+          "bytes": "0ba9",
+          "flows": []
+        },
+        {
+          "address": "0x0001ac76",
+          "instruction": "mov r0,r6",
+          "bytes": "3046",
+          "flows": []
+        },
+        {
+          "address": "0x0001ac78",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e9f710e8",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001d22c",
+          "instruction": "mov r1,r3",
+          "bytes": "1946",
+          "flows": []
+        },
+        {
+          "address": "0x0001d22e",
+          "instruction": "ldr r0,[r0,#0x0]",
+          "bytes": "0068",
+          "flows": []
+        },
+        {
+          "address": "0x0001d230",
+          "instruction": "movs r2,#0x14",
+          "bytes": "1422",
+          "flows": []
+        },
+        {
+          "address": "0x0001d248",
+          "instruction": "blx 0x00003b64",
+          "bytes": "e6f78cec",
+          "flows": [
+            "0x00003b64"
+          ]
+        },
+        {
+          "address": "0x00021d14",
+          "instruction": "str r1,[r0,#0x0]",
+          "bytes": "0160",
+          "flows": []
+        },
+        {
+          "address": "0x00021d1a",
+          "instruction": "str r2,[r4,#0x4]",
+          "bytes": "6260",
+          "flows": []
+        },
+        {
+          "address": "0x00021d1c",
+          "instruction": "stm r5,{r0,r1}",
+          "bytes": "85e80300",
+          "flows": []
+        }
+      ],
+      "limits": [
+        "In-memory rectangle fields are signed to express actual geometry/copy comparisons; file dimensions are raw unsigned LE words. Original source declarations are not claimed.",
+        "No cross-lane Persist*,MapCatalog*,MapPersistFlag,MapFlow*,Wdog* definitions introduced."
+      ]
+    }
+  ],
+  "disk_layout": {
+    "length": 30,
+    "alignment": 1,
+    "fields": [
+      {
+        "offset": 0,
+        "size": 6,
+        "name": "magic",
+        "encoding": "ASCII RRSLAM, no terminator"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "version",
+        "encoding": "LE uint16=2"
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "view_header_bytes",
+        "encoding": "LE uint16=20"
+      },
+      {
+        "offset": 10,
+        "size": 4,
+        "name": "scale",
+        "encoding": "LE uint32=20"
+      },
+      {
+        "offset": 14,
+        "size": 4,
+        "name": "left",
+        "encoding": "LE int32"
+      },
+      {
+        "offset": 18,
+        "size": 4,
+        "name": "top",
+        "encoding": "LE int32"
+      },
+      {
+        "offset": 22,
+        "size": 4,
+        "name": "width",
+        "encoding": "LE uint32"
+      },
+      {
+        "offset": 26,
+        "size": 4,
+        "name": "height",
+        "encoding": "LE uint32"
+      }
+    ],
+    "cells_offset": 30,
+    "digest_offset": "30 + low32(width*height) in firmware; codec validates mathematical product and exact size",
+    "digest_bytes": 16
+  },
+  "constructor_paths": [
+    {
+      "constructor_string_index": 0,
+      "store_offset": 24,
+      "pool_va": "0x26e1c",
+      "pc_base": "0x26bde",
+      "string_va": "0x3f594",
+      "path": "/mnt/data/rockrobo/mobility_test_vmap",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 1,
+      "store_offset": 28,
+      "pool_va": "0x26e20",
+      "pc_base": "0x26bec",
+      "string_va": "0x3f5bc",
+      "path": "/mnt/data/rockrobo/last_vmap",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 2,
+      "store_offset": 32,
+      "pool_va": "0x26e24",
+      "pc_base": "0x26bfa",
+      "string_va": "0x3f5dc",
+      "path": "/mnt/data/rockrobo/user_vmap0",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 3,
+      "store_offset": 36,
+      "pool_va": "0x26e28",
+      "pc_base": "0x26c08",
+      "string_va": "0x3f5fc",
+      "path": "/mnt/data/rockrobo/user_vmap1",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 4,
+      "store_offset": 40,
+      "pool_va": "0x26e2c",
+      "pc_base": "0x26c16",
+      "string_va": "0x3f61c",
+      "path": "/mnt/data/rockrobo/user_vmap2",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 5,
+      "store_offset": 44,
+      "pool_va": "0x26e30",
+      "pc_base": "0x26c24",
+      "string_va": "0x3f63c",
+      "path": "/mnt/data/rockrobo/user_vmap3",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 6,
+      "store_offset": 48,
+      "pool_va": "0x26e34",
+      "pc_base": "0x26c32",
+      "string_va": "0x3f65c",
+      "path": "/mnt/data/rockrobo/user_vmap4",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 7,
+      "store_offset": 52,
+      "pool_va": "0x26e38",
+      "pc_base": "0x26c40",
+      "string_va": "0x3f67c",
+      "path": "/mnt/data/rockrobo/user_vmap5",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 8,
+      "store_offset": 56,
+      "pool_va": "0x26e3c",
+      "pc_base": "0x26c4e",
+      "string_va": "0x3f69c",
+      "path": "/mnt/data/rockrobo/user_vmap6",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 9,
+      "store_offset": 60,
+      "pool_va": "0x26e40",
+      "pc_base": "0x26c5c",
+      "string_va": "0x3f6bc",
+      "path": "/mnt/data/rockrobo/user_vmap7",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 10,
+      "store_offset": 64,
+      "pool_va": "0x26e44",
+      "pc_base": "0x26c6a",
+      "string_va": "0x3f6dc",
+      "path": "/mnt/data/rockrobo/user_vmap8",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 11,
+      "store_offset": 68,
+      "pool_va": "0x26e48",
+      "pc_base": "0x26c78",
+      "string_va": "0x3f6fc",
+      "path": "/mnt/data/rockrobo/user_vmap9",
+      "grid_flag": null
+    },
+    {
+      "constructor_string_index": 12,
+      "store_offset": 72,
+      "pool_va": "0x26e4c",
+      "pc_base": "0x26c86",
+      "string_va": "0x3f71c",
+      "path": "/opt/rockrobo/cleaner/misc/mobility_test_map",
+      "grid_flag": 0
+    },
+    {
+      "constructor_string_index": 13,
+      "store_offset": 76,
+      "pool_va": "0x26e50",
+      "pc_base": "0x26c96",
+      "string_va": "0x3f74c",
+      "path": "/mnt/data/rockrobo/last_map",
+      "grid_flag": 1
+    },
+    {
+      "constructor_string_index": 14,
+      "store_offset": 80,
+      "pool_va": "0x26e54",
+      "pc_base": "0x26ca4",
+      "string_va": "0x3f768",
+      "path": "/mnt/data/rockrobo/user_map0",
+      "grid_flag": 2
+    },
+    {
+      "constructor_string_index": 15,
+      "store_offset": 84,
+      "pool_va": "0x26e58",
+      "pc_base": "0x26cb2",
+      "string_va": "0x3f788",
+      "path": "/mnt/data/rockrobo/user_map1",
+      "grid_flag": 3
+    },
+    {
+      "constructor_string_index": 16,
+      "store_offset": 88,
+      "pool_va": "0x26e5c",
+      "pc_base": "0x26cc0",
+      "string_va": "0x3f7a8",
+      "path": "/mnt/data/rockrobo/user_map2",
+      "grid_flag": 4
+    },
+    {
+      "constructor_string_index": 17,
+      "store_offset": 92,
+      "pool_va": "0x26e60",
+      "pc_base": "0x26cce",
+      "string_va": "0x3f7c8",
+      "path": "/mnt/data/rockrobo/user_map3",
+      "grid_flag": 5
+    },
+    {
+      "constructor_string_index": 18,
+      "store_offset": 96,
+      "pool_va": "0x26e64",
+      "pc_base": "0x26cdc",
+      "string_va": "0x3f7e8",
+      "path": "/mnt/data/rockrobo/user_map4",
+      "grid_flag": 6
+    },
+    {
+      "constructor_string_index": 19,
+      "store_offset": 100,
+      "pool_va": "0x26e68",
+      "pc_base": "0x26cea",
+      "string_va": "0x3f808",
+      "path": "/mnt/data/rockrobo/user_map5",
+      "grid_flag": 7
+    },
+    {
+      "constructor_string_index": 20,
+      "store_offset": 104,
+      "pool_va": "0x26e6c",
+      "pc_base": "0x26cf8",
+      "string_va": "0x3f828",
+      "path": "/mnt/data/rockrobo/user_map6",
+      "grid_flag": 8
+    },
+    {
+      "constructor_string_index": 21,
+      "store_offset": 108,
+      "pool_va": "0x26e70",
+      "pc_base": "0x26d06",
+      "string_va": "0x3f848",
+      "path": "/mnt/data/rockrobo/user_map7",
+      "grid_flag": 9
+    },
+    {
+      "constructor_string_index": 22,
+      "store_offset": 112,
+      "pool_va": "0x26e74",
+      "pc_base": "0x26d14",
+      "string_va": "0x3f868",
+      "path": "/mnt/data/rockrobo/user_map8",
+      "grid_flag": 10
+    },
+    {
+      "constructor_string_index": 23,
+      "store_offset": 116,
+      "pool_va": "0x26e78",
+      "pc_base": "0x26d22",
+      "string_va": "0x3f888",
+      "path": "/mnt/data/rockrobo/user_map9",
+      "grid_flag": 11
+    },
+    {
+      "constructor_string_index": 24,
+      "store_offset": 120,
+      "pool_va": "0x26e7c",
+      "pc_base": "0x26d30",
+      "string_va": "0x3f8a8",
+      "path": "/dev/shm/tmp_map",
+      "grid_flag": 12
+    }
+  ],
+  "call_boundaries": [
+    {
+      "function_entry": "0x0001ab84",
+      "name": "GridWriteV2",
+      "callers": [
+        "0x00012c34"
+      ],
+      "calls": [
+        {
+          "address": "0x0001abde",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e9f75ee8",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001ac02",
+          "instruction": "bl 0x00021d28",
+          "bytes": "07f091f8",
+          "flows": [
+            "0x00021d28"
+          ]
+        },
+        {
+          "address": "0x0001ac10",
+          "instruction": "bl 0x00021d2c",
+          "bytes": "07f08cf8",
+          "flows": [
+            "0x00021d2c"
+          ]
+        },
+        {
+          "address": "0x0001ac1e",
+          "instruction": "bl 0x00021d50",
+          "bytes": "07f097f8",
+          "flows": [
+            "0x00021d50"
+          ]
+        },
+        {
+          "address": "0x0001ac2c",
+          "instruction": "bl 0x00021d54",
+          "bytes": "07f092f8",
+          "flows": [
+            "0x00021d54"
+          ]
+        },
+        {
+          "address": "0x0001ac70",
+          "instruction": "blx r4",
+          "bytes": "a047",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001ac78",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e9f710e8",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001ac9a",
+          "instruction": "blx 0x00003644",
+          "bytes": "e8f7d4ec",
+          "flows": [
+            "0x00003644"
+          ]
+        },
+        {
+          "address": "0x0001acaa",
+          "instruction": "bl 0x0002bc4c",
+          "bytes": "10f0cfff",
+          "flows": [
+            "0x0002bc4c"
+          ]
+        },
+        {
+          "address": "0x0001acbe",
+          "instruction": "bl 0x00021d28",
+          "bytes": "07f033f8",
+          "flows": [
+            "0x00021d28"
+          ]
+        },
+        {
+          "address": "0x0001acce",
+          "instruction": "bl 0x00021d2c",
+          "bytes": "07f02df8",
+          "flows": [
+            "0x00021d2c"
+          ]
+        },
+        {
+          "address": "0x0001acd8",
+          "instruction": "bl 0x00021d50",
+          "bytes": "07f03af8",
+          "flows": [
+            "0x00021d50"
+          ]
+        },
+        {
+          "address": "0x0001ad14",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e8f7c2ef",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001ad2e",
+          "instruction": "bl 0x00021a94",
+          "bytes": "06f0b1fe",
+          "flows": [
+            "0x00021a94"
+          ]
+        },
+        {
+          "address": "0x0001ad38",
+          "instruction": "blx 0x00003c9c",
+          "bytes": "e8f7b0ef",
+          "flows": [
+            "0x00003c9c"
+          ]
+        },
+        {
+          "address": "0x0001ad46",
+          "instruction": "blx 0x0000396c",
+          "bytes": "e8f712ee",
+          "flows": [
+            "0x0000396c"
+          ]
+        },
+        {
+          "address": "0x0001ad52",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e8f736ee",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x0001d21c",
+      "name": "GridReadV2",
+      "callers": [
+        "0x0001d42c"
+      ],
+      "calls": [
+        {
+          "address": "0x0001d248",
+          "instruction": "blx 0x00003b64",
+          "bytes": "e6f78cec",
+          "flows": [
+            "0x00003b64"
+          ]
+        },
+        {
+          "address": "0x0001d298",
+          "instruction": "blx r7",
+          "bytes": "b847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001d2c6",
+          "instruction": "blx 0x00003644",
+          "bytes": "e6f7bee9",
+          "flows": [
+            "0x00003644"
+          ]
+        },
+        {
+          "address": "0x0001d2d6",
+          "instruction": "bl 0x0002bc4c",
+          "bytes": "0ef0b9fc",
+          "flows": [
+            "0x0002bc4c"
+          ]
+        },
+        {
+          "address": "0x0001d2e8",
+          "instruction": "blx 0x00003b64",
+          "bytes": "e6f73cec",
+          "flows": [
+            "0x00003b64"
+          ]
+        },
+        {
+          "address": "0x0001d302",
+          "instruction": "blx 0x00003b64",
+          "bytes": "e6f730ec",
+          "flows": [
+            "0x00003b64"
+          ]
+        },
+        {
+          "address": "0x0001d31c",
+          "instruction": "bl 0x00021a94",
+          "bytes": "04f0bafb",
+          "flows": [
+            "0x00021a94"
+          ]
+        },
+        {
+          "address": "0x0001d330",
+          "instruction": "blx 0x0000396c",
+          "bytes": "e6f71ceb",
+          "flows": [
+            "0x0000396c"
+          ]
+        },
+        {
+          "address": "0x0001d35e",
+          "instruction": "bl 0x0002bc4c",
+          "bytes": "0ef075fc",
+          "flows": [
+            "0x0002bc4c"
+          ]
+        },
+        {
+          "address": "0x0001d366",
+          "instruction": "bl 0x0001aa98",
+          "bytes": "fdf797fb",
+          "flows": [
+            "0x0001aa98"
+          ]
+        },
+        {
+          "address": "0x0001d37a",
+          "instruction": "bl 0x00021d0c",
+          "bytes": "04f0c7fc",
+          "flows": [
+            "0x00021d0c"
+          ]
+        },
+        {
+          "address": "0x0001d386",
+          "instruction": "bl 0x00022030",
+          "bytes": "04f053fe",
+          "flows": [
+            "0x00022030"
+          ]
+        },
+        {
+          "address": "0x0001d3a0",
+          "instruction": "bl 0x00021d28",
+          "bytes": "04f0c2fc",
+          "flows": [
+            "0x00021d28"
+          ]
+        },
+        {
+          "address": "0x0001d3b2",
+          "instruction": "bl 0x00021d2c",
+          "bytes": "04f0bbfc",
+          "flows": [
+            "0x00021d2c"
+          ]
+        },
+        {
+          "address": "0x0001d3be",
+          "instruction": "bl 0x00021d50",
+          "bytes": "04f0c7fc",
+          "flows": [
+            "0x00021d50"
+          ]
+        },
+        {
+          "address": "0x0001d3ee",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e6f7e8ea",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x0001d42c",
+      "name": "GridReadDispatch",
+      "callers": [
+        "0x000144d4",
+        "0x0001dd88",
+        "0x0002f774",
+        "0x00030f3c",
+        "0x0003495c"
+      ],
+      "calls": [
+        {
+          "address": "0x0001d476",
+          "instruction": "blx 0x00003b64",
+          "bytes": "e6f776eb",
+          "flows": [
+            "0x00003b64"
+          ]
+        },
+        {
+          "address": "0x0001d498",
+          "instruction": "bl 0x0001ca54",
+          "bytes": "fff7dcfa",
+          "flows": [
+            "0x0001ca54"
+          ]
+        },
+        {
+          "address": "0x0001d4be",
+          "instruction": "bl 0x0001cf60",
+          "bytes": "fff74ffd",
+          "flows": [
+            "0x0001cf60"
+          ]
+        },
+        {
+          "address": "0x0001d4ce",
+          "instruction": "bl 0x0001d21c",
+          "bytes": "fff7a5fe",
+          "flows": [
+            "0x0001d21c"
+          ]
+        },
+        {
+          "address": "0x0001d4d4",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e6f774ea",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x00026b60",
+      "name": "GridStoreInit",
+      "callers": [
+        "0x00026e80"
+      ],
+      "calls": [
+        {
+          "address": "0x00026b7e",
+          "instruction": "blx 0x00003644",
+          "bytes": "dcf762ed",
+          "flows": [
+            "0x00003644"
+          ]
+        },
+        {
+          "address": "0x00026b9e",
+          "instruction": "blx 0x00003644",
+          "bytes": "dcf752ed",
+          "flows": [
+            "0x00003644"
+          ]
+        },
+        {
+          "address": "0x00026bb4",
+          "instruction": "blx 0x00003874",
+          "bytes": "dcf75eee",
+          "flows": [
+            "0x00003874"
+          ]
+        },
+        {
+          "address": "0x00026bba",
+          "instruction": "bl 0x00021ccc",
+          "bytes": "fbf787f8",
+          "flows": [
+            "0x00021ccc"
+          ]
+        },
+        {
+          "address": "0x00026bc4",
+          "instruction": "bl 0x00021ccc",
+          "bytes": "fbf782f8",
+          "flows": [
+            "0x00021ccc"
+          ]
+        },
+        {
+          "address": "0x00026bdc",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f7a6ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026bea",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f79fff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026bf8",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f798ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c06",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f791ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c14",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f78aff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c22",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f783ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c30",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f77cff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c3e",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f775ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c4c",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f76eff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c5a",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f767ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c68",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f760ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c76",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f759ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c86",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f751ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026c94",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f74aff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026ca2",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f743ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026cb0",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f73cff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026cbe",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f735ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026ccc",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f72eff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026cda",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f727ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026ce8",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f720ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026cf6",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f719ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026d04",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f712ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026d12",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f70bff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026d20",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f704ff",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026d2e",
+          "instruction": "bl 0x0000fb2c",
+          "bytes": "e8f7fdfe",
+          "flows": [
+            "0x0000fb2c"
+          ]
+        },
+        {
+          "address": "0x00026d42",
+          "instruction": "blx 0x000039c0",
+          "bytes": "dcf73eee",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x00026a70",
+      "name": "GridFilenameSlot",
+      "callers": [
+        "0x000092e0",
+        "0x0001dd88",
+        "0x0002f774",
+        "0x00030f3c",
+        "0x0003495c"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x00026a90",
+      "name": "GridDropCacheSlot",
+      "callers": [
+        "0x000092e0",
+        "0x000104f4",
+        "0x000106f8",
+        "0x0001253c",
+        "0x00016a00",
+        "0x0001dd88",
+        "0x0002f774",
+        "0x00030f3c",
+        "0x0003495c"
+      ],
+      "calls": [
+        {
+          "address": "0x00026ada",
+          "instruction": "blx r4",
+          "bytes": "a047",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x00026af4",
+          "instruction": "blx 0x00003a08",
+          "bytes": "dcf788ef",
+          "flows": [
+            "0x00003a08"
+          ]
+        },
+        {
+          "address": "0x00026b0a",
+          "instruction": "bl 0x00021ccc",
+          "bytes": "fbf7dff8",
+          "flows": [
+            "0x00021ccc"
+          ]
+        },
+        {
+          "address": "0x00026b10",
+          "instruction": "bl 0x00021ccc",
+          "bytes": "fbf7dcf8",
+          "flows": [
+            "0x00021ccc"
+          ]
+        },
+        {
+          "address": "0x00026b1a",
+          "instruction": "blx 0x00003874",
+          "bytes": "dcf7acee",
+          "flows": [
+            "0x00003874"
+          ]
+        },
+        {
+          "address": "0x00026b42",
+          "instruction": "blx 0x000039c0",
+          "bytes": "dcf73eef",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x000106f8",
+      "name": "GridDropSavedCaches",
+      "callers": [
+        "0x00012414",
+        "0x00013b10",
+        "0x00015f9c",
+        "0x0001718c"
+      ],
+      "calls": [
+        {
+          "address": "0x00010732",
+          "instruction": "blx r4",
+          "bytes": "a047",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001073c",
+          "instruction": "bl 0x00026e80",
+          "bytes": "16f0a0fb",
+          "flows": [
+            "0x00026e80"
+          ]
+        },
+        {
+          "address": "0x0001074a",
+          "instruction": "bl 0x00026a90",
+          "bytes": "16f0a1f9",
+          "flows": [
+            "0x00026a90"
+          ]
+        },
+        {
+          "address": "0x00010762",
+          "instruction": "blx 0x000039c0",
+          "bytes": "f3f72ee9",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x0001b5c4",
+      "name": "GridGetBuffer",
+      "callers": [
+        "0x00011c4c",
+        "0x00011e74",
+        "0x00011f44",
+        "0x00012164",
+        "0x0001253c",
+        "0x00012c34",
+        "0x00012e5c",
+        "0x0001321c",
+        "0x00013b10",
+        "0x00015f9c",
+        "0x00016a00",
+        "0x0001718c",
+        "0x00018234",
+        "0x000191f8",
+        "0x00019528",
+        "0x00019b04",
+        "0x0001dd88"
+      ],
+      "calls": [
+        {
+          "address": "0x0001b61e",
+          "instruction": "bl 0x00021d0c",
+          "bytes": "06f075fb",
+          "flows": [
+            "0x00021d0c"
+          ]
+        },
+        {
+          "address": "0x0001b628",
+          "instruction": "bl 0x00026a88",
+          "bytes": "0bf02efa",
+          "flows": [
+            "0x00026a88"
+          ]
+        },
+        {
+          "address": "0x0001b65c",
+          "instruction": "blx r7",
+          "bytes": "b847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001b662",
+          "instruction": "bl 0x00021dc0",
+          "bytes": "06f0adfb",
+          "flows": [
+            "0x00021dc0"
+          ]
+        },
+        {
+          "address": "0x0001b686",
+          "instruction": "bl 0x00021d8c",
+          "bytes": "06f081fb",
+          "flows": [
+            "0x00021d8c"
+          ]
+        },
+        {
+          "address": "0x0001b6b0",
+          "instruction": "blx 0x00003a08",
+          "bytes": "e8f7aae9",
+          "flows": [
+            "0x00003a08"
+          ]
+        },
+        {
+          "address": "0x0001b6ec",
+          "instruction": "blx r5",
+          "bytes": "a847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001b6f4",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e8f764e9",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x0001dd88",
+      "name": "GridGetSavedBuffer",
+      "callers": [
+        "0x00015f9c",
+        "0x00016a00",
+        "0x0001718c"
+      ],
+      "calls": [
+        {
+          "address": "0x0001ddbc",
+          "instruction": "bl 0x0002bc4c",
+          "bytes": "0df046ff",
+          "flows": [
+            "0x0002bc4c"
+          ]
+        },
+        {
+          "address": "0x0001ddca",
+          "instruction": "bl 0x0001b5c4",
+          "bytes": "fdf7fbfb",
+          "flows": [
+            "0x0001b5c4"
+          ]
+        },
+        {
+          "address": "0x0001ddf6",
+          "instruction": "bl 0x0002bc4c",
+          "bytes": "0df029ff",
+          "flows": [
+            "0x0002bc4c"
+          ]
+        },
+        {
+          "address": "0x0001de02",
+          "instruction": "bl 0x0001b5c4",
+          "bytes": "fdf7dffb",
+          "flows": [
+            "0x0001b5c4"
+          ]
+        },
+        {
+          "address": "0x0001de1c",
+          "instruction": "bl 0x00026a90",
+          "bytes": "08f038fe",
+          "flows": [
+            "0x00026a90"
+          ]
+        },
+        {
+          "address": "0x0001de32",
+          "instruction": "bl 0x00026a70",
+          "bytes": "08f01dfe",
+          "flows": [
+            "0x00026a70"
+          ]
+        },
+        {
+          "address": "0x0001de88",
+          "instruction": "blx r7",
+          "bytes": "b847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001de94",
+          "instruction": "blx 0x00003718",
+          "bytes": "e5f740ec",
+          "flows": [
+            "0x00003718"
+          ]
+        },
+        {
+          "address": "0x0001deda",
+          "instruction": "blx 0x00003a50",
+          "bytes": "e5f7baed",
+          "flows": [
+            "0x00003a50"
+          ]
+        },
+        {
+          "address": "0x0001defc",
+          "instruction": "blx 0x0000399c",
+          "bytes": "e5f74eed",
+          "flows": [
+            "0x0000399c"
+          ]
+        },
+        {
+          "address": "0x0001df04",
+          "instruction": "blx 0x00003a50",
+          "bytes": "e5f7a4ed",
+          "flows": [
+            "0x00003a50"
+          ]
+        },
+        {
+          "address": "0x0001df0e",
+          "instruction": "blx 0x0000392c",
+          "bytes": "e5f70eed",
+          "flows": [
+            "0x0000392c"
+          ]
+        },
+        {
+          "address": "0x0001df26",
+          "instruction": "blx 0x00003c0c",
+          "bytes": "e5f772ee",
+          "flows": [
+            "0x00003c0c"
+          ]
+        },
+        {
+          "address": "0x0001df60",
+          "instruction": "blx r7",
+          "bytes": "b847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001df6e",
+          "instruction": "bl 0x00026a90",
+          "bytes": "08f08ffd",
+          "flows": [
+            "0x00026a90"
+          ]
+        },
+        {
+          "address": "0x0001df92",
+          "instruction": "blx 0x000036cc",
+          "bytes": "e5f79ceb",
+          "flows": [
+            "0x000036cc"
+          ]
+        },
+        {
+          "address": "0x0001df98",
+          "instruction": "blx 0x00003ccc",
+          "bytes": "e5f798ee",
+          "flows": [
+            "0x00003ccc"
+          ]
+        },
+        {
+          "address": "0x0001dfa8",
+          "instruction": "blx 0x00003aa4",
+          "bytes": "e5f77ced",
+          "flows": [
+            "0x00003aa4"
+          ]
+        },
+        {
+          "address": "0x0001dfcc",
+          "instruction": "blx 0x00003740",
+          "bytes": "e5f7b8eb",
+          "flows": [
+            "0x00003740"
+          ]
+        },
+        {
+          "address": "0x0001e004",
+          "instruction": "blx 0x0000396c",
+          "bytes": "e5f7b2ec",
+          "flows": [
+            "0x0000396c"
+          ]
+        },
+        {
+          "address": "0x0001e010",
+          "instruction": "bl 0x0001dcdc",
+          "bytes": "fff764fe",
+          "flows": [
+            "0x0001dcdc"
+          ]
+        },
+        {
+          "address": "0x0001e046",
+          "instruction": "blx r7",
+          "bytes": "b847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001e04c",
+          "instruction": "bl 0x0001d42c",
+          "bytes": "fff7eef9",
+          "flows": [
+            "0x0001d42c"
+          ]
+        },
+        {
+          "address": "0x0001e076",
+          "instruction": "blx r7",
+          "bytes": "b847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001e096",
+          "instruction": "blx 0x00003c0c",
+          "bytes": "e5f7baed",
+          "flows": [
+            "0x00003c0c"
+          ]
+        },
+        {
+          "address": "0x0001e0d6",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e5f774ec",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x00012c34",
+      "name": "GridSaveRuntime",
+      "callers": [
+        "0x000092e0"
+      ],
+      "calls": [
+        {
+          "address": "0x00012c76",
+          "instruction": "blx r6",
+          "bytes": "b047",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x00012c78",
+          "instruction": "bl 0x00026e80",
+          "bytes": "14f002f9",
+          "flows": [
+            "0x00026e80"
+          ]
+        },
+        {
+          "address": "0x00012c8c",
+          "instruction": "bl 0x0002bc4c",
+          "bytes": "18f0deff",
+          "flows": [
+            "0x0002bc4c"
+          ]
+        },
+        {
+          "address": "0x00012c9e",
+          "instruction": "bl 0x0001b5c4",
+          "bytes": "08f091fc",
+          "flows": [
+            "0x0001b5c4"
+          ]
+        },
+        {
+          "address": "0x00012ca4",
+          "instruction": "blx 0x00003718",
+          "bytes": "f0f738ed",
+          "flows": [
+            "0x00003718"
+          ]
+        },
+        {
+          "address": "0x00012ce0",
+          "instruction": "blx 0x00003a50",
+          "bytes": "f0f7b6ee",
+          "flows": [
+            "0x00003a50"
+          ]
+        },
+        {
+          "address": "0x00012cfc",
+          "instruction": "blx 0x0000399c",
+          "bytes": "f0f74eee",
+          "flows": [
+            "0x0000399c"
+          ]
+        },
+        {
+          "address": "0x00012d04",
+          "instruction": "blx 0x00003a50",
+          "bytes": "f0f7a4ee",
+          "flows": [
+            "0x00003a50"
+          ]
+        },
+        {
+          "address": "0x00012d10",
+          "instruction": "blx 0x0000392c",
+          "bytes": "f0f70cee",
+          "flows": [
+            "0x0000392c"
+          ]
+        },
+        {
+          "address": "0x00012d24",
+          "instruction": "blx 0x00003c0c",
+          "bytes": "f0f772ef",
+          "flows": [
+            "0x00003c0c"
+          ]
+        },
+        {
+          "address": "0x00012d6a",
+          "instruction": "blx r9",
+          "bytes": "c847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x00012d88",
+          "instruction": "blx 0x000036cc",
+          "bytes": "f0f7a0ec",
+          "flows": [
+            "0x000036cc"
+          ]
+        },
+        {
+          "address": "0x00012d8e",
+          "instruction": "blx 0x00003ccc",
+          "bytes": "f0f79eef",
+          "flows": [
+            "0x00003ccc"
+          ]
+        },
+        {
+          "address": "0x00012d9c",
+          "instruction": "blx 0x00003aa4",
+          "bytes": "f0f782ee",
+          "flows": [
+            "0x00003aa4"
+          ]
+        },
+        {
+          "address": "0x00012db4",
+          "instruction": "blx 0x00003740",
+          "bytes": "f0f7c4ec",
+          "flows": [
+            "0x00003740"
+          ]
+        },
+        {
+          "address": "0x00012dce",
+          "instruction": "bl 0x0001ab84",
+          "bytes": "07f0d9fe",
+          "flows": [
+            "0x0001ab84"
+          ]
+        },
+        {
+          "address": "0x00012dee",
+          "instruction": "blx 0x00003c0c",
+          "bytes": "f0f70eef",
+          "flows": [
+            "0x00003c0c"
+          ]
+        },
+        {
+          "address": "0x00012df4",
+          "instruction": "blx 0x000039c0",
+          "bytes": "f0f7e4ed",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x000144d4",
+      "name": "GridLoadFile",
+      "callers": [
+        "0x00014734"
+      ],
+      "calls": [
+        {
+          "address": "0x00014518",
+          "instruction": "blx r4",
+          "bytes": "a047",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x00014522",
+          "instruction": "blx 0x00003718",
+          "bytes": "eff7fae8",
+          "flows": [
+            "0x00003718"
+          ]
+        },
+        {
+          "address": "0x00014562",
+          "instruction": "blx 0x00003a50",
+          "bytes": "eff776ea",
+          "flows": [
+            "0x00003a50"
+          ]
+        },
+        {
+          "address": "0x00014580",
+          "instruction": "blx 0x0000399c",
+          "bytes": "eff70cea",
+          "flows": [
+            "0x0000399c"
+          ]
+        },
+        {
+          "address": "0x00014588",
+          "instruction": "blx 0x00003a50",
+          "bytes": "eff762ea",
+          "flows": [
+            "0x00003a50"
+          ]
+        },
+        {
+          "address": "0x00014592",
+          "instruction": "blx 0x0000392c",
+          "bytes": "eff7cce9",
+          "flows": [
+            "0x0000392c"
+          ]
+        },
+        {
+          "address": "0x000145a8",
+          "instruction": "blx 0x00003c0c",
+          "bytes": "eff730eb",
+          "flows": [
+            "0x00003c0c"
+          ]
+        },
+        {
+          "address": "0x000145e4",
+          "instruction": "blx r7",
+          "bytes": "b847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x00014600",
+          "instruction": "blx 0x000036cc",
+          "bytes": "eff764e8",
+          "flows": [
+            "0x000036cc"
+          ]
+        },
+        {
+          "address": "0x00014606",
+          "instruction": "blx 0x00003ccc",
+          "bytes": "eff762eb",
+          "flows": [
+            "0x00003ccc"
+          ]
+        },
+        {
+          "address": "0x00014614",
+          "instruction": "blx 0x00003aa4",
+          "bytes": "eff746ea",
+          "flows": [
+            "0x00003aa4"
+          ]
+        },
+        {
+          "address": "0x00014630",
+          "instruction": "blx 0x00003740",
+          "bytes": "eff786e8",
+          "flows": [
+            "0x00003740"
+          ]
+        },
+        {
+          "address": "0x00014668",
+          "instruction": "blx r7",
+          "bytes": "b847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x0001466e",
+          "instruction": "bl 0x0001d42c",
+          "bytes": "08f0ddfe",
+          "flows": [
+            "0x0001d42c"
+          ]
+        },
+        {
+          "address": "0x00014698",
+          "instruction": "blx r7",
+          "bytes": "b847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x000146b2",
+          "instruction": "blx 0x00003c0c",
+          "bytes": "eff7acea",
+          "flows": [
+            "0x00003c0c"
+          ]
+        },
+        {
+          "address": "0x000146b8",
+          "instruction": "blx 0x000039c0",
+          "bytes": "eff782e9",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x0001aa98",
+      "name": "GridResetCells",
+      "callers": [
+        "0x0001ca54",
+        "0x0001d21c"
+      ],
+      "calls": [
+        {
+          "address": "0x0001aab6",
+          "instruction": "bl 0x00021dc0",
+          "bytes": "07f083f9",
+          "flows": [
+            "0x00021dc0"
+          ]
+        },
+        {
+          "address": "0x0001aac6",
+          "instruction": "bl 0x00021ccc",
+          "bytes": "07f001f9",
+          "flows": [
+            "0x00021ccc"
+          ]
+        },
+        {
+          "address": "0x0001aadc",
+          "instruction": "bl 0x00021d8c",
+          "bytes": "07f056f9",
+          "flows": [
+            "0x00021d8c"
+          ]
+        },
+        {
+          "address": "0x0001aafe",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e8f760ef",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x00021ccc",
+      "name": "GridRectClear",
+      "callers": [
+        "0x00012164",
+        "0x000148a0",
+        "0x00017700",
+        "0x00018234",
+        "0x0001aa98",
+        "0x0001cf60",
+        "0x0001efc0",
+        "0x00021e58",
+        "0x00022070",
+        "0x000221d4",
+        "0x00023a28",
+        "0x00023e24",
+        "0x00026a90",
+        "0x00026b60",
+        "0x00026ef4",
+        "0x000270fc",
+        "0x000282b0",
+        "0x0002900c",
+        "0x00029ee0",
+        "0x0002a2c0",
+        "0x0002f774",
+        "0x00030f3c",
+        "0x0003495c",
+        "0x00039afc",
+        "0x00039dc4"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x00021d0c",
+      "name": "GridRectSet",
+      "callers": [
+        "0x000104f4",
+        "0x00010788",
+        "0x000108d0",
+        "0x000109ec",
+        "0x00010b70",
+        "0x00010d04",
+        "0x00011058",
+        "0x00014734",
+        "0x000191f8",
+        "0x00019528",
+        "0x00019b04",
+        "0x0001b5c4",
+        "0x0001ca54",
+        "0x0001cf60",
+        "0x0001d21c",
+        "0x0001e294",
+        "0x00021dc0",
+        "0x00021e2c",
+        "0x00021e58",
+        "0x00021fd4",
+        "0x000221d4",
+        "0x00023a28",
+        "0x00023e24",
+        "0x00024100",
+        "0x000245e4",
+        "0x00024708",
+        "0x00024adc",
+        "0x00025480",
+        "0x00026ef4",
+        "0x000270fc",
+        "0x00027340",
+        "0x00027884",
+        "0x000279b8",
+        "0x00027ebc",
+        "0x000282b0",
+        "0x00028b2c",
+        "0x0002900c",
+        "0x00029ee0",
+        "0x0002a2c0",
+        "0x0002a500",
+        "0x0002a630",
+        "0x0002a9b4",
+        "0x0002abd0",
+        "0x0002b35c",
+        "0x0002f774",
+        "0x00030f3c",
+        "0x00033f58",
+        "0x00034220",
+        "0x0003495c",
+        "0x00039afc",
+        "0x00039dc4"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x00021d28",
+      "name": "GridRectLeft",
+      "callers": [
+        "0x0000ffac",
+        "0x00011058",
+        "0x00011c4c",
+        "0x00011e74",
+        "0x0001253c",
+        "0x00018234",
+        "0x0001ab84",
+        "0x0001bd90",
+        "0x0001ca54",
+        "0x0001cf60",
+        "0x0001d21c",
+        "0x0001e4bc",
+        "0x00021d58",
+        "0x00021e2c",
+        "0x00021e58",
+        "0x00021f14",
+        "0x00022070",
+        "0x0002216c",
+        "0x000221d4",
+        "0x00023a28",
+        "0x00023fe4",
+        "0x00024100",
+        "0x00024708",
+        "0x00024adc",
+        "0x00025480",
+        "0x00027340",
+        "0x000279b8",
+        "0x00027ebc",
+        "0x000282b0",
+        "0x00028b2c",
+        "0x0002900c",
+        "0x00029de0",
+        "0x00029ee0",
+        "0x0002a630",
+        "0x0002a9b4",
+        "0x0002abd0",
+        "0x0002b35c",
+        "0x0002dfa8",
+        "0x0002edd4",
+        "0x00030f3c",
+        "0x00034220",
+        "0x0003495c",
+        "0x00036fdc",
+        "0x0003746c",
+        "0x00037ef8",
+        "0x00038324",
+        "0x00039dc4"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x00021d2c",
+      "name": "GridRectTop",
+      "callers": [
+        "0x0000ffac",
+        "0x00011058",
+        "0x00011c4c",
+        "0x00011e74",
+        "0x0001253c",
+        "0x00018234",
+        "0x0001ab84",
+        "0x0001bd90",
+        "0x0001ca54",
+        "0x0001cf60",
+        "0x0001d21c",
+        "0x0001e4bc",
+        "0x00021d58",
+        "0x00021e2c",
+        "0x00021e58",
+        "0x00021f14",
+        "0x00022070",
+        "0x0002216c",
+        "0x000221d4",
+        "0x00023a28",
+        "0x00023fe4",
+        "0x00024100",
+        "0x00024708",
+        "0x00024adc",
+        "0x00025480",
+        "0x00027340",
+        "0x000279b8",
+        "0x00027ebc",
+        "0x000282b0",
+        "0x00028b2c",
+        "0x0002900c",
+        "0x00029de0",
+        "0x00029ee0",
+        "0x0002a630",
+        "0x0002a9b4",
+        "0x0002abd0",
+        "0x0002b35c",
+        "0x0002dfa8",
+        "0x0002edd4",
+        "0x00030f3c",
+        "0x00034220",
+        "0x0003495c",
+        "0x00036fdc",
+        "0x0003746c",
+        "0x00037ef8",
+        "0x00038324",
+        "0x00039dc4"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x00021d50",
+      "name": "GridRectWidth",
+      "callers": [
+        "0x0000ffac",
+        "0x00011058",
+        "0x00011c4c",
+        "0x00011e74",
+        "0x0001253c",
+        "0x00018234",
+        "0x0001ab84",
+        "0x0001bd90",
+        "0x0001ca54",
+        "0x0001cf60",
+        "0x0001d21c",
+        "0x0001e4bc",
+        "0x00021d58",
+        "0x00021d8c",
+        "0x00021da4",
+        "0x00021dc0",
+        "0x00021e58",
+        "0x0002216c",
+        "0x000221d4",
+        "0x00023a28",
+        "0x00023fe4",
+        "0x00024100",
+        "0x00024708",
+        "0x00024adc",
+        "0x00027340",
+        "0x000279b8",
+        "0x00027ebc",
+        "0x000282b0",
+        "0x00028b2c",
+        "0x0002900c",
+        "0x00029de0",
+        "0x00029ee0",
+        "0x0002a630",
+        "0x0002abd0",
+        "0x0002b35c",
+        "0x0002dfa8",
+        "0x0002edd4",
+        "0x00030f3c",
+        "0x00034220",
+        "0x0003495c",
+        "0x00036fdc",
+        "0x0003746c",
+        "0x00037ef8",
+        "0x00038324",
+        "0x00038830",
+        "0x00038cc4",
+        "0x00039afc",
+        "0x00039dc4"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x00021d54",
+      "name": "GridRectHeight",
+      "callers": [
+        "0x0001ab84",
+        "0x0001ca54",
+        "0x00021d58",
+        "0x00021d8c",
+        "0x00021da4",
+        "0x00021dc0",
+        "0x00021e58",
+        "0x0002216c",
+        "0x000221d4",
+        "0x00023a28",
+        "0x00024100",
+        "0x000279b8",
+        "0x00027ebc",
+        "0x000282b0",
+        "0x00028b2c",
+        "0x00029ee0",
+        "0x0002edd4",
+        "0x00030f3c",
+        "0x0003495c",
+        "0x00038324",
+        "0x00038830",
+        "0x00038cc4",
+        "0x00039afc",
+        "0x00039dc4"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x00021d8c",
+      "name": "GridRectCellCount",
+      "callers": [
+        "0x000104f4",
+        "0x00010788",
+        "0x000108d0",
+        "0x000109ec",
+        "0x00010b70",
+        "0x00010d04",
+        "0x00011058",
+        "0x00011c4c",
+        "0x00012164",
+        "0x0001253c",
+        "0x00013b10",
+        "0x00014734",
+        "0x00015f9c",
+        "0x0001718c",
+        "0x00018234",
+        "0x00019528",
+        "0x0001aa98",
+        "0x0001b5c4",
+        "0x0001cf60",
+        "0x0001efc0",
+        "0x00023a28",
+        "0x00023e24",
+        "0x00024100",
+        "0x000245e4",
+        "0x00024708",
+        "0x00024adc",
+        "0x00025480",
+        "0x000270fc",
+        "0x00027340",
+        "0x00027884",
+        "0x000279b8",
+        "0x00027ebc",
+        "0x000282b0",
+        "0x00028b2c",
+        "0x0002900c",
+        "0x00029ee0",
+        "0x0002a2c0",
+        "0x0002a500",
+        "0x0002a630",
+        "0x0002a9b4",
+        "0x0002abd0",
+        "0x0002b35c",
+        "0x0002f774",
+        "0x00030f3c",
+        "0x00033f58",
+        "0x00034220",
+        "0x0003495c",
+        "0x0003746c",
+        "0x00039afc",
+        "0x00039dc4"
+      ],
+      "calls": [
+        {
+          "address": "0x00021d90",
+          "instruction": "bl 0x00021d50",
+          "bytes": "fff7deff",
+          "flows": [
+            "0x00021d50"
+          ]
+        },
+        {
+          "address": "0x00021d98",
+          "instruction": "bl 0x00021d54",
+          "bytes": "fff7dcff",
+          "flows": [
+            "0x00021d54"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x00021dc0",
+      "name": "GridCenteredRect",
+      "callers": [
+        "0x000104f4",
+        "0x00010788",
+        "0x000108d0",
+        "0x000109ec",
+        "0x00010b70",
+        "0x00010d04",
+        "0x00011058",
+        "0x00012164",
+        "0x00014734",
+        "0x00018234",
+        "0x0001aa98",
+        "0x0001b5c4",
+        "0x0001cf60",
+        "0x0001e294",
+        "0x0001efc0",
+        "0x00023a28",
+        "0x00023e24",
+        "0x00024100",
+        "0x000245e4",
+        "0x00024708",
+        "0x00024adc",
+        "0x00025480",
+        "0x000270fc",
+        "0x00027340",
+        "0x00027884",
+        "0x000279b8",
+        "0x00027ebc",
+        "0x000282b0",
+        "0x00028b2c",
+        "0x0002900c",
+        "0x00029ee0",
+        "0x0002a2c0",
+        "0x0002a500",
+        "0x0002a630",
+        "0x0002a9b4",
+        "0x0002abd0",
+        "0x0002b35c",
+        "0x0002f774",
+        "0x00030f3c",
+        "0x00033f58",
+        "0x00034220",
+        "0x0003495c",
+        "0x0003746c",
+        "0x00039afc",
+        "0x00039dc4"
+      ],
+      "calls": [
+        {
+          "address": "0x00021dd8",
+          "instruction": "bl 0x00021d50",
+          "bytes": "fff7baff",
+          "flows": [
+            "0x00021d50"
+          ]
+        },
+        {
+          "address": "0x00021de0",
+          "instruction": "bl 0x00021d54",
+          "bytes": "fff7b8ff",
+          "flows": [
+            "0x00021d54"
+          ]
+        },
+        {
+          "address": "0x00021dec",
+          "instruction": "bl 0x00021d50",
+          "bytes": "fff7b0ff",
+          "flows": [
+            "0x00021d50"
+          ]
+        },
+        {
+          "address": "0x00021df8",
+          "instruction": "bl 0x00021d54",
+          "bytes": "fff7acff",
+          "flows": [
+            "0x00021d54"
+          ]
+        },
+        {
+          "address": "0x00021e0a",
+          "instruction": "bl 0x00021d0c",
+          "bytes": "fff77fff",
+          "flows": [
+            "0x00021d0c"
+          ]
+        },
+        {
+          "address": "0x00021e1e",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e1f7d0ed",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x00022030",
+      "name": "GridRectMergeInto",
+      "callers": [
+        "0x000104f4",
+        "0x0001253c",
+        "0x00013b10",
+        "0x00015f9c",
+        "0x0001718c",
+        "0x00018234",
+        "0x00019528",
+        "0x0001ca54",
+        "0x0001cf60",
+        "0x0001d21c",
+        "0x00024adc",
+        "0x000282b0",
+        "0x00028b2c",
+        "0x0002900c",
+        "0x0002b35c",
+        "0x00033f58",
+        "0x00039dc4"
+      ],
+      "calls": [
+        {
+          "address": "0x0002204a",
+          "instruction": "bl 0x00021f14",
+          "bytes": "fff763ff",
+          "flows": [
+            "0x00021f14"
+          ]
+        },
+        {
+          "address": "0x00022064",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e1f7acec",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x00021f14",
+      "name": "GridRectUnion",
+      "callers": [
+        "0x00021fd4",
+        "0x00022030",
+        "0x00024100"
+      ],
+      "calls": [
+        {
+          "address": "0x00021f2e",
+          "instruction": "bl 0x00021da4",
+          "bytes": "fff739ff",
+          "flows": [
+            "0x00021da4"
+          ]
+        },
+        {
+          "address": "0x00021f4e",
+          "instruction": "bl 0x00021da4",
+          "bytes": "fff729ff",
+          "flows": [
+            "0x00021da4"
+          ]
+        },
+        {
+          "address": "0x00021f60",
+          "instruction": "bl 0x00021d28",
+          "bytes": "fff7e2fe",
+          "flows": [
+            "0x00021d28"
+          ]
+        },
+        {
+          "address": "0x00021f68",
+          "instruction": "bl 0x00021d28",
+          "bytes": "fff7defe",
+          "flows": [
+            "0x00021d28"
+          ]
+        },
+        {
+          "address": "0x00021f78",
+          "instruction": "bl 0x00021d2c",
+          "bytes": "fff7d8fe",
+          "flows": [
+            "0x00021d2c"
+          ]
+        },
+        {
+          "address": "0x00021f80",
+          "instruction": "bl 0x00021d2c",
+          "bytes": "fff7d4fe",
+          "flows": [
+            "0x00021d2c"
+          ]
+        },
+        {
+          "address": "0x00021f90",
+          "instruction": "bl 0x00021d30",
+          "bytes": "fff7cefe",
+          "flows": [
+            "0x00021d30"
+          ]
+        },
+        {
+          "address": "0x00021f98",
+          "instruction": "bl 0x00021d30",
+          "bytes": "fff7cafe",
+          "flows": [
+            "0x00021d30"
+          ]
+        },
+        {
+          "address": "0x00021fa8",
+          "instruction": "bl 0x00021d40",
+          "bytes": "fff7cafe",
+          "flows": [
+            "0x00021d40"
+          ]
+        },
+        {
+          "address": "0x00021fb0",
+          "instruction": "bl 0x00021d40",
+          "bytes": "fff7c6fe",
+          "flows": [
+            "0x00021d40"
+          ]
+        },
+        {
+          "address": "0x00021fc2",
+          "instruction": "bl 0x00021cec",
+          "bytes": "fff793fe",
+          "flows": [
+            "0x00021cec"
+          ]
+        },
+        {
+          "address": "0x00021fc8",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e1f7faec",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x00021a94",
+      "name": "GridCellDigest",
+      "callers": [
+        "0x0001ab84",
+        "0x0001ca54",
+        "0x0001cf60",
+        "0x0001d21c"
+      ],
+      "calls": [
+        {
+          "address": "0x00021b06",
+          "instruction": "bl 0x000212c0",
+          "bytes": "fff7dbfb",
+          "flows": [
+            "0x000212c0"
+          ]
+        },
+        {
+          "address": "0x00021b30",
+          "instruction": "blx 0x00003874",
+          "bytes": "e1f7a0ee",
+          "flows": [
+            "0x00003874"
+          ]
+        },
+        {
+          "address": "0x00021b46",
+          "instruction": "bl 0x000212c0",
+          "bytes": "fff7bbfb",
+          "flows": [
+            "0x000212c0"
+          ]
+        },
+        {
+          "address": "0x00021b70",
+          "instruction": "bl 0x000212c0",
+          "bytes": "fff7a6fb",
+          "flows": [
+            "0x000212c0"
+          ]
+        },
+        {
+          "address": "0x00021b7a",
+          "instruction": "blx 0x00003874",
+          "bytes": "e1f77cee",
+          "flows": [
+            "0x00003874"
+          ]
+        },
+        {
+          "address": "0x00021b88",
+          "instruction": "blx 0x0000368c",
+          "bytes": "e1f780ed",
+          "flows": [
+            "0x0000368c"
+          ]
+        },
+        {
+          "address": "0x00021b8e",
+          "instruction": "blx 0x000039c0",
+          "bytes": "e1f718ef",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    },
+    {
+      "function_entry": "0x0002bc4c",
+      "name": "GridCellSet",
+      "callers": [
+        "0x000104f4",
+        "0x00010788",
+        "0x000108d0",
+        "0x000109ec",
+        "0x00010b70",
+        "0x00010d04",
+        "0x00011058",
+        "0x00011c4c",
+        "0x00011e74",
+        "0x00011f44",
+        "0x00012164",
+        "0x0001253c",
+        "0x00012c34",
+        "0x00012e5c",
+        "0x0001321c",
+        "0x00013b10",
+        "0x00014734",
+        "0x00015f9c",
+        "0x00016a00",
+        "0x0001718c",
+        "0x00018234",
+        "0x000191f8",
+        "0x00019528",
+        "0x00019b04",
+        "0x0001ab84",
+        "0x0001ca54",
+        "0x0001cf60",
+        "0x0001d21c",
+        "0x0001dd88",
+        "0x00023a28",
+        "0x00023e24",
+        "0x00023fe4",
+        "0x00024100",
+        "0x000245e4",
+        "0x00024708",
+        "0x00024adc",
+        "0x00025480",
+        "0x000270fc",
+        "0x00027340",
+        "0x00027884",
+        "0x000279b8",
+        "0x00027ebc",
+        "0x000282b0",
+        "0x00028b2c",
+        "0x0002900c",
+        "0x00029ee0",
+        "0x0002a2c0",
+        "0x0002a500",
+        "0x0002a630",
+        "0x0002a9b4",
+        "0x0002abd0",
+        "0x0002b35c",
+        "0x0002f774",
+        "0x00030f3c",
+        "0x00033f58",
+        "0x00034220",
+        "0x0003495c",
+        "0x00039dc4"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x00003b64",
+      "name": "read",
+      "callers": [
+        "0x0001ca54",
+        "0x0001cf60",
+        "0x0001d21c",
+        "0x0001d42c"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x00003c9c",
+      "name": "write",
+      "callers": [
+        "0x00011058",
+        "0x0001ab84",
+        "0x00038324",
+        "0x00038830",
+        "0x00038cc4"
+      ],
+      "calls": []
+    },
+    {
+      "function_entry": "0x0001718c",
+      "name": "FUN_0001718c",
+      "callers": [
+        "0x0000897c",
+        "0x000092e0"
+      ],
+      "calls": [
+        {
+          "address": "0x000171f0",
+          "instruction": "blx r5",
+          "bytes": "a847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x000171f6",
+          "instruction": "bl 0x00026e80",
+          "bytes": "0ff043fe",
+          "flows": [
+            "0x00026e80"
+          ]
+        },
+        {
+          "address": "0x0001720a",
+          "instruction": "bl 0x0002bc4c",
+          "bytes": "14f01ffd",
+          "flows": [
+            "0x0002bc4c"
+          ]
+        },
+        {
+          "address": "0x0001721a",
+          "instruction": "bl 0x0001b5c4",
+          "bytes": "04f0d3f9",
+          "flows": [
+            "0x0001b5c4"
+          ]
+        },
+        {
+          "address": "0x0001721e",
+          "instruction": "bl 0x00026e80",
+          "bytes": "0ff02ffe",
+          "flows": [
+            "0x00026e80"
+          ]
+        },
+        {
+          "address": "0x00017228",
+          "instruction": "bl 0x0002bc4c",
+          "bytes": "14f010fd",
+          "flows": [
+            "0x0002bc4c"
+          ]
+        },
+        {
+          "address": "0x00017238",
+          "instruction": "bl 0x0001b5c4",
+          "bytes": "04f0c4f9",
+          "flows": [
+            "0x0001b5c4"
+          ]
+        },
+        {
+          "address": "0x000172a2",
+          "instruction": "blx r6",
+          "bytes": "b047",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x000172aa",
+          "instruction": "bl 0x000221c4",
+          "bytes": "0af08bff",
+          "flows": [
+            "0x000221c4"
+          ]
+        },
+        {
+          "address": "0x000172d8",
+          "instruction": "blx 0x0000396c",
+          "bytes": "ecf748eb",
+          "flows": [
+            "0x0000396c"
+          ]
+        },
+        {
+          "address": "0x000172e0",
+          "instruction": "blx 0x0000396c",
+          "bytes": "ecf744eb",
+          "flows": [
+            "0x0000396c"
+          ]
+        },
+        {
+          "address": "0x000172f2",
+          "instruction": "bl 0x000106f8",
+          "bytes": "f9f701fa",
+          "flows": [
+            "0x000106f8"
+          ]
+        },
+        {
+          "address": "0x0001734e",
+          "instruction": "blx r6",
+          "bytes": "b047",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x00017398",
+          "instruction": "blx r5",
+          "bytes": "a847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x000173e2",
+          "instruction": "blx r5",
+          "bytes": "a847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x000173f2",
+          "instruction": "bl 0x00023824",
+          "bytes": "0cf017fa",
+          "flows": [
+            "0x00023824"
+          ]
+        },
+        {
+          "address": "0x00017402",
+          "instruction": "bl 0x0000eee0",
+          "bytes": "f7f76dfd",
+          "flows": [
+            "0x0000eee0"
+          ]
+        },
+        {
+          "address": "0x000174a4",
+          "instruction": "bl 0x00023828",
+          "bytes": "0cf0c0f9",
+          "flows": [
+            "0x00023828"
+          ]
+        },
+        {
+          "address": "0x000174ac",
+          "instruction": "bl 0x00023814",
+          "bytes": "0cf0b2f9",
+          "flows": [
+            "0x00023814"
+          ]
+        },
+        {
+          "address": "0x000174b6",
+          "instruction": "bl 0x00023854",
+          "bytes": "0cf0cdf9",
+          "flows": [
+            "0x00023854"
+          ]
+        },
+        {
+          "address": "0x000174be",
+          "instruction": "bl 0x00023824",
+          "bytes": "0cf0b1f9",
+          "flows": [
+            "0x00023824"
+          ]
+        },
+        {
+          "address": "0x000174cc",
+          "instruction": "bl 0x00023824",
+          "bytes": "0cf0aaf9",
+          "flows": [
+            "0x00023824"
+          ]
+        },
+        {
+          "address": "0x000174da",
+          "instruction": "bl 0x00023824",
+          "bytes": "0cf0a3f9",
+          "flows": [
+            "0x00023824"
+          ]
+        },
+        {
+          "address": "0x00017530",
+          "instruction": "blx r5",
+          "bytes": "a847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x00017544",
+          "instruction": "bl 0x000221c4",
+          "bytes": "0af03efe",
+          "flows": [
+            "0x000221c4"
+          ]
+        },
+        {
+          "address": "0x00017552",
+          "instruction": "bl 0x00022030",
+          "bytes": "0af06dfd",
+          "flows": [
+            "0x00022030"
+          ]
+        },
+        {
+          "address": "0x00017558",
+          "instruction": "bl 0x00021d8c",
+          "bytes": "0af018fc",
+          "flows": [
+            "0x00021d8c"
+          ]
+        },
+        {
+          "address": "0x00017598",
+          "instruction": "blx 0x0000396c",
+          "bytes": "ecf7e8e9",
+          "flows": [
+            "0x0000396c"
+          ]
+        },
+        {
+          "address": "0x000175a0",
+          "instruction": "blx 0x0000396c",
+          "bytes": "ecf7e4e9",
+          "flows": [
+            "0x0000396c"
+          ]
+        },
+        {
+          "address": "0x000175b8",
+          "instruction": "bl 0x000106f8",
+          "bytes": "f9f79ef8",
+          "flows": [
+            "0x000106f8"
+          ]
+        },
+        {
+          "address": "0x000175bc",
+          "instruction": "bl 0x00026e80",
+          "bytes": "0ff060fc",
+          "flows": [
+            "0x00026e80"
+          ]
+        },
+        {
+          "address": "0x000175cc",
+          "instruction": "bl 0x0001dd88",
+          "bytes": "06f0dcfb",
+          "flows": [
+            "0x0001dd88"
+          ]
+        },
+        {
+          "address": "0x00017606",
+          "instruction": "blx r5",
+          "bytes": "a847",
+          "flows": [
+            "0x000238c8"
+          ]
+        },
+        {
+          "address": "0x00017610",
+          "instruction": "bl 0x000221c4",
+          "bytes": "0af0d8fd",
+          "flows": [
+            "0x000221c4"
+          ]
+        },
+        {
+          "address": "0x00017620",
+          "instruction": "bl 0x00022030",
+          "bytes": "0af006fd",
+          "flows": [
+            "0x00022030"
+          ]
+        },
+        {
+          "address": "0x00017626",
+          "instruction": "bl 0x00021d8c",
+          "bytes": "0af0b1fb",
+          "flows": [
+            "0x00021d8c"
+          ]
+        },
+        {
+          "address": "0x00017646",
+          "instruction": "bl 0x000106f8",
+          "bytes": "f9f757f8",
+          "flows": [
+            "0x000106f8"
+          ]
+        },
+        {
+          "address": "0x00017656",
+          "instruction": "bl 0x00022030",
+          "bytes": "0af0ebfc",
+          "flows": [
+            "0x00022030"
+          ]
+        },
+        {
+          "address": "0x0001765c",
+          "instruction": "bl 0x00021d8c",
+          "bytes": "0af096fb",
+          "flows": [
+            "0x00021d8c"
+          ]
+        },
+        {
+          "address": "0x00017688",
+          "instruction": "blx 0x000039c0",
+          "bytes": "ecf79ae9",
+          "flows": [
+            "0x000039c0"
+          ]
+        }
+      ]
+    }
+  ],
+  "corrections_to_earlier_prose": [
+    "ASSESSMENT correctly reports ordinary packed v2 offsets. Its version2 reader anchor alone does not contain magic/version/header-length checks: those belong to dispatcher0x1d42c.",
+    "Exact-size/nonzero-dimension checks in map_codec.py are stricter than the native reader; do not attribute them to firmware.",
+    "MD5 match covers cells only and does not validate origin, dimensions, scale or file authenticity. Four words are checked before copying, but mismatch is not explicitly translated into stream failure.",
+    "A native load can return a cached grid; one branch0x1718c explicitly drops caches around a read. Neither observation proves universal fresh-file loading.",
+    "Grid save bool checks stream state before close, with no close-result/durability validation. This is separate from asynchronous persistence rename logic.",
+    "Zero-cell-product path yields zero digest via NULL buffer rather than MD5(empty); ordinary saved grids are nonzero."
+  ],
+  "open_questions": [
+    {
+      "status": "unresolved",
+      "question": "Exact occupancy-byte probability mapping, including intermediate values;0/128/255 meanings are not asserted by this recovery."
+    },
+    {
+      "status": "unresolved",
+      "question": "All outer synchronization and concurrency guarantees around cache read/drop; storage-local code has no cache mutex."
+    },
+    {
+      "status": "unresolved",
+      "question": "Which higher-level startup/load branches always drop caches, including flag12 handling and process restart behavior? Only bounded branch verified."
+    },
+    {
+      "status": "unresolved",
+      "question": "Source meaning of metadata+32..35, ref+9..11, and boundary owner state/branch flags."
+    },
+    {
+      "status": "unresolved",
+      "question": "Legacy format readers0x1ca54/0x1cf60 and short-read exception behavior; not expanded."
+    },
+    {
+      "status": "unresolved",
+      "question": "Higher-level grid/persistence/catalog acknowledgment ordering and durability; owned by orchestration/integration."
+    }
+  ],
+  "validation": {
+    "tests": "test_grid_storage.py",
+    "log": "validation-tests.log",
+    "saved_grids": "saved-grid-checks.json",
+    "instruction_subset": "instruction-checks.json",
+    "reopen_comparison": "27 C files byte-identical; selected.json and types.json structurally identical (types.json object-key order differs). Separate no-annotations headless run on closed/reopened final project.",
+    "final_apply": "Final annotation document applied successfully to fresh baseline copy ghidra-project-final, with exact pristine preconditions.",
+    "limitations": "Synthetic/codec/data/export tests are not firmware execution and do not establish runtime safety.",
+    "generated_c_sha256": {
+      "exports-final-reopened/0x0001ab84.c": "0a99a5f8226ed3b06bb081b5197a13c1b58112e50b6db2973a7aaeea72b562de",
+      "exports-final-reopened/0x0001d21c.c": "f4a010a0ef2ebf46a4a74c09ac403fe78051d23cb4f93b276c3c06e01b65d9b7",
+      "exports-final-reopened/0x0001d42c.c": "c20604099fd72670eacf1b5520808f7efde4e14f05864d0092a4297c758988fd",
+      "exports-final-reopened/0x00026b60.c": "6395727d65450df96af77c17e5a4e787d018ca11edac7a0986e6fa6bdbcd453d",
+      "exports-final-reopened/0x00026a70.c": "1694234ef23b0c08b5c1169aaf9370d7d89e66d78e3f0ef8a0de91f5a502ebe6",
+      "exports-final-reopened/0x00026a90.c": "b6fc08bee13bfaaa9fa88165972b98338726beb425597b11885b6e215dd856e7",
+      "exports-final-reopened/0x000106f8.c": "8319f46a56beb3b8e487b605172a5cecf6065594e2c88dd1d5993645dc6671cc",
+      "exports-final-reopened/0x0001b5c4.c": "c086b42f544ebbd82ffab76915cc0dd8bc354a503827b3ee8e886742420fc538",
+      "exports-final-reopened/0x0001dd88.c": "d8289c5159488675ad85e0d28dd1824c0e54794c0ebbef837cb4121d6c4ce500",
+      "exports-final-reopened/0x00012c34.c": "6fd2c0d0f36057821452df1f4bdad213fb17e797f4f8276a183834857bc0107c",
+      "exports-final-reopened/0x000144d4.c": "25db8803fc56a38900d7225dd58f67c8041fb76281a62a7286455b3fd3290ece",
+      "exports-final-reopened/0x0001aa98.c": "f839d66d1b0199902d1915ae40cf92b8c18337ed3e243c49d605b7cbff019ac5",
+      "exports-final-reopened/0x00021ccc.c": "88195134fd23bb6ea3bfb349852fb12759b6b1a7d5d1bf8050d4dd98fe9eae72",
+      "exports-final-reopened/0x00021d0c.c": "c9de1725738c0765b9b9b3be94183c94ae0bda827f081894715a18085cc88a7a",
+      "exports-final-reopened/0x00021d28.c": "dccf1dc8b8a2791a0c9e90e5e2654c98154f8c8009b5fdcce1bc0ba38fb927b8",
+      "exports-final-reopened/0x00021d2c.c": "9f4024f240c2485de14de0f6da6ea06401ae40a0e0efc6652abab5233e9be1ca",
+      "exports-final-reopened/0x00021d50.c": "a6cf1dbbd07db56f5c20b062921c595e346e8d78527fad56b9d60f2df50528da",
+      "exports-final-reopened/0x00021d54.c": "ccc18c7f6a81104962760cab70da860279ddde3e1dff1cc1e1d7a75978c441f4",
+      "exports-final-reopened/0x00021d8c.c": "5f541360f271979b43ef332c56ef5ea5c9c032da5f8314c90fca700dc8cc5926",
+      "exports-final-reopened/0x00021dc0.c": "6569db93e5333aa236541943fcccdb21c8471cd7ae30d25230ef972ed7eb9769",
+      "exports-final-reopened/0x00022030.c": "992e1cda16f6f7d3d250545f33c9aac14e9c0570634fe7b911ea2cf8c499c363",
+      "exports-final-reopened/0x00021f14.c": "4f2026a7408b90d8181a89c70d6038448784ca47502b1b02777c60382a9896b2",
+      "exports-final-reopened/0x00021a94.c": "239e132af0e1dd1adf4031afa8a5fa7817f646e6f6b864fd0715eb68b3e19e27",
+      "exports-final-reopened/0x0002bc4c.c": "37e0a30518a7943ae64ef56415a153d161f506ffbc78b0b07d3ff975536033d8",
+      "exports-final-reopened/0x00003b64.c": "0e7598b0558f7ee3904f463b0cc92e5512e0a70787b3ffbb61b50a90f37db24d",
+      "exports-final-reopened/0x00003c9c.c": "a898ffe3f6579536233cb0c863d6ece6afcfd8f3b0712680d87fee0a48c54dc5",
+      "exports-final-reopened/0x0001718c.c": "51e75225bbadf497d901bc9058225c89c64f4384f593806dcdad207525688cb5"
+    }
+  },
+  "superseded_artifacts": [
+    "ghidra-project (initial scratch/provisional annotations)",
+    "exports-applied (provisional; NOT integration authority)"
+  ]
+}

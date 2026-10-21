@@ -1,0 +1,467 @@
+{
+  "version": 1,
+  "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+  "types": [
+    {
+      "name": "PersistTaskState",
+      "declaration": "typedef enum PersistTaskState { PersistTaskIdle=0, PersistTaskCopying=1, PersistTaskReady=2, PersistTaskEncoding=3, PersistTaskWriting=4, PersistTaskCanceled=5 } PersistTaskState;"
+    },
+    {
+      "name": "PersistBufferRegionView",
+      "declaration": "typedef struct PersistBufferRegionView { int region_id; unsigned int buffer_offset; unsigned int byte_length; } PersistBufferRegionView;"
+    },
+    {
+      "name": "PersistMapTaskView",
+      "declaration": "typedef struct PersistMapTaskView { unsigned int task_index; int owner_pid; PersistTaskState state; unsigned int destination_mask; PersistBufferRegionView regions[30]; unsigned int region_count; int buffer_fd; void *buffer_mapping; unsigned int buffer_length; unsigned char task_mutex_storage[24]; } PersistMapTaskView;"
+    },
+    {
+      "name": "PersistBufferRootView",
+      "declaration": "typedef struct PersistBufferRootView { unsigned int magic; unsigned int format_version; PersistMapTaskView task; unsigned char unknown_time_ms_storage[8]; unsigned char root_mutex_storage[24]; } PersistBufferRootView;"
+    },
+    {
+      "name": "MapPersistFlag",
+      "declaration": "typedef int MapPersistFlag;"
+    },
+    {
+      "name": "MapCatalogEntry",
+      "declaration": "typedef struct MapCatalogEntry { unsigned char primary_flag_byte; unsigned char backup_flag_byte; unsigned char unknown_02; unsigned char name_length_byte; char name_bytes[32]; } MapCatalogEntry;"
+    },
+    {
+      "name": "MapCatalogPayload",
+      "declaration": "typedef struct MapCatalogPayload { unsigned char initialized; MapCatalogEntry entries[4]; unsigned char unknown_91[3]; MapPersistFlag current_flag; unsigned char use_new_map; unsigned char unknown_99[3]; } MapCatalogPayload;"
+    }
+  ],
+  "functions": [
+    {
+      "address": "0xe034",
+      "expect": {
+        "signature": "undefined GetMultiMapFilePath(char * param_1)",
+        "plate_comment": "GetMultiMapFilePath(char*)"
+      },
+      "signature": "void GetMultiMapFilePath(char *path_out)",
+      "plate_comment": "Catalog path helper: appends /rockrobo/SharedMultiMapInfo to GetUserDataPath output; sets output[127]=0. Caller supplies 128-byte storage; no general arbitrary-path selection."
+    },
+    {
+      "address": "0xe08c",
+      "expect": {
+        "signature": "undefined SerializeMultiMapInfo(void)",
+        "plate_comment": "SerializeMultiMapInfo()"
+      },
+      "signature": "void SerializeMultiMapInfo(void)",
+      "plate_comment": "Catalog serialization boundary: builds catalog path, calls generic PersistSave(type=1,path). This is not PersistSaveMapInfo. Callers do not consume the save result; this wrapper adds no transaction/durability guarantee."
+    },
+    {
+      "address": "0xe0c4",
+      "expect": {
+        "signature": "undefined InitSharedMultiMapInfo(void)",
+        "plate_comment": "InitSharedMultiMapInfo()"
+      },
+      "signature": "void InitSharedMultiMapInfo(void)",
+      "plate_comment": "Region 8 catalog initialization: subscribes persistence type 1 to region 8, acquires SharedRegionLockGuard(1,8), obtains 0x9c bytes, clears all bytes, sets initialized=1, signed current_flag at +0x94=-1 and use_new_map at +0x98=0. MapCatalogPayload is a byte-layout proposal, not an original C++ class."
+    },
+    {
+      "address": "0xe164",
+      "expect": {
+        "signature": "undefined DeserializeMultiMapInfo(void)",
+        "plate_comment": "DeserializeMultiMapInfo()"
+      },
+      "signature": "void DeserializeMultiMapInfo(void)",
+      "plate_comment": "Initializes catalog before access(path,F_OK). access result -1 (not proven ENOENT specifically) takes fallback: only checks user_map0; if accessible sets first primary byte and current_flag to 2 under region-8 guard, unlocks then PersistSave(1,path). Other access results call PersistLoad(1,path) once and ignore result; unloadable existing catalogs do not trigger fallback."
+    },
+    {
+      "address": "0xe210",
+      "expect": {
+        "signature": "undefined GetSharedCurrentMapFlag(void)",
+        "plate_comment": "GetSharedCurrentMapFlag()"
+      },
+      "signature": "MapPersistFlag GetSharedCurrentMapFlag(void)",
+      "plate_comment": "Returns signed 32-bit catalog current_flag at region8+0x94 under SharedRegionLockGuard(1,8). -1 is initialized/no-current sentinel; this is not an external ID or grid index."
+    },
+    {
+      "address": "0xe290",
+      "expect": {
+        "signature": "undefined SetSharedCurrentMapFlag(_IPC_Slam_MapFlag param_1)",
+        "plate_comment": "SetSharedCurrentMapFlag(_IPC_Slam_MapFlag)"
+      },
+      "signature": "void SetSharedCurrentMapFlag(MapPersistFlag flag)",
+      "plate_comment": "Stores full 32-bit flag at region8+0x94 under guard, releases guard, then SerializeMultiMapInfo. No flag range validation or load-success check here."
+    },
+    {
+      "address": "0xe314",
+      "expect": {
+        "signature": "undefined GetSharedUseNewMap(void)",
+        "plate_comment": "GetSharedUseNewMap()"
+      },
+      "signature": "unsigned char GetSharedUseNewMap(void)",
+      "plate_comment": "Reads catalog byte region8+0x98 under region guard and returns it zero-extended. Does not normalize arbitrary loaded bytes."
+    },
+    {
+      "address": "0xe394",
+      "expect": {
+        "signature": "undefined SetSharedUseNewMap(bool param_1)",
+        "plate_comment": "SetSharedUseNewMap(bool)"
+      },
+      "signature": "void SetSharedUseNewMap(bool use_new_map)",
+      "plate_comment": "Stores region8+0x98; when input is nonzero also stores current_flag=-1. Releases region guard before SerializeMultiMapInfo."
+    },
+    {
+      "address": "0xe424",
+      "expect": {
+        "signature": "undefined GetSharedUserMapInfo(void)",
+        "plate_comment": "GetSharedUserMapInfo()"
+      },
+      "signature": "MapCatalogEntry *GetSharedUserMapInfo(void)",
+      "plate_comment": "Returns region8+1, start of four 0x24-byte catalog entries. Region guard has already been released before return: this is a live shared pointer, not a locked snapshot. MapCatalogEntry leaves entry+2 unknown; +3 is stored name length and +4 has 32 name bytes."
+    },
+    {
+      "address": "0xe4a4",
+      "expect": {
+        "signature": "undefined GetSharedUserMapCount(void)",
+        "plate_comment": "GetSharedUserMapCount()"
+      },
+      "signature": "unsigned int GetSharedUserMapCount(void)",
+      "plate_comment": "Under region8 guard, counts four entries whose primary flag byte is nonzero (stride 0x24). No primary-range validation."
+    },
+    {
+      "address": "0xe534",
+      "expect": {
+        "signature": "undefined GetSharedMultiMapList(uchar * param_1, uint * param_2)",
+        "plate_comment": "GetSharedMultiMapList(unsigned char*, unsigned int*)"
+      },
+      "signature": "void GetSharedMultiMapList(unsigned char *flags_out, unsigned int *count_out)",
+      "plate_comment": "Under region8 guard, emits primary bytes from four 0x24-byte entries when nonzero, stores count. Caller needs room for four bytes; no capacity argument."
+    },
+    {
+      "address": "0xe5cc",
+      "expect": {
+        "signature": "undefined GetBakMapList(int param_1)",
+        "plate_comment": "GetBakMapList(int)"
+      },
+      "signature": "unsigned char *GetBakMapList(MapPersistFlag primary_flag)",
+      "plate_comment": "Scans four primary bytes for exact integer equality and returns pointer to matching backup byte at region8+2+i*0x24, or NULL. Guard released before returning pointer; byte 0 means no backup in mutation/allocation paths. No rejection of primary_flag=0 here."
+    },
+    {
+      "address": "0xe668",
+      "expect": {
+        "signature": "undefined ClearMultiMap(int param_1)",
+        "plate_comment": "ClearMultiMap(int)"
+      },
+      "signature": "void ClearMultiMap(MapPersistFlag primary_flag)",
+      "plate_comment": "First matching primary entry: clears primary, backup, stored name length and 32 name bytes; leaves entry+2 unknown byte untouched. Sets current=-1 if clearing current. Unlocks before catalog serialization; no match means no save. Does not delete grid/persistence files."
+    },
+    {
+      "address": "0xe72c",
+      "expect": {
+        "signature": "undefined ClearMultiMapExcept(int param_1)",
+        "plate_comment": "ClearMultiMapExcept(int)"
+      },
+      "signature": "void ClearMultiMapExcept(MapPersistFlag retained_flag)",
+      "plate_comment": "retained_flag=-1 resets all 0x9c bytes then initialized=1,current=-1,use_new_map=0. Otherwise clears nonmatching entries primary/backup/name length/32 name bytes, leaving unknown entry+2; invalidates current if not retained. Guard released before serialization. Does not delete map files."
+    },
+    {
+      "address": "0xe834",
+      "expect": {
+        "signature": "undefined ClearBakMap(int param_1)",
+        "plate_comment": "ClearBakMap(int)"
+      },
+      "signature": "void ClearBakMap(MapPersistFlag backup_flag)",
+      "plate_comment": "First matching backup byte is cleared under region8 guard, then guard released and catalog serialized. No match means no save. Does not unlink map files."
+    },
+    {
+      "address": "0xe924",
+      "expect": {
+        "signature": "undefined GetOldestMapFlagIndex(SharedUserMapInfo * param_1)",
+        "plate_comment": "GetOldestMapFlagIndex(SharedUserMapInfo*)"
+      },
+      "signature": "int GetOldestMapFlagIndex(const MapCatalogEntry *entry)",
+      "plate_comment": "Despite surviving name, this build always returns index 0 (r6 initialized zero, copied to r0 on success). Reads entry backup byte, constructs user_map(backup-2), calls GetFileModifyTime but does not compare its result. No oldest-of-multiple selection is implemented here."
+    },
+    {
+      "address": "0xe9a8",
+      "expect": {
+        "signature": "undefined UpdateBakMapForMultiMap(int param_1, int param_2)",
+        "plate_comment": "UpdateBakMapForMultiMap(int, int)"
+      },
+      "signature": "void UpdateBakMapForMultiMap(MapPersistFlag primary_flag, MapPersistFlag backup_flag)",
+      "plate_comment": "Matches primary byte, compares existing backup byte to full integer input. If changed, uses index 0 or GetOldestMapFlagIndex (always 0 in this build), stores low input byte to backup location, unlocks then serializes. No flag range validation; no match/unchanged means no save."
+    },
+    {
+      "address": "0xea70",
+      "expect": {
+        "signature": "undefined NameMultiMap(int param_1, char * param_2, int param_3)",
+        "plate_comment": "NameMultiMap(int, char const*, int)"
+      },
+      "signature": "bool NameMultiMap(MapPersistFlag primary_flag, const char *name_bytes, int name_length)",
+      "plate_comment": "Matches primary, stores low length byte at entry+3, clears 32 bytes at entry+4, then memcpy with full caller-supplied length (no bound check in this function). Exactly 32 bytes need not have terminator. Unlocks, serializes and returns 1; missing primary returns 0. Success is not a write/durability acknowledgment."
+    },
+    {
+      "address": "0xeb34",
+      "expect": {
+        "signature": "undefined InsertMultiMap(_IPC_Slam_MapFlag param_1)",
+        "plate_comment": "InsertMultiMap(_IPC_Slam_MapFlag)"
+      },
+      "signature": "bool InsertMultiMap(MapPersistFlag flag)",
+      "plate_comment": "Scans four primary bytes for first zero. Stores low flag byte there and full flag at current+0x94, unlocks, serializes and returns 1; full catalog returns 0 without save. No duplicate/range check, no backup/name clearing here. Success does not reflect serialization result."
+    },
+    {
+      "address": "0xebd8",
+      "expect": {
+        "signature": "undefined GetBakMapFlagStartPos(void)",
+        "plate_comment": "GetBakMapFlagStartPos()"
+      },
+      "signature": "MapPersistFlag GetBakMapFlagStartPos(void)",
+      "plate_comment": "Returns constant 6. Combined with librrutils allocator bounds this yields primary candidates 2..5 and backup candidates 6..9."
+    },
+    {
+      "address": "0x00017664",
+      "plate_comment": "Ordinary synchronous zlib compressor. ABI arguments are source base, byte offset, byte length, opaque std::string output reference. Does not inspect task cancellation. compress receives source+offset and length; zlib failures are logged, not returned to PersistSave.",
+      "expect": {
+        "plate_comment": "CompressRegionWorker(void const*, unsigned int, unsigned int, std::string&)",
+        "signature": "undefined CompressRegionWorker(void * param_1, uint param_2, uint param_3, string * param_4)"
+      },
+      "signature": "void CompressRegionWorker(const void *source, unsigned int offset, unsigned int length, void *output_string)"
+    },
+    {
+      "address": "0x00017750",
+      "name": "PersistInflateParts",
+      "signature": "void PersistInflateParts(const void *region_message, void *destination, const void *offsets_vector, int first_part, int stride)",
+      "plate_comment": "Independent zlib-stream loader, not concatenated-stream inflation. Opaque protobuf region message and prefix-offset vector. For indices first_part, first_part+stride,...: uncompress(destination+offset[index], &capacity, value[index], value_size). capacity is rawDataSize for a single value, rawDataPartSize[index] otherwise. Signed index/count/stride comparisons; no task cancellation check. Zlib errors log and emit event, but return void and do not aggregate failure. Successful output length is logged, not compared to declared capacity. Workers are joined by ForcePersistLoad before callback stage 1/unlock.",
+      "expect": {
+        "name": "FUN_00017750",
+        "signature": "undefined FUN_00017750()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x000179bc",
+      "plate_comment": "Initializes metadata mutex at +0x14 with type=1, pshared=1 and robust=1. Metadata layout otherwise remains unmodeled; no original C++ layout asserted.",
+      "expect": {
+        "plate_comment": "InitPersistInfo(PersistInfo*)"
+      }
+    },
+    {
+      "address": "0x00017a70",
+      "plate_comment": "Metadata backing is shared region 7, size 0x2c10: ten 0x468-byte records initialized only when region is absent. Legacy shared region 4 is removed if present.",
+      "expect": {
+        "plate_comment": "InitPersistInfoGroup()"
+      }
+    },
+    {
+      "address": "0x00017ae8",
+      "plate_comment": "Selects persistence metadata by integer persistence type. Do not confuse type 0 with a filename/map destination flag.",
+      "expect": {
+        "plate_comment": "GetPersistInfo(PersistInfoType)"
+      }
+    },
+    {
+      "address": "0x00017bd8",
+      "plate_comment": "Returns metadata pointer or null; locks its +0x14 mutex. EOWNERDEAD (0x82) invokes pthread_mutex_consistent. Other errors are logged; a non-null return alone is not proof of successful locking.",
+      "expect": {
+        "plate_comment": "LockPersistInfo(PersistInfoType)",
+        "signature": "undefined LockPersistInfo(PersistInfoType param_1)"
+      },
+      "signature": "void *LockPersistInfo(int persistence_type)"
+    },
+    {
+      "address": "0x00017cdc",
+      "plate_comment": "Unlocks selected persistence metadata mutex; does not wait for any asynchronous map writer.",
+      "expect": {
+        "plate_comment": "UnlockPersistInfo(PersistInfoType)"
+      }
+    },
+    {
+      "address": "0x00017da8",
+      "plate_comment": "Finds subscribed region by ID and locks mutex at metadata+0x38+0x24*index. EOWNERDEAD invokes pthread_mutex_consistent. Missing subscription does not lock a region.",
+      "expect": {
+        "plate_comment": "LockSharedRegion(PersistInfoType, _SharedRegionId)"
+      }
+    },
+    {
+      "address": "0x00017ee4",
+      "plate_comment": "Finds subscribed region by ID and unlocks that region mutex. The map snapshot caller releases one region before acquiring the next.",
+      "expect": {
+        "plate_comment": "UnlockSharedRegion(PersistInfoType, _SharedRegionId)"
+      }
+    },
+    {
+      "address": "0x00018014",
+      "plate_comment": "Registers region ID, compress/encrypt flags and callback in persistence metadata, using process-shared robust region mutexes. Region definitions/layouts are outside this engine slice.",
+      "expect": {
+        "plate_comment": "SubscribePersistSharedRegion(PersistInfoType, _SharedRegionId, bool, bool, void (*)(SharedRegionPersistIOStage))"
+      }
+    },
+    {
+      "address": "0x00018200",
+      "plate_comment": "Invokes subscribed callback if present. Observed stage integers: 0 before restore, 1 after restore, 2 before snapshot copy, 3 after snapshot copy. Callback semantics beyond these boundaries are unknown.",
+      "expect": {
+        "plate_comment": "RunPersistSharedRegionCallback(PersistInfo::RegionInfo&, SharedRegionPersistIOStage)"
+      }
+    },
+    {
+      "address": "0x000185c0",
+      "plate_comment": "ABI boolean result is not a durability/completion acknowledgment. type==0 parses a flag from filename and delegates to asynchronous PersistSaveMapInfo. Nonzero types use synchronous protobuf encoding, join compression workers and write DIRECTLY to filename (binary output, no tmp/rename here). No subscriptions returns true without a write. SerializeToOstream result is ignored; open/close failure only changes stream state and can still return true. compress controls zlib; encrypt is recorded, not acted upon in this path.",
+      "expect": {
+        "plate_comment": "PersistSave(PersistInfoType, char const*)",
+        "signature": "undefined PersistSave(PersistInfoType param_1, char * param_2)"
+      },
+      "signature": "bool PersistSave(int persistence_type, const char *filename)"
+    },
+    {
+      "address": "0x000192c4",
+      "plate_comment": "File-only persistence loader: locks selected metadata, parses protobuf from filename and restores subscribed regions under individual locks/callback stages 0/1. compress controls inflation; encrypt is not tested. Return primarily reflects ParseFromIstream, not validation of every restored region. Multipart compressed load requires value count == rawDataPartSize count and prefix-sum total == rawDataSize; uses independent uncompress streams at prefix offsets and joins min(part_count,get_nprocs()) workers. Single compressed value uses rawDataSize and offset zero. Count/total/zlib errors only log/events; they do NOT clear parse-success result. Unexpected raw branch: with exactly one uncompressed value, memcpy length is value COUNT (1), not rawDataSize/string length (0x19692->0x19756); do not assume raw regions fully restore. Full protobuf/C++ layouts intentionally remain opaque.",
+      "expect": {
+        "plate_comment": "ForcePersistLoad(PersistInfoType, char const*)",
+        "signature": "undefined ForcePersistLoad(PersistInfoType param_1, char * param_2)"
+      },
+      "signature": "bool ForcePersistLoad(int persistence_type, const char *filename)"
+    },
+    {
+      "address": "0x00019ba4",
+      "plate_comment": "For type==0 extracts a destination flag from filename and delegates to buffer-aware PersistLoadMapInfo. For nonzero type delegates to ForcePersistLoad. Use ForcePersistLoad only when describing a file-only call boundary.",
+      "expect": {
+        "plate_comment": "PersistLoad(PersistInfoType, char const*)",
+        "signature": "undefined PersistLoad(PersistInfoType param_1, char * param_2)"
+      },
+      "signature": "bool PersistLoad(int persistence_type, const char *filename)"
+    },
+    {
+      "address": "0x0001a410",
+      "plate_comment": "Robust mutex helper: signed timeout_ms<0 uses pthread_mutex_lock; otherwise CLOCK_REALTIME timedlock. EOWNERDEAD (0x82) invokes pthread_mutex_consistent. Returns pthread status, 0 on success. Other errors log and only model-version 2 aborts: callers can continue after nonzero status, so intended locking is conditional on successful acquisition.",
+      "expect": {
+        "plate_comment": null,
+        "signature": "undefined FUN_0001a410()",
+        "name": "FUN_0001a410"
+      },
+      "signature": "int PersistLockRobust(void *mutex_storage, int timeout_ms)",
+      "name": "PersistLockRobust"
+    },
+    {
+      "address": "0x0001a530",
+      "plate_comment": "Cancellable zlib deflate helper. Arguments: base+offset input, length, opaque std::string output, pointer to task state. Continues only while *state==3; checks between deflate calls, not per byte. Clears output when canceled. Boolean success is local to helper; async save caller has no worker error channel.",
+      "expect": {
+        "plate_comment": null,
+        "signature": "undefined FUN_0001a530()",
+        "name": "FUN_0001a530"
+      },
+      "signature": "bool PersistDeflateCancellable(const void *source, unsigned int offset, unsigned int length, void *output_string, const PersistTaskState *state)",
+      "name": "PersistDeflateCancellable"
+    },
+    {
+      "address": "0x0001a860",
+      "plate_comment": "Builds unsigned destination mask by ORing ARM register shifts 1 << (signed_flag+8). This is not 1<<flag. Negative temporary flag -2 maps to bit 6; no range validation occurs here. Input is opaque ABI pointer to existing flag vector; no MapPersistFlag type owned here.",
+      "expect": {
+        "plate_comment": "ConvertMapFlagMask(std::vector<_IPC_Slam_MapFlag, std::allocator<_IPC_Slam_MapFlag> > const&)",
+        "signature": "undefined ConvertMapFlagMask(vector * param_1)"
+      },
+      "signature": "unsigned int ConvertMapFlagMask(const void *flags_vector)"
+    },
+    {
+      "address": "0x0001a88c",
+      "plate_comment": "Tests bit (flag+8) using ARM register logical shift; no range validation. Returns exactly 0 or 1.",
+      "expect": {
+        "plate_comment": "CheckMapFlagMask(unsigned int, int)",
+        "signature": "undefined CheckMapFlagMask(uint param_1, int param_2)"
+      },
+      "signature": "unsigned int CheckMapFlagMask(unsigned int destination_mask, int flag)"
+    },
+    {
+      "address": "0x0001a898",
+      "plate_comment": "Returns supplied root pointer. Reinitializes if forced or magic!=0x20210415 or format_version!=2. One 0x1a0-byte task at root+8; root mutex at +0x1b0 and task mutex at +0x190 use type=1/pshared=1/robust=1. State 6 remains UNKNOWN, not assigned a semantic name. View types describe observed storage offsets, not recovered C++ declarations.",
+      "expect": {
+        "plate_comment": "InitBufferedMapInfoRoot(void*, bool)",
+        "signature": "undefined InitBufferedMapInfoRoot(void * param_1, bool param_2)"
+      },
+      "signature": "PersistBufferRootView *InitBufferedMapInfoRoot(PersistBufferRootView *root, bool force_init)"
+    },
+    {
+      "address": "0x0001a990",
+      "plate_comment": "Returns cached/shared root or null. Opens named semaphore with initial count 1 and /BufferedMapInfo shm, resizes/maps 0x1c8 bytes read-write MAP_SHARED, then initializes root if needed. Semaphore is capacity gating, not successful-file-write acknowledgment.",
+      "expect": {
+        "plate_comment": "GetBufferedMapInfoRoot()",
+        "signature": "undefined GetBufferedMapInfoRoot(void)"
+      },
+      "signature": "PersistBufferRootView *GetBufferedMapInfoRoot(void)"
+    },
+    {
+      "address": "0x1ab94",
+      "expect": {
+        "signature": "undefined GetMapInfoPersistFileName(_IPC_Slam_MapFlag param_1)",
+        "plate_comment": "GetMapInfoPersistFileName(_IPC_Slam_MapFlag)"
+      },
+      "signature": "void GetMapInfoPersistFileName(void *string_result, MapPersistFlag flag)",
+      "plate_comment": "ABI-level signature: r0 is hidden std::string result storage, r1 is signed persistence flag; original std::string layout deliberately opaque. flag=-2 selects /dev/shm/PersistData_Temp.data. Otherwise cached getenv(NAV_DYNAMIC_CONFIG_PATH) or /mnt/data/rockrobo is followed by /PersistData_, signed decimal flag and .data; no range restriction. Persistence -2 is not Grid temporary flag 12."
+    },
+    {
+      "address": "0x0001b1c4",
+      "plate_comment": "Restart-safety/capacity repair under root mutex: trylocks task mutex; EBUSY counts task occupied. EOWNERDEAD makes consistent and resets state to 0. On successful trylock, foreign-owner states other than 0/2/6 are reset to 0 (model-version 2 may abort). Repairs semaphore count with post/trywait. This is not a writer completion/durability check; state 6 remains unknown.",
+      "expect": {
+        "plate_comment": "CheckBlockedSaveTask()"
+      }
+    },
+    {
+      "address": "0x0001b564",
+      "plate_comment": "Under root mutex removes matching destination bits from task mask, skipping states 0 and 6 (UNKNOWN). Empty mask sets state 5. Does not acquire/join writer task mutex, wait for compression, flush files or undo prior renames. Partial cancellation preserves other destinations.",
+      "expect": {
+        "plate_comment": "CancelSavingTasksForMaps(unsigned int)",
+        "signature": "undefined CancelSavingTasksForMaps(uint param_1)"
+      },
+      "signature": "void CancelSavingTasksForMaps(unsigned int destination_mask)"
+    },
+    {
+      "address": "0x0001bb20",
+      "plate_comment": "Boolean means snapshot/enqueue accepted, NOT file save completed. Locks type-0 metadata; no subscriptions returns true without a write. Converts flags to bits at flag+8 and cancels older destinations. Capacity loop has outer 20000 ms deadline, 50 ms semaphore timedwait probes. Selects state 0 or UNKNOWN 6; cleans state-6 mapping/fd before reuse, sets state 1 and owner PID. Copies 0x468-byte metadata; payload starts at 0x470 and each region allocation rounds to 16 bytes. Each region has its OWN lock, callbacks 2/copy/3/unlock; not an atomic multi-region snapshot. Publishes fd/mapping/length, state 2; pthread_create passes root+8 task pointer and then pthread_detach, with no join. Allocation/thread failures reset state 0 and return false.",
+      "expect": {
+        "plate_comment": "PersistSaveMapInfo(std::vector<_IPC_Slam_MapFlag, std::allocator<_IPC_Slam_MapFlag> > const&)",
+        "signature": "undefined PersistSaveMapInfo(vector * param_1)"
+      },
+      "signature": "bool PersistSaveMapInfo(const void *flags_vector)"
+    },
+    {
+      "address": "0x0001c578",
+      "plate_comment": "String is a log label, NOT an arbitrary output pathname. Constructs one-element destination-flag vector and forwards to vector PersistSaveMapInfo. Boolean return is enqueue/no-op result, not file completion.",
+      "expect": {
+        "plate_comment": "PersistSaveMapInfo(char const*, _IPC_Slam_MapFlag)",
+        "signature": "undefined PersistSaveMapInfo(char * param_1, _IPC_Slam_MapFlag param_2)"
+      },
+      "signature": "bool PersistSaveMapInfo(const char *log_label, int flag)"
+    },
+    {
+      "address": "0x0001c620",
+      "plate_comment": "Buffer-aware load under type-0 metadata and root mutex. States 0/5 or destination mismatch select ForcePersistLoad(0, filename(flag)). State 1 is an error: resets state/owner/mask to zero, model-version 2 aborts; otherwise returns false, NOT fallback file load. Other matching states (including unnamed 6) use buffer: same PID uses pointer, foreign PID opens task-index shm O_RDONLY and mmap(PROT_READ, MAP_SHARED). For each subscribed ID found in buffered descriptors: region lock, callback 0, memcpy recorded length, callback 1, unlock. Can succeed with newer data than file and without every subscribed ID present. Foreign mapping lifecycle merits separate scrutiny; no runtime safety guarantee.",
+      "expect": {
+        "plate_comment": "PersistLoadMapInfo(_IPC_Slam_MapFlag)",
+        "signature": "undefined PersistLoadMapInfo(_IPC_Slam_MapFlag param_1)"
+      },
+      "signature": "bool PersistLoadMapInfo(int flag)"
+    },
+    {
+      "address": "0x0001cbf0",
+      "plate_comment": "First buffer-aware loads source flag. If successful, cancels destination tasks then opens SOURCE FILE and copies through binary input/output streams directly to destination files. Does not serialize the possibly newer source buffer; no tmp/rename transaction. Returns initial load result; stream-copy failures do not replace it.",
+      "expect": {
+        "plate_comment": "PersistLoadMapInfoAndSave(_IPC_Slam_MapFlag, std::vector<_IPC_Slam_MapFlag, std::allocator<_IPC_Slam_MapFlag> > const&)",
+        "signature": "undefined PersistLoadMapInfoAndSave(_IPC_Slam_MapFlag param_1, vector * param_2)"
+      },
+      "signature": "bool PersistLoadMapInfoAndSave(int source_flag, const void *destination_flags_vector)"
+    },
+    {
+      "address": "0x0001d0b8",
+      "plate_comment": "String is log label only; forwards integer flag to buffer-aware PersistLoadMapInfo. It does not import an arbitrary pathname.",
+      "expect": {
+        "plate_comment": "PersistLoadMapInfo(char const*, _IPC_Slam_MapFlag)",
+        "signature": "undefined PersistLoadMapInfo(char * param_1, _IPC_Slam_MapFlag param_2)"
+      },
+      "signature": "bool PersistLoadMapInfo(const char *log_label, int flag)"
+    },
+    {
+      "address": "0x0001d10c",
+      "plate_comment": "Detached pthread entry; argument is root+8 task, NOT root. Locks task then root; state 2->3 encodes buffered regions (compress flag selects zlib; encrypt recorded only), joins multipart compressors, then state 3->4. Loops signed destination flags -7 through 11, separately. Temp name is filename + .tmp + DECIMAL TASK INDEX at task+0, NOT owner PID at task+4. SerializeToOstream return ignored; open/close failure only sets stream fail state. Under root mutex rechecks destination bit and renames, or unlinks temp if canceled. Rename failures log only. Cleanup unmaps/closes, sets state 0, releases task mutex and posts semaphore even after failures/cancellation. No fsync/fdatasync/directory-sync call in this entry. Return is null pthread result, no result to enqueue caller. Lock-error paths may continue when not model-version 2.",
+      "expect": {
+        "plate_comment": null,
+        "signature": "undefined FUN_0001d10c()",
+        "name": "FUN_0001d10c"
+      },
+      "signature": "void *PersistMapWriteWorker(PersistMapTaskView *task)",
+      "name": "PersistMapWriteWorker"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+program=librrnavdrv.so language=ARM:LE:32:v8
+block=.text(0003dd30 - 0026c07b)
+base_context=RegisterValue(contextreg): mask=0xc000000000000000 value=0x8000000000000000
+before=FUN_0020b694 body=[[0020b694, 0020b767]]
+after=FUN_0020be88 body=[[0020be88, 0020bf41]]
+0020bab0 bytes=9213 context=0 ins=null data=undefined4 000B1392h function=null
+ IN From: 0020b814 To: 0020bab0 Type: READ Op: 1 DEFAULT
+ SYMBOL DAT_0020bab0 source=DEFAULT
+0020bab2 bytes=0b00 context=0 ins=null data=null function=null
+0020bab4 bytes=6c0c context=0 ins=null data=undefined4 000B0C6Ch function=null
+ IN From: 0020b828 To: 0020bab4 Type: READ Op: 1 DEFAULT
+ SYMBOL DAT_0020bab4 source=DEFAULT
+0020bab6 bytes=0b00 context=0 ins=null data=null function=null
+0020bab8 bytes=6012 context=0 ins=null data=undefined4 000B1260h function=null
+ IN From: 0020b82c To: 0020bab8 Type: READ Op: 1 DEFAULT
+ SYMBOL DAT_0020bab8 source=DEFAULT
+0020baba bytes=0b00 context=0 ins=null data=null function=null
+0020babc bytes=af4b context=1 ins=ldr r3,[0x0020bd7c] data=null function=null
+ IN From: 0020f960 To: 0020babd Type: DATA Op: 0 ANALYSIS
+ SYMBOL LAB_0020babc+1 source=DEFAULT
+0020babe bytes=0022 context=1 ins=movs r2,#0x0 data=null function=null
+0020bac0 bytes=f0b5 context=1 ins=push {r4,r5,r6,r7,lr} data=null function=null
+0020bac2 bytes=7b44 context=1 ins=add r3,pc data=null function=null
+0020bac4 bytes=ae4d context=1 ins=ldr r5,[0x0020bd80] data=null function=null
+0020bac6 bytes=8db0 context=1 ins=sub sp,#0x34 data=null function=null
+0020bac8 bytes=0446 context=1 ins=mov r4,r0 data=null function=null
+0020baca bytes=0121 context=1 ins=movs r1,#0x1 data=null function=null
+0020bacc bytes=d0f8 context=1 ins=ldr.w r0,[r0,#0x368] data=null function=null
+0020bace bytes=6803 context=1 ins=null data=null function=null
+0020bad0 bytes=5d59 context=1 ins=ldr r5,[r3,r5] data=null function=null
+0020bad2 bytes=2b68 context=1 ins=ldr r3,[r5,#0x0] data=null function=null
+0020bad4 bytes=0b93 context=1 ins=str r3,[sp,#0x2c] data=null function=null
+0020bad6 bytes=5cf6 context=1 ins=bl 0x00068428 data=null function=null
+PSEUDO THUMB (not database instructions):
+0020babc ldr r3,[0x0020bd7c] bytes=af4b flow=FALL_THROUGH targets=[] fall=0020babe
+0020babe movs r2,#0x0 bytes=0022 flow=FALL_THROUGH targets=[] fall=0020bac0
+0020bac0 push {r4,r5,r6,r7,lr} bytes=f0b5 flow=FALL_THROUGH targets=[] fall=0020bac2
+0020bac2 add r3,pc bytes=7b44 flow=FALL_THROUGH targets=[] fall=0020bac4
+0020bac4 ldr r5,[0x0020bd80] bytes=ae4d flow=FALL_THROUGH targets=[] fall=0020bac6
+0020bac6 sub sp,#0x34 bytes=8db0 flow=FALL_THROUGH targets=[] fall=0020bac8
+0020bac8 mov r4,r0 bytes=0446 flow=FALL_THROUGH targets=[] fall=0020baca
+0020baca movs r1,#0x1 bytes=0121 flow=FALL_THROUGH targets=[] fall=0020bacc
+0020bacc ldr.w r0,[r0,#0x368] bytes=d0f86803 flow=FALL_THROUGH targets=[] fall=0020bad0
+0020bad0 ldr r5,[r3,r5] bytes=5d59 flow=FALL_THROUGH targets=[] fall=0020bad2
+0020bad2 ldr r3,[r5,#0x0] bytes=2b68 flow=FALL_THROUGH targets=[] fall=0020bad4
+0020bad4 str r3,[sp,#0x2c] bytes=0b93 flow=FALL_THROUGH targets=[] fall=0020bad6
+0020bad6 bl 0x00068428 bytes=5cf6a7fc flow=UNCONDITIONAL_CALL targets=[00068428] fall=0020bada

@@ -1,0 +1,5551 @@
+{
+  "version": 1,
+  "lane": "catalog",
+  "scope": "Authorized static reverse engineering only. No firmware execution/device access; saved catalog used only for structural checks. Private names never exported.",
+  "program_identities": [
+    {
+      "program": "librobopersist.so",
+      "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c"
+    },
+    {
+      "program": "librrutils.so",
+      "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b"
+    },
+    {
+      "program": "AppProxy",
+      "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457"
+    }
+  ],
+  "findings": [
+    {
+      "id": "catalog-layout",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "Region8 is 0x9c bytes; init byte@0, four byte-aligned 0x24 entries@1, current signed word@0x94, use-new byte@0x98. Entry primary@0, backup@1, unknown byte@2, name length byte@3, 32 name bytes@4. Unknown region tails retained explicitly.",
+      "evidence": [
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe0c4",
+          "surviving_name": "InitSharedMultiMapInfo",
+          "source": "before-persist-seeds/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e0f6",
+              "instruction": "movs r3,#0x1",
+              "bytes": "0123",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0f8",
+              "instruction": "mov r2,r3",
+              "bytes": "1a46",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0fa",
+              "instruction": "mov r0,r3",
+              "bytes": "1846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0fc",
+              "instruction": "movs r1,#0x8",
+              "bytes": "0821",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0fe",
+              "instruction": "blx 0x0000dc48",
+              "bytes": "fff7a4ed",
+              "flows": [
+                "0x0000dc48"
+              ]
+            },
+            {
+              "address": "0x0000e102",
+              "instruction": "movs r1,#0x1",
+              "bytes": "0121",
+              "flows": []
+            },
+            {
+              "address": "0x0000e104",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e106",
+              "instruction": "movs r2,#0x8",
+              "bytes": "0822",
+              "flows": []
+            },
+            {
+              "address": "0x0000e108",
+              "instruction": "blx 0x0000d7c8",
+              "bytes": "fff75eeb",
+              "flows": [
+                "0x0000d7c8"
+              ]
+            },
+            {
+              "address": "0x0000e10c",
+              "instruction": "movs r1,#0x9c",
+              "bytes": "9c21",
+              "flows": []
+            },
+            {
+              "address": "0x0000e10e",
+              "instruction": "movs r0,#0x8",
+              "bytes": "0820",
+              "flows": []
+            },
+            {
+              "address": "0x0000e110",
+              "instruction": "blx 0x0000d684",
+              "bytes": "fff7b8ea",
+              "flows": [
+                "0x0000d684"
+              ]
+            },
+            {
+              "address": "0x0000e114",
+              "instruction": "mov r4,r0",
+              "bytes": "0446",
+              "flows": []
+            },
+            {
+              "address": "0x0000e116",
+              "instruction": "movs r2,#0x9c",
+              "bytes": "9c22",
+              "flows": []
+            },
+            {
+              "address": "0x0000e118",
+              "instruction": "movs r1,#0x0",
+              "bytes": "0021",
+              "flows": []
+            },
+            {
+              "address": "0x0000e11a",
+              "instruction": "blx 0x0000d36c",
+              "bytes": "fff728e9",
+              "flows": [
+                "0x0000d36c"
+              ]
+            },
+            {
+              "address": "0x0000e11e",
+              "instruction": "mov.w r2,#0xffffffff",
+              "bytes": "4ff0ff32",
+              "flows": []
+            },
+            {
+              "address": "0x0000e122",
+              "instruction": "movs r3,#0x1",
+              "bytes": "0123",
+              "flows": []
+            },
+            {
+              "address": "0x0000e124",
+              "instruction": "str.w r2,[r4,#0x94]",
+              "bytes": "c4f89420",
+              "flows": []
+            },
+            {
+              "address": "0x0000e128",
+              "instruction": "strb r3,[r4,#0x0]",
+              "bytes": "2370",
+              "flows": []
+            },
+            {
+              "address": "0x0000e12a",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e12c",
+              "instruction": "movs r3,#0x0",
+              "bytes": "0023",
+              "flows": []
+            },
+            {
+              "address": "0x0000e12e",
+              "instruction": "strb.w r3,[r4,#0x98]",
+              "bytes": "84f89830",
+              "flows": []
+            },
+            {
+              "address": "0x0000e132",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff724ec",
+              "flows": [
+                "0x0000d97c"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe534",
+          "surviving_name": "GetSharedMultiMapList",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e578",
+              "instruction": "movs r1,#0x9c",
+              "bytes": "9c21",
+              "flows": []
+            },
+            {
+              "address": "0x0000e57a",
+              "instruction": "movs r0,#0x8",
+              "bytes": "0820",
+              "flows": []
+            },
+            {
+              "address": "0x0000e57c",
+              "instruction": "blx 0x0000d684",
+              "bytes": "fff782e8",
+              "flows": [
+                "0x0000d684"
+              ]
+            },
+            {
+              "address": "0x0000e580",
+              "instruction": "add.w r1,r0,#0x90",
+              "bytes": "00f19001",
+              "flows": []
+            },
+            {
+              "address": "0x0000e584",
+              "instruction": "movs r2,#0x0",
+              "bytes": "0022",
+              "flows": []
+            },
+            {
+              "address": "0x0000e586",
+              "instruction": "ldrb r3,[r0,#0x1]",
+              "bytes": "4378",
+              "flows": []
+            },
+            {
+              "address": "0x0000e588",
+              "instruction": "cbz r3,0x0000e58e",
+              "bytes": "0bb1",
+              "flows": [
+                "0x0000e58e"
+              ]
+            },
+            {
+              "address": "0x0000e58a",
+              "instruction": "strb r3,[r6,r2]",
+              "bytes": "b354",
+              "flows": []
+            },
+            {
+              "address": "0x0000e58c",
+              "instruction": "adds r2,#0x1",
+              "bytes": "0132",
+              "flows": []
+            },
+            {
+              "address": "0x0000e58e",
+              "instruction": "adds r0,#0x24",
+              "bytes": "2430",
+              "flows": []
+            },
+            {
+              "address": "0x0000e590",
+              "instruction": "cmp r0,r1",
+              "bytes": "8842",
+              "flows": []
+            },
+            {
+              "address": "0x0000e592",
+              "instruction": "bne 0x0000e586",
+              "bytes": "f8d1",
+              "flows": [
+                "0x0000e586"
+              ]
+            },
+            {
+              "address": "0x0000e594",
+              "instruction": "str r2,[r7,#0x0]",
+              "bytes": "3a60",
+              "flows": []
+            },
+            {
+              "address": "0x0000e596",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e598",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff7f0e9",
+              "flows": [
+                "0x0000d97c"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xea70",
+          "surviving_name": "NameMultiMap",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000eaca",
+              "instruction": "ldrb r1,[r2,#0x1]",
+              "bytes": "5178",
+              "flows": []
+            },
+            {
+              "address": "0x0000eacc",
+              "instruction": "cmp r1,r8",
+              "bytes": "4145",
+              "flows": []
+            },
+            {
+              "address": "0x0000eace",
+              "instruction": "beq 0x0000eaee",
+              "bytes": "0ed0",
+              "flows": [
+                "0x0000eaee"
+              ]
+            },
+            {
+              "address": "0x0000ead0",
+              "instruction": "adds r3,#0x1",
+              "bytes": "0133",
+              "flows": []
+            },
+            {
+              "address": "0x0000ead2",
+              "instruction": "adds r2,#0x24",
+              "bytes": "2432",
+              "flows": []
+            },
+            {
+              "address": "0x0000ead4",
+              "instruction": "cmp r3,#0x4",
+              "bytes": "042b",
+              "flows": []
+            },
+            {
+              "address": "0x0000ead6",
+              "instruction": "bne 0x0000eaca",
+              "bytes": "f8d1",
+              "flows": [
+                "0x0000eaca"
+              ]
+            },
+            {
+              "address": "0x0000eaee",
+              "instruction": "movs r1,#0x24",
+              "bytes": "2421",
+              "flows": []
+            },
+            {
+              "address": "0x0000eaf0",
+              "instruction": "movs r2,#0x20",
+              "bytes": "2022",
+              "flows": []
+            },
+            {
+              "address": "0x0000eaf2",
+              "instruction": "mla r3,r1,r3,r9",
+              "bytes": "01fb0393",
+              "flows": []
+            },
+            {
+              "address": "0x0000eaf6",
+              "instruction": "movs r1,#0x0",
+              "bytes": "0021",
+              "flows": []
+            },
+            {
+              "address": "0x0000eaf8",
+              "instruction": "add.w r8,r3,#0x5",
+              "bytes": "03f10508",
+              "flows": []
+            },
+            {
+              "address": "0x0000eafc",
+              "instruction": "strb r6,[r3,#0x4]",
+              "bytes": "1e71",
+              "flows": []
+            },
+            {
+              "address": "0x0000eafe",
+              "instruction": "mov r0,r8",
+              "bytes": "4046",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb00",
+              "instruction": "blx 0x0000d36c",
+              "bytes": "fef734ec",
+              "flows": [
+                "0x0000d36c"
+              ]
+            },
+            {
+              "address": "0x0000eb04",
+              "instruction": "mov r2,r6",
+              "bytes": "3246",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb06",
+              "instruction": "mov r1,r7",
+              "bytes": "3946",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb08",
+              "instruction": "mov r0,r8",
+              "bytes": "4046",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb0a",
+              "instruction": "blx 0x0000d964",
+              "bytes": "fef72cef",
+              "flows": [
+                "0x0000d964"
+              ]
+            },
+            {
+              "address": "0x0000eb0e",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb10",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fef734ef",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000eb14",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fef796ee",
+              "flows": [
+                "0x0000d844"
+              ]
+            },
+            {
+              "address": "0x0000eb18",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb1a",
+              "instruction": "b 0x0000eae0",
+              "bytes": "e1e7",
+              "flows": [
+                "0x0000eae0"
+              ]
+            }
+          ]
+        }
+      ],
+      "saved_data_check": "validation.json: size/flag/current structure only; no private names exported",
+      "interpretation": "MapCatalogPayload/MapCatalogEntry are byte-layout proposals, not original source classes."
+    },
+    {
+      "id": "catalog-startup",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "Get path, initialize catalog, then access(F_OK). Exactly access==-1 selects legacy user_map0 check, not a scan of all slots. If that check succeeds, set primary/current=2 under guard and save type1. Any non--1 first access calls PersistLoad(type1,path) once; its result is not tested for fallback.",
+      "evidence": [
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe164",
+          "surviving_name": "DeserializeMultiMapInfo",
+          "source": "before-persist-seeds/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e17a",
+              "instruction": "blx 0x0000dc6c",
+              "bytes": "fff778ed",
+              "flows": [
+                "0x0000dc6c"
+              ]
+            },
+            {
+              "address": "0x0000e17e",
+              "instruction": "blx 0x0000db24",
+              "bytes": "fff7d2ec",
+              "flows": [
+                "0x0000db24"
+              ]
+            },
+            {
+              "address": "0x0000e182",
+              "instruction": "ldr r0,[sp,#0x4]",
+              "bytes": "0198",
+              "flows": []
+            },
+            {
+              "address": "0x0000e184",
+              "instruction": "movs r1,#0x0",
+              "bytes": "0021",
+              "flows": []
+            },
+            {
+              "address": "0x0000e186",
+              "instruction": "blx 0x0000d72c",
+              "bytes": "fff7d2ea",
+              "flows": [
+                "0x0000d72c"
+              ]
+            },
+            {
+              "address": "0x0000e18a",
+              "instruction": "adds r0,#0x1",
+              "bytes": "0130",
+              "flows": []
+            },
+            {
+              "address": "0x0000e18c",
+              "instruction": "beq 0x0000e1a2",
+              "bytes": "09d0",
+              "flows": [
+                "0x0000e1a2"
+              ]
+            },
+            {
+              "address": "0x0000e18e",
+              "instruction": "ldr r1,[sp,#0x4]",
+              "bytes": "0199",
+              "flows": []
+            },
+            {
+              "address": "0x0000e190",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x0000e192",
+              "instruction": "blx 0x0000cf78",
+              "bytes": "fef7f2ee",
+              "flows": [
+                "0x0000cf78"
+              ]
+            },
+            {
+              "address": "0x0000e196",
+              "instruction": "ldr r2,[sp,#0x114]",
+              "bytes": "459a",
+              "flows": []
+            },
+            {
+              "address": "0x0000e198",
+              "instruction": "ldr r3,[r4,#0x0]",
+              "bytes": "2368",
+              "flows": []
+            },
+            {
+              "address": "0x0000e19a",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x0000e19c",
+              "instruction": "bne 0x0000e1f6",
+              "bytes": "2bd1",
+              "flows": [
+                "0x0000e1f6"
+              ]
+            },
+            {
+              "address": "0x0000e19e",
+              "instruction": "add sp,#0x11c",
+              "bytes": "47b0",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1a0",
+              "instruction": "pop {r4,r5,pc}",
+              "bytes": "30bd",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1a2",
+              "instruction": "add r5,sp,#0x94",
+              "bytes": "25ad",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1a4",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1a6",
+              "instruction": "blx 0x0000d3ec",
+              "bytes": "fff722e9",
+              "flows": [
+                "0x0000d3ec"
+              ]
+            },
+            {
+              "address": "0x0000e1aa",
+              "instruction": "ldr r1,[0x0000e20c]",
+              "bytes": "1849",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1ac",
+              "instruction": "movs r2,#0x80",
+              "bytes": "8022",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1ae",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1b0",
+              "instruction": "add r1,pc",
+              "bytes": "7944",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1b2",
+              "instruction": "blx 0x0000dc20",
+              "bytes": "fff736ed",
+              "flows": [
+                "0x0000dc20"
+              ]
+            },
+            {
+              "address": "0x0000e1b6",
+              "instruction": "movs r3,#0x0",
+              "bytes": "0023",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1b8",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1ba",
+              "instruction": "mov r1,r3",
+              "bytes": "1946",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1bc",
+              "instruction": "strb.w r3,[sp,#0x113]",
+              "bytes": "8df81331",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1c0",
+              "instruction": "blx 0x0000d72c",
+              "bytes": "fff7b4ea",
+              "flows": [
+                "0x0000d72c"
+              ]
+            },
+            {
+              "address": "0x0000e1c4",
+              "instruction": "adds r0,#0x1",
+              "bytes": "0130",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1c6",
+              "instruction": "beq 0x0000e196",
+              "bytes": "e6d0",
+              "flows": [
+                "0x0000e196"
+              ]
+            },
+            {
+              "address": "0x0000e1c8",
+              "instruction": "add r5,sp,#0xc",
+              "bytes": "03ad",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1ca",
+              "instruction": "movs r1,#0x1",
+              "bytes": "0121",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1cc",
+              "instruction": "movs r2,#0x8",
+              "bytes": "0822",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1ce",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1d0",
+              "instruction": "blx 0x0000d7c8",
+              "bytes": "fff7faea",
+              "flows": [
+                "0x0000d7c8"
+              ]
+            },
+            {
+              "address": "0x0000e1d4",
+              "instruction": "movs r1,#0x9c",
+              "bytes": "9c21",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1d6",
+              "instruction": "movs r0,#0x8",
+              "bytes": "0820",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1d8",
+              "instruction": "blx 0x0000d684",
+              "bytes": "fff754ea",
+              "flows": [
+                "0x0000d684"
+              ]
+            },
+            {
+              "address": "0x0000e1dc",
+              "instruction": "mov r3,r0",
+              "bytes": "0346",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1de",
+              "instruction": "movs r2,#0x2",
+              "bytes": "0222",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1e0",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1e2",
+              "instruction": "strb r2,[r3,#0x1]",
+              "bytes": "5a70",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1e4",
+              "instruction": "str.w r2,[r3,#0x94]",
+              "bytes": "c3f89420",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1e8",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff7c8eb",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000e1ec",
+              "instruction": "ldr r1,[sp,#0x4]",
+              "bytes": "0199",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1ee",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x0000e1f0",
+              "instruction": "blx 0x0000cf18",
+              "bytes": "fef792ee",
+              "flows": [
+                "0x0000cf18"
+              ]
+            },
+            {
+              "address": "0x0000e1f4",
+              "instruction": "b 0x0000e196",
+              "bytes": "cfe7",
+              "flows": [
+                "0x0000e196"
+              ]
+            }
+          ]
+        }
+      ],
+      "correction_to_prose": "ASSESSMENT calls fallback absence-only. Actual branch is any access()==-1, including access errors other than ENOENT. Existing accessible-but-unloadable catalog does not take fallback. Failure effects within generic PersistLoad belong to persistence lane."
+    },
+    {
+      "id": "catalog-serialization-boundary",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "GetMultiMapFilePath appends /rockrobo/SharedMultiMapInfo to GetUserDataPath. SerializeMultiMapInfo calls generic PersistSave(1,path), not asynchronous PersistSaveMapInfo. Setters and successful mutation branches release region8 guard before entering this wrapper. Name/insert success values report mutation branch, not PersistSave result.",
+      "evidence": [
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe034",
+          "surviving_name": "GetMultiMapFilePath",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e034",
+              "instruction": "push {r3,r4,r5,r6,r7,lr}",
+              "bytes": "f8b5",
+              "flows": []
+            },
+            {
+              "address": "0x0000e036",
+              "instruction": "mov r5,r0",
+              "bytes": "0546",
+              "flows": []
+            },
+            {
+              "address": "0x0000e038",
+              "instruction": "blx 0x0000d3ec",
+              "bytes": "fff7d8e9",
+              "flows": [
+                "0x0000d3ec"
+              ]
+            },
+            {
+              "address": "0x0000e03c",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e03e",
+              "instruction": "ldr r7,[0x0000e084]",
+              "bytes": "114f",
+              "flows": []
+            },
+            {
+              "address": "0x0000e040",
+              "instruction": "blx 0x0000d9c8",
+              "bytes": "fff7c2ec",
+              "flows": [
+                "0x0000d9c8"
+              ]
+            },
+            {
+              "address": "0x0000e044",
+              "instruction": "ldr r4,[0x0000e088]",
+              "bytes": "104c",
+              "flows": []
+            },
+            {
+              "address": "0x0000e046",
+              "instruction": "add r7,pc",
+              "bytes": "7f44",
+              "flows": []
+            },
+            {
+              "address": "0x0000e048",
+              "instruction": "add r4,pc",
+              "bytes": "7c44",
+              "flows": []
+            },
+            {
+              "address": "0x0000e04a",
+              "instruction": "mov r3,r0",
+              "bytes": "0346",
+              "flows": []
+            },
+            {
+              "address": "0x0000e04c",
+              "instruction": "add.w r12,r5,r0",
+              "bytes": "05eb000c",
+              "flows": []
+            },
+            {
+              "address": "0x0000e050",
+              "instruction": "add.w lr,r0,#0xa",
+              "bytes": "00f10a0e",
+              "flows": []
+            },
+            {
+              "address": "0x0000e054",
+              "instruction": "ldmia r7!,{r0,r1}",
+              "bytes": "03cf",
+              "flows": []
+            },
+            {
+              "address": "0x0000e056",
+              "instruction": "add.w r6,r5,lr",
+              "bytes": "05eb0e06",
+              "flows": []
+            },
+            {
+              "address": "0x0000e05a",
+              "instruction": "str r0,[r5,r3]",
+              "bytes": "e850",
+              "flows": []
+            },
+            {
+              "address": "0x0000e05c",
+              "instruction": "str.w r1,[r12,#0x4]",
+              "bytes": "ccf80410",
+              "flows": []
+            },
+            {
+              "address": "0x0000e060",
+              "instruction": "ldmia r4!,{r0,r1,r2,r3}",
+              "bytes": "0fcc",
+              "flows": []
+            },
+            {
+              "address": "0x0000e062",
+              "instruction": "ldrh r7,[r7,#0x0]",
+              "bytes": "3f88",
+              "flows": []
+            },
+            {
+              "address": "0x0000e064",
+              "instruction": "strh.w r7,[r12,#0x8]",
+              "bytes": "acf80870",
+              "flows": []
+            },
+            {
+              "address": "0x0000e068",
+              "instruction": "ldrh r7,[r4,#0x0]",
+              "bytes": "2788",
+              "flows": []
+            },
+            {
+              "address": "0x0000e06a",
+              "instruction": "ldrb r4,[r4,#0x2]",
+              "bytes": "a478",
+              "flows": []
+            },
+            {
+              "address": "0x0000e06c",
+              "instruction": "str.w r0,[r5,lr]",
+              "bytes": "45f80e00",
+              "flows": []
+            },
+            {
+              "address": "0x0000e070",
+              "instruction": "movs r0,#0x0",
+              "bytes": "0020",
+              "flows": []
+            },
+            {
+              "address": "0x0000e072",
+              "instruction": "str r1,[r6,#0x4]",
+              "bytes": "7160",
+              "flows": []
+            },
+            {
+              "address": "0x0000e074",
+              "instruction": "str r2,[r6,#0x8]",
+              "bytes": "b260",
+              "flows": []
+            },
+            {
+              "address": "0x0000e076",
+              "instruction": "str r3,[r6,#0xc]",
+              "bytes": "f360",
+              "flows": []
+            },
+            {
+              "address": "0x0000e078",
+              "instruction": "strh r7,[r6,#0x10]",
+              "bytes": "3782",
+              "flows": []
+            },
+            {
+              "address": "0x0000e07a",
+              "instruction": "strb r4,[r6,#0x12]",
+              "bytes": "b474",
+              "flows": []
+            },
+            {
+              "address": "0x0000e07c",
+              "instruction": "strb.w r0,[r5,#0x7f]",
+              "bytes": "85f87f00",
+              "flows": []
+            },
+            {
+              "address": "0x0000e080",
+              "instruction": "pop {r3,r4,r5,r6,r7,pc}",
+              "bytes": "f8bd",
+              "flows": []
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe08c",
+          "surviving_name": "SerializeMultiMapInfo",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e098",
+              "instruction": "add r4,sp,#0x4",
+              "bytes": "01ac",
+              "flows": []
+            },
+            {
+              "address": "0x0000e09a",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e09c",
+              "instruction": "ldr r3,[r5,#0x0]",
+              "bytes": "2b68",
+              "flows": []
+            },
+            {
+              "address": "0x0000e09e",
+              "instruction": "str r3,[sp,#0x84]",
+              "bytes": "2193",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0a0",
+              "instruction": "blx 0x0000dc6c",
+              "bytes": "fff7e4ed",
+              "flows": [
+                "0x0000dc6c"
+              ]
+            },
+            {
+              "address": "0x0000e0a4",
+              "instruction": "mov r1,r4",
+              "bytes": "2146",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0a6",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0a8",
+              "instruction": "blx 0x0000cf18",
+              "bytes": "fef736ef",
+              "flows": [
+                "0x0000cf18"
+              ]
+            },
+            {
+              "address": "0x0000e0ac",
+              "instruction": "ldr r2,[sp,#0x84]",
+              "bytes": "219a",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0ae",
+              "instruction": "ldr r3,[r5,#0x0]",
+              "bytes": "2b68",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0b0",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0b2",
+              "instruction": "bne 0x0000e0b8",
+              "bytes": "01d1",
+              "flows": [
+                "0x0000e0b8"
+              ]
+            },
+            {
+              "address": "0x0000e0b4",
+              "instruction": "add sp,#0x8c",
+              "bytes": "23b0",
+              "flows": []
+            },
+            {
+              "address": "0x0000e0b6",
+              "instruction": "pop {r4,r5,pc}",
+              "bytes": "30bd",
+              "flows": []
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe290",
+          "surviving_name": "SetSharedCurrentMapFlag",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e2d0",
+              "instruction": "movs r1,#0x9c",
+              "bytes": "9c21",
+              "flows": []
+            },
+            {
+              "address": "0x0000e2d2",
+              "instruction": "movs r0,#0x8",
+              "bytes": "0820",
+              "flows": []
+            },
+            {
+              "address": "0x0000e2d4",
+              "instruction": "blx 0x0000d684",
+              "bytes": "fff7d6e9",
+              "flows": [
+                "0x0000d684"
+              ]
+            },
+            {
+              "address": "0x0000e2d8",
+              "instruction": "str.w r6,[r0,#0x94]",
+              "bytes": "c0f89460",
+              "flows": []
+            },
+            {
+              "address": "0x0000e2dc",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e2de",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff74eeb",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000e2e2",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fff7b0ea",
+              "flows": [
+                "0x0000d844"
+              ]
+            },
+            {
+              "address": "0x0000e2e6",
+              "instruction": "ldr r2,[sp,#0x1c]",
+              "bytes": "079a",
+              "flows": []
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xeb34",
+          "surviving_name": "InsertMultiMap",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000eba6",
+              "instruction": "movs r2,#0x24",
+              "bytes": "2422",
+              "flows": []
+            },
+            {
+              "address": "0x0000eba8",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebaa",
+              "instruction": "mla r3,r2,r3,r7",
+              "bytes": "02fb0373",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebae",
+              "instruction": "strb r5,[r3,#0x1]",
+              "bytes": "5d70",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebb0",
+              "instruction": "str.w r5,[r7,#0x94]",
+              "bytes": "c7f89450",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebb4",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fef7e2ee",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000ebb8",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fef744ee",
+              "flows": [
+                "0x0000d844"
+              ]
+            },
+            {
+              "address": "0x0000ebbc",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            }
+          ]
+        }
+      ],
+      "boundary": "Generic save implementation, I/O failure handling and mutex implementation are owned by persistence; this lane proves wrapper arguments/order only."
+    },
+    {
+      "id": "catalog-current-use-new",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "current is full 32-bit signed semantic flag, initialized -1, read under guard; SetSharedCurrentMapFlag has no range/load-success check. SetSharedUseNewMap stores byte and when nonzero sets current=-1, then unlocks and serializes.",
+      "evidence": [
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe210",
+          "surviving_name": "GetSharedCurrentMapFlag",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e24e",
+              "instruction": "movs r1,#0x9c",
+              "bytes": "9c21",
+              "flows": []
+            },
+            {
+              "address": "0x0000e250",
+              "instruction": "movs r0,#0x8",
+              "bytes": "0820",
+              "flows": []
+            },
+            {
+              "address": "0x0000e252",
+              "instruction": "blx 0x0000d684",
+              "bytes": "fff718ea",
+              "flows": [
+                "0x0000d684"
+              ]
+            },
+            {
+              "address": "0x0000e256",
+              "instruction": "ldr.w r4,[r0,#0x94]",
+              "bytes": "d0f89440",
+              "flows": []
+            },
+            {
+              "address": "0x0000e25a",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e25c",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff78eeb",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000e260",
+              "instruction": "ldr r2,[sp,#0x1c]",
+              "bytes": "079a",
+              "flows": []
+            },
+            {
+              "address": "0x0000e262",
+              "instruction": "ldr r3,[r7,#0x0]",
+              "bytes": "3b68",
+              "flows": []
+            },
+            {
+              "address": "0x0000e264",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e266",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x0000e268",
+              "instruction": "bne 0x0000e26e",
+              "bytes": "01d1",
+              "flows": [
+                "0x0000e26e"
+              ]
+            },
+            {
+              "address": "0x0000e26a",
+              "instruction": "add sp,#0x24",
+              "bytes": "09b0",
+              "flows": []
+            },
+            {
+              "address": "0x0000e26c",
+              "instruction": "pop {r4,r5,r6,r7,pc}",
+              "bytes": "f0bd",
+              "flows": []
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe290",
+          "surviving_name": "SetSharedCurrentMapFlag",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e2d0",
+              "instruction": "movs r1,#0x9c",
+              "bytes": "9c21",
+              "flows": []
+            },
+            {
+              "address": "0x0000e2d2",
+              "instruction": "movs r0,#0x8",
+              "bytes": "0820",
+              "flows": []
+            },
+            {
+              "address": "0x0000e2d4",
+              "instruction": "blx 0x0000d684",
+              "bytes": "fff7d6e9",
+              "flows": [
+                "0x0000d684"
+              ]
+            },
+            {
+              "address": "0x0000e2d8",
+              "instruction": "str.w r6,[r0,#0x94]",
+              "bytes": "c0f89460",
+              "flows": []
+            },
+            {
+              "address": "0x0000e2dc",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e2de",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff74eeb",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000e2e2",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fff7b0ea",
+              "flows": [
+                "0x0000d844"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe394",
+          "surviving_name": "SetSharedUseNewMap",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e3d4",
+              "instruction": "movs r1,#0x9c",
+              "bytes": "9c21",
+              "flows": []
+            },
+            {
+              "address": "0x0000e3d6",
+              "instruction": "movs r0,#0x8",
+              "bytes": "0820",
+              "flows": []
+            },
+            {
+              "address": "0x0000e3d8",
+              "instruction": "blx 0x0000d684",
+              "bytes": "fff754e9",
+              "flows": [
+                "0x0000d684"
+              ]
+            },
+            {
+              "address": "0x0000e3dc",
+              "instruction": "strb.w r6,[r0,#0x98]",
+              "bytes": "80f89860",
+              "flows": []
+            },
+            {
+              "address": "0x0000e3e0",
+              "instruction": "cbz r6,0x0000e3ea",
+              "bytes": "1eb1",
+              "flows": [
+                "0x0000e3ea"
+              ]
+            },
+            {
+              "address": "0x0000e3e2",
+              "instruction": "mov.w r3,#0xffffffff",
+              "bytes": "4ff0ff33",
+              "flows": []
+            },
+            {
+              "address": "0x0000e3e6",
+              "instruction": "str.w r3,[r0,#0x94]",
+              "bytes": "c0f89430",
+              "flows": []
+            },
+            {
+              "address": "0x0000e3ea",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e3ec",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff7c6ea",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000e3f0",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fff728ea",
+              "flows": [
+                "0x0000d844"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shared-pointer-lifetime",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "GetSharedUserMapInfo returns region8+1 only after guard destruction. GetBakMapList returns region8+2+i*0x24 or null after guard destruction. Allocation, membership, names and reverse lookup in utils use live unlocked pointers, not immutable snapshots. Allocation is not atomic reservation.",
+      "evidence": [
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe424",
+          "surviving_name": "GetSharedUserMapInfo",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e462",
+              "instruction": "movs r1,#0x9c",
+              "bytes": "9c21",
+              "flows": []
+            },
+            {
+              "address": "0x0000e464",
+              "instruction": "movs r0,#0x8",
+              "bytes": "0820",
+              "flows": []
+            },
+            {
+              "address": "0x0000e466",
+              "instruction": "blx 0x0000d684",
+              "bytes": "fff70ee9",
+              "flows": [
+                "0x0000d684"
+              ]
+            },
+            {
+              "address": "0x0000e46a",
+              "instruction": "mov r4,r0",
+              "bytes": "0446",
+              "flows": []
+            },
+            {
+              "address": "0x0000e46c",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e46e",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff786ea",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000e472",
+              "instruction": "ldr r2,[sp,#0x1c]",
+              "bytes": "079a",
+              "flows": []
+            },
+            {
+              "address": "0x0000e474",
+              "instruction": "ldr r3,[r7,#0x0]",
+              "bytes": "3b68",
+              "flows": []
+            },
+            {
+              "address": "0x0000e476",
+              "instruction": "adds r0,r4,#0x1",
+              "bytes": "601c",
+              "flows": []
+            },
+            {
+              "address": "0x0000e478",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x0000e47a",
+              "instruction": "bne 0x0000e480",
+              "bytes": "01d1",
+              "flows": [
+                "0x0000e480"
+              ]
+            },
+            {
+              "address": "0x0000e47c",
+              "instruction": "add sp,#0x24",
+              "bytes": "09b0",
+              "flows": []
+            },
+            {
+              "address": "0x0000e47e",
+              "instruction": "pop {r4,r5,r6,r7,pc}",
+              "bytes": "f0bd",
+              "flows": []
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe5cc",
+          "surviving_name": "GetBakMapList",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e60c",
+              "instruction": "movs r1,#0x9c",
+              "bytes": "9c21",
+              "flows": []
+            },
+            {
+              "address": "0x0000e60e",
+              "instruction": "movs r0,#0x8",
+              "bytes": "0820",
+              "flows": []
+            },
+            {
+              "address": "0x0000e610",
+              "instruction": "blx 0x0000d684",
+              "bytes": "fff738e8",
+              "flows": [
+                "0x0000d684"
+              ]
+            },
+            {
+              "address": "0x0000e614",
+              "instruction": "mov r2,r0",
+              "bytes": "0246",
+              "flows": []
+            },
+            {
+              "address": "0x0000e616",
+              "instruction": "movs r3,#0x0",
+              "bytes": "0023",
+              "flows": []
+            },
+            {
+              "address": "0x0000e618",
+              "instruction": "ldrb r1,[r2,#0x1]",
+              "bytes": "5178",
+              "flows": []
+            },
+            {
+              "address": "0x0000e61a",
+              "instruction": "cmp r1,r7",
+              "bytes": "b942",
+              "flows": []
+            },
+            {
+              "address": "0x0000e61c",
+              "instruction": "beq 0x0000e63c",
+              "bytes": "0ed0",
+              "flows": [
+                "0x0000e63c"
+              ]
+            },
+            {
+              "address": "0x0000e61e",
+              "instruction": "adds r3,#0x1",
+              "bytes": "0133",
+              "flows": []
+            },
+            {
+              "address": "0x0000e620",
+              "instruction": "adds r2,#0x24",
+              "bytes": "2432",
+              "flows": []
+            },
+            {
+              "address": "0x0000e622",
+              "instruction": "cmp r3,#0x4",
+              "bytes": "042b",
+              "flows": []
+            },
+            {
+              "address": "0x0000e624",
+              "instruction": "bne 0x0000e618",
+              "bytes": "f8d1",
+              "flows": [
+                "0x0000e618"
+              ]
+            },
+            {
+              "address": "0x0000e626",
+              "instruction": "movs r4,#0x0",
+              "bytes": "0024",
+              "flows": []
+            },
+            {
+              "address": "0x0000e628",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e62a",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff7a8e9",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000e62e",
+              "instruction": "ldr r2,[sp,#0x1c]",
+              "bytes": "079a",
+              "flows": []
+            },
+            {
+              "address": "0x0000e630",
+              "instruction": "ldr r3,[r6,#0x0]",
+              "bytes": "3368",
+              "flows": []
+            },
+            {
+              "address": "0x0000e632",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e634",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x0000e636",
+              "instruction": "bne 0x0000e646",
+              "bytes": "06d1",
+              "flows": [
+                "0x0000e646"
+              ]
+            },
+            {
+              "address": "0x0000e638",
+              "instruction": "add sp,#0x24",
+              "bytes": "09b0",
+              "flows": []
+            },
+            {
+              "address": "0x0000e63a",
+              "instruction": "pop {r4,r5,r6,r7,pc}",
+              "bytes": "f0bd",
+              "flows": []
+            },
+            {
+              "address": "0x0000e63c",
+              "instruction": "movs r4,#0x24",
+              "bytes": "2424",
+              "flows": []
+            },
+            {
+              "address": "0x0000e63e",
+              "instruction": "mla r3,r4,r3,r0",
+              "bytes": "04fb0303",
+              "flows": []
+            },
+            {
+              "address": "0x0000e642",
+              "instruction": "adds r4,r3,#0x2",
+              "bytes": "9c1c",
+              "flows": []
+            },
+            {
+              "address": "0x0000e644",
+              "instruction": "b 0x0000e628",
+              "bytes": "f0e7",
+              "flows": [
+                "0x0000e628"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librrutils.so",
+          "function_entry": "0x18a8",
+          "surviving_name": "rr_get_unused_persist_map_flag",
+          "source": "before-utils/selected.json",
+          "instructions": [
+            {
+              "address": "0x000018c4",
+              "instruction": "blx 0x00001580",
+              "bytes": "fff75cee",
+              "flows": [
+                "0x00001580"
+              ]
+            },
+            {
+              "address": "0x000018c8",
+              "instruction": "blx 0x000015b4",
+              "bytes": "fff774ee",
+              "flows": [
+                "0x000015b4"
+              ]
+            },
+            {
+              "address": "0x000018cc",
+              "instruction": "add.w r1,r0,#0x90",
+              "bytes": "00f19001",
+              "flows": []
+            },
+            {
+              "address": "0x000018d0",
+              "instruction": "ldrb r3,[r0,#0x0]",
+              "bytes": "0378",
+              "flows": []
+            },
+            {
+              "address": "0x000018d2",
+              "instruction": "cbz r3,0x000018ec",
+              "bytes": "5bb1",
+              "flows": [
+                "0x000018ec"
+              ]
+            },
+            {
+              "address": "0x000018d4",
+              "instruction": "add.w lr,sp,#0x38",
+              "bytes": "0df1380e",
+              "flows": []
+            },
+            {
+              "address": "0x000018d8",
+              "instruction": "ldrb r2,[r0,#0x1]",
+              "bytes": "4278",
+              "flows": []
+            },
+            {
+              "address": "0x000018da",
+              "instruction": "add.w r3,lr,r3, lsl #0x2",
+              "bytes": "0eeb8303",
+              "flows": []
+            },
+            {
+              "address": "0x000018de",
+              "instruction": "str.w r5,[r3,#-0x34]",
+              "bytes": "43f8345c",
+              "flows": []
+            },
+            {
+              "address": "0x000018e2",
+              "instruction": "cbz r2,0x000018ec",
+              "bytes": "1ab1",
+              "flows": [
+                "0x000018ec"
+              ]
+            },
+            {
+              "address": "0x000018e4",
+              "instruction": "add.w r2,lr,r2, lsl #0x2",
+              "bytes": "0eeb8202",
+              "flows": []
+            },
+            {
+              "address": "0x000018e8",
+              "instruction": "str.w r5,[r2,#-0x34]",
+              "bytes": "42f8345c",
+              "flows": []
+            },
+            {
+              "address": "0x000018ec",
+              "instruction": "adds r0,#0x24",
+              "bytes": "2430",
+              "flows": []
+            },
+            {
+              "address": "0x000018ee",
+              "instruction": "cmp r0,r1",
+              "bytes": "8842",
+              "flows": []
+            },
+            {
+              "address": "0x000018f0",
+              "instruction": "bne 0x000018d0",
+              "bytes": "eed1",
+              "flows": [
+                "0x000018d0"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librrutils.so",
+          "function_entry": "0x1ac0",
+          "surviving_name": "rr_check_mapflag_is_multimap",
+          "source": "before-utils-related/selected.json",
+          "instructions": [
+            {
+              "address": "0x00001ac0",
+              "instruction": "push {r4,lr}",
+              "bytes": "10b5",
+              "flows": []
+            },
+            {
+              "address": "0x00001ac2",
+              "instruction": "mov r4,r0",
+              "bytes": "0446",
+              "flows": []
+            },
+            {
+              "address": "0x00001ac4",
+              "instruction": "blx 0x000015b4",
+              "bytes": "fff776ed",
+              "flows": [
+                "0x000015b4"
+              ]
+            },
+            {
+              "address": "0x00001ac8",
+              "instruction": "movs r3,#0x0",
+              "bytes": "0023",
+              "flows": []
+            },
+            {
+              "address": "0x00001aca",
+              "instruction": "ldrb r2,[r0,r3]",
+              "bytes": "c25c",
+              "flows": []
+            },
+            {
+              "address": "0x00001acc",
+              "instruction": "adds r3,#0x24",
+              "bytes": "2433",
+              "flows": []
+            },
+            {
+              "address": "0x00001ace",
+              "instruction": "cbz r2,0x00001ad4",
+              "bytes": "0ab1",
+              "flows": [
+                "0x00001ad4"
+              ]
+            },
+            {
+              "address": "0x00001ad0",
+              "instruction": "cmp r2,r4",
+              "bytes": "a242",
+              "flows": []
+            },
+            {
+              "address": "0x00001ad2",
+              "instruction": "beq 0x00001adc",
+              "bytes": "03d0",
+              "flows": [
+                "0x00001adc"
+              ]
+            },
+            {
+              "address": "0x00001ad4",
+              "instruction": "cmp r3,#0x90",
+              "bytes": "902b",
+              "flows": []
+            },
+            {
+              "address": "0x00001ad6",
+              "instruction": "bne 0x00001aca",
+              "bytes": "f8d1",
+              "flows": [
+                "0x00001aca"
+              ]
+            },
+            {
+              "address": "0x00001ad8",
+              "instruction": "movs r0,#0x0",
+              "bytes": "0020",
+              "flows": []
+            },
+            {
+              "address": "0x00001ada",
+              "instruction": "pop {r4,pc}",
+              "bytes": "10bd",
+              "flows": []
+            },
+            {
+              "address": "0x00001adc",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x00001ade",
+              "instruction": "pop {r4,pc}",
+              "bytes": "10bd",
+              "flows": []
+            }
+          ]
+        }
+      ],
+      "unresolved": "Caller-level synchronization across concurrent processes and between slot selection and insertion is not established."
+    },
+    {
+      "id": "catalog-insert",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "Insert scans four primary bytes, inserts first zero, stores low input byte to primary and full input word to current. Unlock/serialize/return1 on insertion, unlock/return0 when full. No validation, duplicate rejection or name/backup clearing here.",
+      "evidence": [
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xeb34",
+          "surviving_name": "InsertMultiMap",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000eb82",
+              "instruction": "mov r2,r7",
+              "bytes": "3a46",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb84",
+              "instruction": "movs r3,#0x0",
+              "bytes": "0023",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb86",
+              "instruction": "ldrb r1,[r2,#0x1]",
+              "bytes": "5178",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb88",
+              "instruction": "cbz r1,0x0000eba6",
+              "bytes": "69b1",
+              "flows": [
+                "0x0000eba6"
+              ]
+            },
+            {
+              "address": "0x0000eb8a",
+              "instruction": "adds r3,#0x1",
+              "bytes": "0133",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb8c",
+              "instruction": "adds r2,#0x24",
+              "bytes": "2432",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb8e",
+              "instruction": "cmp r3,#0x4",
+              "bytes": "042b",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb90",
+              "instruction": "bne 0x0000eb86",
+              "bytes": "f9d1",
+              "flows": [
+                "0x0000eb86"
+              ]
+            },
+            {
+              "address": "0x0000eb92",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb94",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fef7f2ee",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000eb98",
+              "instruction": "movs r0,#0x0",
+              "bytes": "0020",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb9a",
+              "instruction": "ldr r2,[sp,#0x1c]",
+              "bytes": "079a",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb9c",
+              "instruction": "ldr r3,[r4,#0x0]",
+              "bytes": "2368",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb9e",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x0000eba0",
+              "instruction": "bne 0x0000ebc0",
+              "bytes": "0ed1",
+              "flows": [
+                "0x0000ebc0"
+              ]
+            },
+            {
+              "address": "0x0000eba2",
+              "instruction": "add sp,#0x24",
+              "bytes": "09b0",
+              "flows": []
+            },
+            {
+              "address": "0x0000eba4",
+              "instruction": "pop {r4,r5,r6,r7,pc}",
+              "bytes": "f0bd",
+              "flows": []
+            },
+            {
+              "address": "0x0000eba6",
+              "instruction": "movs r2,#0x24",
+              "bytes": "2422",
+              "flows": []
+            },
+            {
+              "address": "0x0000eba8",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebaa",
+              "instruction": "mla r3,r2,r3,r7",
+              "bytes": "02fb0373",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebae",
+              "instruction": "strb r5,[r3,#0x1]",
+              "bytes": "5d70",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebb0",
+              "instruction": "str.w r5,[r7,#0x94]",
+              "bytes": "c7f89450",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebb4",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fef7e2ee",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000ebb8",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fef744ee",
+              "flows": [
+                "0x0000d844"
+              ]
+            },
+            {
+              "address": "0x0000ebbc",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebbe",
+              "instruction": "b 0x0000eb9a",
+              "bytes": "ece7",
+              "flows": [
+                "0x0000eb9a"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "backup-association",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "Backup association is one byte per primary. Update matches primary, changes backup only if full integer differs from loaded byte, writes low byte after optional index helper, unlocks and serializes. Helper GetOldestMapFlagIndex is constant0 in this build despite reading backup filename mtime. Utils backup allocator returns existing associated byte when nonzero; otherwise tail-calls unused backup allocator.",
+      "evidence": [
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe9a8",
+          "surviving_name": "UpdateBakMapForMultiMap",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e9fc",
+              "instruction": "mov r3,r9",
+              "bytes": "4b46",
+              "flows": []
+            },
+            {
+              "address": "0x0000e9fe",
+              "instruction": "ldrb r2,[r3,#0x1]",
+              "bytes": "5a78",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea00",
+              "instruction": "cmp r2,r5",
+              "bytes": "aa42",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea02",
+              "instruction": "beq 0x0000ea20",
+              "bytes": "0dd0",
+              "flows": [
+                "0x0000ea20"
+              ]
+            },
+            {
+              "address": "0x0000ea04",
+              "instruction": "adds r4,#0x1",
+              "bytes": "0134",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea06",
+              "instruction": "adds r3,#0x24",
+              "bytes": "2433",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea08",
+              "instruction": "cmp r4,#0x4",
+              "bytes": "042c",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea0a",
+              "instruction": "bne 0x0000e9fe",
+              "bytes": "f8d1",
+              "flows": [
+                "0x0000e9fe"
+              ]
+            },
+            {
+              "address": "0x0000ea0c",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea0e",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fef7b6ef",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000ea12",
+              "instruction": "ldr r2,[sp,#0x1c]",
+              "bytes": "079a",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea14",
+              "instruction": "ldr r3,[r7,#0x0]",
+              "bytes": "3b68",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea16",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea18",
+              "instruction": "bne 0x0000ea4e",
+              "bytes": "19d1",
+              "flows": [
+                "0x0000ea4e"
+              ]
+            },
+            {
+              "address": "0x0000ea1a",
+              "instruction": "add sp,#0x24",
+              "bytes": "09b0",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea1c",
+              "instruction": "pop.w {r4,r5,r6,r7,r8,r9,pc}",
+              "bytes": "bde8f083",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea20",
+              "instruction": "movs r0,#0x24",
+              "bytes": "2420",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea22",
+              "instruction": "mla r0,r0,r4,r9",
+              "bytes": "00fb0490",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea26",
+              "instruction": "ldrb r3,[r0,#0x2]",
+              "bytes": "8378",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea28",
+              "instruction": "cmp r8,r3",
+              "bytes": "9845",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea2a",
+              "instruction": "beq 0x0000ea0c",
+              "bytes": "efd0",
+              "flows": [
+                "0x0000ea0c"
+              ]
+            },
+            {
+              "address": "0x0000ea2c",
+              "instruction": "cbz r3,0x0000ea36",
+              "bytes": "1bb1",
+              "flows": [
+                "0x0000ea36"
+              ]
+            },
+            {
+              "address": "0x0000ea2e",
+              "instruction": "adds r0,#0x1",
+              "bytes": "0130",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea30",
+              "instruction": "blx 0x0000d850",
+              "bytes": "fef70eef",
+              "flows": [
+                "0x0000d850"
+              ]
+            },
+            {
+              "address": "0x0000ea34",
+              "instruction": "mov r3,r0",
+              "bytes": "0346",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea36",
+              "instruction": "movs r2,#0x24",
+              "bytes": "2422",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea38",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea3a",
+              "instruction": "mla r4,r2,r4,r9",
+              "bytes": "02fb0494",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea3e",
+              "instruction": "add r4,r3",
+              "bytes": "1c44",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea40",
+              "instruction": "strb.w r8,[r4,#0x2]",
+              "bytes": "84f80280",
+              "flows": []
+            },
+            {
+              "address": "0x0000ea44",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fef79aef",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000ea48",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fef7fcee",
+              "flows": [
+                "0x0000d844"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe924",
+          "surviving_name": "GetOldestMapFlagIndex",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e932",
+              "instruction": "mov r5,r0",
+              "bytes": "0546",
+              "flows": []
+            },
+            {
+              "address": "0x0000e934",
+              "instruction": "movs r6,#0x0",
+              "bytes": "0026",
+              "flows": []
+            },
+            {
+              "address": "0x0000e936",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e938",
+              "instruction": "ldr r3,[r7,#0x0]",
+              "bytes": "3b68",
+              "flows": []
+            },
+            {
+              "address": "0x0000e93a",
+              "instruction": "str r3,[sp,#0x114]",
+              "bytes": "4593",
+              "flows": []
+            },
+            {
+              "address": "0x0000e93c",
+              "instruction": "blx 0x0000d3ec",
+              "bytes": "fef756ed",
+              "flows": [
+                "0x0000d3ec"
+              ]
+            },
+            {
+              "address": "0x0000e940",
+              "instruction": "mov r1,r4",
+              "bytes": "2146",
+              "flows": []
+            },
+            {
+              "address": "0x0000e942",
+              "instruction": "add r4,sp,#0x94",
+              "bytes": "25ac",
+              "flows": []
+            },
+            {
+              "address": "0x0000e944",
+              "instruction": "movs r2,#0x7f",
+              "bytes": "7f22",
+              "flows": []
+            },
+            {
+              "address": "0x0000e946",
+              "instruction": "ldrb r5,[r5,#0x1]",
+              "bytes": "6d78",
+              "flows": []
+            },
+            {
+              "address": "0x0000e95a",
+              "instruction": "subs r3,r5,#0x2",
+              "bytes": "ab1e",
+              "flows": []
+            },
+            {
+              "address": "0x0000e95c",
+              "instruction": "add r5,sp,#0x8",
+              "bytes": "02ad",
+              "flows": []
+            },
+            {
+              "address": "0x0000e95e",
+              "instruction": "str r3,[sp,#0x0]",
+              "bytes": "0093",
+              "flows": []
+            },
+            {
+              "address": "0x0000e960",
+              "instruction": "ldr r3,[0x0000e9a4]",
+              "bytes": "104b",
+              "flows": []
+            },
+            {
+              "address": "0x0000e962",
+              "instruction": "movs r2,#0xa",
+              "bytes": "0a22",
+              "flows": []
+            },
+            {
+              "address": "0x0000e964",
+              "instruction": "movs r1,#0x1",
+              "bytes": "0121",
+              "flows": []
+            },
+            {
+              "address": "0x0000e966",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e968",
+              "instruction": "add r3,pc",
+              "bytes": "7b44",
+              "flows": []
+            },
+            {
+              "address": "0x0000e96a",
+              "instruction": "blx 0x0000dc88",
+              "bytes": "fff78ee9",
+              "flows": [
+                "0x0000dc88"
+              ]
+            },
+            {
+              "address": "0x0000e96e",
+              "instruction": "movs r3,#0x80",
+              "bytes": "8023",
+              "flows": []
+            },
+            {
+              "address": "0x0000e970",
+              "instruction": "movs r2,#0x7f",
+              "bytes": "7f22",
+              "flows": []
+            },
+            {
+              "address": "0x0000e972",
+              "instruction": "mov r1,r5",
+              "bytes": "2946",
+              "flows": []
+            },
+            {
+              "address": "0x0000e974",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e976",
+              "instruction": "blx 0x0000d5d4",
+              "bytes": "fef72eee",
+              "flows": [
+                "0x0000d5d4"
+              ]
+            },
+            {
+              "address": "0x0000e97a",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e97c",
+              "instruction": "strb.w r6,[sp,#0x113]",
+              "bytes": "8df81361",
+              "flows": []
+            },
+            {
+              "address": "0x0000e980",
+              "instruction": "blx 0x0000d298",
+              "bytes": "fef78aec",
+              "flows": [
+                "0x0000d298"
+              ]
+            },
+            {
+              "address": "0x0000e984",
+              "instruction": "ldr r2,[sp,#0x114]",
+              "bytes": "459a",
+              "flows": []
+            },
+            {
+              "address": "0x0000e986",
+              "instruction": "ldr r3,[r7,#0x0]",
+              "bytes": "3b68",
+              "flows": []
+            },
+            {
+              "address": "0x0000e988",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x0000e98a",
+              "instruction": "bne 0x0000e992",
+              "bytes": "02d1",
+              "flows": [
+                "0x0000e992"
+              ]
+            },
+            {
+              "address": "0x0000e98c",
+              "instruction": "mov r0,r6",
+              "bytes": "3046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e98e",
+              "instruction": "add sp,#0x11c",
+              "bytes": "47b0",
+              "flows": []
+            },
+            {
+              "address": "0x0000e990",
+              "instruction": "pop {r4,r5,r6,r7,pc}",
+              "bytes": "f0bd",
+              "flows": []
+            }
+          ]
+        },
+        {
+          "program": "librrutils.so",
+          "function_entry": "0x19cc",
+          "surviving_name": "rr_get_available_bak_map_flag_for_multimap",
+          "source": "before-utils-related/selected.json",
+          "instructions": [
+            {
+              "address": "0x00001a2a",
+              "instruction": "ldrb.w r3,[r12,r6,lsl #0x0]",
+              "bytes": "1cf80630",
+              "flows": []
+            },
+            {
+              "address": "0x00001a2e",
+              "instruction": "cbz r3,0x00001a34",
+              "bytes": "0bb1",
+              "flows": [
+                "0x00001a34"
+              ]
+            },
+            {
+              "address": "0x00001a30",
+              "instruction": "cmp r3,r8",
+              "bytes": "4345",
+              "flows": []
+            },
+            {
+              "address": "0x00001a32",
+              "instruction": "beq 0x00001a5e",
+              "bytes": "14d0",
+              "flows": [
+                "0x00001a5e"
+              ]
+            },
+            {
+              "address": "0x00001a34",
+              "instruction": "adds r6,#0x24",
+              "bytes": "2436",
+              "flows": []
+            },
+            {
+              "address": "0x00001a36",
+              "instruction": "cmp r6,#0x90",
+              "bytes": "902e",
+              "flows": []
+            },
+            {
+              "address": "0x00001a38",
+              "instruction": "bne 0x00001a02",
+              "bytes": "e3d1",
+              "flows": [
+                "0x00001a02"
+              ]
+            },
+            {
+              "address": "0x00001a3a",
+              "instruction": "ldr r2,[sp,#0xa4]",
+              "bytes": "299a",
+              "flows": []
+            },
+            {
+              "address": "0x00001a3c",
+              "instruction": "ldr.w r3,[r9,#0x0]",
+              "bytes": "d9f80030",
+              "flows": []
+            },
+            {
+              "address": "0x00001a40",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x00001a42",
+              "instruction": "bne 0x00001a84",
+              "bytes": "1fd1",
+              "flows": [
+                "0x00001a84"
+              ]
+            },
+            {
+              "address": "0x00001a44",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x00001a46",
+              "instruction": "add sp,#0xa8",
+              "bytes": "2ab0",
+              "flows": []
+            },
+            {
+              "address": "0x00001a48",
+              "instruction": "pop.w {r4,r5,r6,r7,r8,r9,r10,lr}",
+              "bytes": "bde8f047",
+              "flows": []
+            },
+            {
+              "address": "0x00001a4c",
+              "instruction": "b.w 0x000014f8",
+              "bytes": "fff754bd",
+              "flows": [
+                "0x000014f8"
+              ]
+            },
+            {
+              "address": "0x00001a5e",
+              "instruction": "ldrb.w r3,[sp,#0x1]",
+              "bytes": "9df80130",
+              "flows": []
+            },
+            {
+              "address": "0x00001a62",
+              "instruction": "cmp r3,#0x0",
+              "bytes": "002b",
+              "flows": []
+            },
+            {
+              "address": "0x00001a64",
+              "instruction": "beq 0x00001a3a",
+              "bytes": "e9d0",
+              "flows": [
+                "0x00001a3a"
+              ]
+            },
+            {
+              "address": "0x00001a66",
+              "instruction": "mov r0,r12",
+              "bytes": "6046",
+              "flows": []
+            },
+            {
+              "address": "0x00001a68",
+              "instruction": "blx 0x0000160c",
+              "bytes": "fff7d0ed",
+              "flows": [
+                "0x0000160c"
+              ]
+            },
+            {
+              "address": "0x00001a6c",
+              "instruction": "ldr r2,[sp,#0xa4]",
+              "bytes": "299a",
+              "flows": []
+            },
+            {
+              "address": "0x00001a6e",
+              "instruction": "ldr.w r3,[r9,#0x0]",
+              "bytes": "d9f80030",
+              "flows": []
+            },
+            {
+              "address": "0x00001a72",
+              "instruction": "add r1,sp,#0xa8",
+              "bytes": "2aa9",
+              "flows": []
+            },
+            {
+              "address": "0x00001a74",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x00001a76",
+              "instruction": "add r0,r1",
+              "bytes": "0844",
+              "flows": []
+            },
+            {
+              "address": "0x00001a78",
+              "instruction": "ldrb.w r0,[r0,#-0xa7]",
+              "bytes": "10f8a70c",
+              "flows": []
+            },
+            {
+              "address": "0x00001a7c",
+              "instruction": "bne 0x00001a84",
+              "bytes": "02d1",
+              "flows": [
+                "0x00001a84"
+              ]
+            },
+            {
+              "address": "0x00001a7e",
+              "instruction": "add sp,#0xa8",
+              "bytes": "2ab0",
+              "flows": []
+            },
+            {
+              "address": "0x00001a80",
+              "instruction": "pop.w {r4,r5,r6,r7,r8,r9,r10,pc}",
+              "bytes": "bde8f087",
+              "flows": []
+            }
+          ]
+        }
+      ],
+      "correction_to_prose": "Do not infer actual oldest-backup selection, multiple backups per entry, or mtime ordering from surviving helper name. Imported helper call in utils passes array start, not selected local entry; constant0 means selected local backup is still returned."
+    },
+    {
+      "id": "name-capacity",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "NameMultiMap stores byte length at entry+3, clears 32-byte name storage at entry+4, memcpy uses unbounded full caller length. No forced terminator after copy: a length32 copy need not be NUL-terminated. Clear functions reset this stored length and name array, but leave entry+2 unknown byte unchanged except full reset.",
+      "evidence": [
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xea70",
+          "surviving_name": "NameMultiMap",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000eaee",
+              "instruction": "movs r1,#0x24",
+              "bytes": "2421",
+              "flows": []
+            },
+            {
+              "address": "0x0000eaf0",
+              "instruction": "movs r2,#0x20",
+              "bytes": "2022",
+              "flows": []
+            },
+            {
+              "address": "0x0000eaf2",
+              "instruction": "mla r3,r1,r3,r9",
+              "bytes": "01fb0393",
+              "flows": []
+            },
+            {
+              "address": "0x0000eaf6",
+              "instruction": "movs r1,#0x0",
+              "bytes": "0021",
+              "flows": []
+            },
+            {
+              "address": "0x0000eaf8",
+              "instruction": "add.w r8,r3,#0x5",
+              "bytes": "03f10508",
+              "flows": []
+            },
+            {
+              "address": "0x0000eafc",
+              "instruction": "strb r6,[r3,#0x4]",
+              "bytes": "1e71",
+              "flows": []
+            },
+            {
+              "address": "0x0000eafe",
+              "instruction": "mov r0,r8",
+              "bytes": "4046",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb00",
+              "instruction": "blx 0x0000d36c",
+              "bytes": "fef734ec",
+              "flows": [
+                "0x0000d36c"
+              ]
+            },
+            {
+              "address": "0x0000eb04",
+              "instruction": "mov r2,r6",
+              "bytes": "3246",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb06",
+              "instruction": "mov r1,r7",
+              "bytes": "3946",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb08",
+              "instruction": "mov r0,r8",
+              "bytes": "4046",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb0a",
+              "instruction": "blx 0x0000d964",
+              "bytes": "fef72cef",
+              "flows": [
+                "0x0000d964"
+              ]
+            },
+            {
+              "address": "0x0000eb0e",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb10",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fef734ef",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000eb14",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fef796ee",
+              "flows": [
+                "0x0000d844"
+              ]
+            },
+            {
+              "address": "0x0000eb18",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x0000eb1a",
+              "instruction": "b 0x0000eae0",
+              "bytes": "e1e7",
+              "flows": [
+                "0x0000eae0"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe668",
+          "surviving_name": "ClearMultiMap",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e6d6",
+              "instruction": "movs r2,#0x24",
+              "bytes": "2422",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6d8",
+              "instruction": "mov.w lr,#0x0",
+              "bytes": "4ff0000e",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6dc",
+              "instruction": "mla r3,r2,r3,r7",
+              "bytes": "02fb0373",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6e0",
+              "instruction": "mov r1,lr",
+              "bytes": "7146",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6e2",
+              "instruction": "movs r2,#0x20",
+              "bytes": "2022",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6e4",
+              "instruction": "adds r0,r3,#0x5",
+              "bytes": "581d",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6e6",
+              "instruction": "strb.w lr,[r3,#0x2]",
+              "bytes": "83f802e0",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6ea",
+              "instruction": "strb.w lr,[r3,#0x1]",
+              "bytes": "83f801e0",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6ee",
+              "instruction": "strb.w lr,[r3,#0x4]",
+              "bytes": "83f804e0",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6f2",
+              "instruction": "blx 0x0000d36c",
+              "bytes": "fef73cee",
+              "flows": [
+                "0x0000d36c"
+              ]
+            },
+            {
+              "address": "0x0000e6f6",
+              "instruction": "ldr.w r3,[r7,#0x94]",
+              "bytes": "d7f89430",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6fa",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6fc",
+              "instruction": "cmp r4,r3",
+              "bytes": "9c42",
+              "flows": []
+            },
+            {
+              "address": "0x0000e6fe",
+              "instruction": "itt eq",
+              "bytes": "04bf",
+              "flows": []
+            },
+            {
+              "address": "0x0000e700",
+              "instruction": "mov.eq.w r3,#0xffffffff",
+              "bytes": "4ff0ff33",
+              "flows": []
+            },
+            {
+              "address": "0x0000e704",
+              "instruction": "str.w.eq r3,[r7,#0x94]",
+              "bytes": "c7f89430",
+              "flows": []
+            },
+            {
+              "address": "0x0000e708",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff738e9",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000e70c",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fff79ae8",
+              "flows": [
+                "0x0000d844"
+              ]
+            },
+            {
+              "address": "0x0000e710",
+              "instruction": "b 0x0000e6ca",
+              "bytes": "dbe7",
+              "flows": [
+                "0x0000e6ca"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xe72c",
+          "surviving_name": "ClearMultiMapExcept",
+          "source": "before-persist-catalog/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000e78c",
+              "instruction": "ldrb.w r3,[r4,#-0x4]",
+              "bytes": "14f8043c",
+              "flows": []
+            },
+            {
+              "address": "0x0000e790",
+              "instruction": "cmp r6,r3",
+              "bytes": "9e42",
+              "flows": []
+            },
+            {
+              "address": "0x0000e792",
+              "instruction": "beq 0x0000e7ae",
+              "bytes": "0cd0",
+              "flows": [
+                "0x0000e7ae"
+              ]
+            },
+            {
+              "address": "0x0000e794",
+              "instruction": "strb.w r5,[r4,#-0x3]",
+              "bytes": "04f8035c",
+              "flows": []
+            },
+            {
+              "address": "0x0000e798",
+              "instruction": "movs r2,#0x20",
+              "bytes": "2022",
+              "flows": []
+            },
+            {
+              "address": "0x0000e79a",
+              "instruction": "strb.w r5,[r4,#-0x4]",
+              "bytes": "04f8045c",
+              "flows": []
+            },
+            {
+              "address": "0x0000e79e",
+              "instruction": "movs r1,#0x0",
+              "bytes": "0021",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7a0",
+              "instruction": "strb.w r5,[r4,#-0x1]",
+              "bytes": "04f8015c",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7a4",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7a6",
+              "instruction": "blx 0x0000d36c",
+              "bytes": "fef7e2ed",
+              "flows": [
+                "0x0000d36c"
+              ]
+            },
+            {
+              "address": "0x0000e7aa",
+              "instruction": "mov.w r11,#0x1",
+              "bytes": "4ff0010b",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7ae",
+              "instruction": "adds r4,#0x24",
+              "bytes": "2434",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7b0",
+              "instruction": "cmp r9,r4",
+              "bytes": "a145",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7b2",
+              "instruction": "bne 0x0000e78c",
+              "bytes": "ebd1",
+              "flows": [
+                "0x0000e78c"
+              ]
+            },
+            {
+              "address": "0x0000e7e8",
+              "instruction": "add r4,sp,#0x14",
+              "bytes": "05ac",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7ea",
+              "instruction": "movs r2,#0x8",
+              "bytes": "0822",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7ec",
+              "instruction": "movs r1,#0x1",
+              "bytes": "0121",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7ee",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7f0",
+              "instruction": "blx 0x0000d7c8",
+              "bytes": "fef7eaef",
+              "flows": [
+                "0x0000d7c8"
+              ]
+            },
+            {
+              "address": "0x0000e7f4",
+              "instruction": "movs r1,#0x0",
+              "bytes": "0021",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7f6",
+              "instruction": "movs r2,#0x9c",
+              "bytes": "9c22",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7f8",
+              "instruction": "mov r0,r8",
+              "bytes": "4046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e7fa",
+              "instruction": "blx 0x0000d36c",
+              "bytes": "fef7b8ed",
+              "flows": [
+                "0x0000d36c"
+              ]
+            },
+            {
+              "address": "0x0000e7fe",
+              "instruction": "movs r2,#0x1",
+              "bytes": "0122",
+              "flows": []
+            },
+            {
+              "address": "0x0000e800",
+              "instruction": "movs r3,#0x0",
+              "bytes": "0023",
+              "flows": []
+            },
+            {
+              "address": "0x0000e802",
+              "instruction": "strb.w r2,[r8,#0x0]",
+              "bytes": "88f80020",
+              "flows": []
+            },
+            {
+              "address": "0x0000e806",
+              "instruction": "strb.w r3,[r8,#0x98]",
+              "bytes": "88f89830",
+              "flows": []
+            },
+            {
+              "address": "0x0000e80a",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000e80c",
+              "instruction": "str.w r6,[r8,#0x94]",
+              "bytes": "c8f89460",
+              "flows": []
+            },
+            {
+              "address": "0x0000e810",
+              "instruction": "blx 0x0000d97c",
+              "bytes": "fff7b4e8",
+              "flows": [
+                "0x0000d97c"
+              ]
+            },
+            {
+              "address": "0x0000e814",
+              "instruction": "blx 0x0000d844",
+              "bytes": "fff716e8",
+              "flows": [
+                "0x0000d844"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librrutils.so",
+          "function_entry": "0x1ae0",
+          "surviving_name": "rr_get_multimap_name",
+          "source": "before-utils-related/selected.json",
+          "instructions": [
+            {
+              "address": "0x00001ae8",
+              "instruction": "add.w r2,r0,#0x90",
+              "bytes": "00f19002",
+              "flows": []
+            },
+            {
+              "address": "0x00001aec",
+              "instruction": "ldrb r3,[r0,#0x0]",
+              "bytes": "0378",
+              "flows": []
+            },
+            {
+              "address": "0x00001aee",
+              "instruction": "cmp r3,r4",
+              "bytes": "a342",
+              "flows": []
+            },
+            {
+              "address": "0x00001af0",
+              "instruction": "beq 0x00001afe",
+              "bytes": "05d0",
+              "flows": [
+                "0x00001afe"
+              ]
+            },
+            {
+              "address": "0x00001af2",
+              "instruction": "adds r0,#0x24",
+              "bytes": "2430",
+              "flows": []
+            },
+            {
+              "address": "0x00001af4",
+              "instruction": "cmp r0,r2",
+              "bytes": "9042",
+              "flows": []
+            },
+            {
+              "address": "0x00001af6",
+              "instruction": "bne 0x00001aec",
+              "bytes": "f9d1",
+              "flows": [
+                "0x00001aec"
+              ]
+            },
+            {
+              "address": "0x00001af8",
+              "instruction": "ldr r0,[0x00001b04]",
+              "bytes": "0248",
+              "flows": []
+            },
+            {
+              "address": "0x00001afa",
+              "instruction": "add r0,pc",
+              "bytes": "7844",
+              "flows": []
+            },
+            {
+              "address": "0x00001afc",
+              "instruction": "pop {r4,pc}",
+              "bytes": "10bd",
+              "flows": []
+            },
+            {
+              "address": "0x00001afe",
+              "instruction": "adds r0,#0x4",
+              "bytes": "0430",
+              "flows": []
+            },
+            {
+              "address": "0x00001b00",
+              "instruction": "pop {r4,pc}",
+              "bytes": "10bd",
+              "flows": []
+            }
+          ]
+        }
+      ],
+      "correction_to_prose": "REGIONS described two unresolved bytes entry+2..3 and unresolved full name capacity. Only entry+2 remains unknown; entry+3 stores length; physical name capacity32 verified. Caller-enforced safe length remains unresolved; not investigated beyond lane."
+    },
+    {
+      "id": "slot-allocation",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "Allocator zeroes 12 int slots and marks nonzero primary and associated nonzero backup bytes. GetBakMapFlagStartPos returns6. Primary search is signed flag2 while flag<6; backup search starts6 while flag<=9. First unused returned, otherwise -1. Filename support for10/11 is not allocation policy. Corrupt loaded bytes are used as indexes without local bounds checks.",
+      "evidence": [
+        {
+          "program": "librrutils.so",
+          "function_entry": "0x18a8",
+          "surviving_name": "rr_get_unused_persist_map_flag",
+          "source": "before-utils/selected.json",
+          "instructions": [
+            {
+              "address": "0x000018b4",
+              "instruction": "add r7,sp,#0x4",
+              "bytes": "01af",
+              "flows": []
+            },
+            {
+              "address": "0x000018b6",
+              "instruction": "movs r2,#0x30",
+              "bytes": "3022",
+              "flows": []
+            },
+            {
+              "address": "0x000018b8",
+              "instruction": "mov r4,r0",
+              "bytes": "0446",
+              "flows": []
+            },
+            {
+              "address": "0x000018ba",
+              "instruction": "ldr r6,[r3,r5]",
+              "bytes": "5e59",
+              "flows": []
+            },
+            {
+              "address": "0x000018bc",
+              "instruction": "mov r0,r7",
+              "bytes": "3846",
+              "flows": []
+            },
+            {
+              "address": "0x000018be",
+              "instruction": "movs r5,#0x1",
+              "bytes": "0125",
+              "flows": []
+            },
+            {
+              "address": "0x000018c0",
+              "instruction": "ldr r3,[r6,#0x0]",
+              "bytes": "3368",
+              "flows": []
+            },
+            {
+              "address": "0x000018c2",
+              "instruction": "str r3,[sp,#0x34]",
+              "bytes": "0d93",
+              "flows": []
+            },
+            {
+              "address": "0x000018c4",
+              "instruction": "blx 0x00001580",
+              "bytes": "fff75cee",
+              "flows": [
+                "0x00001580"
+              ]
+            },
+            {
+              "address": "0x000018c8",
+              "instruction": "blx 0x000015b4",
+              "bytes": "fff774ee",
+              "flows": [
+                "0x000015b4"
+              ]
+            },
+            {
+              "address": "0x000018cc",
+              "instruction": "add.w r1,r0,#0x90",
+              "bytes": "00f19001",
+              "flows": []
+            },
+            {
+              "address": "0x000018d0",
+              "instruction": "ldrb r3,[r0,#0x0]",
+              "bytes": "0378",
+              "flows": []
+            },
+            {
+              "address": "0x000018d2",
+              "instruction": "cbz r3,0x000018ec",
+              "bytes": "5bb1",
+              "flows": [
+                "0x000018ec"
+              ]
+            },
+            {
+              "address": "0x000018d4",
+              "instruction": "add.w lr,sp,#0x38",
+              "bytes": "0df1380e",
+              "flows": []
+            },
+            {
+              "address": "0x000018d8",
+              "instruction": "ldrb r2,[r0,#0x1]",
+              "bytes": "4278",
+              "flows": []
+            },
+            {
+              "address": "0x000018da",
+              "instruction": "add.w r3,lr,r3, lsl #0x2",
+              "bytes": "0eeb8303",
+              "flows": []
+            },
+            {
+              "address": "0x000018de",
+              "instruction": "str.w r5,[r3,#-0x34]",
+              "bytes": "43f8345c",
+              "flows": []
+            },
+            {
+              "address": "0x000018e2",
+              "instruction": "cbz r2,0x000018ec",
+              "bytes": "1ab1",
+              "flows": [
+                "0x000018ec"
+              ]
+            },
+            {
+              "address": "0x000018e4",
+              "instruction": "add.w r2,lr,r2, lsl #0x2",
+              "bytes": "0eeb8202",
+              "flows": []
+            },
+            {
+              "address": "0x000018e8",
+              "instruction": "str.w r5,[r2,#-0x34]",
+              "bytes": "42f8345c",
+              "flows": []
+            },
+            {
+              "address": "0x000018ec",
+              "instruction": "adds r0,#0x24",
+              "bytes": "2430",
+              "flows": []
+            },
+            {
+              "address": "0x000018ee",
+              "instruction": "cmp r0,r1",
+              "bytes": "8842",
+              "flows": []
+            },
+            {
+              "address": "0x000018f0",
+              "instruction": "bne 0x000018d0",
+              "bytes": "eed1",
+              "flows": [
+                "0x000018d0"
+              ]
+            },
+            {
+              "address": "0x000018f2",
+              "instruction": "cbnz r4,0x0000191e",
+              "bytes": "a4b9",
+              "flows": [
+                "0x0000191e"
+              ]
+            },
+            {
+              "address": "0x000018f4",
+              "instruction": "add r5,sp,#0x8",
+              "bytes": "02ad",
+              "flows": []
+            },
+            {
+              "address": "0x000018f6",
+              "instruction": "movs r4,#0x2",
+              "bytes": "0224",
+              "flows": []
+            },
+            {
+              "address": "0x000018f8",
+              "instruction": "b 0x00001902",
+              "bytes": "03e0",
+              "flows": [
+                "0x00001902"
+              ]
+            },
+            {
+              "address": "0x000018fa",
+              "instruction": "ldr.w r3,[r5,#0x4]!",
+              "bytes": "55f8043f",
+              "flows": []
+            },
+            {
+              "address": "0x000018fe",
+              "instruction": "cbz r3,0x0000191a",
+              "bytes": "63b1",
+              "flows": [
+                "0x0000191a"
+              ]
+            },
+            {
+              "address": "0x00001900",
+              "instruction": "adds r4,#0x1",
+              "bytes": "0134",
+              "flows": []
+            },
+            {
+              "address": "0x00001902",
+              "instruction": "blx 0x000014d4",
+              "bytes": "fff7e8ed",
+              "flows": [
+                "0x000014d4"
+              ]
+            },
+            {
+              "address": "0x00001906",
+              "instruction": "cmp r4,r0",
+              "bytes": "8442",
+              "flows": []
+            },
+            {
+              "address": "0x00001908",
+              "instruction": "blt 0x000018fa",
+              "bytes": "f7db",
+              "flows": [
+                "0x000018fa"
+              ]
+            },
+            {
+              "address": "0x0000190a",
+              "instruction": "mov.w r0,#0xffffffff",
+              "bytes": "4ff0ff30",
+              "flows": []
+            },
+            {
+              "address": "0x0000190e",
+              "instruction": "ldr r2,[sp,#0x34]",
+              "bytes": "0d9a",
+              "flows": []
+            },
+            {
+              "address": "0x00001910",
+              "instruction": "ldr r3,[r6,#0x0]",
+              "bytes": "3368",
+              "flows": []
+            },
+            {
+              "address": "0x00001912",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x00001914",
+              "instruction": "bne 0x00001942",
+              "bytes": "15d1",
+              "flows": [
+                "0x00001942"
+              ]
+            },
+            {
+              "address": "0x00001916",
+              "instruction": "add sp,#0x3c",
+              "bytes": "0fb0",
+              "flows": []
+            },
+            {
+              "address": "0x00001918",
+              "instruction": "pop {r4,r5,r6,r7,pc}",
+              "bytes": "f0bd",
+              "flows": []
+            },
+            {
+              "address": "0x0000191a",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0000191c",
+              "instruction": "b 0x0000190e",
+              "bytes": "f7e7",
+              "flows": [
+                "0x0000190e"
+              ]
+            },
+            {
+              "address": "0x0000191e",
+              "instruction": "blx 0x000014d4",
+              "bytes": "fff7daed",
+              "flows": [
+                "0x000014d4"
+              ]
+            },
+            {
+              "address": "0x00001922",
+              "instruction": "lsls r5,r0,#0x2",
+              "bytes": "8500",
+              "flows": []
+            },
+            {
+              "address": "0x00001924",
+              "instruction": "mov r4,r0",
+              "bytes": "0446",
+              "flows": []
+            },
+            {
+              "address": "0x00001926",
+              "instruction": "subs r5,#0x4",
+              "bytes": "043d",
+              "flows": []
+            },
+            {
+              "address": "0x00001928",
+              "instruction": "add r5,r7",
+              "bytes": "3d44",
+              "flows": []
+            },
+            {
+              "address": "0x0000192a",
+              "instruction": "b 0x00001936",
+              "bytes": "04e0",
+              "flows": [
+                "0x00001936"
+              ]
+            },
+            {
+              "address": "0x0000192c",
+              "instruction": "ldr.w r3,[r5,#0x4]!",
+              "bytes": "55f8043f",
+              "flows": []
+            },
+            {
+              "address": "0x00001930",
+              "instruction": "cmp r3,#0x0",
+              "bytes": "002b",
+              "flows": []
+            },
+            {
+              "address": "0x00001932",
+              "instruction": "beq 0x0000191a",
+              "bytes": "f2d0",
+              "flows": [
+                "0x0000191a"
+              ]
+            },
+            {
+              "address": "0x00001934",
+              "instruction": "adds r4,#0x1",
+              "bytes": "0134",
+              "flows": []
+            },
+            {
+              "address": "0x00001936",
+              "instruction": "blx 0x000014d4",
+              "bytes": "fff7ceed",
+              "flows": [
+                "0x000014d4"
+              ]
+            },
+            {
+              "address": "0x0000193a",
+              "instruction": "adds r0,#0x3",
+              "bytes": "0330",
+              "flows": []
+            },
+            {
+              "address": "0x0000193c",
+              "instruction": "cmp r4,r0",
+              "bytes": "8442",
+              "flows": []
+            },
+            {
+              "address": "0x0000193e",
+              "instruction": "ble 0x0000192c",
+              "bytes": "f5dd",
+              "flows": [
+                "0x0000192c"
+              ]
+            },
+            {
+              "address": "0x00001940",
+              "instruction": "b 0x0000190a",
+              "bytes": "e3e7",
+              "flows": [
+                "0x0000190a"
+              ]
+            }
+          ]
+        },
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0xebd8",
+          "surviving_name": "GetBakMapFlagStartPos",
+          "source": "before-persist-constant/selected.json",
+          "instructions": [
+            {
+              "address": "0x0000ebd8",
+              "instruction": "movs r0,#0x6",
+              "bytes": "0620",
+              "flows": []
+            },
+            {
+              "address": "0x0000ebda",
+              "instruction": "bx lr",
+              "bytes": "7047",
+              "flows": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "capacity-mode",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "rr_get_multimap_flag_available counts nonzero primary bytes; mode==1 permits count<4, other modes require count<1. No reservation/file check.",
+      "evidence": [
+        {
+          "program": "librrutils.so",
+          "function_entry": "0x1950",
+          "surviving_name": "rr_get_multimap_flag_available",
+          "source": "before-utils-related/selected.json",
+          "instructions": [
+            {
+              "address": "0x00001950",
+              "instruction": "push {r4,lr}",
+              "bytes": "10b5",
+              "flows": []
+            },
+            {
+              "address": "0x00001952",
+              "instruction": "mov r4,r0",
+              "bytes": "0446",
+              "flows": []
+            },
+            {
+              "address": "0x00001954",
+              "instruction": "blx 0x000015b4",
+              "bytes": "fff72eee",
+              "flows": [
+                "0x000015b4"
+              ]
+            },
+            {
+              "address": "0x00001958",
+              "instruction": "movs r3,#0x0",
+              "bytes": "0023",
+              "flows": []
+            },
+            {
+              "address": "0x0000195a",
+              "instruction": "mov r1,r3",
+              "bytes": "1946",
+              "flows": []
+            },
+            {
+              "address": "0x0000195c",
+              "instruction": "ldrb r2,[r0,r3]",
+              "bytes": "c25c",
+              "flows": []
+            },
+            {
+              "address": "0x0000195e",
+              "instruction": "adds r3,#0x24",
+              "bytes": "2433",
+              "flows": []
+            },
+            {
+              "address": "0x00001960",
+              "instruction": "cbz r2,0x00001964",
+              "bytes": "02b1",
+              "flows": [
+                "0x00001964"
+              ]
+            },
+            {
+              "address": "0x00001962",
+              "instruction": "adds r1,#0x1",
+              "bytes": "0131",
+              "flows": []
+            },
+            {
+              "address": "0x00001964",
+              "instruction": "cmp r3,#0x90",
+              "bytes": "902b",
+              "flows": []
+            },
+            {
+              "address": "0x00001966",
+              "instruction": "bne 0x0000195c",
+              "bytes": "f9d1",
+              "flows": [
+                "0x0000195c"
+              ]
+            },
+            {
+              "address": "0x00001968",
+              "instruction": "cmp r4,#0x1",
+              "bytes": "012c",
+              "flows": []
+            },
+            {
+              "address": "0x0000196a",
+              "instruction": "ite eq",
+              "bytes": "0cbf",
+              "flows": []
+            },
+            {
+              "address": "0x0000196c",
+              "instruction": "mov.eq r0,#0x4",
+              "bytes": "0420",
+              "flows": []
+            },
+            {
+              "address": "0x0000196e",
+              "instruction": "mov.ne r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x00001970",
+              "instruction": "cmp r1,r0",
+              "bytes": "8142",
+              "flows": []
+            },
+            {
+              "address": "0x00001972",
+              "instruction": "ite ge",
+              "bytes": "acbf",
+              "flows": []
+            },
+            {
+              "address": "0x00001974",
+              "instruction": "mov.ge r0,#0x0",
+              "bytes": "0020",
+              "flows": []
+            },
+            {
+              "address": "0x00001976",
+              "instruction": "mov.lt r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x00001978",
+              "instruction": "pop {r4,pc}",
+              "bytes": "10bd",
+              "flows": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "filename-flags",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "GetMapInfoPersistFileName has hidden output storage r0 and signed flag r1. flag==-2 bypasses dynamic directory and constructs /dev/shm/PersistData_Temp.data. Other values use cached NAV_DYNAMIC_CONFIG_PATH (or /mnt/data/rockrobo), append /PersistData_ + signed decimal flag + .data, without range validation.",
+      "evidence": [
+        {
+          "program": "librobopersist.so",
+          "function_entry": "0x1ab94",
+          "surviving_name": "GetMapInfoPersistFileName",
+          "source": "before-persist-seeds/selected.json",
+          "instructions": [
+            {
+              "address": "0x0001ab94",
+              "instruction": "push {r4,r5,r6,r7,r8,r9,r10,lr}",
+              "bytes": "2de9f047",
+              "flows": []
+            },
+            {
+              "address": "0x0001ab98",
+              "instruction": "adds r2,r1,#0x2",
+              "bytes": "8a1c",
+              "flows": []
+            },
+            {
+              "address": "0x0001ab9a",
+              "instruction": "ldr r5,[0x0001ae10]",
+              "bytes": "9d4d",
+              "flows": []
+            },
+            {
+              "address": "0x0001ab9c",
+              "instruction": "sub sp,#0x28",
+              "bytes": "8ab0",
+              "flows": []
+            },
+            {
+              "address": "0x0001ab9e",
+              "instruction": "ldr r3,[0x0001ae14]",
+              "bytes": "9d4b",
+              "flows": []
+            },
+            {
+              "address": "0x0001aba0",
+              "instruction": "mov r6,r0",
+              "bytes": "0646",
+              "flows": []
+            },
+            {
+              "address": "0x0001aba2",
+              "instruction": "add r5,pc",
+              "bytes": "7d44",
+              "flows": []
+            },
+            {
+              "address": "0x0001aba4",
+              "instruction": "ldr.w r8,[r5,r3]",
+              "bytes": "55f80380",
+              "flows": []
+            },
+            {
+              "address": "0x0001aba8",
+              "instruction": "ldr.w r3,[r8,#0x0]",
+              "bytes": "d8f80030",
+              "flows": []
+            },
+            {
+              "address": "0x0001abac",
+              "instruction": "str r3,[sp,#0x24]",
+              "bytes": "0993",
+              "flows": []
+            },
+            {
+              "address": "0x0001abae",
+              "instruction": "beq.w 0x0001acd2",
+              "bytes": "00f09080",
+              "flows": [
+                "0x0001acd2"
+              ]
+            },
+            {
+              "address": "0x0001abd4",
+              "instruction": "ldr r1,[0x0001ae1c]",
+              "bytes": "9149",
+              "flows": []
+            },
+            {
+              "address": "0x0001abd6",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0001abd8",
+              "instruction": "movs r2,#0xd",
+              "bytes": "0d22",
+              "flows": []
+            },
+            {
+              "address": "0x0001abda",
+              "instruction": "add r1,pc",
+              "bytes": "7944",
+              "flows": []
+            },
+            {
+              "address": "0x0001abdc",
+              "instruction": "blx 0x0000d6f0",
+              "bytes": "f2f788ed",
+              "flows": [
+                "0x0000d6f0"
+              ]
+            },
+            {
+              "address": "0x0001abe0",
+              "instruction": "mov lr,r0",
+              "bytes": "8646",
+              "flows": []
+            },
+            {
+              "address": "0x0001abe2",
+              "instruction": "ldr r1,[0x0001ae20]",
+              "bytes": "8f49",
+              "flows": []
+            },
+            {
+              "address": "0x0001abe4",
+              "instruction": "ldr r0,[r0,#0x0]",
+              "bytes": "0068",
+              "flows": []
+            },
+            {
+              "address": "0x0001abe6",
+              "instruction": "add.w r9,sp,#0x1c",
+              "bytes": "0df11c09",
+              "flows": []
+            },
+            {
+              "address": "0x0001abea",
+              "instruction": "ldr r3,[0x0001ae24]",
+              "bytes": "8e4b",
+              "flows": []
+            },
+            {
+              "address": "0x0001abec",
+              "instruction": "movs r2,#0x10",
+              "bytes": "1022",
+              "flows": []
+            },
+            {
+              "address": "0x0001abee",
+              "instruction": "str r0,[sp,#0x18]",
+              "bytes": "0690",
+              "flows": []
+            },
+            {
+              "address": "0x0001abf0",
+              "instruction": "mov r0,r9",
+              "bytes": "4846",
+              "flows": []
+            },
+            {
+              "address": "0x0001abf2",
+              "instruction": "ldr r4,[r5,r1]",
+              "bytes": "6c58",
+              "flows": []
+            },
+            {
+              "address": "0x0001abf4",
+              "instruction": "add.w r1,r4,#0xc",
+              "bytes": "04f10c01",
+              "flows": []
+            },
+            {
+              "address": "0x0001abf8",
+              "instruction": "str.w r1,[lr,#0x0]",
+              "bytes": "cef80010",
+              "flows": []
+            },
+            {
+              "address": "0x0001abfc",
+              "instruction": "ldr r1,[r5,r3]",
+              "bytes": "e958",
+              "flows": []
+            },
+            {
+              "address": "0x0001abfe",
+              "instruction": "ldr r3,[0x0001ae28]",
+              "bytes": "8a4b",
+              "flows": []
+            },
+            {
+              "address": "0x0001ac00",
+              "instruction": "str r7,[sp,#0x0]",
+              "bytes": "0097",
+              "flows": []
+            },
+            {
+              "address": "0x0001ac02",
+              "instruction": "add r3,pc",
+              "bytes": "7b44",
+              "flows": []
+            },
+            {
+              "address": "0x0001ac04",
+              "instruction": "blx 0x0000d7e0",
+              "bytes": "f2f7eced",
+              "flows": [
+                "0x0000d7e0"
+              ]
+            },
+            {
+              "address": "0x0001ac3a",
+              "instruction": "ldr r1,[0x0001ae2c]",
+              "bytes": "7c49",
+              "flows": []
+            },
+            {
+              "address": "0x0001ac3c",
+              "instruction": "add r1,pc",
+              "bytes": "7944",
+              "flows": []
+            },
+            {
+              "address": "0x0001ac3e",
+              "instruction": "blx 0x0000d6f0",
+              "bytes": "f2f758ed",
+              "flows": [
+                "0x0000d6f0"
+              ]
+            },
+            {
+              "address": "0x0001ac42",
+              "instruction": "ldr r2,[r0,#0x0]",
+              "bytes": "0268",
+              "flows": []
+            },
+            {
+              "address": "0x0001ac44",
+              "instruction": "add.w r3,r4,#0xc",
+              "bytes": "04f10c03",
+              "flows": []
+            },
+            {
+              "address": "0x0001ac48",
+              "instruction": "str r2,[r6,#0x0]",
+              "bytes": "3260",
+              "flows": []
+            },
+            {
+              "address": "0x0001ac9c",
+              "instruction": "add.w r10,r9,#0x8",
+              "bytes": "09f1080a",
+              "flows": []
+            },
+            {
+              "address": "0x0001aca0",
+              "instruction": "mov r0,r10",
+              "bytes": "5046",
+              "flows": []
+            },
+            {
+              "address": "0x0001aca2",
+              "instruction": "blx 0x0000dc60",
+              "bytes": "f2f7deef",
+              "flows": [
+                "0x0000dc60"
+              ]
+            },
+            {
+              "address": "0x0001aca6",
+              "instruction": "cmp r0,#0x0",
+              "bytes": "0028",
+              "flows": []
+            },
+            {
+              "address": "0x0001aca8",
+              "instruction": "beq 0x0001abc2",
+              "bytes": "8bd0",
+              "flows": [
+                "0x0001abc2"
+              ]
+            },
+            {
+              "address": "0x0001acaa",
+              "instruction": "ldr r0,[0x0001ae30]",
+              "bytes": "6148",
+              "flows": []
+            },
+            {
+              "address": "0x0001acac",
+              "instruction": "add r0,pc",
+              "bytes": "7844",
+              "flows": []
+            },
+            {
+              "address": "0x0001acae",
+              "instruction": "blx 0x0000dcb8",
+              "bytes": "f3f704e8",
+              "flows": [
+                "0x0000dcb8"
+              ]
+            },
+            {
+              "address": "0x0001acb2",
+              "instruction": "mov r4,r0",
+              "bytes": "0446",
+              "flows": []
+            },
+            {
+              "address": "0x0001acb4",
+              "instruction": "mov r0,r10",
+              "bytes": "5046",
+              "flows": []
+            },
+            {
+              "address": "0x0001acb6",
+              "instruction": "str.w r4,[r9,#0xc]",
+              "bytes": "c9f80c40",
+              "flows": []
+            },
+            {
+              "address": "0x0001acba",
+              "instruction": "blx 0x0000d348",
+              "bytes": "f2f746eb",
+              "flows": [
+                "0x0000d348"
+              ]
+            },
+            {
+              "address": "0x0001acbe",
+              "instruction": "mov r1,r4",
+              "bytes": "2146",
+              "flows": []
+            },
+            {
+              "address": "0x0001acc0",
+              "instruction": "cmp r1,#0x0",
+              "bytes": "0029",
+              "flows": []
+            },
+            {
+              "address": "0x0001acc2",
+              "instruction": "bne 0x0001abca",
+              "bytes": "82d1",
+              "flows": [
+                "0x0001abca"
+              ]
+            },
+            {
+              "address": "0x0001acc4",
+              "instruction": "ldr r3,[0x0001ae34]",
+              "bytes": "5b4b",
+              "flows": []
+            },
+            {
+              "address": "0x0001acc6",
+              "instruction": "ldr r2,[0x0001ae38]",
+              "bytes": "5c4a",
+              "flows": []
+            },
+            {
+              "address": "0x0001acc8",
+              "instruction": "add r3,pc",
+              "bytes": "7b44",
+              "flows": []
+            },
+            {
+              "address": "0x0001acca",
+              "instruction": "add r2,pc",
+              "bytes": "7a44",
+              "flows": []
+            },
+            {
+              "address": "0x0001accc",
+              "instruction": "mov r1,r3",
+              "bytes": "1946",
+              "flows": []
+            },
+            {
+              "address": "0x0001acce",
+              "instruction": "str r3,[r2,#0xc]",
+              "bytes": "d360",
+              "flows": []
+            },
+            {
+              "address": "0x0001acd0",
+              "instruction": "b 0x0001abca",
+              "bytes": "7be7",
+              "flows": [
+                "0x0001abca"
+              ]
+            },
+            {
+              "address": "0x0001acd2",
+              "instruction": "ldr r1,[0x0001ae3c]",
+              "bytes": "5a49",
+              "flows": []
+            },
+            {
+              "address": "0x0001acd4",
+              "instruction": "add r2,sp,#0x20",
+              "bytes": "08aa",
+              "flows": []
+            },
+            {
+              "address": "0x0001acd6",
+              "instruction": "add r1,pc",
+              "bytes": "7944",
+              "flows": []
+            },
+            {
+              "address": "0x0001acd8",
+              "instruction": "blx 0x0000d714",
+              "bytes": "f2f71ced",
+              "flows": [
+                "0x0000d714"
+              ]
+            },
+            {
+              "address": "0x0001acdc",
+              "instruction": "b 0x0001ac76",
+              "bytes": "cbe7",
+              "flows": [
+                "0x0001ac76"
+              ]
+            }
+          ]
+        }
+      ],
+      "type_interpretation": "MapPersistFlag is signed32 ABI typedef, not grid index. Output std::string storage is void*; no C++ layout fabricated. Grid temporary flag12 belongs to grid lane, distinct from persistence -2."
+    },
+    {
+      "id": "external-id-existence",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "AppProxy entry0x3b908 adds2 to external integer in 32-bit registers, validates signed primary2..5 plus catalog membership or backup6..11 without association check, then checks access(F_OK) for user_map<external_id> via shared tail0x37448. This is file existence, not loadability, persistence-file validation or DB lookup.",
+      "evidence": [
+        {
+          "program": "AppProxy",
+          "function_entry": "0x3b908",
+          "surviving_name": "FUN_0003b908",
+          "source": "before-appproxy-seed/selected.json",
+          "instructions": [
+            {
+              "address": "0x00037448",
+              "instruction": "push {r4,r5,lr}",
+              "bytes": "30b5",
+              "flows": []
+            },
+            {
+              "address": "0x0003744a",
+              "instruction": "movw r4,#0x19c8",
+              "bytes": "41f6c814",
+              "flows": []
+            },
+            {
+              "address": "0x0003744e",
+              "instruction": "movt r4,#0x12",
+              "bytes": "c0f21204",
+              "flows": []
+            },
+            {
+              "address": "0x00037452",
+              "instruction": "sub sp,#0x11c",
+              "bytes": "c7b0",
+              "flows": []
+            },
+            {
+              "address": "0x00037454",
+              "instruction": "mov r5,r0",
+              "bytes": "0546",
+              "flows": []
+            },
+            {
+              "address": "0x00037456",
+              "instruction": "movs r2,#0xff",
+              "bytes": "ff22",
+              "flows": []
+            },
+            {
+              "address": "0x00037458",
+              "instruction": "ldr r3,[r4,#0x0]",
+              "bytes": "2368",
+              "flows": []
+            },
+            {
+              "address": "0x0003745a",
+              "instruction": "movw r1,#0x367c",
+              "bytes": "43f27c61",
+              "flows": []
+            },
+            {
+              "address": "0x0003745e",
+              "instruction": "add r0,sp,#0x14",
+              "bytes": "05a8",
+              "flows": []
+            },
+            {
+              "address": "0x00037460",
+              "instruction": "movt r1,#0x35",
+              "bytes": "c0f23501",
+              "flows": []
+            },
+            {
+              "address": "0x00037464",
+              "instruction": "str r3,[sp,#0x114]",
+              "bytes": "4593",
+              "flows": []
+            },
+            {
+              "address": "0x00037466",
+              "instruction": "blx 0x00018700",
+              "bytes": "e1f74ce9",
+              "flows": [
+                "0x00018700"
+              ]
+            },
+            {
+              "address": "0x0003746a",
+              "instruction": "mov.w r2,#0x100",
+              "bytes": "4ff48072",
+              "flows": []
+            },
+            {
+              "address": "0x0003746e",
+              "instruction": "add r0,sp,#0x14",
+              "bytes": "05a8",
+              "flows": []
+            },
+            {
+              "address": "0x00037470",
+              "instruction": "movw r1,#0x28d4",
+              "bytes": "42f6d401",
+              "flows": []
+            },
+            {
+              "address": "0x00037474",
+              "instruction": "movt r1,#0xf",
+              "bytes": "c0f20f01",
+              "flows": []
+            },
+            {
+              "address": "0x00037478",
+              "instruction": "blx 0x00018f28",
+              "bytes": "e1f756ed",
+              "flows": [
+                "0x00018f28"
+              ]
+            },
+            {
+              "address": "0x0003747c",
+              "instruction": "movs r2,#0xa",
+              "bytes": "0a22",
+              "flows": []
+            },
+            {
+              "address": "0x0003747e",
+              "instruction": "movs r1,#0x1",
+              "bytes": "0121",
+              "flows": []
+            },
+            {
+              "address": "0x00037480",
+              "instruction": "str r5,[sp,#0x0]",
+              "bytes": "0095",
+              "flows": []
+            },
+            {
+              "address": "0x00037482",
+              "instruction": "add r0,sp,#0x8",
+              "bytes": "02a8",
+              "flows": []
+            },
+            {
+              "address": "0x00037484",
+              "instruction": "movw r3,#0xfe44",
+              "bytes": "4ff64463",
+              "flows": []
+            },
+            {
+              "address": "0x00037488",
+              "instruction": "movt r3,#0xf",
+              "bytes": "c0f20f03",
+              "flows": []
+            },
+            {
+              "address": "0x0003748c",
+              "instruction": "blx 0x000184e0",
+              "bytes": "e1f728e8",
+              "flows": [
+                "0x000184e0"
+              ]
+            },
+            {
+              "address": "0x00037490",
+              "instruction": "movs r2,#0xff",
+              "bytes": "ff22",
+              "flows": []
+            },
+            {
+              "address": "0x00037492",
+              "instruction": "add r1,sp,#0x8",
+              "bytes": "02a9",
+              "flows": []
+            },
+            {
+              "address": "0x00037494",
+              "instruction": "mov.w r3,#0x100",
+              "bytes": "4ff48073",
+              "flows": []
+            },
+            {
+              "address": "0x00037498",
+              "instruction": "add r0,sp,#0x14",
+              "bytes": "05a8",
+              "flows": []
+            },
+            {
+              "address": "0x0003749a",
+              "instruction": "blx 0x000182f8",
+              "bytes": "e0f72eef",
+              "flows": [
+                "0x000182f8"
+              ]
+            },
+            {
+              "address": "0x0003749e",
+              "instruction": "movs r3,#0x0",
+              "bytes": "0023",
+              "flows": []
+            },
+            {
+              "address": "0x000374a0",
+              "instruction": "mov r1,r3",
+              "bytes": "1946",
+              "flows": []
+            },
+            {
+              "address": "0x000374a2",
+              "instruction": "add r0,sp,#0x14",
+              "bytes": "05a8",
+              "flows": []
+            },
+            {
+              "address": "0x000374a4",
+              "instruction": "strb.w r3,[sp,#0x113]",
+              "bytes": "8df81331",
+              "flows": []
+            },
+            {
+              "address": "0x000374a8",
+              "instruction": "blx 0x00018790",
+              "bytes": "e1f772e9",
+              "flows": [
+                "0x00018790"
+              ]
+            },
+            {
+              "address": "0x000374ac",
+              "instruction": "ldr r2,[sp,#0x114]",
+              "bytes": "459a",
+              "flows": []
+            },
+            {
+              "address": "0x000374ae",
+              "instruction": "ldr r3,[r4,#0x0]",
+              "bytes": "2368",
+              "flows": []
+            },
+            {
+              "address": "0x000374b0",
+              "instruction": "cmp r2,r3",
+              "bytes": "9a42",
+              "flows": []
+            },
+            {
+              "address": "0x000374b2",
+              "instruction": "bne 0x000374be",
+              "bytes": "04d1",
+              "flows": [
+                "0x000374be"
+              ]
+            },
+            {
+              "address": "0x000374b4",
+              "instruction": "clz r0,r0",
+              "bytes": "b0fa80f0",
+              "flows": []
+            },
+            {
+              "address": "0x000374b8",
+              "instruction": "lsrs r0,r0,#0x5",
+              "bytes": "4009",
+              "flows": []
+            },
+            {
+              "address": "0x000374ba",
+              "instruction": "add sp,#0x11c",
+              "bytes": "47b0",
+              "flows": []
+            },
+            {
+              "address": "0x000374bc",
+              "instruction": "pop {r4,r5,pc}",
+              "bytes": "30bd",
+              "flows": []
+            },
+            {
+              "address": "0x0003b908",
+              "instruction": "push {r3,r4,r5,lr}",
+              "bytes": "38b5",
+              "flows": []
+            },
+            {
+              "address": "0x0003b90a",
+              "instruction": "mov r5,r1",
+              "bytes": "0d46",
+              "flows": []
+            },
+            {
+              "address": "0x0003b90c",
+              "instruction": "adds r4,r1,#0x2",
+              "bytes": "8c1c",
+              "flows": []
+            },
+            {
+              "address": "0x0003b90e",
+              "instruction": "cbnz r2,0x0003b920",
+              "bytes": "3ab9",
+              "flows": [
+                "0x0003b920"
+              ]
+            },
+            {
+              "address": "0x0003b910",
+              "instruction": "cmp r4,#0x1",
+              "bytes": "012c",
+              "flows": []
+            },
+            {
+              "address": "0x0003b912",
+              "instruction": "ble 0x0003b91c",
+              "bytes": "03dd",
+              "flows": [
+                "0x0003b91c"
+              ]
+            },
+            {
+              "address": "0x0003b914",
+              "instruction": "blx 0x00017ec4",
+              "bytes": "dcf7d6ea",
+              "flows": [
+                "0x00017ec4"
+              ]
+            },
+            {
+              "address": "0x0003b918",
+              "instruction": "cmp r4,r0",
+              "bytes": "8442",
+              "flows": []
+            },
+            {
+              "address": "0x0003b91a",
+              "instruction": "blt 0x0003b944",
+              "bytes": "13db",
+              "flows": [
+                "0x0003b944"
+              ]
+            },
+            {
+              "address": "0x0003b91c",
+              "instruction": "movs r0,#0x0",
+              "bytes": "0020",
+              "flows": []
+            },
+            {
+              "address": "0x0003b91e",
+              "instruction": "pop {r3,r4,r5,pc}",
+              "bytes": "38bd",
+              "flows": []
+            },
+            {
+              "address": "0x0003b920",
+              "instruction": "blx 0x00017ec4",
+              "bytes": "dcf7d0ea",
+              "flows": [
+                "0x00017ec4"
+              ]
+            },
+            {
+              "address": "0x0003b924",
+              "instruction": "cmp r4,#0xb",
+              "bytes": "0b2c",
+              "flows": []
+            },
+            {
+              "address": "0x0003b926",
+              "instruction": "ite le",
+              "bytes": "d4bf",
+              "flows": []
+            },
+            {
+              "address": "0x0003b928",
+              "instruction": "mov.le r3,#0x0",
+              "bytes": "0023",
+              "flows": []
+            },
+            {
+              "address": "0x0003b92a",
+              "instruction": "mov.gt r3,#0x1",
+              "bytes": "0123",
+              "flows": []
+            },
+            {
+              "address": "0x0003b92c",
+              "instruction": "cmp r4,r0",
+              "bytes": "8442",
+              "flows": []
+            },
+            {
+              "address": "0x0003b92e",
+              "instruction": "ite ge",
+              "bytes": "acbf",
+              "flows": []
+            },
+            {
+              "address": "0x0003b930",
+              "instruction": "mov.ge r0,r3",
+              "bytes": "1846",
+              "flows": []
+            },
+            {
+              "address": "0x0003b932",
+              "instruction": "orr.lt r0,r3,#0x1",
+              "bytes": "43f00100",
+              "flows": []
+            },
+            {
+              "address": "0x0003b936",
+              "instruction": "cmp r0,#0x0",
+              "bytes": "0028",
+              "flows": []
+            },
+            {
+              "address": "0x0003b938",
+              "instruction": "bne 0x0003b91c",
+              "bytes": "f0d1",
+              "flows": [
+                "0x0003b91c"
+              ]
+            },
+            {
+              "address": "0x0003b93a",
+              "instruction": "mov r0,r5",
+              "bytes": "2846",
+              "flows": []
+            },
+            {
+              "address": "0x0003b93c",
+              "instruction": "pop.w {r3,r4,r5,lr}",
+              "bytes": "bde83840",
+              "flows": []
+            },
+            {
+              "address": "0x0003b940",
+              "instruction": "b.w 0x00037448",
+              "bytes": "fbf782bd",
+              "flows": [
+                "0x00037448"
+              ]
+            },
+            {
+              "address": "0x0003b944",
+              "instruction": "mov r0,r4",
+              "bytes": "2046",
+              "flows": []
+            },
+            {
+              "address": "0x0003b946",
+              "instruction": "blx 0x00018850",
+              "bytes": "dcf784ef",
+              "flows": [
+                "0x00018850"
+              ]
+            },
+            {
+              "address": "0x0003b94a",
+              "instruction": "cmp r0,#0x0",
+              "bytes": "0028",
+              "flows": []
+            },
+            {
+              "address": "0x0003b94c",
+              "instruction": "bne 0x0003b93a",
+              "bytes": "f5d1",
+              "flows": [
+                "0x0003b93a"
+              ]
+            },
+            {
+              "address": "0x0003b94e",
+              "instruction": "b 0x0003b91c",
+              "bytes": "e5e7",
+              "flows": [
+                "0x0003b91c"
+              ]
+            }
+          ]
+        }
+      ],
+      "type_interpretation": "external ID (grid suffix in this wrapper) is not stored catalog byte/native flag; database row assignment is a separate boundary."
+    },
+    {
+      "id": "backup-selection-wrapper",
+      "status": "confirmed",
+      "confidence": "high",
+      "finding": "Existing entry0x3c568 reads first associated backup byte or uses -1 if null. Signed compare against6: below6 returns false and outputs original primary; >=6 returns true and outputs byte, with no upper bound/existence/loadability check.",
+      "evidence": [
+        {
+          "program": "AppProxy",
+          "function_entry": "0x3c568",
+          "surviving_name": "FUN_0003c568",
+          "source": "before-appproxy-boundary/selected.json",
+          "instructions": [
+            {
+              "address": "0x0003c568",
+              "instruction": "push {r4,r5,r6,lr}",
+              "bytes": "70b5",
+              "flows": []
+            },
+            {
+              "address": "0x0003c56a",
+              "instruction": "mov r0,r1",
+              "bytes": "0846",
+              "flows": []
+            },
+            {
+              "address": "0x0003c56c",
+              "instruction": "sub sp,#0x8",
+              "bytes": "82b0",
+              "flows": []
+            },
+            {
+              "address": "0x0003c56e",
+              "instruction": "mov r5,r1",
+              "bytes": "0d46",
+              "flows": []
+            },
+            {
+              "address": "0x0003c570",
+              "instruction": "mov r6,r2",
+              "bytes": "1646",
+              "flows": []
+            },
+            {
+              "address": "0x0003c572",
+              "instruction": "blx 0x0001889c",
+              "bytes": "dcf794e9",
+              "flows": [
+                "0x0001889c"
+              ]
+            },
+            {
+              "address": "0x0003c576",
+              "instruction": "mov.w r4,#0xffffffff",
+              "bytes": "4ff0ff34",
+              "flows": []
+            },
+            {
+              "address": "0x0003c57a",
+              "instruction": "cbz r0,0x0003c57e",
+              "bytes": "00b1",
+              "flows": [
+                "0x0003c57e"
+              ]
+            },
+            {
+              "address": "0x0003c57c",
+              "instruction": "ldrb r4,[r0,#0x0]",
+              "bytes": "0478",
+              "flows": []
+            },
+            {
+              "address": "0x0003c57e",
+              "instruction": "blx 0x00017ec4",
+              "bytes": "dbf7a2ec",
+              "flows": [
+                "0x00017ec4"
+              ]
+            },
+            {
+              "address": "0x0003c582",
+              "instruction": "cmp r4,r0",
+              "bytes": "8442",
+              "flows": []
+            },
+            {
+              "address": "0x0003c584",
+              "instruction": "itt lt",
+              "bytes": "bcbf",
+              "flows": []
+            },
+            {
+              "address": "0x0003c586",
+              "instruction": "str.lt r5,[r6,#0x0]",
+              "bytes": "3560",
+              "flows": []
+            },
+            {
+              "address": "0x0003c588",
+              "instruction": "mov.lt r0,#0x0",
+              "bytes": "0020",
+              "flows": []
+            },
+            {
+              "address": "0x0003c58a",
+              "instruction": "blt 0x0003c5aa",
+              "bytes": "0edb",
+              "flows": [
+                "0x0003c5aa"
+              ]
+            },
+            {
+              "address": "0x0003c58c",
+              "instruction": "str r4,[r6,#0x0]",
+              "bytes": "3460",
+              "flows": []
+            },
+            {
+              "address": "0x0003c58e",
+              "instruction": "movw r0,#0x5420",
+              "bytes": "45f22040",
+              "flows": []
+            },
+            {
+              "address": "0x0003c592",
+              "instruction": "movw r2,#0x3168",
+              "bytes": "43f26812",
+              "flows": []
+            },
+            {
+              "address": "0x0003c596",
+              "instruction": "str r4,[sp,#0x4]",
+              "bytes": "0194",
+              "flows": []
+            },
+            {
+              "address": "0x0003c598",
+              "instruction": "movt r2,#0xf",
+              "bytes": "c0f20f02",
+              "flows": []
+            },
+            {
+              "address": "0x0003c59c",
+              "instruction": "movs r3,#0x6",
+              "bytes": "0623",
+              "flows": []
+            },
+            {
+              "address": "0x0003c59e",
+              "instruction": "str r2,[sp,#0x0]",
+              "bytes": "0092",
+              "flows": []
+            },
+            {
+              "address": "0x0003c5a0",
+              "instruction": "movs r2,#0x1",
+              "bytes": "0122",
+              "flows": []
+            },
+            {
+              "address": "0x0003c5a2",
+              "instruction": "ldr r1,[0x0003c5b0]",
+              "bytes": "0349",
+              "flows": []
+            },
+            {
+              "address": "0x0003c5a4",
+              "instruction": "bl 0x00026228",
+              "bytes": "e9f740fe",
+              "flows": [
+                "0x00026228"
+              ]
+            },
+            {
+              "address": "0x0003c5a8",
+              "instruction": "movs r0,#0x1",
+              "bytes": "0120",
+              "flows": []
+            },
+            {
+              "address": "0x0003c5aa",
+              "instruction": "add sp,#0x8",
+              "bytes": "02b0",
+              "flows": []
+            },
+            {
+              "address": "0x0003c5ac",
+              "instruction": "pop {r4,r5,r6,pc}",
+              "bytes": "70bd",
+              "flows": []
+            }
+          ]
+        }
+      ],
+      "inference": "Renamed CatalogSelectBackup, preserving unknown context parameter as opaque void*."
+    },
+    {
+      "id": "external-backup-conversion-gap",
+      "status": "inferred",
+      "confidence": "high for pseudo-decoded instruction behavior; unresolved baseline entry ownership",
+      "finding": "Read-only explicit-Thumb pseudo-decode of bytes0x3c5b4..0x3c5e9: r1 pointer dereferenced; external ID+2 passed to0x3c568; selected output-2 returned. The helper boolean is not the wrapper return. Neither function nor decoded instructions nor incoming references exist at0x3c5b4 in pinned baseline; no containing true entry can be supplied.",
+      "evidence_paths": [
+        "discovery-appproxy-final/instructions.txt",
+        "discovery-appproxy-final/invocation.json",
+        "before-appproxy/result.json",
+        "before-appproxy-seed/inventory.json"
+      ],
+      "raw_bytes_start": "30b541f6c814c0f2120483b002aa096823684ff0ff35023142f8085d0193fff7c9ff",
+      "mapping": ".text 0x19518..0xea84f, executable; gap VA0x3c5b4 maps file offset0x2c5b4 from AppProxy PT_LOAD mapping",
+      "decision": "Per supervisor approval, no function/disassembly creation; no annotation or generated C at absent entry. Actual0x3c568 wrapper is annotated/exported. Final read-only pseudo decode is evidence, never substituted handwritten C.",
+      "loader_mapping_source": {
+        "start": "0x00019518",
+        "end": "0x000ea84f",
+        "file_offset": 38168
+      },
+      "loader_file_offset": 181684
+    },
+    {
+      "id": "database-id-boundary",
+      "status": "unresolved",
+      "confidence": "high for absence within these narrow wrappers only",
+      "finding": "No SQLite/database call in the two owned wrappers or pseudo-decoded converter. Cannot establish database row assignment semantics from +2/-2. Handoff only to orchestration; no second database investigation performed.",
+      "boundary_callers": {
+        "0x3b908": [
+          "0x4fbf8",
+          "0x51628",
+          "0x51a20",
+          "0x52058",
+          "0x6c06c"
+        ],
+        "0x3c568": [
+          "0x51628",
+          "0x5f054",
+          "0x61e1c",
+          "0x62074",
+          "0x68c14"
+        ]
+      },
+      "raw_call_sites_to_0x3c568": [
+        "0x51750",
+        "0x5f1b4",
+        "0x61e68",
+        "0x620ba",
+        "0x68c54",
+        "0x3c6ae (no containing baseline function)"
+      ],
+      "evidence_paths": [
+        "before-appproxy-seed/selected.json",
+        "before-appproxy-boundary/selected.json",
+        "discovery-appproxy-final/instructions.txt"
+      ]
+    }
+  ],
+  "literal_evidence": [
+    {
+      "program": "librobopersist.so",
+      "literal_table_va": "0xe084",
+      "pc_base": "0xe04a",
+      "string_va": "0x1e8b4",
+      "loader_file_offset": 125108,
+      "text": "/rockrobo/"
+    },
+    {
+      "program": "librobopersist.so",
+      "literal_table_va": "0xe088",
+      "pc_base": "0xe04c",
+      "string_va": "0x1e8c0",
+      "loader_file_offset": 125120,
+      "text": "SharedMultiMapInfo"
+    },
+    {
+      "program": "librobopersist.so",
+      "literal_table_va": "0xe20c",
+      "pc_base": "0xe1b4",
+      "string_va": "0x1e8f8",
+      "loader_file_offset": 125176,
+      "text": "/rockrobo/user_map0"
+    },
+    {
+      "program": "librobopersist.so",
+      "literal_table_va": "0x1ae30",
+      "pc_base": "0x1acb0",
+      "string_va": "0x209ec",
+      "loader_file_offset": 133612,
+      "text": "NAV_DYNAMIC_CONFIG_PATH"
+    },
+    {
+      "program": "librobopersist.so",
+      "literal_table_va": "0x1ae34",
+      "pc_base": "0x1accc",
+      "string_va": "0x209b8",
+      "loader_file_offset": 133560,
+      "text": "/mnt/data/rockrobo"
+    },
+    {
+      "program": "librobopersist.so",
+      "literal_table_va": "0x1ae3c",
+      "pc_base": "0x1acda",
+      "string_va": "0x209cc",
+      "loader_file_offset": 133580,
+      "text": "/dev/shm/PersistData_Temp.data"
+    },
+    {
+      "program": "librobopersist.so",
+      "literal_table_va": "0x1ae1c",
+      "pc_base": "0x1abde",
+      "string_va": "0x20a04",
+      "loader_file_offset": 133636,
+      "text": "/PersistData_"
+    },
+    {
+      "program": "librobopersist.so",
+      "literal_table_va": "0x1ae28",
+      "pc_base": "0x1ac06",
+      "string_va": "0x1e9a4",
+      "loader_file_offset": 125348,
+      "text": "%d"
+    },
+    {
+      "program": "librobopersist.so",
+      "literal_table_va": "0x1ae2c",
+      "pc_base": "0x1ac40",
+      "string_va": "0x20338",
+      "loader_file_offset": 131896,
+      "text": ".data"
+    }
+  ],
+  "diagnostics_and_corrections": [
+    {
+      "output": "before-persist",
+      "diagnostic": "java.lang.Exception: Absent/ambiguous function entry or non-executable anchor: 0xe580",
+      "resolution": "Non-authoritative partial outputs ignored. Inventory resolved internal anchors: e580->e534; e614->e5cc; e9fc->e9a8; eb82->eb34. Successful pristine selected exports supply all expectations."
+    },
+    {
+      "output": "before-appproxy",
+      "diagnostic": "java.lang.Exception: Absent/ambiguous function entry or non-executable anchor: 0x3c5b4",
+      "resolution": "Supervisor approved bounded read-only discovery only. Gap remains intentionally unannotated; use existing0x3c568 for generated C."
+    },
+    {
+      "output": "discovery-appproxy-thumb",
+      "diagnostic": "java.lang.IllegalStateException: Context flow has not been started",
+      "resolution": "Read-only API diagnostic preserved; changed script to use address-specific context setter."
+    },
+    {
+      "output": "discovery-appproxy-decoded",
+      "diagnostic": "java.lang.Exception: Cannot pseudo-decode 0003c5ca",
+      "resolution": "Prior context propagated only at initial address; explicitly set future Thumb context at each pseudo-decode address. Final run success verified by no script errors and complete expected span."
+    },
+    {
+      "output": "shell comparison before validate_catalog.py",
+      "diagnostic": "AssertionError: reopen-persist/types.json",
+      "resolution": "Byte comparison was too strict for JSON member order. Parsed JSON is equal; all C bytes and selected JSON unchanged. validate_catalog.py checks semantic JSON and byte-identical generated C across apply/reopen/pristine replay."
+    }
+  ],
+  "validation": {
+    "status": "passed",
+    "scope": "static exports and saved-data structure only; not robot runtime proof",
+    "checks": [
+      "librobopersist.so: pristine expectations; successful apply/reopen/pristine replay; selected/types JSON semantically equal; generated C byte-identical",
+      "librrutils.so: pristine expectations; successful apply/reopen/pristine replay; selected/types JSON semantically equal; generated C byte-identical",
+      "AppProxy: pristine expectations; successful apply/reopen/pristine replay; selected/types JSON semantically equal; generated C byte-identical",
+      "Critical offsets, return registers, signed bounds, call boundaries, name-copy length and guard release checked against pristine Ghidra instructions",
+      "Persisted Ghidra type sizes/offsets: MapPersistFlag=4, MapCatalogEntry=36, MapCatalogPayload=156, entries@1/current@148/use_new@152",
+      "Saved catalog structural-only check: 156 bytes; first primary=2/backup=6; other primary bytes zero; signed current=2. Names omitted.",
+      "Read-only AppProxy gap evidence preserves missing-entry status and explicit-Thumb +2/call/output-2 instructions; no invented function or C",
+      "git diff --cached --name-only: empty (no staged files anywhere in repository)"
+    ],
+    "saved_catalog_structure": {
+      "size": 156,
+      "slots": [
+        {
+          "slot": 0,
+          "primary_flag": 2,
+          "backup_flag": 6
+        },
+        {
+          "slot": 1,
+          "primary_flag": 0,
+          "backup_flag": 0
+        },
+        {
+          "slot": 2,
+          "primary_flag": 0,
+          "backup_flag": 0
+        },
+        {
+          "slot": 3,
+          "primary_flag": 0,
+          "backup_flag": 0
+        }
+      ],
+      "current_flag": 2
+    },
+    "no_staged_lane_files": true
+  },
+  "residual_risks": [
+    "AppProxy0x3c5b4 absent from pinned function inventory/disassembly: pseudo-decoded evidence supplied but no replayable annotation/C for missing entry. Recovery needs explicit integration decision; lane did not create functions.",
+    "Catalog entry+2 and payload unknown_91/unknown_99 remain unknown. MapCatalog types are layout proposals, not original C++ classes.",
+    "GetSharedUserMapInfo/GetBakMapList return unlocked live pointers. Caller-level synchronization/allocation reservation and catalog-vs-grid/persistence/database transaction are not established.",
+    "NameMultiMap lacks local length bound; caller bounds/termination policy not investigated. Generic PersistLoad partial-failure effects and actual filesystem durability belong to persistence.",
+    "Database ID assignment and caller request/reply semantics remain orchestration boundary. No runtime/device testing or robot safety guarantee."
+  ],
+  "commands": [
+    {
+      "output_path": "apply-appproxy",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process AppProxy -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-appproxy/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-appproxy -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-appproxy/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-appproxy/script.log",
+      "result": "passed",
+      "script_result": {
+        "status": "ok",
+        "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+        "program": "AppProxy"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "apply-persist",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librobopersist.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-persist/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-persist -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-persist/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-persist/script.log",
+      "result": "passed",
+      "script_result": {
+        "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+        "status": "ok",
+        "program": "librobopersist.so"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "apply-utils",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librrutils.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-utils/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-utils -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-utils/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/apply-utils/script.log",
+      "result": "passed",
+      "script_result": {
+        "program": "librrutils.so",
+        "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b",
+        "status": "ok"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "before-appproxy",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process AppProxy -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy/script.log",
+      "result": "failed",
+      "script_result": {
+        "annotations_committed": false,
+        "error": "java.lang.Exception: Absent/ambiguous function entry or non-executable anchor: 0x3c5b4",
+        "status": "error"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "before-appproxy-boundary",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process AppProxy -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy-boundary/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy-boundary -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy-boundary/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy-boundary/script.log",
+      "result": "passed",
+      "script_result": {
+        "program": "AppProxy",
+        "status": "ok",
+        "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "before-appproxy-seed",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process AppProxy -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy-seed/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy-seed -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy-seed/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-appproxy-seed/script.log",
+      "result": "passed",
+      "script_result": {
+        "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+        "status": "ok",
+        "program": "AppProxy"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "before-persist",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librobopersist.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist/script.log",
+      "result": "failed",
+      "script_result": {
+        "annotations_committed": false,
+        "error": "java.lang.Exception: Absent/ambiguous function entry or non-executable anchor: 0xe580",
+        "status": "error"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "before-persist-catalog",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librobopersist.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-catalog/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-catalog -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-catalog/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-catalog/script.log",
+      "result": "passed",
+      "script_result": {
+        "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+        "status": "ok",
+        "program": "librobopersist.so"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "before-persist-constant",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librobopersist.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-constant/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-constant -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-constant/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-constant/script.log",
+      "result": "passed",
+      "script_result": {
+        "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+        "program": "librobopersist.so",
+        "status": "ok"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "before-persist-seeds",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librobopersist.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-seeds/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-seeds -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-seeds/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-persist-seeds/script.log",
+      "result": "passed",
+      "script_result": {
+        "status": "ok",
+        "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+        "program": "librobopersist.so"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "before-utils",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librrutils.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-utils/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-utils -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-utils/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-utils/script.log",
+      "result": "passed",
+      "script_result": {
+        "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b",
+        "status": "ok",
+        "program": "librrutils.so"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "before-utils-related",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librrutils.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-utils-related/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-utils-related -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-utils-related/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/before-utils-related/script.log",
+      "result": "passed",
+      "script_result": {
+        "status": "ok",
+        "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b",
+        "program": "librrutils.so"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "discovery-appproxy",
+      "command": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project",
+        "pinned",
+        "-process",
+        "AppProxy",
+        "-noanalysis",
+        "-max-cpu",
+        "2",
+        "-readOnly",
+        "-scriptPath",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog",
+        "-postScript",
+        "CatalogDiscovery.java",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy/instructions.txt",
+        "-log",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy/ghidra.log",
+        "-scriptlog",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy/script.log"
+      ],
+      "result": "passed",
+      "script_result": null,
+      "save_confirmed": null,
+      "read_only": true,
+      "note": "Read-only listing inspection complete; source later extended for pseudo-decode."
+    },
+    {
+      "output_path": "discovery-appproxy-decoded",
+      "command": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project",
+        "pinned",
+        "-process",
+        "AppProxy",
+        "-noanalysis",
+        "-max-cpu",
+        "2",
+        "-readOnly",
+        "-scriptPath",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog",
+        "-postScript",
+        "CatalogDiscovery.java",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy-decoded/instructions.txt",
+        "-log",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy-decoded/ghidra.log",
+        "-scriptlog",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy-decoded/script.log"
+      ],
+      "result": "failed",
+      "script_result": null,
+      "save_confirmed": null,
+      "read_only": true
+    },
+    {
+      "output_path": "discovery-appproxy-final",
+      "command": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project",
+        "pinned",
+        "-process",
+        "AppProxy",
+        "-noanalysis",
+        "-max-cpu",
+        "2",
+        "-readOnly",
+        "-scriptPath",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog",
+        "-postScript",
+        "CatalogDiscovery.java",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy-final/instructions.txt",
+        "-log",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy-final/ghidra.log",
+        "-scriptlog",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy-final/script.log"
+      ],
+      "result": "passed",
+      "script_result": null,
+      "save_confirmed": null,
+      "read_only": true
+    },
+    {
+      "output_path": "discovery-appproxy-thumb",
+      "command": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project",
+        "pinned",
+        "-process",
+        "AppProxy",
+        "-noanalysis",
+        "-max-cpu",
+        "2",
+        "-readOnly",
+        "-scriptPath",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog",
+        "-postScript",
+        "CatalogDiscovery.java",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy-thumb/instructions.txt",
+        "-log",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy-thumb/ghidra.log",
+        "-scriptlog",
+        "/home/user/tmp/illegalplainape/analysis/re/lanes/catalog/discovery-appproxy-thumb/script.log"
+      ],
+      "result": "failed",
+      "script_result": null,
+      "save_confirmed": null,
+      "read_only": true
+    },
+    {
+      "output_path": "reopen-appproxy",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process AppProxy -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-appproxy/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-appproxy -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-appproxy/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-appproxy/script.log",
+      "result": "passed",
+      "script_result": {
+        "program": "AppProxy",
+        "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+        "status": "ok"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "reopen-persist",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librobopersist.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-persist/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-persist -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-persist/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-persist/script.log",
+      "result": "passed",
+      "script_result": {
+        "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+        "program": "librobopersist.so",
+        "status": "ok"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "reopen-utils",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project pinned -process librrutils.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-utils/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-utils -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-utils/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/reopen-utils/script.log",
+      "result": "passed",
+      "script_result": {
+        "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b",
+        "program": "librrutils.so",
+        "status": "ok"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "replay-appproxy",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-replay pinned -process AppProxy -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-appproxy/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-appproxy -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-appproxy/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-appproxy/script.log",
+      "result": "passed",
+      "script_result": {
+        "status": "ok",
+        "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+        "program": "AppProxy"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "replay-persist",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-replay pinned -process librobopersist.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-persist/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-persist -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-persist/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-persist/script.log",
+      "result": "passed",
+      "script_result": {
+        "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+        "program": "librobopersist.so",
+        "status": "ok"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "output_path": "replay-utils",
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-replay pinned -process librrutils.so -noanalysis -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/analysis/re/tooling -postScript ReTool.java /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-utils/request.json /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-utils -log /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-utils/ghidra.log -scriptlog /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/replay-utils/script.log",
+      "result": "passed",
+      "script_result": {
+        "program": "librrutils.so",
+        "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b",
+        "status": "ok"
+      },
+      "save_confirmed": true,
+      "read_only": false
+    },
+    {
+      "command": "python3 retool.py copy /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-project",
+      "result": "passed"
+    },
+    {
+      "command": "python3 retool.py copy /home/user/tmp/illegalplainape/analysis/re/lanes/catalog/ghidra-replay",
+      "result": "passed"
+    },
+    {
+      "command": "python3 build_annotations.py",
+      "result": "passed"
+    },
+    {
+      "command": "python3 validate_catalog.py",
+      "result": "passed",
+      "output_path": "validation.json"
+    },
+    {
+      "command": "git diff --cached --name-only -- .",
+      "result": "passed",
+      "summary": "empty; no staged lane files"
+    }
+  ]
+}

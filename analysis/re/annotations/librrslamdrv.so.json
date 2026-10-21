@@ -1,0 +1,321 @@
+{
+  "version": 1,
+  "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+  "types": [
+    {
+      "name": "GridDiskHeaderV2",
+      "declaration": "typedef struct { unsigned char magic[6]; unsigned char version_le[2]; unsigned char view_header_bytes_le[2]; unsigned char scale_le[4]; unsigned char left_le[4]; unsigned char top_le[4]; unsigned char width_le[4]; unsigned char height_le[4]; } GridDiskHeaderV2;"
+    },
+    {
+      "name": "GridSize",
+      "declaration": "typedef struct { int width; int height; } GridSize;"
+    },
+    {
+      "name": "GridRect",
+      "declaration": "typedef struct { int left; int top; int width; int height; } GridRect;"
+    },
+    {
+      "name": "GridCacheMeta",
+      "declaration": "typedef struct { GridRect bounds; GridRect view; unsigned char unknown_20_23[4]; } GridCacheMeta;"
+    },
+    {
+      "name": "GridBufferRef",
+      "declaration": "typedef struct { unsigned char *cells; GridCacheMeta *metadata; unsigned char valid; unsigned char unknown_09_0b[3]; } GridBufferRef;"
+    },
+    {
+      "name": "GridReadContext",
+      "declaration": "typedef struct { void *stream; GridBufferRef *target; } GridReadContext;"
+    }
+  ],
+  "functions": [
+    {
+      "address": "0x00003b64",
+      "signature": "void *read(void *stream, void *bytes, int length)",
+      "plate_comment": "ABI correction only, preserving surviving std::istream::read symbol. Storage callsites pass this=r0, buffer=r1, count=r2. Demangler-imported two-argument prototype omitted implicit this. Not an original C++ class declaration.",
+      "expect": {
+        "signature": "undefined read(char * param_1, int param_2)",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x00003c9c",
+      "signature": "void *write(void *stream, const void *bytes, int length)",
+      "plate_comment": "ABI correction only, preserving surviving std::ostream::write symbol. Storage callsites pass this=r0, buffer=r1, count=r2. Demangler-imported two-argument prototype omitted implicit this. Not an original C++ class declaration.",
+      "expect": {
+        "signature": "undefined write(char * param_1, int param_2)",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x000106f8",
+      "signature": "void GridDropSavedCaches(void)",
+      "plate_comment": "Loops flags 1 through 11 inclusive with base index 11 and calls GridDropCacheSlot. Drops last_map and user_map0..9 caches only; excludes mobility flag0 and tmp_map flag12. No disk deletion; no synchronization in this loop. Outer caller scope not recovered.",
+      "expect": {
+        "signature": "undefined FUN_000106f8()",
+        "plate_comment": null,
+        "name": "FUN_000106f8"
+      },
+      "name": "GridDropSavedCaches"
+    },
+    {
+      "address": "0x00012c34",
+      "signature": "int GridSaveRuntime(void *unknown_context, void *filename_slot)",
+      "plate_comment": "Saves manager slot index11 (runtime grid) to caller-supplied one-word string slot. Opens output mode0x10 and calls GridWriteV2. 0x12dd2-0x12de0 captures success from stream state &5 BEFORE std::filebuf::close; 0x12dbc returns captured bool in r0. Close return ignored. No temporary rename/fsync in this function, unlike separate persistence writer. Does not select a native flag or invalidate saved caches; caller is boundary 0x92e0, not recovered wholesale.",
+      "expect": {
+        "signature": "undefined FUN_00012c34()",
+        "plate_comment": null,
+        "name": "FUN_00012c34"
+      },
+      "name": "GridSaveRuntime"
+    },
+    {
+      "address": "0x000144d4",
+      "signature": "int GridLoadFile(void *filename_slot, GridBufferRef *target)",
+      "plate_comment": "Opens caller-selected string filename in mode8, invokes GridReadDispatch, returns bool captured from stream state &5 before closing; close result ignored. Header/scale/MD5 mismatch may leave stream good, so return !=0 is not proof of format acceptance. Does not select a native flag. No original std::string type inferred.",
+      "expect": {
+        "signature": "undefined FUN_000144d4()",
+        "plate_comment": null,
+        "name": "FUN_000144d4"
+      },
+      "name": "GridLoadFile"
+    },
+    {
+      "address": "0x0001718c",
+      "plate_comment": "Storage boundary only; surviving unknown name/signature retained. Reset branch calls GridDropSavedCaches at0x172f2. A distinct saved-grid branch drops flags1..11 at0x175b8, reads selected flag from unknown owner state+0x15b0 then record+4, calls GridGetSavedBuffer at0x175cc, copies selected grid or fallback, and drops caches again at0x17646. This branch forces fresh saved-grid read; not proof all load paths do. No mutex call observed in this boundary. State/transform/algorithm semantics and unknown owner offsets intentionally not recovered. Decompiler aliases to imported string/symbol storage in owner-relative expressions are analysis artifacts, not literal accesses.",
+      "expect": {
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x0001aa98",
+      "signature": "void GridResetCells(GridBufferRef *grid, const unsigned char *fill)",
+      "plate_comment": "Re-centers full bounds preserving dimensions via 0x21dc0; zeroes active view at metadata+0x10; fills bounds.width*bounds.height target bytes with *fill. Invoked only after v2 digest comparison passes. No allocation/resize/bounds check here.",
+      "expect": {
+        "signature": "undefined FUN_0001aa98()",
+        "plate_comment": null,
+        "name": "FUN_0001aa98"
+      },
+      "name": "GridResetCells"
+    },
+    {
+      "address": "0x0001ab84",
+      "signature": "void *GridWriteV2(void *stream, GridBufferRef *grid)",
+      "plate_comment": "RRSLAM v2 stream writer. 0x1abc0-0x1abde writes 10-byte RRSLAM/version=2/header-length=20 prefix; 0x1ac00-0x1ac78 writes five LE words: scale=20,left,top,width,height. GridDiskHeaderV2 is byte-aligned disk documentation ONLY, never an in-memory grid cast. Extracts active view from metadata+0x10 into row-major byte buffer; initializes to 0x80, copies rows using full bounds stride. Product is low 32 bits of width*height; width loop is signed >0, row limit unsigned. 0x1ad0a-0x1ad38 writes cells then 16-byte MD5 of cells only. Skips later stages on stream state bit 1 (badbit), not failbit. Does not rename, fsync, or select a filename. Returns stream pointer; does not establish durability. Zero product uses NULL buffer and helper emits zero digest, not MD5(empty). Occupancy probability mapping unresolved.",
+      "expect": {
+        "signature": "undefined FUN_0001ab84()",
+        "plate_comment": null,
+        "name": "FUN_0001ab84"
+      },
+      "name": "GridWriteV2"
+    },
+    {
+      "address": "0x0001b5c4",
+      "signature": "GridBufferRef *GridGetBuffer(GridBufferRef *out, void *store, const int *index, const unsigned char *fill)",
+      "plate_comment": "Gets/creates pointer-table slot indexed directly by *index, NOT a native flag. Existing cells return valid=1 immediately. Missing slot: 1024x1024 allocation (0x100000 bytes), centered bounds via 0x21dc0, fill every cell from *fill, metadata stride36. Allocation failure sets only out->valid=0; other result fields are not established. No lock in this routine. ABI-level explicit result pointer, not invented original C++ return signature.",
+      "expect": {
+        "signature": "undefined FUN_0001b5c4()",
+        "plate_comment": null,
+        "name": "FUN_0001b5c4"
+      },
+      "name": "GridGetBuffer"
+    },
+    {
+      "address": "0x0001d21c",
+      "signature": "void *GridReadV2(GridReadContext *context)",
+      "plate_comment": "V2 body; dispatcher has already consumed 10 bytes. Reads 20-byte view block: scale,left,top,width,height. Requires scale==20 at 0x1d29c; computes low-32-bit width*height at 0x1d2ba with no explicit dimension/bounds/overflow validation. Reads byte cells and 16-byte digest. All four words must compare at 0x1d324/0x1d33e/0x1d346/0x1d34e before mutation. Digest excludes entire header. Success resets full existing target to 0x80, merges file rectangle into active view, copies rows using target bounds and stride. Width copy condition signed >0; height iteration unsigned. Scale or MD5 rejection returns same stream without explicit setstate; outer stream-state success does NOT prove cells accepted. Intermediate checks test only state bit 1 (badbit), not failbit. No trailing-length or occupancy-value validation. No lock in this function; caller synchronization unresolved.",
+      "expect": {
+        "signature": "undefined FUN_0001d21c()",
+        "plate_comment": null,
+        "name": "FUN_0001d21c"
+      },
+      "name": "GridReadV2"
+    },
+    {
+      "address": "0x0001d42c",
+      "signature": "void *GridReadDispatch(void *stream, GridBufferRef *target)",
+      "plate_comment": "Reads 10-byte prefix. Magic checks 0x1d488-0x1d4a6 compare RRSLAM (0x4c535252,0x4d41). Matching magic: version 2 requires uint16 header-length 20 then GridReadV2; version 1 requires 36 then legacy 0x1cf60. Unknown version/header length returns without setstate. Magic mismatch calls legacy 0x1ca54 after prefix read; legacy seek/format behavior not recovered here. Returns stream pointer, not format-validation status. Tests bit 1 only internally.",
+      "expect": {
+        "signature": "undefined FUN_0001d42c()",
+        "plate_comment": null,
+        "name": "FUN_0001d42c"
+      },
+      "name": "GridReadDispatch"
+    },
+    {
+      "address": "0x0001dd88",
+      "signature": "GridBufferRef *GridGetSavedBuffer(GridBufferRef *out, void *store, const int *flag)",
+      "plate_comment": "Storage cache loader: index=*flag+11. Existing pointer bypasses file read, returns GridGetBuffer result. Otherwise obtains 1024x1024 buffer filled 0x80, copies GridFilenameSlot string and opens input mode 8. Calls GridReadDispatch, accepts if stream state &5 ==0. On allocation/open/stream failure drops same cache slot with base11 and sets out->valid=0. Header/scale/digest mismatch need not set stream state: can return valid=1 with initialized unchanged cells and retain cache. No lock around cache lookup/load/drop observed; dmb/ldrex/strex belong to string reference count, not cache synchronization. Close result is ignored. ABI explicit out pointer; original C++ class/layout unknown.",
+      "expect": {
+        "signature": "undefined FUN_0001dd88()",
+        "plate_comment": null,
+        "name": "FUN_0001dd88"
+      },
+      "name": "GridGetSavedBuffer"
+    },
+    {
+      "address": "0x00021a94",
+      "signature": "void GridCellDigest(const unsigned char *cells, unsigned int length, unsigned char *digest)",
+      "plate_comment": "16-byte MD5-compatible helper for ordinary grids (<2^29 bytes): standard IV at0x3f434, 64-byte blocks, 0x80 padding and four output words. Bit-length low word is length<<3 and high word is forced zero; do not generalize to enormous inputs. Callers hash only width*height cell bytes, never header. NULL digest exits; NULL cells yields sixteen zero bytes, even for length0 (not standard MD5(empty)). Saved-file hashes verified with hashlib; helper/internal compression is not firmware-executed.",
+      "expect": {
+        "signature": "undefined FUN_00021a94()",
+        "plate_comment": null,
+        "name": "FUN_00021a94"
+      },
+      "name": "GridCellDigest"
+    },
+    {
+      "address": "0x00021ccc",
+      "signature": "GridRect *GridRectClear(GridRect *rect)",
+      "plate_comment": "Zeros four 32-bit words; r0 remains rect. In-memory rectangle only, not packed file header.",
+      "expect": {
+        "signature": "undefined FUN_00021ccc()",
+        "plate_comment": null,
+        "name": "FUN_00021ccc"
+      },
+      "name": "GridRectClear"
+    },
+    {
+      "address": "0x00021d0c",
+      "signature": "GridRect *GridRectSet(GridRect *rect, int left, int top, const GridSize *size)",
+      "plate_comment": "Stores left/top at0/4 and two size words at8/12; returns rect. In-memory aligned rectangle, distinct from file header offsets.",
+      "expect": {
+        "signature": "undefined FUN_00021d0c()",
+        "plate_comment": null,
+        "name": "FUN_00021d0c"
+      },
+      "name": "GridRectSet"
+    },
+    {
+      "address": "0x00021d28",
+      "signature": "int GridRectLeft(const GridRect *rect)",
+      "plate_comment": "Returns in-memory rectangle left word at +0; geometry/copy callers use signed comparisons. File dimensions are raw LE uint32 words, not a cast of this type.",
+      "expect": {
+        "signature": "undefined FUN_00021d28()",
+        "plate_comment": null,
+        "name": "FUN_00021d28"
+      },
+      "name": "GridRectLeft"
+    },
+    {
+      "address": "0x00021d2c",
+      "signature": "int GridRectTop(const GridRect *rect)",
+      "plate_comment": "Returns in-memory rectangle top word at +4; geometry/copy callers use signed comparisons. File dimensions are raw LE uint32 words, not a cast of this type.",
+      "expect": {
+        "signature": "undefined FUN_00021d2c()",
+        "plate_comment": null,
+        "name": "FUN_00021d2c"
+      },
+      "name": "GridRectTop"
+    },
+    {
+      "address": "0x00021d50",
+      "signature": "int GridRectWidth(const GridRect *rect)",
+      "plate_comment": "Returns in-memory rectangle width word at +8; geometry/copy callers use signed comparisons. File dimensions are raw LE uint32 words, not a cast of this type.",
+      "expect": {
+        "signature": "undefined FUN_00021d50()",
+        "plate_comment": null,
+        "name": "FUN_00021d50"
+      },
+      "name": "GridRectWidth"
+    },
+    {
+      "address": "0x00021d54",
+      "signature": "int GridRectHeight(const GridRect *rect)",
+      "plate_comment": "Returns in-memory rectangle height word at +12; geometry/copy callers use signed comparisons. File dimensions are raw LE uint32 words, not a cast of this type.",
+      "expect": {
+        "signature": "undefined FUN_00021d54()",
+        "plate_comment": null,
+        "name": "FUN_00021d54"
+      },
+      "name": "GridRectHeight"
+    },
+    {
+      "address": "0x00021d8c",
+      "signature": "unsigned int GridRectCellCount(const GridRect *rect)",
+      "plate_comment": "Returns low 32 bits of width*height; no overflow validation.",
+      "expect": {
+        "signature": "undefined FUN_00021d8c()",
+        "plate_comment": null,
+        "name": "FUN_00021d8c"
+      },
+      "name": "GridRectCellCount"
+    },
+    {
+      "address": "0x00021dc0",
+      "signature": "GridRect *GridCenteredRect(GridRect *out, const GridRect *bounds)",
+      "plate_comment": "Preserves dimensions; left=-trunc(width/2), top=-trunc(height/2). Used by storage buffer initialization/reset. Does not copy prior origin.",
+      "expect": {
+        "signature": "undefined FUN_00021dc0()",
+        "plate_comment": null,
+        "name": "FUN_00021dc0"
+      },
+      "name": "GridCenteredRect"
+    },
+    {
+      "address": "0x00021f14",
+      "signature": "GridRect *GridRectUnion(GridRect *out, const GridRect *a, const GridRect *b)",
+      "plate_comment": "Storage-relevant rectangle union: empty operands copied from other; otherwise min left/top and max extents. Does not validate against allocation dimensions. Geometry helper boundary only.",
+      "expect": {
+        "signature": "undefined FUN_00021f14()",
+        "plate_comment": null,
+        "name": "FUN_00021f14"
+      },
+      "name": "GridRectUnion"
+    },
+    {
+      "address": "0x00022030",
+      "signature": "GridRect *GridRectMergeInto(GridRect *rect, const GridRect *other)",
+      "plate_comment": "Assigns bounding rectangle union from helper0x21f14. V2 load merges file rectangle into cleared active view; not clipping to allocated bounds. No bounds enforcement here.",
+      "expect": {
+        "signature": "undefined FUN_00022030()",
+        "plate_comment": null,
+        "name": "FUN_00022030"
+      },
+      "name": "GridRectMergeInto"
+    },
+    {
+      "address": "0x00026a70",
+      "signature": "void *GridFilenameSlot(void *store, const int *flag)",
+      "plate_comment": "Returns address of one-word string slot store + 4*(*flag+18), NOT raw char*. No flag validation. Constructor binds flag0 mobility_test_map, 1 last_map, 2..11 user_map(flag-2), 12 /dev/shm/tmp_map. Cache index is separately flag+11; do not conflate string and pointer-table indexes.",
+      "expect": {
+        "signature": "undefined FUN_00026a70()",
+        "plate_comment": null,
+        "name": "FUN_00026a70"
+      },
+      "name": "GridFilenameSlot"
+    },
+    {
+      "address": "0x00026a90",
+      "signature": "void GridDropCacheSlot(void *store, const int *base_index, const int *flag)",
+      "plate_comment": "Index=*base_index+*flag; 0x26ae6-0x26af8 clears pointer-table slot and delete[]s old cells if non-NULL; metadata at store[3]+36*index is zeroed (36 bytes), then two empty 16-byte rectangles installed. Does not delete file or rebuild string. Grid file-load callers pass base=11. No bounds test, mutex, or wait observed here; caller serialization is not established by this helper.",
+      "expect": {
+        "signature": "undefined FUN_00026a90()",
+        "plate_comment": null,
+        "name": "FUN_00026a90"
+      },
+      "name": "GridDropCacheSlot"
+    },
+    {
+      "address": "0x00026b60",
+      "signature": "void GridStoreInit(void *store)",
+      "plate_comment": "Observed initialization only; no original C++ class claimed. Allocates 25 pointer slots (100 bytes at store+0..8) and 25 36-byte metadata slots (900 bytes at store+12..20); clears both. Constructs 25 string slots at store+24 onward. First 12 are mobility_test_vmap,last_vmap,user_vmap0..9. Grid strings at store+72: flag0 /opt/rockrobo/cleaner/misc/mobility_test_map; flag1 /mnt/data/rockrobo/last_map; flags2..11 /mnt/data/rockrobo/user_map0..9; flag12 /dev/shm/tmp_map. Absolute strings verified against literal pool 0x26e1c..0x26e7c and .rodata 0x3f594..0x3f8a8. Constructor alone imposes no flag range check.",
+      "expect": {
+        "signature": "undefined FUN_00026b60()",
+        "plate_comment": null,
+        "name": "FUN_00026b60"
+      },
+      "name": "GridStoreInit"
+    },
+    {
+      "address": "0x0002bc4c",
+      "signature": "void GridCellSet(unsigned char *cell, unsigned int value)",
+      "plate_comment": "Stores low byte only (strb r1,[r0]); storage initializes unknown cells with0x80. Exact occupancy-to-probability mapping remains unknown.",
+      "expect": {
+        "signature": "undefined FUN_0002bc4c()",
+        "plate_comment": null,
+        "name": "FUN_0002bc4c"
+      },
+      "name": "GridCellSet"
+    }
+  ]
+}

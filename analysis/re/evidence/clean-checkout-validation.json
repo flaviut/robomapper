@@ -1,0 +1,460 @@
+{
+  "status": "passed",
+  "method": "Clone committed binaries and apply the staged analysis patch; replay without baseline cache, original rootfs, ignored lanes or private proof inputs.",
+  "source_commit": "668cc07",
+  "private_checkout": "/tmp/map-analysis-checkout.17DIth/repo",
+  "runtime_result": "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/result.json",
+  "baseline_mode": "imported manifest binaries privately with shared harness; no shared bootstrap",
+  "program_count": 7,
+  "function_count": 154,
+  "imports": [
+    {
+      "argv": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project",
+        "pinned",
+        "-import",
+        "/tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/AppProxy",
+        "-loader-imagebase",
+        "0x10000",
+        "-max-cpu",
+        "2",
+        "-scriptPath",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling",
+        "-postScript",
+        "ReTool.java",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-AppProxy/request.json",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-AppProxy",
+        "-log",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-AppProxy/ghidra.log",
+        "-scriptlog",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-AppProxy/script.log"
+      ],
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project pinned -import /tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/AppProxy -loader-imagebase 0x10000 -max-cpu 2 -scriptPath /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling -postScript ReTool.java /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-AppProxy/request.json /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-AppProxy -log /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-AppProxy/ghidra.log -scriptlog /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-AppProxy/script.log",
+      "exit_code": 0,
+      "script_result": {
+        "status": "ok",
+        "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+        "program": "AppProxy"
+      },
+      "save_confirmed": true,
+      "success": true,
+      "seconds": 67.647
+    },
+    {
+      "argv": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project",
+        "pinned",
+        "-import",
+        "/tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/watchdog/WatchDoge",
+        "-loader-imagebase",
+        "0x10000",
+        "-max-cpu",
+        "2",
+        "-scriptPath",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling",
+        "-postScript",
+        "ReTool.java",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-WatchDoge/request.json",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-WatchDoge",
+        "-log",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-WatchDoge/ghidra.log",
+        "-scriptlog",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-WatchDoge/script.log"
+      ],
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project pinned -import /tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/watchdog/WatchDoge -loader-imagebase 0x10000 -max-cpu 2 -scriptPath /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling -postScript ReTool.java /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-WatchDoge/request.json /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-WatchDoge -log /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-WatchDoge/ghidra.log -scriptlog /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-WatchDoge/script.log",
+      "exit_code": 0,
+      "script_result": {
+        "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+        "program": "WatchDoge",
+        "status": "ok"
+      },
+      "save_confirmed": true,
+      "success": true,
+      "seconds": 9.691
+    },
+    {
+      "argv": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project",
+        "pinned",
+        "-import",
+        "/tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librobopersist.so",
+        "-loader-imagebase",
+        "0x0",
+        "-max-cpu",
+        "2",
+        "-scriptPath",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling",
+        "-postScript",
+        "ReTool.java",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librobopersist.so/request.json",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librobopersist.so",
+        "-log",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librobopersist.so/ghidra.log",
+        "-scriptlog",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librobopersist.so/script.log"
+      ],
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project pinned -import /tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librobopersist.so -loader-imagebase 0x0 -max-cpu 2 -scriptPath /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling -postScript ReTool.java /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librobopersist.so/request.json /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librobopersist.so -log /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librobopersist.so/ghidra.log -scriptlog /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librobopersist.so/script.log",
+      "exit_code": 0,
+      "script_result": {
+        "status": "ok",
+        "program": "librobopersist.so",
+        "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c"
+      },
+      "save_confirmed": true,
+      "success": true,
+      "seconds": 13.321
+    },
+    {
+      "argv": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project",
+        "pinned",
+        "-import",
+        "/tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+        "-loader-imagebase",
+        "0x0",
+        "-max-cpu",
+        "2",
+        "-scriptPath",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling",
+        "-postScript",
+        "ReTool.java",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrnavdrv.so/request.json",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrnavdrv.so",
+        "-log",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrnavdrv.so/ghidra.log",
+        "-scriptlog",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrnavdrv.so/script.log"
+      ],
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project pinned -import /tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so -loader-imagebase 0x0 -max-cpu 2 -scriptPath /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling -postScript ReTool.java /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrnavdrv.so/request.json /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrnavdrv.so -log /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrnavdrv.so/ghidra.log -scriptlog /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrnavdrv.so/script.log",
+      "exit_code": 0,
+      "script_result": {
+        "status": "ok",
+        "program": "librrnavdrv.so",
+        "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475"
+      },
+      "save_confirmed": true,
+      "success": true,
+      "seconds": 172.47
+    },
+    {
+      "argv": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project",
+        "pinned",
+        "-import",
+        "/tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrslamdrv.so",
+        "-loader-imagebase",
+        "0x0",
+        "-max-cpu",
+        "2",
+        "-scriptPath",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling",
+        "-postScript",
+        "ReTool.java",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrslamdrv.so/request.json",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrslamdrv.so",
+        "-log",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrslamdrv.so/ghidra.log",
+        "-scriptlog",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrslamdrv.so/script.log"
+      ],
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project pinned -import /tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrslamdrv.so -loader-imagebase 0x0 -max-cpu 2 -scriptPath /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling -postScript ReTool.java /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrslamdrv.so/request.json /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrslamdrv.so -log /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrslamdrv.so/ghidra.log -scriptlog /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrslamdrv.so/script.log",
+      "exit_code": 0,
+      "script_result": {
+        "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+        "status": "ok",
+        "program": "librrslamdrv.so"
+      },
+      "save_confirmed": true,
+      "success": true,
+      "seconds": 19.733
+    },
+    {
+      "argv": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project",
+        "pinned",
+        "-import",
+        "/tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrutils.so",
+        "-loader-imagebase",
+        "0x0",
+        "-max-cpu",
+        "2",
+        "-scriptPath",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling",
+        "-postScript",
+        "ReTool.java",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrutils.so/request.json",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrutils.so",
+        "-log",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrutils.so/ghidra.log",
+        "-scriptlog",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrutils.so/script.log"
+      ],
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project pinned -import /tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrutils.so -loader-imagebase 0x0 -max-cpu 2 -scriptPath /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling -postScript ReTool.java /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrutils.so/request.json /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrutils.so -log /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrutils.so/ghidra.log -scriptlog /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-librrutils.so/script.log",
+      "exit_code": 0,
+      "script_result": {
+        "program": "librrutils.so",
+        "status": "ok",
+        "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b"
+      },
+      "save_confirmed": true,
+      "success": true,
+      "seconds": 7.27
+    },
+    {
+      "argv": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project",
+        "pinned",
+        "-import",
+        "/tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so.4.0.2",
+        "-loader-imagebase",
+        "0x0",
+        "-max-cpu",
+        "2",
+        "-scriptPath",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling",
+        "-postScript",
+        "ReTool.java",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-libuart_api.so.4.0.2/request.json",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-libuart_api.so.4.0.2",
+        "-log",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-libuart_api.so.4.0.2/ghidra.log",
+        "-scriptlog",
+        "/tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-libuart_api.so.4.0.2/script.log"
+      ],
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project pinned -import /tmp/map-analysis-checkout.17DIth/repo/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so.4.0.2 -loader-imagebase 0x0 -max-cpu 2 -scriptPath /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling -postScript ReTool.java /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-libuart_api.so.4.0.2/request.json /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-libuart_api.so.4.0.2 -log /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-libuart_api.so.4.0.2/ghidra.log -scriptlog /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/import-libuart_api.so.4.0.2/script.log",
+      "exit_code": 0,
+      "script_result": {
+        "program": "libuart_api.so.4.0.2",
+        "status": "ok",
+        "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529"
+      },
+      "save_confirmed": true,
+      "success": true,
+      "seconds": 11.277
+    }
+  ],
+  "replay": {
+    "status": "passed",
+    "baseline_mode": "imported manifest binaries privately with shared harness; no shared bootstrap",
+    "source_dependencies": [
+      {
+        "path": "analysis/re/evidence/replay.py",
+        "sha256": "e4224f9a1fadb4e3867bba243b2694f4386e629ec87106e0c59d8b092d49b19d"
+      },
+      {
+        "path": "analysis/re/manifest.json",
+        "sha256": "bc237fa13abc7206a0e2038b63d0f3d9c8103c40bcc87500f2610d094a9dfd56"
+      },
+      {
+        "path": "analysis/re/evidence/index.json",
+        "sha256": "f9a578b2a47c107658764462b81ca3f8784ee5b8c29420b60ce253e360b4d713"
+      },
+      {
+        "path": "analysis/re/tooling/retool.py",
+        "sha256": "c5c49fc8558d50191dddb95a49391c9e8eaa4f2bd87ca4af4660c09ca8f0a1e3"
+      },
+      {
+        "path": "analysis/re/tooling/ReTool.java",
+        "sha256": "13f656a6abb197b5f20f4d376b06648b3cb8e4919be178a2a99df4397c34b76f"
+      },
+      {
+        "path": "analysis/re/recovery/recover.py",
+        "sha256": "a0a894be5fc4da2d0a58bf8caa8f442b8cff90dfb14a793724acf037c894c52f"
+      },
+      {
+        "path": "analysis/re/recovery/scripts/RecoverBounded.java",
+        "sha256": "dfdb06634b88e8e69dace1222c97b8a6a504ccfe5eb2af7743ea5ce5df62e849"
+      },
+      {
+        "path": "analysis/re/annotations/librobopersist.so.json",
+        "sha256": "65bdb0f0fd3fd9012fad5058b6f0dc0202a9f6b0212d87e2947269973a640e9b"
+      },
+      {
+        "path": "analysis/re/annotations/librrutils.so.json",
+        "sha256": "6e26f10830bb2bfce07755afc6ed13565a7ec5295dd34e0e3dac7e185b3fd4a1"
+      },
+      {
+        "path": "analysis/re/annotations/AppProxy.json",
+        "sha256": "2b7e1bb2816333bf55832bfa34259cdb50065002d4dc8e3619033fd55393398e"
+      },
+      {
+        "path": "analysis/re/annotations/librrslamdrv.so.json",
+        "sha256": "2937230f01d05374ea5d4923bdce9b7ce03b38bdfa18a587442de42bfd973c06"
+      },
+      {
+        "path": "analysis/re/annotations/librrnavdrv.so.json",
+        "sha256": "b738db7698cedc9c5ecfb2251febe84be82b94577d2134fd909ecd44c0421d9c"
+      },
+      {
+        "path": "analysis/re/annotations/WatchDoge.json",
+        "sha256": "5de60df7e737c797c8991eed29cac860c2728049ff5589826a50dafd695f4b63"
+      },
+      {
+        "path": "analysis/re/annotations/libuart_api.so.4.0.2.json",
+        "sha256": "a6dcb64a098b4675c836af2ae4e11f20aa1b25acbadd6cf093b8c111310ca703"
+      },
+      {
+        "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librobopersist.so",
+        "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c"
+      },
+      {
+        "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrslamdrv.so",
+        "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a"
+      },
+      {
+        "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+        "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475"
+      },
+      {
+        "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrutils.so",
+        "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b"
+      },
+      {
+        "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/AppProxy",
+        "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457"
+      },
+      {
+        "path": "binaries/4.3.5_1612/opt/rockrobo/watchdog/WatchDoge",
+        "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6"
+      },
+      {
+        "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so",
+        "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529"
+      },
+      {
+        "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so.4",
+        "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529"
+      },
+      {
+        "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/libuart_api.so.4.0.2",
+        "sha256": "914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529"
+      },
+      {
+        "path": "analysis/re/recovery/requests/AppProxy.json",
+        "sha256": "94220f28987e31e9e1491f7e850ecbab9ac603521b1fa875a03a55cee87d951e"
+      },
+      {
+        "path": "analysis/re/recovery/requests/WatchDoge.json",
+        "sha256": "9fad5cdc9f092201071070b53058379af1d210b040071b980711881fbf8f3acd"
+      }
+    ],
+    "commands": [
+      {
+        "command": "/etc/profiles/per-user/user/bin/python3 /tmp/map-analysis-checkout.17DIth/repo/analysis/re/recovery/recover.py /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project /tmp/map-analysis-checkout.17DIth/repo/analysis/re/recovery/requests/AppProxy.json --out /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/recover-AppProxy",
+        "exit_code": 0,
+        "result": "passed",
+        "summary": "OK AppProxy: ok; /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/recover-AppProxy"
+      },
+      {
+        "command": "/etc/profiles/per-user/user/bin/python3 /tmp/map-analysis-checkout.17DIth/repo/analysis/re/recovery/recover.py /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project /tmp/map-analysis-checkout.17DIth/repo/analysis/re/recovery/requests/WatchDoge.json --out /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/recover-WatchDoge",
+        "exit_code": 0,
+        "result": "passed",
+        "summary": "OK WatchDoge: ok; /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/recover-WatchDoge"
+      },
+      {
+        "command": "/etc/profiles/per-user/user/bin/python3 /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling/retool.py run /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project librobopersist.so --annotations /tmp/map-analysis-checkout.17DIth/repo/analysis/re/annotations/librobopersist.so.json --functions 0x0000e034 0x0000e08c 0x0000e0c4 0x0000e164 0x0000e210 0x0000e290 0x0000e314 0x0000e394 0x0000e424 0x0000e4a4 0x0000e534 0x0000e5cc 0x0000e668 0x0000e72c 0x0000e834 0x0000e924 0x0000e9a8 0x0000ea70 0x0000eb34 0x0000ebd8 0x00017664 0x00017750 0x000179bc 0x00017a70 0x00017ae8 0x00017bd8 0x00017cdc 0x00017da8 0x00017ee4 0x00018014 0x00018200 0x000185c0 0x000192c4 0x00019ba4 0x0001a410 0x0001a530 0x0001a860 0x0001a88c 0x0001a898 0x0001a990 0x0001ab94 0x0001b1c4 0x0001b564 0x0001bb20 0x0001c578 0x0001c620 0x0001cbf0 0x0001d0b8 0x0001d10c --out /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-librobopersist.so",
+        "exit_code": 0,
+        "result": "passed",
+        "summary": "OK librobopersist.so: /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-librobopersist.so"
+      },
+      {
+        "command": "/etc/profiles/per-user/user/bin/python3 /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling/retool.py run /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project librrutils.so --annotations /tmp/map-analysis-checkout.17DIth/repo/analysis/re/annotations/librrutils.so.json --functions 0x000018a8 0x00001950 0x000019cc 0x00001ac0 0x00001ae0 0x00001b08 --out /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-librrutils.so",
+        "exit_code": 0,
+        "result": "passed",
+        "summary": "OK librrutils.so: /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-librrutils.so"
+      },
+      {
+        "command": "/etc/profiles/per-user/user/bin/python3 /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling/retool.py run /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project AppProxy --annotations /tmp/map-analysis-checkout.17DIth/repo/analysis/re/annotations/AppProxy.json --functions 0x00022f84 0x00023070 0x00023210 0x00024050 0x00024450 0x000245f8 0x00039aa4 0x00039b08 0x00039b84 0x0003a430 0x0003a5c0 0x0003b908 0x0003c568 0x0003c5b4 0x0003c6bc 0x0003c7a0 0x0003cc74 0x00046e9c 0x0004705c 0x0004fbf8 0x00051628 0x00055500 0x00056a84 0x00068c14 0x00069c88 --out /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-AppProxy",
+        "exit_code": 0,
+        "result": "passed",
+        "summary": "OK AppProxy: /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-AppProxy"
+      },
+      {
+        "command": "/etc/profiles/per-user/user/bin/python3 /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling/retool.py run /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project librrslamdrv.so --annotations /tmp/map-analysis-checkout.17DIth/repo/analysis/re/annotations/librrslamdrv.so.json --functions 0x00003b64 0x00003c9c 0x000106f8 0x00012c34 0x000144d4 0x0001718c 0x0001aa98 0x0001ab84 0x0001b5c4 0x0001d21c 0x0001d42c 0x0001dd88 0x00021a94 0x00021ccc 0x00021d0c 0x00021d28 0x00021d2c 0x00021d50 0x00021d54 0x00021d8c 0x00021dc0 0x00021f14 0x00022030 0x00026a70 0x00026a90 0x00026b60 0x0002bc4c --out /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-librrslamdrv.so",
+        "exit_code": 0,
+        "result": "passed",
+        "summary": "OK librrslamdrv.so: /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-librrslamdrv.so"
+      },
+      {
+        "command": "/etc/profiles/per-user/user/bin/python3 /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling/retool.py run /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project librrnavdrv.so --annotations /tmp/map-analysis-checkout.17DIth/repo/analysis/re/annotations/librrnavdrv.so.json --functions 0x000663b8 0x0006640c 0x00066464 0x00067144 0x0006732c 0x00067484 0x00068428 0x0006905c 0x000705e8 0x0008339c 0x00083940 0x001a5fd4 0x001a5fdc 0x001a6018 0x001a60c4 0x001a621c 0x001a6374 0x0020c3d8 --out /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-librrnavdrv.so",
+        "exit_code": 0,
+        "result": "passed",
+        "summary": "OK librrnavdrv.so: /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-librrnavdrv.so"
+      },
+      {
+        "command": "/etc/profiles/per-user/user/bin/python3 /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling/retool.py run /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project WatchDoge --annotations /tmp/map-analysis-checkout.17DIth/repo/analysis/re/annotations/WatchDoge.json --functions 0x000142e4 0x00016eb8 0x000171e0 0x00017400 0x000174b8 0x00017510 0x00017624 0x0001779c 0x00017f68 0x00018400 0x00018bfc 0x000191c4 0x00019ae0 0x0001ac08 0x0001ac20 0x0001accc 0x0001ad68 0x0001aec8 0x0001af18 0x0001d074 0x0001dbe0 0x0001dffc 0x0001e09c 0x0001e75c 0x0001e7a8 0x0001eb14 0x0001ec38 --out /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-WatchDoge",
+        "exit_code": 0,
+        "result": "passed",
+        "summary": "OK WatchDoge: /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-WatchDoge"
+      },
+      {
+        "command": "/etc/profiles/per-user/user/bin/python3 /tmp/map-analysis-checkout.17DIth/repo/analysis/re/tooling/retool.py run /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/project libuart_api.so.4.0.2 --annotations /tmp/map-analysis-checkout.17DIth/repo/analysis/re/annotations/libuart_api.so.4.0.2.json --functions 0x00011564 0x00011690 --out /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-libuart_api.so.4.0.2",
+        "exit_code": 0,
+        "result": "passed",
+        "summary": "OK libuart_api.so.4.0.2: /tmp/map-analysis-checkout.17DIth/repo/analysis/re/canonical/clean-replay/export-libuart_api.so.4.0.2"
+      }
+    ],
+    "programs": [
+      {
+        "program": "librobopersist.so",
+        "functions": 49,
+        "all_index_c_hashes_match": true,
+        "selected_sha256": "df1edb5f0b752f6789c61b64390bafd162ac0010c199b9e9d82bab1aa1bc609e",
+        "types_sha256": "b28f4f0775633b6bdb6b9d13a4c26fdd9f85c658848581c4f99f8e81dc7c269c"
+      },
+      {
+        "program": "librrutils.so",
+        "functions": 6,
+        "all_index_c_hashes_match": true,
+        "selected_sha256": "f097be99dbfb6e766baecc58f172b12951d958c4ffe9aa1571c795d5e255d648",
+        "types_sha256": "46903535afab4c44eee700e51e79bd9d8f22a10c6022d0f9c446660b78adfa6a"
+      },
+      {
+        "program": "AppProxy",
+        "functions": 25,
+        "all_index_c_hashes_match": true,
+        "selected_sha256": "5e2de3cbb5e3ff1158c0113ef8f5305e13cd0bb57dcb12a5a40e70ed9b694a12",
+        "types_sha256": "02d3820a0158c84a3130e75ce29a5da6ac5cb8049ccd7a40cec5b6eacb0598f5"
+      },
+      {
+        "program": "librrslamdrv.so",
+        "functions": 27,
+        "all_index_c_hashes_match": true,
+        "selected_sha256": "fdf088e1dea18fac6533d32e9f203b061b3c449d2691a31a5d311ea8026909df",
+        "types_sha256": "3d4bb798ba1c66ad6df58775debbf7b05542dcbe691730535114d5475ab6a077"
+      },
+      {
+        "program": "librrnavdrv.so",
+        "functions": 18,
+        "all_index_c_hashes_match": true,
+        "selected_sha256": "898bfc3c1dd8a58f3ca54d9877f930403cbf74f3eff347b6cc9100616f8387f9",
+        "types_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      },
+      {
+        "program": "WatchDoge",
+        "functions": 27,
+        "all_index_c_hashes_match": true,
+        "selected_sha256": "27ac1ce9d01b57a13a0796c16a1201492f153a78faa279640aaa4195ba412c74",
+        "types_sha256": "a242f208efd4c8ab00783c8887165cd750563eaaeb0df7e976e0d2f493d6fa91"
+      },
+      {
+        "program": "libuart_api.so.4.0.2",
+        "functions": 2,
+        "all_index_c_hashes_match": true,
+        "selected_sha256": "25d11fef4b15c5b8235ec4e941b8d7c5dc276d6db53c42ef16543a65729eece9",
+        "types_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      }
+    ],
+    "note": "No lane, rootfs, bootstrap metadata or private proof input loaded. Final index supplies selection/C hashes. Optional baseline is generated cache."
+  },
+  "all_final_c_hashes_match": true,
+  "parent_validation": true,
+  "tested_functions_sha256": "914041e714b71bc9d6fd8624b20844e2bb4ee95b5f1e3330e10136fa3cdc497a"
+}

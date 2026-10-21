@@ -1,0 +1,191 @@
+{
+  "version": 1,
+  "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+  "types": [],
+  "functions": [
+    {
+      "address": "0x000663b8",
+      "plate_comment": "Sets core byte +0x271 to 1 between memory barriers. Source diagnostic SetNeededToRecoverLastMap. This blocks last-map saves through MapFlowSaveGridState. Relationship to RoboController need_recover_map configuration key is not established.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_000663b8",
+        "signature": "undefined FUN_000663b8()"
+      },
+      "name": "MapFlowSetRecoverLast",
+      "signature": "void MapFlowSetRecoverLast(void *core)"
+    },
+    {
+      "address": "0x0006640c",
+      "plate_comment": "Clears core byte +0x271 between memory barriers; diagnostic ResetNeededToRecoverLastMap. Called only after successful persistence restore for native flag 1 in LoadSLAMMap, also from clear-map state.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0006640c",
+        "signature": "undefined FUN_0006640c()"
+      },
+      "name": "MapFlowClearRecoverLast",
+      "signature": "void MapFlowClearRecoverLast(void *core)"
+    },
+    {
+      "address": "0x00066464",
+      "plate_comment": "Clears observed bytes/word core+0x270/+0x274, then calls clear-recover-last (+0x271); offsets are observations, not an original C++ layout.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00066464",
+        "signature": "undefined FUN_00066464()"
+      },
+      "name": "MapFlowClearMapState",
+      "signature": "void MapFlowClearMapState(void *core)"
+    },
+    {
+      "address": "0x00067144",
+      "plate_comment": "Flag 1 refuses saving when manager+0x1f or core+0x271 is set. Otherwise grid-save wrapper 0x1a60c4 runs first; on success stores catalog current flag as manager stored flag for destination 1, or destination flag for >1. Then captures shared poses and metadata/config (0x1a7488 under core+0x2e0 lock) and returns one. No PersistSaveMapInfo here.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00067144",
+        "signature": "undefined FUN_00067144()"
+      },
+      "name": "MapFlowSaveGridState",
+      "signature": "int MapFlowSaveGridState(void *core, int native_flag)"
+    },
+    {
+      "address": "0x0006732c",
+      "plate_comment": "Under core+0x2c8 lock, calls MapFlowSaveGridState sequentially for destination flags; after first false, later entries are skipped. Only if all grid stages succeed calls PersistSaveMapInfo(vector). If that call returns false, deletes grids via SLAM virtual +0x70 for every destination; errors from deletes are ignored. No rollback of already-written grids on an earlier grid-stage failure. Persistence success is API acceptance, not proof background writes finished.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0006732c",
+        "signature": "undefined FUN_0006732c()"
+      },
+      "name": "MapFlowSaveMaps",
+      "signature": "int MapFlowSaveMaps(void *core, void *flag_vector)"
+    },
+    {
+      "address": "0x00067484",
+      "plate_comment": "Under core+0x2c8 lock: grid/state save first, then one-element PersistSaveMapInfo vector. Persistence false triggers grid delete via virtual +0x70; returns zero. No cross-file commit/durability claim.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00067484",
+        "signature": "undefined FUN_00067484()"
+      },
+      "name": "MapFlowSaveMap",
+      "signature": "int MapFlowSaveMap(void *core, int native_flag)"
+    },
+    {
+      "address": "0x00068428",
+      "plate_comment": "Grid load (0x68544) must succeed before flag reconciliation. Signed native_flag > 1 updates shared catalog current flag at 0x68556; flag 1 uses manager byte +0x22 and saved flag +0x28 (0x687aa..0x687fa). Then per-map/config updates precede PersistLoadMapInfo at 0x685ba. Persistence failure returns zero without undoing grid/current flag/config changes. Success restores poses and downstream state before common unlock/resume cleanup. Locks core+0x2c8 and manager mutex from 0x170850 when threading enabled; no cross-file transaction or disk-write completion implied. Third argument is a mode, not a reconstructed C++ field.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00068428",
+        "signature": "undefined FUN_00068428()"
+      },
+      "name": "MapFlowLoadSLAMMap",
+      "signature": "int MapFlowLoadSLAMMap(void *core, int native_flag, unsigned int load_mode)"
+    },
+    {
+      "address": "0x0006905c",
+      "plate_comment": "Task captures core at capture+0x10, native flag at +8 and request words at +0/+4. Calls LoadSLAMMap(core,flag,1) at 0x69076 and stores its result in completion capture+0x2c; completion callback pointer is read from vtable-like data 0x304b78 -> Thumb 0x683e1, which lacks baseline function/disassembly. Does not itself send a network reply.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0006905c"
+      },
+      "name": "MapFlowLoadTask"
+    },
+    {
+      "address": "0x000705e8",
+      "plate_comment": "NavCore initialization includes clearing core+0x271 at instruction 0x70756. Most object layout and constructor ABI are unknown; no layout type inferred. See bounded recovery-state findings for consumers of this byte.",
+      "expect": {
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x0008339c",
+      "plate_comment": "Calls LoadSLAMMap(core,-2,1), then SaveMap(core,1), then SetSharedCurrentMapFlag(saved manager word +0x30); load/save returns are ignored here. Capture and original task signature are not reconstructed.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0008339c"
+      },
+      "name": "MapFlowFallbackLoadTask"
+    },
+    {
+      "address": "0x00083940",
+      "plate_comment": "Loads catalog current flag only under the lab/use-new-map gating branches, after signed current>=2 check. Calls LoadSLAMMap at 0x83b8a; failure switches reset state rather than restoring old grid/current flag. Initializes shared dock/robot poses after this branch. Not the missing OnStateLoadLastMap function.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00083940",
+        "signature": "undefined FUN_00083940()"
+      },
+      "name": "MapFlowStartupMapSelect",
+      "signature": "void MapFlowStartupMapSelect(void *state)"
+    },
+    {
+      "address": "0x001a5fd4",
+      "plate_comment": "Returns unsigned byte at manager+0x22. Constructor 0x1a6374 clears it; MapFlowSetStoredFlag sets it. This is an in-process initialized/stored-flag predicate, not a catalog lookup or a proven persisted-file flag.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_001a5fd4",
+        "signature": "undefined FUN_001a5fd4()"
+      },
+      "name": "MapFlowHasStoredFlag",
+      "signature": "unsigned int MapFlowHasStoredFlag(void *manager)"
+    },
+    {
+      "address": "0x001a5fdc",
+      "plate_comment": "Stores byte 1 at manager+0x22 and native_flag at manager+0x28, then logs. No file write in this function. Called after grid-save success and during flag-1 reconciliation.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_001a5fdc",
+        "signature": "undefined FUN_001a5fdc()"
+      },
+      "name": "MapFlowSetStoredFlag",
+      "signature": "void MapFlowSetStoredFlag(void *manager, int native_flag)"
+    },
+    {
+      "address": "0x001a6018",
+      "plate_comment": "Returns word at manager+0x28; constructor initializes it to -1. Read during flag-1 load reconciliation.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_001a6018",
+        "signature": "undefined FUN_001a6018()"
+      },
+      "name": "MapFlowGetStoredFlag",
+      "signature": "int MapFlowGetStoredFlag(void *manager)"
+    },
+    {
+      "address": "0x001a60c4",
+      "plate_comment": "Calls SLAM interface virtual slot +0x6c with native flag; returns one iff result code equals zero. This wrapper alone does not establish disk durability.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_001a60c4",
+        "signature": "undefined FUN_001a60c4()"
+      },
+      "name": "MapFlowGridSave",
+      "signature": "int MapFlowGridSave(void *manager, int native_flag)"
+    },
+    {
+      "address": "0x001a621c",
+      "plate_comment": "Calls SLAM interface virtual slot +0x68 with native flag (0x1a6236), preserves result code, returns one iff result code equals zero. Unsigned result<4 selects logging text, not success. Target implementation is outside this annotation ownership.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_001a621c",
+        "signature": "undefined FUN_001a621c()"
+      },
+      "name": "MapFlowGridLoad",
+      "signature": "int MapFlowGridLoad(void *manager, int native_flag)"
+    },
+    {
+      "address": "0x001a6374",
+      "plate_comment": "Initializes observed relocation-config manager state: byte +0x22=0, word +0x28=-1, word +0x30=-1. Other fields/layout and original constructor signature intentionally unreconstructed. Calls lab-status initialization 0x1a6064.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_001a6374"
+      },
+      "name": "MapFlowInitRelocCfg"
+    },
+    {
+      "address": "0x0020c3d8",
+      "plate_comment": "Warmup/local-relocation state callback: if relocation did not succeed and state+0x321 or +0x322 is set, marks +0x324 and calls SetNeededToRecoverLastMap(core) at 0x20c500; successful relocation clears map/recovery state. Original ABI has register/stack decompiler uncertainties, so signature intentionally unchanged.",
+      "expect": {
+        "plate_comment": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+/* Decompiled C, NOT recovered source; need not compile.
+ * Binary: WatchDoge
+ * SHA256: 3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6
+ * Function VA: 0x0001af18
+ */
+
+/* Recovered Thumb pthread callback: launcher 0x1ac08 passes 0x1af19; EHABI starts 0x1af18, next
+   0x1af6c. Logs time, flushes stdout, calls unresolved 0x1abd8 then 0x1ad68, sets word 0x345ec=1,
+   calls 0x1aec8 then sleep(8) until that word is zero, calls 0x1ac20 and returns zero. Calls alone
+   do not establish watchdog acceptance, map-writer quiescence, MCU behavior or persistence
+   durability. No callback ABI signature imposed. */
+
+undefined4 WdogFeederThread(void)
+
+{
+  undefined4 in_r3;
+  undefined8 uVar1;
+  
+  uVar1 = get_cur_time_ms();
+  __printf_chk(1,&UNK_00020a7c,(int)uVar1,(int)((ulonglong)uVar1 >> 0x20),in_r3);
+  fflush(stdout);
+  func_0x0001abd8();
+  WdogHwInit();
+  DAT_000345ec = 1;
+  do {
+    WdogHwFeedOnce();
+    sleep(8);
+  } while (DAT_000345ec != 0);
+  WdogHwClose();
+  return 0;
+}
+

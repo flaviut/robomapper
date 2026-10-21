@@ -1,0 +1,307 @@
+{
+  "version": 1,
+  "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+  "types": [
+    {
+      "name": "WdogStopMode",
+      "declaration": "typedef enum WdogStopMode { WdogStopNoWait = 0, WdogStopWaitAll = 1, WdogStopWaitRrlogd = 2 } WdogStopMode;"
+    }
+  ],
+  "functions": [
+    {
+      "address": "0x142e4",
+      "name": "WdogMain",
+      "signature": "int WdogMain(int argc, char **argv)",
+      "plate_comment": "Startup/dispatcher boundary. Loads process list at 0x1461e, exclusions at 0x14644, refreshes PIDs at 0x1467e, stops prior processes (mode 1) at 0x146a8, then starts enabled records at 0x146d0. Event 9 at 0x147fe kills three network clients and calls destructive configuration removal, then FALLS THROUGH to event 8. Event 8 reloads exclusions at 0x1483a and attempts zero-payload IPC 0x03070343 at 0x1484e; this is not proof of delivery, request correlation or writer quiescence. Periodic event 2 scans only while supervisor byte +0 is zero.",
+      "expect": {
+        "name": "FUN_000142e4",
+        "signature": "undefined FUN_000142e4()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x16eb8",
+      "name": "WdogStartRecord",
+      "signature": "int WdogStartRecord(void *supervisor, void *record)",
+      "plate_comment": "Starts configured command at record +8 via command helper, with process-name/update-mode special cases. Nonzero return indicates command path attempted, not verified PID/execution or completed map loading. Called by enabled startup walk and non-key missing-process scan. Original object layouts remain unknown.",
+      "expect": {
+        "name": "FUN_00016eb8",
+        "signature": "undefined FUN_00016eb8()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x171e0",
+      "name": "WdogStartEnabled",
+      "signature": "void WdogStartEnabled(void *supervisor)",
+      "plate_comment": "Walks 0x1c-byte records; skips enabled byte +0x18==0 and exits if supervisor byte +0 is nonzero. Calls WdogStartRecord and sleeps record delay +0x14 for enabled records. Not a quiescence barrier.",
+      "expect": {
+        "name": "FUN_000171e0",
+        "signature": "undefined FUN_000171e0()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x17400",
+      "name": "WdogFindPid",
+      "signature": "int WdogFindPid(void *supervisor, const char *process_name)",
+      "plate_comment": "Runs pidof for process_name through popen and parses output. Returns positive parsed PID, -1 on failure/no result, -2 when a space indicates multiple PIDs. Does not enumerate/confirm descendants or provide a PID identity lifetime guarantee.",
+      "expect": {
+        "name": "FUN_00017400",
+        "signature": "undefined FUN_00017400()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x174b8",
+      "name": "WdogAdoptPid",
+      "signature": "int WdogAdoptPid(void *supervisor, void *record)",
+      "plate_comment": "Attempts PID discovery/adoption for record name +4; positive PID is stored at +0 and returns true. Multiple-PID result -2 invokes killall -9 for that name and returns false. No per-writer drain/flush protocol.",
+      "expect": {
+        "name": "FUN_000174b8",
+        "signature": "undefined FUN_000174b8()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x17510",
+      "name": "WdogRefreshPids",
+      "signature": "void WdogRefreshPids(void *supervisor)",
+      "plate_comment": "Refreshes each tracked PID via WdogFindPid(name). DOES NOT start processes; this is the target of startup call site 0x1467e previously described as process start. Name at record +4; record stride 0x1c.",
+      "expect": {
+        "name": "FUN_00017510",
+        "signature": "undefined FUN_00017510()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x17624",
+      "name": "WdogRefreshAndCheckPids",
+      "signature": "int WdogRefreshAndCheckPids(void *supervisor)",
+      "plate_comment": "Refreshes tracked PIDs, logs records with signed PID <1, and returns 1 unconditionally on normal completion. Its success value is not confirmation that all expected processes are alive.",
+      "expect": {
+        "name": "FUN_00017624",
+        "signature": "undefined FUN_00017624()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1779c",
+      "name": "WdogLoadProcessList",
+      "signature": "void WdogLoadProcessList(void *supervisor, void *path_string)",
+      "plate_comment": "Loads the configured process list. path_string is an ABI pointer to a C++ string object, NOT char*. Record stride 0x1c; observed fields PID +0, name string +4, command string +8, key flag +0xc, stop timeout +0x10, start delay +0x14, enabled byte +0x18. No original class/STL layout is asserted; other fields and padding remain unknown.",
+      "expect": {
+        "name": "FUN_0001779c",
+        "signature": "undefined FUN_0001779c()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x17f68",
+      "name": "WdogScanProcesses",
+      "signature": "int WdogScanProcesses(void *supervisor)",
+      "plate_comment": "Checks only records with enabled byte +0x18 !=0. Signed PID <=0 or kill(pid,0)!=0 takes missing-process handling; tries adoption first. Missing key flag==1 returns status 2 (caller recovery/escalation), not direct restart. Other eligible records call WdogStartRecord; status 3 reflects a nonzero start result. Disabled records are skipped. String-refcount atomics are NOT writer synchronization.",
+      "expect": {
+        "name": "FUN_00017f68",
+        "signature": "undefined FUN_00017f68()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x18400",
+      "name": "WdogReloadExclusions",
+      "signature": "void WdogReloadExclusions(void *supervisor, void *path_string)",
+      "plate_comment": "Reads exclusions from the path held by a C++ string ABI object. At most three parser iterations per line; comma prefixes are accepted even empty, but a final no-comma remainder is added only when length >3. No whitespace trimming observed. Each process is initially enabled (+0x18=1); std::string::find(name,+4,token) disables matches (+0x18=0). Positive signed tracked PID triggers kill(pid,9) at 0x18aaa and PID=-1 at 0x18aee regardless of kill result. No wait, writer flush, MCU heartbeat adjustment or descendant accounting. Open failure enables all records. Reload alone does not launch processes.",
+      "expect": {
+        "name": "FUN_00018400",
+        "signature": "undefined FUN_00018400()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x18bfc",
+      "name": "WdogWaitProcGone",
+      "signature": "int WdogWaitProcGone(void *supervisor, int pid, int attempts)",
+      "plate_comment": "Polls opening /proc/<pid>/status, sleeping one second while present; returns 1 when fopen fails, 0 when attempts reaches zero. Does not distinguish ENOENT from other open failures, reap zombies, wait for children, or flush files. Negative attempt values are not validated here.",
+      "expect": {
+        "name": "FUN_00018bfc",
+        "signature": "undefined FUN_00018bfc()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x191c4",
+      "name": "WdogSignalTrackedPid",
+      "signature": "int WdogSignalTrackedPid(void *supervisor, int pid, int mode)",
+      "plate_comment": "For mode 0, reads /proc/<pid>/status, parses State and PPid; non-zombie -> kill(pid,1), zombie Z -> kill(parsed_parent,9). Nonzero mode bypasses that signal path. Missing status/negative PID returns success-like result. This helper does not prove graceful writer shutdown; its boolean result is ignored by WdogStopProcesses.",
+      "expect": {
+        "name": "FUN_000191c4",
+        "signature": "undefined FUN_000191c4()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x19ae0",
+      "name": "WdogStopProcesses",
+      "signature": "int WdogStopProcesses(void *supervisor, WdogStopMode mode)",
+      "plate_comment": "Reverse-order stop of positive tracked PIDs. First invokes WdogSignalTrackedPid(...,pid,0), which sends signal 1 to a non-zombie PID or signal 9 to a parsed parent for zombie state. mode 1 sends rua_keep_mcu_heartbeat(120), then bounded proc-status disappearance polling; mode 2 does that only for name rrlogd; mode 0 does not send this heartbeat control. Unsuccessful/no wait falls back to kill(pid,9). After sleep(1), kill(pid,0) checks return 1 if any tracked positive PID still exists, else 0. Successful waits clear tracked PID to zero. No waitpid, fsync, child-tree barrier or map-write acknowledgment; permission errors/PID reuse and ignored kill results limit interpretation.",
+      "expect": {
+        "name": "FUN_00019ae0",
+        "signature": "undefined FUN_00019ae0()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1ac08",
+      "name": "WdogHwStartFeeder",
+      "signature": "int WdogHwStartFeeder(void)",
+      "plate_comment": "Tail-calls pthread_create(&thread_id_at_0x345e4,NULL,(start_routine)0x1af19,NULL). Actual Thumb candidate entry is EVEN 0x1af18, first bytes 38b503f00dfc, but no baseline function/instructions exist there. No function was guessed/created. See discovery-run/instructions.txt and evidence.json. pthread_create result is not checked by startup.",
+      "expect": {
+        "name": "FUN_0001ac08",
+        "signature": "undefined FUN_0001ac08()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1ac20",
+      "name": "WdogHwClose",
+      "signature": "void WdogHwClose(void)",
+      "plate_comment": "If fd!=-1, writes one byte 0x56 (V) from 0x2095c, logs write result, closes fd and sets fd=-1. Does not stop/join feeder thread. Whether kernel accepts magic close and whether hardware resets later remain unresolved.",
+      "expect": {
+        "name": "FUN_0001ac20",
+        "signature": "undefined FUN_0001ac20()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1accc",
+      "name": "WdogHwStopFeeder",
+      "signature": "void WdogHwStopFeeder(void)",
+      "plate_comment": "If running flag 0x345ec !=0, clears it, pthread_cancel(thread), then pthread_join(thread,NULL); logs join failure. Calls WdogHwClose afterward. This synchronization is only with the watchdog feeder, not map writers.",
+      "expect": {
+        "name": "FUN_0001accc",
+        "signature": "undefined FUN_0001accc()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1ad68",
+      "name": "WdogHwInit",
+      "signature": "void WdogHwInit(void)",
+      "plate_comment": "Opens /dev/watchdog with flags 1; failure exits -1. Sets FD flag via fcntl(fd,2,1). Requests timeout 16 through ioctl 0xc0045706 (failure exits -1); option from HWDOG_OPTION parsed base 10, default 1, via vendor ioctl 0xc004570b; then option 2 via ioctl 0x80045704. Last two ioctl results ignored. Kernel/vendor semantics and magic-close acceptance are not established by userspace.",
+      "expect": {
+        "name": "FUN_0001ad68",
+        "signature": "undefined FUN_0001ad68()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1aec8",
+      "name": "WdogHwFeedOnce",
+      "signature": "void WdogHwFeedOnce(void)",
+      "plate_comment": "If fd!=-1, issues ioctl(fd,0x80045705,1) and increments global feed counter 0x345f0 regardless of ioctl result. fd==-1 only logs. Counter is NOT proof of kernel watchdog feed acceptance. Periodic thread bytes exist at 0x1af18 but baseline has no function/instructions there; no synthetic function created.",
+      "expect": {
+        "name": "FUN_0001aec8",
+        "signature": "undefined FUN_0001aec8()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1af18",
+      "name": "WdogFeederThread",
+      "plate_comment": "Recovered Thumb pthread callback: launcher 0x1ac08 passes 0x1af19; EHABI starts 0x1af18, next 0x1af6c. Logs time, flushes stdout, calls unresolved 0x1abd8 then 0x1ad68, sets word 0x345ec=1, calls 0x1aec8 then sleep(8) until that word is zero, calls 0x1ac20 and returns zero. Calls alone do not establish watchdog acceptance, map-writer quiescence, MCU behavior or persistence durability. No callback ABI signature imposed.",
+      "expect": {
+        "name": "FUN_0001af18",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1d074",
+      "name": "WdogSignalHandler",
+      "signature": "void WdogSignalHandler(int signal_number)",
+      "plate_comment": "All handled signals first refresh/check PIDs, close watchdog fd, and remove failure_count. Signal 10 stops in mode 0 and disables MCU heartbeat; signal 12 stops in mode 1 and disables MCU heartbeat; both mark supervisor byte +0=1 and return. Other handled signals stop in mode 1 and enter teardown/exit (signal 15 also disables MCU heartbeat); signal 11 can early-return when recovery flag set, but only AFTER common prelude. SIGHUP is not reload-only. Static control flow does not establish kernel/MCU reset safety or async-signal safety.",
+      "expect": {
+        "name": "FUN_0001d074",
+        "signature": "undefined FUN_0001d074()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1dbe0",
+      "name": "WdogInstallSignals",
+      "signature": "int WdogInstallSignals(void)",
+      "plate_comment": "Registers WdogSignalHandler for signals 15,2,3,11,7,10,12,4,5,6,8,1, failing on first signal() error. Return 0 on completion or -1 on registration failure. No maintenance/reload-only signal contract is inferred.",
+      "expect": {
+        "name": "FUN_0001dbe0",
+        "signature": "undefined FUN_0001dbe0()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1dffc",
+      "name": "WdogWriteExclusions",
+      "signature": "void WdogWriteExclusions(const char *payload)",
+      "plate_comment": "fopen(exclusions path,\"w\") truncates existing file, fprintf(\"%s\",payload), fclose. Open or empty/failed write only logs; no status reaches caller and no fsync/atomic rename. Packet length is not passed. Do not confuse this path with map-file persistence.",
+      "expect": {
+        "name": "FUN_0001dffc",
+        "signature": "undefined FUN_0001dffc()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1e09c",
+      "name": "WdogResetConfigFiles",
+      "signature": "void WdogResetConfigFiles(void)",
+      "plate_comment": "DESTRUCTIVE event-9 helper: unlinks Wi-Fi/device/config files, upload flag, exclusions, endpoint files and invokes rm -rf on rriot directory. No result checks. Caller kills three network-client names before this call and falls through to exclusions reload afterward. Bounded analysis of side effects only; not a map-restore or safe re-enable operation.",
+      "expect": {
+        "name": "FUN_0001e09c",
+        "signature": "undefined FUN_0001e09c()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1e75c",
+      "name": "WdogQueueEvent",
+      "signature": "int WdogQueueEvent(unsigned int event_code)",
+      "plate_comment": "Internal SysV queue key 0x80001000; message type 1, four-byte event payload, msgsnd flags 0x800 (nonblocking). Returns send-success boolean; IPC receiver ignores it. Queueing does not imply event completion or writer quiescence.",
+      "expect": {
+        "name": "FUN_0001e75c",
+        "signature": "undefined FUN_0001e75c()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1e7a8",
+      "name": "WdogIpcReceiveLoop",
+      "signature": "void WdogIpcReceiveLoop(void)",
+      "plate_comment": "For IPC ID 0x07030342: writes payload as C string to exclusions file, then strlen(payload) unsigned <=2 queues event 9 (destructive reset), >2 queues event 8 (reload). This is C-string length, NOT packet length; embedded NUL truncates interpretation. File-write failure is not propagated, so event still queued. Internal event sender is nonblocking and may fail; no bounds/terminator guarantee from RecvPacket established here.",
+      "expect": {
+        "name": "FUN_0001e7a8",
+        "signature": "undefined FUN_0001e7a8()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1eb14",
+      "name": "WdogReadEvent",
+      "signature": "int WdogReadEvent(unsigned int *event_code, int flags)",
+      "plate_comment": "Internal SysV event receive: retries msgrcv on errno 4, copies four-byte event and returns 1 on success. On failure with flags 0x800 also returns 1 without updating output; blocking failure logs and returns 0. Main uses flags 0. No direct map-writer synchronization.",
+      "expect": {
+        "name": "FUN_0001eb14",
+        "signature": "undefined FUN_0001eb14()",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x1ec38",
+      "name": "WdogSendIpcPacket",
+      "signature": "void WdogSendIpcPacket(unsigned int message_id, const void *payload, unsigned int payload_size)",
+      "plate_comment": "Builds packet and calls SendPacket, logging failures but returning no delivery status. Event-8 dispatcher calls with message_id 0x03070343, payload NULL, size 0 after exclusions reload. Existence of this send is confirmed; delivery, correlation and writer-exit guarantees are not.",
+      "expect": {
+        "name": "FUN_0001ec38",
+        "signature": "undefined FUN_0001ec38()",
+        "plate_comment": null
+      }
+    }
+  ]
+}

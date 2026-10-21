@@ -1,0 +1,65 @@
+program=AppProxy language=ARM:LE:32:v8
+block=.text(00019518 - 000ea84f)
+base_context=RegisterValue(contextreg): mask=0xc000000000000000 value=0x0000000000000000
+before=FUN_0003c568 body=[[0003c568, 0003c5ad]]
+after=FUN_0003c6bc body=[[0003c6bc, 0003c79b]]
+0003c5ae bytes=00bf context=0 ins=null data=null function=null
+0003c5b0 bytes=8c0b context=0 ins=null data=undefined4 000F0B8Ch function=null
+ IN From: 0003c5a2 To: 0003c5b0 Type: READ Op: 1 DEFAULT
+ SYMBOL DAT_0003c5b0 source=DEFAULT
+0003c5b2 bytes=0f00 context=0 ins=null data=null function=null
+0003c5b4 bytes=30b5 context=0 ins=null data=null function=null
+0003c5b6 bytes=41f6 context=0 ins=null data=null function=null
+0003c5b8 bytes=c814 context=0 ins=null data=null function=null
+0003c5ba bytes=c0f2 context=0 ins=null data=null function=null
+0003c5bc bytes=1204 context=0 ins=null data=null function=null
+0003c5be bytes=83b0 context=0 ins=null data=null function=null
+0003c5c0 bytes=02aa context=0 ins=null data=null function=null
+0003c5c2 bytes=0968 context=0 ins=null data=null function=null
+0003c5c4 bytes=2368 context=0 ins=null data=null function=null
+0003c5c6 bytes=4ff0 context=0 ins=null data=null function=null
+0003c5c8 bytes=ff35 context=0 ins=null data=null function=null
+0003c5ca bytes=0231 context=0 ins=null data=null function=null
+0003c5cc bytes=42f8 context=0 ins=null data=null function=null
+0003c5ce bytes=085d context=0 ins=null data=null function=null
+0003c5d0 bytes=0193 context=0 ins=null data=null function=null
+0003c5d2 bytes=fff7 context=0 ins=null data=null function=null
+0003c5d4 bytes=c9ff context=0 ins=null data=null function=null
+0003c5d6 bytes=019a context=0 ins=null data=null function=null
+0003c5d8 bytes=2368 context=0 ins=null data=null function=null
+0003c5da bytes=0098 context=0 ins=null data=null function=null
+0003c5dc bytes=9a42 context=0 ins=null data=null function=null
+0003c5de bytes=02d1 context=0 ins=null data=null function=null
+0003c5e0 bytes=0238 context=0 ins=null data=null function=null
+0003c5e2 bytes=03b0 context=0 ins=null data=null function=null
+0003c5e4 bytes=30bd context=0 ins=null data=null function=null
+0003c5e6 bytes=dbf7 context=0 ins=null data=null function=null
+0003c5e8 bytes=64ee context=0 ins=null data=null function=null
+0003c5ea bytes=00bf context=0 ins=null data=null function=null
+0003c5ec bytes=f0b5 context=1 ins=push {r4,r5,r6,r7,lr} data=null function=null
+ IN From: 00051bfe To: 0003c5ed Type: DATA Op: 0 ANALYSIS
+ SYMBOL LAB_0003c5ec+1 source=DEFAULT
+PSEUDO THUMB (not database instructions):
+0003c5b4 push {r4,r5,lr} bytes=30b5 flow=FALL_THROUGH targets=[] fall=0003c5b6
+0003c5b6 movw r4,#0x19c8 bytes=41f6c814 flow=FALL_THROUGH targets=[] fall=0003c5ba
+0003c5ba movt r4,#0x12 bytes=c0f21204 flow=FALL_THROUGH targets=[] fall=0003c5be
+0003c5be sub sp,#0xc bytes=83b0 flow=FALL_THROUGH targets=[] fall=0003c5c0
+0003c5c0 add r2,sp,#0x8 bytes=02aa flow=FALL_THROUGH targets=[] fall=0003c5c2
+0003c5c2 ldr r1,[r1,#0x0] bytes=0968 flow=FALL_THROUGH targets=[] fall=0003c5c4
+0003c5c4 ldr r3,[r4,#0x0] bytes=2368 flow=FALL_THROUGH targets=[] fall=0003c5c6
+0003c5c6 mov.w r5,#0xffffffff bytes=4ff0ff35 flow=FALL_THROUGH targets=[] fall=0003c5ca
+0003c5ca adds r1,#0x2 bytes=0231 flow=FALL_THROUGH targets=[] fall=0003c5cc
+0003c5cc str.w r5,[r2,#-0x8]! bytes=42f8085d flow=FALL_THROUGH targets=[] fall=0003c5d0
+0003c5d0 str r3,[sp,#0x4] bytes=0193 flow=FALL_THROUGH targets=[] fall=0003c5d2
+0003c5d2 bl 0x0003c568 bytes=fff7c9ff flow=UNCONDITIONAL_CALL targets=[0003c568] fall=0003c5d6
+0003c5d6 ldr r2,[sp,#0x4] bytes=019a flow=FALL_THROUGH targets=[] fall=0003c5d8
+0003c5d8 ldr r3,[r4,#0x0] bytes=2368 flow=FALL_THROUGH targets=[] fall=0003c5da
+0003c5da ldr r0,[sp,#0x0] bytes=0098 flow=FALL_THROUGH targets=[] fall=0003c5dc
+0003c5dc cmp r2,r3 bytes=9a42 flow=FALL_THROUGH targets=[] fall=0003c5de
+0003c5de bne 0x0003c5e6 bytes=02d1 flow=CONDITIONAL_JUMP targets=[0003c5e6] fall=0003c5e0
+0003c5e0 subs r0,#0x2 bytes=0238 flow=FALL_THROUGH targets=[] fall=0003c5e2
+0003c5e2 add sp,#0xc bytes=03b0 flow=FALL_THROUGH targets=[] fall=0003c5e4
+0003c5e4 pop {r4,r5,pc} bytes=30bd flow=TERMINATOR targets=[] fall=null
+0003c5e6 blx 0x000182b0 bytes=dbf764ee flow=UNCONDITIONAL_CALL targets=[000182b0] fall=0003c5ea
+0003c5ea nop bytes=00bf flow=FALL_THROUGH targets=[] fall=0003c5ec
+0003c5ec push {r4,r5,r6,r7,lr} bytes=f0b5 flow=FALL_THROUGH targets=[] fall=0003c5ee

@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "sha256": "75927f4b9161a3b7a8c01771ca8496e061184c7b9c28f58958a10d6cba0a4f0b",
+  "types": [
+    {
+      "name": "MapPersistFlag",
+      "declaration": "typedef int MapPersistFlag;"
+    }
+  ],
+  "functions": [
+    {
+      "address": "0x18a8",
+      "expect": {
+        "signature": "undefined rr_get_unused_persist_map_flag(bool param_1)",
+        "plate_comment": "rr_get_unused_persist_map_flag(bool)"
+      },
+      "signature": "MapPersistFlag rr_get_unused_persist_map_flag(bool want_backup)",
+      "plate_comment": "Builds 12-element used array from nonzero primary entries and their nonzero backup bytes, via unlocked GetSharedUserMapInfo pointer. Returns first unused primary 2..5 (want_backup=0) or backup 6..9 (nonzero), otherwise -1. GetBakMapFlagStartPos=6 in librobopersist. No locking/reservation here; no checks before using loaded flag bytes as array indexes. Flags 10/11 are not allocator candidates."
+    },
+    {
+      "address": "0x1950",
+      "expect": {
+        "signature": "undefined rr_get_multimap_flag_available(int param_1)",
+        "plate_comment": "rr_get_multimap_flag_available(int)"
+      },
+      "signature": "bool rr_get_multimap_flag_available(int mode)",
+      "plate_comment": "Counts nonzero primary bytes from unlocked catalog pointer. Capacity limit is four only when mode==1, otherwise one; returns count below limit. This is not slot reservation."
+    },
+    {
+      "address": "0x19cc",
+      "expect": {
+        "signature": "undefined rr_get_available_bak_map_flag_for_multimap(int param_1)",
+        "plate_comment": "rr_get_available_bak_map_flag_for_multimap(int)"
+      },
+      "signature": "MapPersistFlag rr_get_available_bak_map_flag_for_multimap(MapPersistFlag primary_flag)",
+      "plate_comment": "Copies each 0x24-byte entry from live unlocked catalog while scanning primary. If matching entry has nonzero backup byte, uses GetOldestMapFlagIndex (constant 0 in this build) to return that backup; otherwise tail-calls rr_get_unused_persist_map_flag(true). Imported helper receives start-of-array pointer, not selected copy; with constant index 0 this does not alter selection. No file-existence or validity check; environment/path buffer setup does not choose a file here."
+    },
+    {
+      "address": "0x1ac0",
+      "expect": {
+        "signature": "undefined rr_check_mapflag_is_multimap(int param_1)",
+        "plate_comment": "rr_check_mapflag_is_multimap(int)"
+      },
+      "signature": "bool rr_check_mapflag_is_multimap(MapPersistFlag flag)",
+      "plate_comment": "Returns 1 only for matching nonzero primary byte among four entries; reads unlocked catalog pointer and does not check any map file."
+    },
+    {
+      "address": "0x1ae0",
+      "expect": {
+        "signature": "undefined rr_get_multimap_name(int param_1)",
+        "plate_comment": "rr_get_multimap_name(int)"
+      },
+      "signature": "char *rr_get_multimap_name(MapPersistFlag flag)",
+      "plate_comment": "Returns matching entry+4 name-byte pointer or static fallback pointer; four entries, stride 0x24. Pointer is not locked and 32 stored name bytes need not be NUL-terminated; no validation/termination added here."
+    },
+    {
+      "address": "0x1b08",
+      "expect": {
+        "signature": "undefined rr_get_multimap_by_bakmap(int param_1)",
+        "plate_comment": "rr_get_multimap_by_bakmap(int)"
+      },
+      "signature": "MapPersistFlag rr_get_multimap_by_bakmap(MapPersistFlag backup_flag)",
+      "plate_comment": "Returns zero-extended primary byte for first matching backup byte, else -1. No nonzero-primary/backup check; reads unlocked pointer; passing zero can match an empty entry."
+    }
+  ]
+}

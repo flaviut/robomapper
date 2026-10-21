@@ -1,0 +1,373 @@
+{
+  "version": 1,
+  "status": "partial",
+  "ready_recoveries": 2,
+  "blocked_candidates": 1,
+  "review_gate": "required; parent/reviewer approval before promotion or integration",
+  "task": "central bounded function recovery; authorized static analysis only",
+  "source_root": "/home/user/tmp/illegalplainape/analysis/re/recovery",
+  "runtime_source": {
+    "driver": "recover.py",
+    "ghidra_script": "scripts/RecoverBounded.java",
+    "source_sha256": {
+      "recover.py": "a0a894be5fc4da2d0a58bf8caa8f442b8cff90dfb14a793724acf037c894c52f",
+      "scripts/RecoverBounded.java": "dfdb06634b88e8e69dace1222c97b8a6a504ccfe5eb2af7743ea5ce5df62e849",
+      "validate_recovery.py": "c7c7d4a4beecef8228477bba244b9cade073e72cd311ba3a65e0f2601e5ef30c"
+    },
+    "script_path": "scripts/",
+    "shared_harness": "../tooling/retool.py",
+    "layout": "Preserve analysis/re/recovery and sibling analysis/re/tooling; parent explicitly approved this unchanged tracked-source layout. No duplicate harness or symlink shim."
+  },
+  "candidates": [
+    {
+      "program": "AppProxy",
+      "status": "ready",
+      "decision": "validated bounded Thumb function recovery; reviewer gate remains required",
+      "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+      "entry": "0x3c5b4",
+      "entry_file_offset": "0x2c5b4",
+      "entry_bytes": "30b541f6c814c0f2120483b0",
+      "restricted_extent": {
+        "start": "0x3c5b4",
+        "end_inclusive": "0x3c5e9"
+      },
+      "recovered_body": "[[0003c5b4, 0003c5e9]]",
+      "instruction_count": 21,
+      "name_after_annotation": "CatalogBackupExternal",
+      "initial_real_symbol": null,
+      "initial_name": "FUN_0003c5b4",
+      "initial_signature": "undefined FUN_0003c5b4()",
+      "initial_plate_comment": null,
+      "annotation_document": "annotations/AppProxy.json",
+      "annotation_sha256": "7e1e3b1ee243afefce86451a64d76b222785ca652665ced79ea46d0c45eca344",
+      "annotation_expectation_basis": "pristine AFTER-RECOVERY selected.json, not original absent baseline anchor",
+      "annotation_fields_changed": [
+        "name",
+        "plate_comment"
+      ],
+      "signature_or_types_imposed": false,
+      "recovery_request": "requests/AppProxy.json",
+      "request_sha256": "94220f28987e31e9e1491f7e850ecbab9ac603521b1fa875a03a55cee87d951e",
+      "instructions": "proof-final/a/reopened-AppProxy/selected.json",
+      "generated_c": "proof-final/a/reopened-AppProxy/0x0003c5b4.c",
+      "entry_evidence": {
+        "executable_mapping": ".text 0x19518..0xea84f",
+        "ehabi": [
+          {
+            "table_va": "0x10df20",
+            "function_start": "0x3c568",
+            "unwind": "0x8001aab0"
+          },
+          {
+            "table_va": "0x10df28",
+            "function_start": "0x3c5b4",
+            "unwind": "0x8002a9b0"
+          },
+          {
+            "table_va": "0x10df30",
+            "function_start": "0x3c5ec",
+            "unwind": "0x8008abb0"
+          }
+        ],
+        "thumb_and_cfg": "assessment/AppProxy/evidence.txt",
+        "references": "No baseline incoming call/data reference at this entry; EHABI exact start, independent Thumb decode, complete CFG and neighboring boundaries support recovery.",
+        "raw_symbol_pointer_relocation_scan": {
+          "near_symbols": [],
+          "pointer_occurrences": {
+            "0x3c5b4": [],
+            "0x3c5b5": []
+          },
+          "near_relocations": []
+        },
+        "boundary_exclusions": "End excludes padding at 0x3c5ea and next code at 0x3c5ec; terminal error call goes to existing __stack_chk_fail at 0x182b0."
+      },
+      "evidence_backed_semantics": "Recovered from original Thumb bytes with exact EHABI start 0x3c5b4 and next start 0x3c5ec. Dereferences r1 as external-ID pointer, adds 2, calls 0x3c568 with a selected-native-flag output initialized to -1, and returns that selected output minus 2. The helper boolean is not the wrapper return. No external-ID bounds, file validity or cross-process completion inferred.",
+      "unresolved_gaps": [
+        "No incoming caller identity or external-ID validity contract recovered."
+      ]
+    },
+    {
+      "program": "WatchDoge",
+      "status": "ready",
+      "decision": "validated bounded Thumb function recovery; reviewer gate remains required",
+      "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+      "entry": "0x1af18",
+      "entry_file_offset": "0xaf18",
+      "entry_bytes": "38b503f00dfc44f2e455c0f2",
+      "restricted_extent": {
+        "start": "0x1af18",
+        "end_inclusive": "0x1af69"
+      },
+      "recovered_body": "[[0001af18, 0001af69]]",
+      "instruction_count": 27,
+      "name_after_annotation": "WdogFeederThread",
+      "initial_real_symbol": null,
+      "initial_name": "FUN_0001af18",
+      "initial_signature": "undefined FUN_0001af18()",
+      "initial_plate_comment": null,
+      "annotation_document": "annotations/WatchDoge.json",
+      "annotation_sha256": "c5031c85d079952ba787ddce469727fdcccdf7cf223d409f4d47d97323c66e93",
+      "annotation_expectation_basis": "pristine AFTER-RECOVERY selected.json, not original absent baseline anchor",
+      "annotation_fields_changed": [
+        "name",
+        "plate_comment"
+      ],
+      "signature_or_types_imposed": false,
+      "recovery_request": "requests/WatchDoge.json",
+      "request_sha256": "9fad5cdc9f092201071070b53058379af1d210b040071b980711881fbf8f3acd",
+      "instructions": "proof-final/a/reopened-WatchDoge/selected.json",
+      "generated_c": "proof-final/a/reopened-WatchDoge/0x0001af18.c",
+      "entry_evidence": {
+        "executable_mapping": ".text 0x13edc..0x1fd67",
+        "ehabi": [
+          {
+            "table_va": "0x230a8",
+            "function_start": "0x1aec8",
+            "unwind": "0x80a8b0b0"
+          },
+          {
+            "table_va": "0x230b0",
+            "function_start": "0x1af18",
+            "unwind": "0x80b108a9"
+          },
+          {
+            "table_va": "0x230b8",
+            "function_start": "0x1af6c",
+            "unwind": "0x7ffffbd0"
+          }
+        ],
+        "thumb_and_cfg": "assessment/WatchDoge/evidence.txt",
+        "references": "Launcher 0x1ac08 builds Thumb callback 0x1af19 and tail-calls pthread_create; original watchdog evidence plus exact EHABI start and complete CFG support recovery.",
+        "raw_symbol_pointer_relocation_scan": {
+          "near_symbols": [],
+          "pointer_occurrences": {
+            "0x1af18": [],
+            "0x1af19": []
+          },
+          "near_relocations": []
+        },
+        "boundary_exclusions": "Return at 0x1af68; padding 0x1af6a and existing next function 0x1af6c excluded."
+      },
+      "evidence_backed_semantics": "Recovered Thumb pthread callback: launcher 0x1ac08 passes 0x1af19; EHABI starts 0x1af18, next 0x1af6c. Logs time, flushes stdout, calls unresolved 0x1abd8 then 0x1ad68, sets word 0x345ec=1, calls 0x1aec8 then sleep(8) until that word is zero, calls 0x1ac20 and returns zero. Calls alone do not establish watchdog acceptance, map-writer quiescence, MCU behavior or persistence durability. No callback ABI signature imposed.",
+      "unresolved_gaps": [
+        "Call at 0x1af46 targets unresolved 0x1abd8; no additional function recovery attempted.",
+        "Decompiler varargs in_r3/undefined prototype are retained artifacts, not ABI proof."
+      ]
+    },
+    {
+      "program": "librrnavdrv.so",
+      "status": "blocked",
+      "decision": "defer startup callback recovery; original 0x20bac0 seed is interior, not an entry",
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+      "original_seed": "0x20bac0",
+      "true_ehabi_candidate": "0x20babc",
+      "seed_bytes": "f0b57b44ae4d8db004460121",
+      "entry_evidence": {
+        "executable_mapping": ".text 0x3dd30..0x26c07b",
+        "ehabi": [
+          {
+            "table_va": "0x2f1b9c",
+            "function_start": "0x20babc",
+            "unwind": "0x7fff12b0"
+          }
+        ],
+        "instructions": "Existing Thumb ldr r3,[0x20bd7c] at 0x20babc and movs r2,#0 at 0x20babe precede push at 0x20bac0; add r3,pc at 0x20bac2 consumes the earlier load.",
+        "reference": "Pristine listing has DATA reference 0x20f960 -> Thumb-tagged 0x20babd; not promoted as a verified vtable/cross-process relationship.",
+        "string": "Read-only orchestration evidence has 0x20bbd8 reference to OnStateLoadLastMap; a string does not establish a function entry.",
+        "source": "assessment/librrnavdrv.so/evidence.txt"
+      },
+      "recovery_request": null,
+      "annotation_document": null,
+      "generated_c": null,
+      "recovered_body": null,
+      "mutations": "none",
+      "unresolved_gaps": [
+        "No reviewed full CFG/body recovery at 0x20babc.",
+        "Existing instructions and earlier entry evidence preclude treating 0x20bac0 as absent code.",
+        "New entry/scope approval and separate bounded proof would be needed; no fabricated C supplied."
+      ]
+    }
+  ],
+  "replay": {
+    "preconditions": [
+      "Pinned local Ghidra 12.0.4 and shared harness available.",
+      "Use a NEW private baseline copy and NEW output directories; project must be closed.",
+      "Run BOTH recovery requests BEFORE merging component annotation documents.",
+      "Recovery replay deliberately refuses already-created code/functions; annotation replay remains the shared harness responsibility."
+    ],
+    "exact_commands": [
+      "cd /home/user/tmp/illegalplainape/analysis/re/recovery",
+      "T=\"$PWD/../tooling/retool.py\"; P=\"$PWD/integration-private/project\"",
+      "python3 \"$T\" copy \"$P\"",
+      "python3 recover.py \"$P\" requests/AppProxy.json --out \"$PWD/integration-private/recover-AppProxy\"",
+      "python3 recover.py \"$P\" requests/WatchDoge.json --out \"$PWD/integration-private/recover-WatchDoge\"",
+      "python3 \"$T\" run \"$P\" AppProxy --annotations \"$PWD/annotations/AppProxy.json\" --functions 0x3c5b4 --inventory --out \"$PWD/integration-private/applied-AppProxy\"",
+      "python3 \"$T\" run \"$P\" WatchDoge --annotations \"$PWD/annotations/WatchDoge.json\" --functions 0x1af18 --inventory --out \"$PWD/integration-private/applied-WatchDoge\"",
+      "python3 \"$T\" run \"$P\" AppProxy --functions 0x3c5b4 --inventory --out \"$PWD/integration-private/reopened-AppProxy\"",
+      "python3 \"$T\" run \"$P\" WatchDoge --functions 0x1af18 --inventory --out \"$PWD/integration-private/reopened-WatchDoge\""
+    ],
+    "proof_command_already_run": "python3 validate_recovery.py --out \"$PWD/proof-final\" > proof-final-driver.log 2>&1",
+    "proof_command_for_parent_future_use_only": "python3 validate_recovery.py --out \"$PWD/new-proof\"",
+    "promoted_path_test": "Run exact_commands after the parent allowlists unchanged analysis/re/recovery sources and essential proof. This packaging follow-up did not run Ghidra or validation.",
+    "postcheck": "Each command must report OK, result.json status ok, and invocation.json success true/save_confirmed true. Compare relevant C, selected.json and types.json between applied and reopened exports; reopen commands replay neither recovery nor annotations."
+  },
+  "annotations": {
+    "schema_version": 1,
+    "documents": [
+      "annotations/AppProxy.json",
+      "annotations/WatchDoge.json"
+    ],
+    "expectations": "Exact pristine AFTER-RECOVERY name and null plate_comment; no signatures or types changed.",
+    "real_symbol_policy": "No real primary symbol existed at either recovered candidate. Recovery retains any real primary symbol rather than replacing it; proposal labels are annotation names, not recovered original source names."
+  },
+  "validation": {
+    "summary": "proof-final/validation.json",
+    "status": "passed",
+    "copies": [
+      {
+        "copy": "a",
+        "program": "AppProxy",
+        "entry": "0x0003c5b4",
+        "body": "[[0003c5b4, 0003c5e9]]",
+        "instructions": 21,
+        "recovery": "a/recover-AppProxy/result.json",
+        "reopened_export": "a/reopened-AppProxy",
+        "existing_inventory_identical": true,
+        "persisted": true
+      },
+      {
+        "copy": "a",
+        "program": "WatchDoge",
+        "entry": "0x0001af18",
+        "body": "[[0001af18, 0001af69]]",
+        "instructions": 27,
+        "recovery": "a/recover-WatchDoge/result.json",
+        "reopened_export": "a/reopened-WatchDoge",
+        "existing_inventory_identical": true,
+        "persisted": true
+      },
+      {
+        "copy": "b",
+        "program": "AppProxy",
+        "entry": "0x0003c5b4",
+        "body": "[[0003c5b4, 0003c5e9]]",
+        "instructions": 21,
+        "recovery": "b/recover-AppProxy/result.json",
+        "reopened_export": "b/reopened-AppProxy",
+        "existing_inventory_identical": true,
+        "persisted": true
+      },
+      {
+        "copy": "b",
+        "program": "WatchDoge",
+        "entry": "0x0001af18",
+        "body": "[[0001af18, 0001af69]]",
+        "instructions": 27,
+        "recovery": "b/recover-WatchDoge/result.json",
+        "reopened_export": "b/reopened-WatchDoge",
+        "existing_inventory_identical": true,
+        "persisted": true
+      }
+    ],
+    "rejections": [
+      {
+        "test": "hash-mismatch",
+        "error": "java.lang.Exception: HASH_MISMATCH",
+        "no_semantic_mutation": true,
+        "result": "a/hash-mismatch/result.json"
+      },
+      {
+        "test": "entry-byte-mismatch",
+        "error": "java.lang.Exception: ENTRY_BYTES_MISMATCH",
+        "no_semantic_mutation": true,
+        "result": "a/entry-byte-mismatch/result.json"
+      },
+      {
+        "test": "odd-entry",
+        "error": "java.lang.Exception: ODD_ENTRY",
+        "no_semantic_mutation": true,
+        "result": "a/odd-entry/result.json"
+      },
+      {
+        "test": "wrong-even-entry",
+        "error": "java.lang.Exception: UNREVIEWED_ENTRY_OR_BOUND",
+        "no_semantic_mutation": true,
+        "result": "a/wrong-even-entry/result.json"
+      },
+      {
+        "test": "wrong-bound",
+        "error": "java.lang.Exception: UNREVIEWED_ENTRY_OR_BOUND",
+        "no_semantic_mutation": true,
+        "result": "a/wrong-bound/result.json"
+      },
+      {
+        "test": "unexpected-context-request",
+        "error": "java.lang.Exception: unreviewed expected context",
+        "no_semantic_mutation": true,
+        "result": "a/unexpected-context-request/result.json"
+      },
+      {
+        "test": "rollback-after-disassembly",
+        "error": "java.lang.Exception: instruction mismatch 0003c5e6",
+        "no_semantic_mutation": true,
+        "result": "a/rollback-after-disassembly/result.json"
+      },
+      {
+        "test": "existing-conflict-AppProxy",
+        "no_semantic_mutation": true,
+        "error": "java.lang.Exception: CODE_OR_DATA_CONFLICT 0003c5b4"
+      },
+      {
+        "test": "existing-conflict-WatchDoge",
+        "no_semantic_mutation": true,
+        "error": "java.lang.Exception: CODE_OR_DATA_CONFLICT 0001af18"
+      }
+    ],
+    "baseline_tree_identical": true,
+    "binary_files_identical": true,
+    "close_reopen_without_replay_identical": true,
+    "cross_copy_c_selected_types_identical": true,
+    "existing_function_check": "Recovery compares all pre-existing function metadata/body snapshots; proof compares pristine inventory minus exactly one added function with the original bootstrap inventory.",
+    "byte_check": "Imported original SHA256 and candidate loader-mapped original bytes checked before mutation; original hash and all initialized-memory hashes unchanged across recovery; baseline tree and pinned binaries compared by proof.",
+    "rejection_semantics": "All nine negative cases require identical semantic fingerprints covering bytes, existing functions, instructions, defined data, symbols, references and context ranges.",
+    "parent_timeout_snapshot": "../tooling/recovery-timeout-snapshot.json"
+  },
+  "safety_constraints": [
+    "Only two hash/entry/bound tuples are accepted by the recovery source.",
+    "Original bytes, executable mapping, code/data/function conflicts, full base context, entry and bound bytes, EHABI start/next-start are checked before mutation.",
+    "Set TMode=1 only inside the approved bound; restricted disassembly and actual discovered CFG determine the new instruction body, not a blind contiguous range.",
+    "No instruction/data clearing, binary patches, existing-function boundary changes, broad analysis, arbitrary batch creation, firmware/device execution or nested agents.",
+    "Transactions roll back on failure; explicit __stack_chk_fail symbol/target check justifies the sole reviewed nonreturn edge.",
+    "Shared harness alone performs schema-v1 annotations and C/instruction exports."
+  ],
+  "api_evidence": {
+    "references": [
+      "../tooling/api-evidence.json",
+      "api/Disassembler.java.txt",
+      "api/FunctionManager.java.txt",
+      "api/ProgramContext.java.txt",
+      "api/FlatProgramAPI.java.txt",
+      "api/GhidraScript.java.txt"
+    ],
+    "used": [
+      "Disassembler.getDisassembler(...).disassemble(start,restrictedSet,true)",
+      "FunctionManager.createFunction(name,entry,discoveredBody,source)",
+      "ProgramContext.setValue(TMode,start,end,BigInteger.ONE)",
+      "FileBytes.getOriginalBytes and MemoryBlockSourceInfo.getFileBytesOffset",
+      "Program.startTransaction/endTransaction; FlatProgramAPI.end closes empty implicit script wrapper"
+    ]
+  },
+  "diagnostics": "diagnostics.json",
+  "promotion_manifest": "promotion-manifest.json",
+  "essential_proof_policy": "Track listed source/requests/annotations and essential proof files, not private projects. Keep scripts isolated. Historical absolute paths inside invocations are provenance, not relocated replay commands.",
+  "unresolved_gaps": [
+    "Startup callback remains deferred: 0x20bac0 is interior and 0x20babc was not authorized/recovered in this pass.",
+    "WatchDoge target 0x1abd8 remains unresolved; no claim about cross-process/MCU acknowledgement, map flush, watchdog acceptance or durability.",
+    "Decompiler output is not recovered source and can retain undefined/varargs artifacts.",
+    "Component lane comments describing pre-recovery gaps may need parent-owned integration updates.",
+    "Fresh final tracked-layout invocation test and independent reviewer approval remain parent integration steps."
+  ],
+  "followup_scope": "Packaging only after original 1800000ms timeout. No validated source/request/annotation edits and no validation, Ghidra, imports or discovery reruns.",
+  "no_git_commands": true,
+  "no_staging_performed": true
+}

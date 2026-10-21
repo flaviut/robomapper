@@ -1,0 +1,41 @@
+{
+  "status": "historical failures superseded by proof-final",
+  "osgi_failures": [
+    {
+      "path": "validated-final/a/hash-mismatch",
+      "exit_code": 0,
+      "save_confirmed": true,
+      "driver_success": false,
+      "script_result": {
+        "status": "missing-script-result"
+      },
+      "script_path": "/home/user/tmp/illegalplainape/analysis/re/recovery",
+      "excerpt": [
+        "ERROR REPORT SCRIPT ERROR: RecoverBounded.java : The class could not be found. It must be the public class of the .java file: Failed to get OSGi bundle containing script: /home/user/tmp/illegalplainape/analysis/re/recovery/RecoverBounded.java (HeadlessAnalyzer) ghidra.app.script.GhidraScriptLoadException: The class could not be found. It must be the public class of the .java file: Failed to get OSGi bundle containing script: /home/user/tmp/illegalplainape/analysis/re/recovery/RecoverBounded.java",
+        "Caused by: java.lang.ClassNotFoundException: Failed to get OSGi bundle containing script: /home/user/tmp/illegalplainape/analysis/re/recovery/RecoverBounded.java"
+      ]
+    },
+    {
+      "path": "proof-checked/a/hash-mismatch",
+      "exit_code": 0,
+      "save_confirmed": true,
+      "driver_success": false,
+      "script_result": {
+        "status": "missing-script-result"
+      },
+      "script_path": "/home/user/tmp/illegalplainape/analysis/re/recovery",
+      "excerpt": [
+        "ERROR REPORT SCRIPT ERROR: RecoverBounded.java : The class could not be found. It must be the public class of the .java file: Failed to get OSGi bundle containing script: /home/user/tmp/illegalplainape/analysis/re/recovery/RecoverBounded.java (HeadlessAnalyzer) ghidra.app.script.GhidraScriptLoadException: The class could not be found. It must be the public class of the .java file: Failed to get OSGi bundle containing script: /home/user/tmp/illegalplainape/analysis/re/recovery/RecoverBounded.java",
+        "Caused by: java.lang.ClassNotFoundException: Failed to get OSGi bundle containing script: /home/user/tmp/illegalplainape/analysis/re/recovery/RecoverBounded.java"
+      ]
+    }
+  ],
+  "transaction_diagnostic": {
+    "path": "validated-proof/a/rollback-after-disassembly/result.json",
+    "observed": "Nested transaction abort was not immediately visible while GhidraScript held its implicit outer transaction; this failed proof is not authoritative.",
+    "final_behavior": "Validated source closes the still-empty FlatProgramAPI wrapper with end(true), then uses its own transaction; proof-final/a/rollback-after-disassembly/result.json records identical before/after semantic fingerprints."
+  },
+  "validated_source_directory": "scripts/",
+  "prohibited_workarounds": "No cache/lock deletion, harness fork, baseline change or broad analysis.",
+  "interpretation": "Root scriptPath failed class loading despite exit zero/save message. Copied API .java sources in the root tree were suspected contributors, not a proven root cause; renaming reference sources alone did not resolve it. Isolating executable source under scripts/ produced the successful final proof. Preserve that path; do not claim the historical failures are passing tests."
+}

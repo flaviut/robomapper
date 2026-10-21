@@ -1,0 +1,77 @@
+{
+  "ghidra_home": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra",
+  "launcher": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/ghidraRun",
+  "headless": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+  "headless_readme": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadlessREADME.html",
+  "comment_example": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Features/Base/ghidra_scripts/AddCommentToProgramScript.java",
+  "sources": [
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Framework/SoftwareModeling/lib/SoftwareModeling-src.zip",
+      "member": "ghidra/program/database/mem/FileBytes.java",
+      "sha256": "6111ab3d03f54a2201ad6eebfe2c4cc312f71ff2abd539b0329af4274832b729"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Framework/SoftwareModeling/lib/SoftwareModeling-src.zip",
+      "member": "ghidra/program/model/data/DataTypeConflictHandler.java",
+      "sha256": "ddf8bd7a1622ee2c826560cadfa7ec21cf20630f2aee86f17a05a199f73c75be"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Framework/SoftwareModeling/lib/SoftwareModeling-src.zip",
+      "member": "ghidra/program/model/data/StandAloneDataTypeManager.java",
+      "sha256": "ee7fba157d38613401c0fc3ff36592f0d3e4ed36a515e823922fab1c909983e3"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Framework/SoftwareModeling/lib/SoftwareModeling-src.zip",
+      "member": "ghidra/program/model/listing/Function.java",
+      "sha256": "bdd9ec371c5eb83e0437e0df96db9d338392ef1dc69f71f24c9799a6bd0049a9"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Framework/SoftwareModeling/lib/SoftwareModeling-src.zip",
+      "member": "ghidra/program/model/listing/Program.java",
+      "sha256": "4fdb8c9a005113281211442fb620f6ac8a6ddb34fae4ae75cd814e7ca8cf1ded"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Framework/SoftwareModeling/lib/SoftwareModeling-src.zip",
+      "member": "ghidra/program/model/mem/MemoryBlockSourceInfo.java",
+      "sha256": "a9eda47bf9befab3c3b19b9e228abcd476d8ce0ea4f4c368f7b76575e188f4ba"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Features/Base/lib/Base-src.zip",
+      "member": "ghidra/app/cmd/function/ApplyFunctionSignatureCmd.java",
+      "sha256": "d32eff08d70836304d683c305391d2a964365f7df157f967e68403371c9247e1"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Features/Base/lib/Base-src.zip",
+      "member": "ghidra/app/cmd/function/FunctionRenameOption.java",
+      "sha256": "b8e3773a672f635dae9179843656b180d566cddae4d9cd012aefa9c5a2dabbf5"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Features/Base/lib/Base-src.zip",
+      "member": "ghidra/app/util/opinion/ElfLoaderOptionsFactory.java",
+      "sha256": "3909dbc0f48572962b068ef2e726fd87a3e36bdb594f5bd00f846554950ec3fe"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Features/Base/lib/Base-src.zip",
+      "member": "ghidra/app/util/cparser/C/CParser.java",
+      "sha256": "80c5e37b58e5380d3da099c2b3863b9904144fcc61d4237d0fe54859e6a56909"
+    },
+    {
+      "archive": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/Ghidra/Features/Decompiler/lib/Decompiler-src.zip",
+      "member": "ghidra/app/decompiler/DecompInterface.java",
+      "sha256": "296eb7147ab65f6caed59b97518679659093d925a44819127aa5ae8dcbda878c"
+    }
+  ],
+  "verified_apis": [
+    "ElfLoaderOptionsFactory.addOptions: -loader-imagebase overrides ET_DYN default; ELF PT_LOAD bases checked locally",
+    "Memory.getAllFileBytes / FileBytes.getOriginalBytes: hash saved original import bytes",
+    "MemoryBlockSourceInfo.getFileBytesOffset(Address): VA/file mapping",
+    "FunctionManager.getFunctionAt + Listing.getInstructionAt + executable block: exact anchor checks",
+    "ProgramContext.getValue(TMode): ARM/Thumb state",
+    "CParser(StandAloneDataTypeManager, boolean, DataTypeManager[]): target ABI data organization and program type lookup",
+    "ApplyFunctionSignatureCmd(..., preserveCallingConvention=true, applyEmptyComposites=false, strictTypes, FunctionRenameOption.NO_CHANGE)",
+    "Listing.setComment(Address, CommentType.PLATE, String): durable comments",
+    "DecompInterface.openProgram / decompileFunction / dispose: focused C",
+    "Program.startTransaction / endTransaction: annotation rollback",
+    "DataTypeConflictHandler: reject incompatible dependency types rather than conflict-renaming"
+  ]
+}

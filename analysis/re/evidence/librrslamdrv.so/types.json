@@ -1,0 +1,57 @@
+[
+  {
+    "length": 12,
+    "path": "/shared/GridBufferRef",
+    "definition": "/shared/GridBufferRef\npack()\nStructure GridBufferRef {\n   0   uchar *   4   cells   \"\"\n   4   GridCacheMeta *   4   metadata   \"\"\n   8   uchar   1   valid   \"\"\n   9   uchar[3]   3   unknown_09_0b   \"\"\n}\nLength: 12 Alignment: 4\n"
+  },
+  {
+    "length": 4,
+    "path": "/shared/GridBufferRef *",
+    "definition": "GridBufferRef *"
+  },
+  {
+    "length": 36,
+    "path": "/shared/GridCacheMeta",
+    "definition": "/shared/GridCacheMeta\npack()\nStructure GridCacheMeta {\n   0   GridRect   16   bounds   \"\"\n   16   GridRect   16   view   \"\"\n   32   uchar[4]   4   unknown_20_23   \"\"\n}\nLength: 36 Alignment: 4\n"
+  },
+  {
+    "length": 4,
+    "path": "/shared/GridCacheMeta *",
+    "definition": "GridCacheMeta *"
+  },
+  {
+    "length": 30,
+    "path": "/shared/GridDiskHeaderV2",
+    "definition": "/shared/GridDiskHeaderV2\npack()\nStructure GridDiskHeaderV2 {\n   0   uchar[6]   6   magic   \"\"\n   6   uchar[2]   2   version_le   \"\"\n   8   uchar[2]   2   view_header_bytes_le   \"\"\n   10   uchar[4]   4   scale_le   \"\"\n   14   uchar[4]   4   left_le   \"\"\n   18   uchar[4]   4   top_le   \"\"\n   22   uchar[4]   4   width_le   \"\"\n   26   uchar[4]   4   height_le   \"\"\n}\nLength: 30 Alignment: 1\n"
+  },
+  {
+    "length": 8,
+    "path": "/shared/GridReadContext",
+    "definition": "/shared/GridReadContext\npack()\nStructure GridReadContext {\n   0   void *   4   stream   \"\"\n   4   GridBufferRef *   4   target   \"\"\n}\nLength: 8 Alignment: 4\n"
+  },
+  {
+    "length": 4,
+    "path": "/shared/GridReadContext *",
+    "definition": "GridReadContext *"
+  },
+  {
+    "length": 16,
+    "path": "/shared/GridRect",
+    "definition": "/shared/GridRect\npack()\nStructure GridRect {\n   0   int   4   left   \"\"\n   4   int   4   top   \"\"\n   8   int   4   width   \"\"\n   12   int   4   height   \"\"\n}\nLength: 16 Alignment: 4\n"
+  },
+  {
+    "length": 4,
+    "path": "/shared/GridRect *",
+    "definition": "GridRect *"
+  },
+  {
+    "length": 8,
+    "path": "/shared/GridSize",
+    "definition": "/shared/GridSize\npack()\nStructure GridSize {\n   0   int   4   width   \"\"\n   4   int   4   height   \"\"\n}\nLength: 8 Alignment: 4\n"
+  },
+  {
+    "length": 4,
+    "path": "/shared/GridSize *",
+    "definition": "GridSize *"
+  }
+]

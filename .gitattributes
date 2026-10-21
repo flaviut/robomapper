@@ -7,3 +7,6 @@
 *.h text eol=lf
 *.md text eol=lf
 *.json text eol=lf
+
+# Preserve byte-identical decompiler output.
+/analysis/re/decompiled/** whitespace=-blank-at-eol,-blank-at-eof

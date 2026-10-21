@@ -1,0 +1,490 @@
+{
+  "program": {
+    "selector": "librobopersist.so",
+    "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+    "firmware": "4.3.5_1612",
+    "language": "ARM:LE:32:v8",
+    "compiler": "default",
+    "image_base": "0x0",
+    "authoritative_manifest": "/home/user/tmp/illegalplainape/analysis/re/manifest.json",
+    "source_binary": "/home/user/tmp/illegalplainape/binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librobopersist.so"
+  },
+  "method": "Authorized static-only Ghidra baseline-copy replay/export. No firmware, device, original analysis scripts, or live storage executed. Before instructions/bytes, final names/signatures/comments/types and machine-level critical branches reviewed. Prose inputs are hypotheses; corrections below override them within this slice.",
+  "findings": [
+    {
+      "id": "P01",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Save return distinguishes failure from accepted snapshot/no-op, not file completion.",
+      "function_entries": [
+        "0x1bb20",
+        "0x1c578",
+        "0x1d10c"
+      ],
+      "instruction_groups": [
+        "snapshot-enqueue",
+        "async-encode-cleanup"
+      ],
+      "details": [
+        "0x1bb60-0x1bb66 tests metadata region_count; zero branches to 0x1bc90 and 0x1bcb4 sets return 1 without creating writer.",
+        "0x1bb84 converts flags; 0x1bb8a cancels older masks before capacity wait. Mask encoding uses ARM shift count flag+8 (0x1a872/0x1a876), not flag.",
+        "Outer deadline is start+20000 ms, while each semaphore wait uses realtime deadline +50000000 ns. Timeout checks capacity repair, not completion of this new save.",
+        "Task state becomes 2 at 0x1c28a; pthread_create at 0x1c294 receives root+8+index*0x1a0; detach at 0x1c2d0, accepted return 1 at 0x1c2fc.",
+        "Worker cleanup stores state 0 at 0x1d248 and sem_posts at 0x1d25e after any ordinary error/cancel path. Neither signals that every file replacement succeeded."
+      ]
+    },
+    {
+      "id": "P02",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Shared root/task/metadata locks and observational storage offsets.",
+      "function_entries": [
+        "0x179bc",
+        "0x17a70",
+        "0x17bd8",
+        "0x1a898",
+        "0x1a990",
+        "0x1a410"
+      ],
+      "instruction_groups": [
+        "metadata-locks",
+        "mask-and-root",
+        "robust-lock-helper"
+      ],
+      "details": [
+        "Root shm and semaphore both resolve to /BufferedMapInfo at VA 0x20954 (literal-evidence.json). shm_open mode 0600, O_CREAT|O_RDWR; mmap length 0x1c8, PROT_READ|PROT_WRITE, MAP_SHARED.",
+        "Root+0x0 magic 0x20210415 and root+0x4 value 2 govern reinitialization. Value 2 is modeled as format_version, not task count. The observed task loop runs root+8 to root+0x1a8 in stride 0x1a0: one task.",
+        "Root mutex at 0x1b0; task mutex at root+0x190 == task+0x188. Init sets mutex type/pshared/robust each to 1. Mutex storage is 24 opaque bytes, not invented pthread internals.",
+        "Metadata shared region 7 size 0x2c10 consists of ten 0x468-byte records. Metadata mutex at +0x14 and per-region mutexes at +0x38+0x24*i; subscriber compress/encrypt bytes at +0x34/+0x35.",
+        "0x1a410 signed timeout<0 selects blocking pthread_mutex_lock; otherwise timedlock. EOWNERDEAD 0x82 invokes consistent. Nonzero error can log/continue unless model-version 2 aborts. Comments describe intended lock boundaries, not unconditional successful lock acquisition."
+      ]
+    },
+    {
+      "id": "P03",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Per-region snapshots are separately locked, not a single multi-region epoch.",
+      "function_entries": [
+        "0x1bb20",
+        "0x17da8",
+        "0x17ee4",
+        "0x18200"
+      ],
+      "instruction_groups": [
+        "snapshot-enqueue"
+      ],
+      "details": [
+        "Task region descriptors begin root+0x18 == task+0x10; 12-byte stride: region ID, buffer offset, length. 30 descriptor storage slots precede region_count at task+0x178.",
+        "0x1bdb8 starts payload offset 0x470; 0x1bdd0/0x1bdd2 rounds each size up to 16-byte alignment. Metadata memcpy at 0x1c0bc copies 0x468 bytes.",
+        "0x1c106 region guard acquisition, 0x1c10a callback stage 2, 0x1c124 memcpy, 0x1c144 callback stage 3, 0x1c170 region guard destruction, then loop moves to next region.",
+        "Buffer fd/pointer/length publish at 0x1c242/0x1c24c/0x1c248 before state 2/thread create. Other setters may use additional or missing locks; not audited here."
+      ]
+    },
+    {
+      "id": "P04",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Cancellation removes destinations without joining worker or rolling back past renames.",
+      "function_entries": [
+        "0x1b564",
+        "0x1d10c",
+        "0x1a530"
+      ],
+      "instruction_groups": [
+        "cancel-destination-mask",
+        "cancellable-deflate",
+        "async-file-replacement"
+      ],
+      "details": [
+        "0x1b610-0x1b61a skips task states 0 and 6. State 6 has no semantic enum member.",
+        "Under root mutex, mask BIC at 0x1b656 stores remaining destinations; zero remainder sets state 5 at 0x1b682. No worker task-mutex wait/join is called.",
+        "Cancellable compressor tests state==3 before and between deflate(Z_FINISH) calls (0x1a5ba and 0x1a630); cancellation clears output and returns false. Worker does not relay this result to original caller.",
+        "Worker root lock at 0x1dde6, bit check 0x1ddf2, rename 0x1de00 or unlink 0x1defa share same root critical section with cancellation (when lock acquisition succeeds). A canceled bit blocks a later rename; completed renames are not undone."
+      ]
+    },
+    {
+      "id": "P05",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Background serialization uses task-index temp suffix; per-file errors do not reach enqueue caller.",
+      "function_entries": [
+        "0x1d10c"
+      ],
+      "instruction_groups": [
+        "async-encode-cleanup",
+        "async-file-replacement"
+      ],
+      "details": [
+        "0x1d414 stores compress byte and 0x1d418 stores encrypt byte into protobuf. Only compress is branched on at 0x1d41e/0x1d420. No encrypt call/branch in this encoding path.",
+        "0x1d424 gets CPU count; part planning uses max(1,min(size>>20,cpu_count)), ceil division, rounds part size up to multiple of 8, then recalculates ceil(size/part_size). Part compression threads are joined at 0x1d804 before values are appended.",
+        "Signed flag loop starts -7 and ends before 12. Each selected destination is opened/written/replaced separately, with root lock released between files.",
+        "0x1dc68 reloads worker argument, 0x1dc76 loads its +0 word (task_index), 0x1dc82 passes it as first vararg for %d at 0x1dc84. .tmp literal resolves to VA 0x20d90. Owner PID is task+4, not the loaded word. With this one initialized task, suffix is .tmp0, not .tmp<PID>.",
+        "Open at 0x1ddaa uses binary-output mode 0x14. SerializeToOstream at 0x1ddc6 has no boolean test; next instruction 0x1ddca overwrites r0 for close. Open-failure branch 0x1df5a and close-failure branch 0x1df46 set failbit then rejoin serialization/rename flow.",
+        "Rename nonzero branch at 0x1de06 leads to errno log 0x1df14..0x1df40 and ordinary cleanup. No direct fsync/fdatasync/sync/syncfs call in selected save bodies. This proves only absence in these entries, not kernel/library behavior or power-loss durability."
+      ]
+    },
+    {
+      "id": "P06",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Map loads can restore a matching buffer instead of the file.",
+      "function_entries": [
+        "0x1c620",
+        "0x1d0b8",
+        "0x192c4"
+      ],
+      "instruction_groups": [
+        "load-buffer-selection"
+      ],
+      "details": [
+        "0x1c6bc-0x1c712 states 0/5 branch to filename(flag)+ForcePersistLoad(0,...), after root unlock. Destination-mask mismatch also branches there.",
+        "State 1 at 0x1c718 branches to 0x1c958: reset state/owner/mask at 0x1c986/0x1c98a/0x1c98e, model-version 2 may abort; otherwise false return, not file fallback.",
+        "All remaining matching states, including unnamed state 6, pass to buffer path; no blanket supported-state validation is present.",
+        "0x1c764 compares owner_pid against getpid; same process pointer root+0x188, foreign process opens /BufferedMapInfo<task-index> with O_RDONLY and maps PROT_READ|MAP_SHARED using recorded length.",
+        "Restores matching subscribed region IDs under guard/callback0/memcpy/callback1/unlock. Missing buffered IDs are skipped; success need not mean every current subscription was restored. Metadata name/ID copied, full subscription layout remains current.",
+        "Char-pointer overload 0x1d0b8 logs label and forwards flag at 0x1d0f0. Save overload 0x1c578 similarly forwards a one-flag vector; neither chooses arbitrary filename."
+      ]
+    },
+    {
+      "id": "P07",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Load-and-save copies the source file, not a necessarily newer loaded buffer.",
+      "function_entries": [
+        "0x1cbf0"
+      ],
+      "instruction_groups": [
+        "load-then-file-copy"
+      ],
+      "details": [
+        "0x1cc20 calls buffer-aware PersistLoadMapInfo and saves initial boolean at sp+0x54; 0x1cc5a reloads that same result for return.",
+        "On successful load, 0x1cc6e converts destination mask and 0x1cc72 cancels work, then resolves source filename and opens binary input (0xc at 0x1cd3e). Destination output opens with 0x14 at 0x1cdf2 and streambuf copy uses std::ostream::operator<< at 0x1ce1a.",
+        "No async temp/rename call is used here. File-copy failure does not change saved initial load result. This can copy older bytes than the in-memory buffer just restored."
+      ]
+    },
+    {
+      "id": "P08",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Generic nonzero-type saves are synchronous direct writes; type 0 is delegated.",
+      "function_entries": [
+        "0x185c0",
+        "0x19ba4",
+        "0x17664"
+      ],
+      "instruction_groups": [
+        "generic-save-file-path"
+      ],
+      "details": [
+        "0x185e0 tests type==0. Type-0 branch parses filename flag (helper 0x17898, context only) then calls map vector save at 0x1864a, retaining enqueue semantics.",
+        "Nonzero types lock metadata; zero subscriptions return true. CompressRegionWorker uses compress(source+offset,length), logs errors but returns void. Compression threads are joined at 0x18dcc.",
+        "Nonzero-type direct filename output uses mode 0x14 at 0x18bec; SerializeToOstream 0x18c0a result ignored, close at 0x18c10, then unlock. 0x18c84 sets return 1; failbit branches still rejoin successful-return path.",
+        "PersistLoad 0x19ba4 analogously delegates type 0 to buffer-aware map load, nonzero to file-only ForcePersistLoad. No catalog-specific annotation is modified."
+      ]
+    },
+    {
+      "id": "P09",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Restart/capacity repair is not a durability or safe-shutdown protocol.",
+      "function_entries": [
+        "0x1b1c4"
+      ],
+      "instruction_groups": [
+        "restart-capacity-repair"
+      ],
+      "details": [
+        "Trylocks task mutex while holding root. EBUSY counts an occupied task; EOWNERDEAD invokes consistent, resets task state to 0, unlocks.",
+        "Successful trylock of foreign-owner task resets states other than 0,2,6; unexpected-error paths also reset state when not aborting model-version 2.",
+        "Reconciles named semaphore value to capacity minus busy-task count using sem_post/sem_trywait. This does not verify file content, undo replacements, or stop other processes. No safe writer-exit acknowledgement established."
+      ]
+    },
+    {
+      "id": "P10",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Bounded multipart investigation: independent per-part zlib streams, prefix offsets, weak success reporting.",
+      "function_entries": [
+        "0x192c4",
+        "0x17750"
+      ],
+      "instruction_groups": [
+        "file-load-result-and-parts",
+        "independent-inflate-worker"
+      ],
+      "details": [
+        "Investigated only after exports-core-applied/core-reopened comparison. Final signature for stripped 0x17750 is ABI-level opaque message/destination/offset-vector + signed first index/stride.",
+        "Single compressed value sets offset vector [0] and calls helper directly with first=0,stride=1 at 0x19826. Capacity is rawDataSize.",
+        "Multiple values require count==rawDataPartSize count at 0x196b4; prefix-sum loop 0x197b0..0x197be constructs offsets; total compared to rawDataSize at 0x197c2. Mismatch logs/event and skips restore, not failure return.",
+        "CPU workers=min(part_count,get_nprocs()) using signed comparisons, first index 0..workers-1 and stride=workers. Joins at 0x199ca happen before post-load callback and unlock.",
+        "Helper 0x17750 chooses rawDataPartSize[index] for multiple values; independent uncompress call 0x1781e receives destination+offset[index] and value[index] compressed bytes. Indices advance by signed stride. It is not concatenation followed by a single inflation.",
+        "uncompress errors emit log/event, return void; actual output length is only logged, not compared with expected. Only 0x19450 and 0x19674 store parsed-success result slot sp+0x7c; return reload at 0x19628. Part errors/mismatches do not clear it.",
+        "No saved multipart example was used or fabricated. These static/data checks do not prove robot runtime behavior; malformed-record bounds and integer-overflow behavior remain unvalidated."
+      ]
+    },
+    {
+      "id": "P11",
+      "status": "confirmed",
+      "confidence": "high",
+      "summary": "Adjacent uncompressed load ambiguity resolved at instructions: copies one byte.",
+      "function_entries": [
+        "0x192c4"
+      ],
+      "instruction_groups": [
+        "file-load-result-and-parts"
+      ],
+      "details": [
+        "0x19692 loads value COUNT at protobuf object+0xc into r6; 0x196a2 reloads same count into r7. Uncompressed path tests r7==1 at 0x19722.",
+        "0x19756 passes r6 as memcpy length r2; 0x1975c calls memcpy. Thus exactly-one-value uncompressed path copies count 1, not rawDataSize nor string byte length. No intervening r6 definition occurs on this path.",
+        "This is a confirmed machine-code path anomaly, not a demonstrated effect on captured map records (their compress flags are set according to prior prose; no new sample processing here). Other uncompressed value counts log/event without copying."
+      ]
+    },
+    {
+      "id": "P12",
+      "status": "inferred",
+      "confidence": "high",
+      "summary": "Persist* View declarations are observational storage models, not original C++ recovery.",
+      "function_entries": [
+        "0x1a898",
+        "0x1bb20",
+        "0x1d10c"
+      ],
+      "instruction_groups": [
+        "mask-and-root",
+        "snapshot-enqueue",
+        "async-encode-cleanup"
+      ],
+      "details": [
+        "Field offsets/widths, descriptor stride/capacity, root/task sizes and accesses are verified by emitted instructions and persisted types.json. Descriptive field names and C grouping are analyst choices.",
+        "Task+0x0 task_index; +0x4 owner_pid signed getpid comparison; +0x8 four-byte state; +0xc unsigned destination mask; +0x10 region descriptors[30]; +0x178 region_count; +0x17c signed fd; +0x180 pointer; +0x184 length; +0x188 opaque 24-byte mutex storage.",
+        "Root+0x1a8 is eight bytes initialized from get_cur_time_ms, purpose UNKNOWN. Root+0x4 is labeled format_version from comparison/reinitialize behavior, not an original recovered member name.",
+        "Enum defines only observed states 0..5; storage value 6 remains unnamed. No MapCatalog*, MapPersistFlag, Grid*, MapFlow* or Wdog* type is proposed."
+      ]
+    }
+  ],
+  "unresolved": [
+    {
+      "id": "U01",
+      "status": "unresolved",
+      "summary": "State 6 semantic meaning and all producers remain unknown; cancellation skips it, load can select it, enqueue reclaims its map/fd."
+    },
+    {
+      "id": "U02",
+      "status": "unresolved",
+      "summary": "No complete audit that every setter cooperates with outer/region locks; robust-lock error continuation prevents unconditional synchronization guarantees."
+    },
+    {
+      "id": "U03",
+      "status": "unresolved",
+      "summary": "Successful foreign-PID buffer load appears to retain its read-only mmap/fd; successful path has no munmap and close is on error path. Lifecycle outside this entry not recovered."
+    },
+    {
+      "id": "U04",
+      "status": "unresolved",
+      "summary": "Multipart decode bounds, arithmetic overflow and malformed protobuf safety not validated. Static parse-success can coexist with failed/partial restore; no runtime examples tested."
+    },
+    {
+      "id": "U05",
+      "status": "unresolved",
+      "summary": "No caller-level completion/result message, multi-file transaction, safe writer-shutdown or restart procedure established in this lane; cross-lane orchestration is integration-owned."
+    }
+  ],
+  "corrections_to_prior_prose": [
+    {
+      "source": "PERSISTENCE.md Destination-file writes",
+      "prior": "tmp suffix decimal(owner_pid)",
+      "replacement": "Suffix is decimal(task_index), initialized 0 in this single-task firmware. PID is distinct task+4; suffix input loads task+0.",
+      "finding": "P05"
+    },
+    {
+      "source": "PERSISTENCE.md Generic persistence saves",
+      "prior": "PersistSave(type,filename) described without type-0 exception",
+      "replacement": "Only nonzero types use synchronous direct writes; type 0 parses flag from filename and forwards to async map save. PersistLoad has analogous delegation.",
+      "finding": "P08"
+    },
+    {
+      "source": "PERSISTENCE.md Loads can use buffer",
+      "prior": "State 1 merely described as not used",
+      "replacement": "State 1 resets state/PID/mask and returns false or model-version-2 aborts, rather than ordinary file fallback. Unnamed state 6 passes matching-buffer branch.",
+      "finding": "P06"
+    },
+    {
+      "source": "PERSISTENCE.md Encoding",
+      "prior": "Multipart loading needs further verification",
+      "replacement": "Independent per-value inflation into prefix offsets with joined CPU-striped workers confirmed; part-count/size/zlib failures do not clear parse-success boolean.",
+      "finding": "P10"
+    },
+    {
+      "source": "PERSISTENCE.md load error interpretation",
+      "prior": "No warning for raw uncompressed copy length",
+      "replacement": "Exactly-one-value uncompressed branch memcpy length is value count (1); compressed map records do not exercise that branch.",
+      "finding": "P11"
+    }
+  ],
+  "true_entry_corrections": [
+    {
+      "internal_anchor": "0x1a8c6",
+      "true_entry": "0x1a898"
+    },
+    {
+      "internal_anchor": "0x1c102",
+      "true_entry": "0x1bb20"
+    },
+    {
+      "internal_anchor": "0x1c294",
+      "true_entry": "0x1bb20"
+    },
+    {
+      "internal_anchor": "0x1dc4c",
+      "true_entry": "0x1d10c"
+    }
+  ],
+  "call_boundaries": [
+    {
+      "entry": "0x1bb20",
+      "calls": [
+        "type-0 metadata guard",
+        "GetBufferedMapInfoRoot",
+        "ConvertMapFlagMask",
+        "CancelSavingTasksForMaps",
+        "per-region guards/callback stages 2/3",
+        "pthread_create -> 0x1d10c",
+        "pthread_detach"
+      ],
+      "stops_at": [
+        "region payload semantics",
+        "STL/runtime internals"
+      ]
+    },
+    {
+      "entry": "0x1d10c",
+      "calls": [
+        "0x1a410 robust helper",
+        "0x1a530 cancellable compressor",
+        "get_nprocs/std::thread::join",
+        "GetMapInfoPersistFileName (catalog-owned context only)",
+        "SerializeToOstream",
+        "rename/unlink",
+        "sem_post"
+      ],
+      "stops_at": [
+        "protobuf/runtime internals",
+        "filesystem/kernel durability internals"
+      ]
+    },
+    {
+      "entry": "0x1c620",
+      "calls": [
+        "type-0 metadata guard",
+        "root lock",
+        "CheckMapFlagMask",
+        "ForcePersistLoad on file path",
+        "per-region guard/callback stages 0/1"
+      ],
+      "stops_at": [
+        "unrelated region algorithms",
+        "other process lifecycle"
+      ]
+    },
+    {
+      "entry": "0x192c4",
+      "calls": [
+        "ParseFromIstream",
+        "0x17750 part inflate worker",
+        "get_nprocs/std::thread::join",
+        "region guards/callbacks"
+      ],
+      "stops_at": [
+        "full protobuf C++ layout",
+        "malformed-input bounds recovery"
+      ]
+    },
+    {
+      "entry": "0x185c0",
+      "calls": [
+        "type0 -> 0x17898 parse flag (context only) -> 0x1bb20",
+        "nonzero -> compression/joins -> direct SerializeToOstream"
+      ],
+      "stops_at": [
+        "catalog record contents/selection"
+      ]
+    },
+    {
+      "entry": "0x1cbf0",
+      "calls": [
+        "0x1c620 buffer-aware load",
+        "cancel destinations",
+        "source/destination filename resolution",
+        "direct streambuf copy"
+      ],
+      "stops_at": [
+        "catalog filename policy (separate lane)"
+      ]
+    }
+  ],
+  "type_proposals": {
+    "owner": "persistence",
+    "definitions": [
+      {
+        "name": "PersistTaskState",
+        "declaration": "typedef enum PersistTaskState { PersistTaskIdle=0, PersistTaskCopying=1, PersistTaskReady=2, PersistTaskEncoding=3, PersistTaskWriting=4, PersistTaskCanceled=5 } PersistTaskState;"
+      },
+      {
+        "name": "PersistBufferRegionView",
+        "declaration": "typedef struct PersistBufferRegionView { int region_id; unsigned int buffer_offset; unsigned int byte_length; } PersistBufferRegionView;"
+      },
+      {
+        "name": "PersistMapTaskView",
+        "declaration": "typedef struct PersistMapTaskView { unsigned int task_index; int owner_pid; PersistTaskState state; unsigned int destination_mask; PersistBufferRegionView regions[30]; unsigned int region_count; int buffer_fd; void *buffer_mapping; unsigned int buffer_length; unsigned char task_mutex_storage[24]; } PersistMapTaskView;"
+      },
+      {
+        "name": "PersistBufferRootView",
+        "declaration": "typedef struct PersistBufferRootView { unsigned int magic; unsigned int format_version; PersistMapTaskView task; unsigned char unknown_time_ms_storage[8]; unsigned char root_mutex_storage[24]; } PersistBufferRootView;"
+      }
+    ],
+    "model_status": "inferred grouping/names with confirmed storage offsets",
+    "state_6": "unknown; no semantic enum member",
+    "foreign_type_policy": "Integer/pointer ABI signatures only; no other lane type copied"
+  },
+  "artifacts": {
+    "pristine_selected": "exports-before/selected.json",
+    "instruction_excerpts": "instruction-evidence.json",
+    "literal_targets": "literal-evidence.json",
+    "applied": "exports-final-applied",
+    "reopened": "exports-final-reopened",
+    "tests": "test_persistence_artifacts.py",
+    "test_result": "validation-tests.txt"
+  },
+  "validation": {
+    "core_then_bounded_followup": true,
+    "final_replayed_on_fresh_baseline_copy": true,
+    "separate_reopen_without_annotations": true,
+    "generated_C_files": 29,
+    "annotated_entries": 28,
+    "shared_type_definitions": 4,
+    "C_comparison": "29 files byte-identical across apply/reopen",
+    "selected_comparison": "JSON semantically identical",
+    "types_comparison": "JSON semantically identical; object-key serialization order can differ",
+    "scope_check": "Only owned entries and 12 existing .plt aliases inherit signature changes; no other function name/signature/comment changes; catalog GetMapInfoPersistFileName unchanged",
+    "automatic_plt_signature_aliases": {
+      "0x0000cf3c": "0x0001a990",
+      "0x0000dd2c": "0x00017bd8",
+      "0x0000d464": "0x0001a898",
+      "0x0000d330": "0x000192c4",
+      "0x0000d808": "0x0001bb20",
+      "0x0000cf6c": "0x0001b564",
+      "0x0000d0a4": "0x0001a88c",
+      "0x0000cf78": "0x00019ba4",
+      "0x0000dce0": "0x0001c620",
+      "0x0000d11c": "0x0001a860",
+      "0x0000db58": "0x00017664",
+      "0x0000cf18": "0x000185c0"
+    },
+    "tests": "15 passed",
+    "historical_validation_diagnostics": [
+      "Initial strict byte comparison of types.json failed solely because object-key order differed; semantic comparison passes.",
+      "Initial over-strict unowned-signature test detected automatic Ghidra propagation to existing .plt thunk aliases; explicit closed 12-alias mapping now checked; no unrelated annotation changes. See validation-tests-initial.txt."
+    ],
+    "runtime_claims": "None: static/data checks do not prove robot behavior or durability."
+  }
+}

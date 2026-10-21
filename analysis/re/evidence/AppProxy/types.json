@@ -1,0 +1,22 @@
+[
+  {
+    "definition": "/shared/MapFlowBackupRowView\npack()\nStructure MapFlowBackupRowView {\n   0   int   4   external_id   \"\"\n   4   uint   4   unknown04   \"\"\n   8   void *   4   blob   \"\"\n   12   uint   4   blob_size   \"\"\n   16   uint   4   capacity   \"\"\n}\nLength: 20 Alignment: 4\n",
+    "path": "/shared/MapFlowBackupRowView",
+    "length": 20
+  },
+  {
+    "definition": "MapFlowBackupRowView *",
+    "path": "/shared/MapFlowBackupRowView *",
+    "length": 4
+  },
+  {
+    "definition": "typedef MapPersistFlag int",
+    "path": "/shared/MapPersistFlag",
+    "length": 4
+  },
+  {
+    "definition": "MapPersistFlag *",
+    "path": "/shared/MapPersistFlag *",
+    "length": 4
+  }
+]

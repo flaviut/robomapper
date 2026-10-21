@@ -12,17 +12,35 @@
 
 /analysis/re/*
 !/analysis/re/manifest.json
-!/analysis/re/lane-board.json
 !/analysis/re/tooling/
 !/analysis/re/annotations/
 !/analysis/re/decompiled/
+!/analysis/re/evidence/
+!/analysis/re/recovery/
+!/analysis/re/RESULTS.md
 
 /analysis/re/tooling/*
 !/analysis/re/tooling/*.py
 !/analysis/re/tooling/*.java
 !/analysis/re/tooling/*.md
-!/analysis/re/tooling/schema.json
+!/analysis/re/tooling/annotations.schema.json
+!/analysis/re/tooling/api-evidence.json
+!/analysis/re/tooling/baseline-summary.json
 !/analysis/re/tooling/examples/
+
+/analysis/re/recovery/*
+!/analysis/re/recovery/*.py
+!/analysis/re/recovery/*.md
+!/analysis/re/recovery/handoff.json
+!/analysis/re/recovery/evidence.json
+!/analysis/re/recovery/raw-evidence.json
+!/analysis/re/recovery/diagnostics.json
+!/analysis/re/recovery/promotion-manifest.json
+!/analysis/re/recovery/requests/
+!/analysis/re/recovery/annotations/
+!/analysis/re/recovery/scripts/
+/analysis/re/recovery/scripts/*
+!/analysis/re/recovery/scripts/*.java
 
 # Analysis databases, caches and logs are reproducible local state.
 *.gpr

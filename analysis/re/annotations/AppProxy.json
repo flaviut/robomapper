@@ -1,0 +1,279 @@
+{
+  "version": 1,
+  "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+  "types": [
+    {
+      "name": "MapPersistFlag",
+      "declaration": "typedef int MapPersistFlag;"
+    },
+    {
+      "name": "MapFlowBackupRowView",
+      "declaration": "typedef struct MapFlowBackupRowView { int external_id; unsigned int unknown04; void *blob; unsigned int blob_size; unsigned int capacity; } MapFlowBackupRowView;"
+    }
+  ],
+  "functions": [
+    {
+      "address": "0x00022f84",
+      "plate_comment": "Observed prepared statement pointer database+0x134, SQL global 0x120830: insert into bakmaps (id,map) values (?,?). Locks database+0x160, binds row ID and blob, steps expecting 101, resets statement and unlocks. Returns 0/-1. No broader transaction/durability inferred.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00022f84",
+        "signature": "undefined FUN_00022f84()"
+      },
+      "name": "MapFlowInsertBackupDb",
+      "signature": "int MapFlowInsertBackupDb(void *database, MapFlowBackupRowView *row)"
+    },
+    {
+      "address": "0x00023070",
+      "plate_comment": "Prepared statement database+0x138, SQL global 0x12082c: select id,map from bakmaps where id=?. Locks +0x160, expects step 100, gets blob size and copies only when 0<size<=capacity; returns 0 even if capacity prevents copying. Error returns -1.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00023070",
+        "signature": "undefined FUN_00023070()"
+      },
+      "name": "MapFlowReadBackupDb",
+      "signature": "int MapFlowReadBackupDb(void *database, MapFlowBackupRowView *row)"
+    },
+    {
+      "address": "0x00023210",
+      "plate_comment": "Prepared statement database+0x140, SQL global 0x120838: update bakmaps set map=? where id=?. Locks database+0x160; binds blob then signed ID (sign word from ASR #31), expects step 101. Success resets/unlocks +0x160. Error path at 0x2329e unlocks +0x178 instead: instruction-level observed discrepancy, not corrected by annotation.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00023210",
+        "signature": "undefined FUN_00023210()"
+      },
+      "name": "MapFlowUpdateBackupDb",
+      "signature": "int MapFlowUpdateBackupDb(void *database, MapFlowBackupRowView *row)"
+    },
+    {
+      "address": "0x00024050",
+      "plate_comment": "Invokes one queued callable, removes it and updates timer. Returns callable result (0 for synchronous terminal step, 1 for wait). No generic disk completion wait.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00024050",
+        "signature": "undefined FUN_00024050()"
+      },
+      "name": "MapFlowRunNextStep",
+      "signature": "int MapFlowRunNextStep(void *pending)"
+    },
+    {
+      "address": "0x00024450",
+      "plate_comment": "ABI-level register words: r1 unused/alignment; request key in r2:r3. If matching pending series exists, runs next queued callback 0x24050. A callback returning 1 pauses only when more queued callbacks remain. Otherwise invokes success callback series+0x38 with succeed text, erases pending series under mutex+0x4c, returns 1. Unknown request returns 0. No load/save/write completion independent of result messages.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00024450",
+        "signature": "undefined FUN_00024450()"
+      },
+      "name": "MapFlowAdvanceSeries",
+      "signature": "int MapFlowAdvanceSeries(void *series, unsigned int reserved_r1, unsigned int request_lo, unsigned int request_hi)"
+    },
+    {
+      "address": "0x000245f8",
+      "plate_comment": "Looks up request key, invokes configured error callback series+0x28 with error string, erases pending operation under mutex+0x4c and returns handled=1. Unknown key returns 0. ABI-level word signature uses unused/alignment r1 and request words in r2:r3; original C++ types are not reconstructed.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_000245f8",
+        "signature": "undefined FUN_000245f8()"
+      },
+      "name": "MapFlowFailSeries",
+      "signature": "int MapFlowFailSeries(void *series, unsigned int reserved_r1, unsigned int request_lo, unsigned int request_hi, void *error_string)"
+    },
+    {
+      "address": "0x00039aa4",
+      "plate_comment": "Builds 0x02033204 IPC message, payload length 16: original request key words, native flag, zero. Sends via 0x37b78. Cross-process RoboController bridge is outside pinned lane inputs.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00039aa4"
+      },
+      "name": "MapFlowSendLoad"
+    },
+    {
+      "address": "0x00039b08",
+      "plate_comment": "Builds 0x02033203 IPC message, payload length 16: request key words, native flag, zero; destination 1 additionally samples shared segmentation presence. Sends via 0x37b78; this is not a disk-write acknowledgment.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00039b08"
+      },
+      "name": "MapFlowSendSave"
+    },
+    {
+      "address": "0x00039b84",
+      "plate_comment": "After accepted load-result advancement: updates proxy timestamp under mutex+0xf54; clears routing; sets shared current flag to request native flag; sends save request 0x02033203 with destination 1. Returns 1 (request wait), but ordinary load has no callback remaining, so 0x24450 overrides it and sends ok immediately after this send, before the save result. Does not update bakmaps DB.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00039b84",
+        "signature": "undefined FUN_00039b84()"
+      },
+      "name": "MapFlowSaveLastStep",
+      "signature": "int MapFlowSaveLastStep(void *capture, void *context, int *native_flag)"
+    },
+    {
+      "address": "0x0003a430",
+      "plate_comment": "Builds application map message through 0x8cddc, uses external DB ID native_flag-2. Looks up bakmaps via 0x23070; insert 0x22f84 if read failed or blob size is zero, else update 0x23210. Uses current application-map buffer at map object+0x30002c with size word+0x48002c. DB errors only logged; returns void, not success/failure.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0003a430",
+        "signature": "undefined FUN_0003a430()"
+      },
+      "name": "MapFlowWriteBackupDb",
+      "signature": "void MapFlowWriteBackupDb(void *proxy, int native_flag)"
+    },
+    {
+      "address": "0x0003a5c0",
+      "plate_comment": "Final recovery step invokes backup-DB write for requested native flag then returns zero unconditionally, even if DB helper logged a failure. Series runner can consequently send success after a failed DB write.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0003a5c0",
+        "signature": "undefined FUN_0003a5c0()"
+      },
+      "name": "MapFlowBackupDbStep",
+      "signature": "int MapFlowBackupDbStep(void *capture, void *context, int *native_flag)"
+    },
+    {
+      "address": "0x3b908",
+      "expect": {
+        "signature": "undefined FUN_0003b908()",
+        "plate_comment": null,
+        "name": "FUN_0003b908"
+      },
+      "signature": "bool CatalogExternalMapExists(void *context_unknown, int external_id, int want_backup)",
+      "plate_comment": "Adds 2 to external_id in 32-bit register arithmetic. Primary branch (want_backup=0) requires signed native flag >1 and <6 plus catalog primary membership. Backup branch requires signed native flag >=6 and <=11, without catalog association check. Accepted branches tail-jump to shared path code at 0x37448: checks access(F_OK) for configured-base /rockrobo/user_map<external_id>. Existence only, not loadability. No database access. Baseline function body includes that shared tail; no function creation performed.",
+      "name": "CatalogExternalMapExists"
+    },
+    {
+      "address": "0x3c568",
+      "expect": {
+        "signature": "undefined FUN_0003c568()",
+        "plate_comment": null,
+        "name": "FUN_0003c568"
+      },
+      "signature": "bool CatalogSelectBackup(void *context_unknown, MapPersistFlag primary_flag, MapPersistFlag *selected_flag_out)",
+      "plate_comment": "Calls GetBakMapList(primary_flag), reads returned byte after catalog guard release; NULL gives -1. Signed backup >=6 stores backup and returns 1; otherwise stores original primary and returns 0. No upper bound or file existence/load check. Narrow external-ID wrapper bytes at 0x3c5b4 load ID through r1 pointer, add2, call here, then subtract2 from output; that location has no baseline function and is intentionally not annotated.",
+      "name": "CatalogSelectBackup"
+    },
+    {
+      "address": "0x3c5b4",
+      "name": "CatalogBackupExternal",
+      "plate_comment": "Recovered from original Thumb bytes with exact EHABI start 0x3c5b4 and next start 0x3c5ec. Dereferences r1 as external-ID pointer, adds 2, calls 0x3c568 with a selected-native-flag output initialized to -1, and returns that selected output minus 2. The helper boolean is not the wrapper return. No external-ID bounds, file validity or cross-process completion inferred.",
+      "expect": {
+        "name": "FUN_0003c5b4",
+        "plate_comment": null
+      }
+    },
+    {
+      "address": "0x0003c6bc",
+      "plate_comment": "Builds 0x02033212 IPC message, payload length 32: request key, destination count, requested native flag, then up to four destination flags. Recovery caller supplies [1,requested native flag].",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0003c6bc"
+      },
+      "name": "MapFlowSendSaveSet"
+    },
+    {
+      "address": "0x0003c7a0",
+      "plate_comment": "After successful load step: timestamp mutex, ClearCleanRouting, SetSharedCurrentMapFlag(requested native flag), then save request 0x02033212 with vector [1,requested native flag] via 0x3c6bc. Returns 1 (wait). No atomic transaction between flags is asserted.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0003c7a0",
+        "signature": "undefined FUN_0003c7a0()"
+      },
+      "name": "MapFlowRecoverSaveStep",
+      "signature": "int MapFlowRecoverSaveStep(void *capture, void *context, int *native_flag)"
+    },
+    {
+      "address": "0x0003cc74",
+      "plate_comment": "First series step: clears/gates map activity via 0x3cc18, sends 0x01033107 via 0x39dec, then sends load request 0x02033204 with original request words and native flag via 0x39aa4. Returns 1 (wait for result), not load success.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0003cc74",
+        "signature": "undefined FUN_0003cc74()"
+      },
+      "name": "MapFlowLoadStep",
+      "signature": "int MapFlowLoadStep(void *capture, void *context, int *native_flag)"
+    },
+    {
+      "address": "0x00046e9c",
+      "plate_comment": "Builds application result response from saved request ID and supplied result string; queued map success and recovery no-op branches pass literal ok at 0xf3398. Sending this reply does not itself check native storage.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00046e9c"
+      },
+      "name": "MapFlowReplyOk"
+    },
+    {
+      "address": "0x0004705c",
+      "plate_comment": "Configured success callback (installed at 0x64af2): copies saved request context, sends literal ok through 0x46e9c, then unlocks action via 0x3a714(proxy,0). Does not inspect writes or DB return codes. Failure callback Thumb 0x4afa9 is absent from baseline function inventory; see bounded instructions.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0004705c"
+      },
+      "name": "MapFlowSeriesSuccess"
+    },
+    {
+      "address": "0x0004fbf8",
+      "plate_comment": "Command load_multi_map registered by 0x625e8 at 0x637ba..0x637d4 with Thumb handler 0x4fbf9. Validates params and external flag through catalog-owned wrapper 0x3b908, converts external+2, then queues load step 0x3cc74 and save-last step 0x39b84. Initial series advance sends load and waits. On load-result success it sends save-last, then the now-empty queue forces an ok reply without waiting for that final save result.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_0004fbf8",
+        "signature": "undefined FUN_0004fbf8()"
+      },
+      "name": "MapFlowLoadMultiCmd",
+      "signature": "void MapFlowLoadMultiCmd(void *proxy, void *request, void *json)"
+    },
+    {
+      "address": "0x00051628",
+      "plate_comment": "Command recover_multi_map registered at 0x6383a..0x63852. Selects backup via catalog-owned 0x3c568. If selection==requested and current==requested+2: immediate ok reply, no storage work. Otherwise selection==requested queues ordinary load/save-last. If backup differs queues load-selected-backup, save [1,requested+2], then backup DB step; unlike ordinary load the remaining DB callback makes it wait for save-set result before final success. Selection and current comparisons precede work; no original C++ layouts inferred.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00051628",
+        "signature": "undefined FUN_00051628()"
+      },
+      "name": "MapFlowRecoverMultiCmd",
+      "signature": "void MapFlowRecoverMultiCmd(void *proxy, void *request, void *json)"
+    },
+    {
+      "address": "0x00055500",
+      "plate_comment": "Save-maps result handler: length must equal 16; result word +0x18==1 advances pending series, otherwise fails series. Legacy catalog/DB handling only when no pending series handled request. Persistence acceptance is not background writer completion.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00055500",
+        "signature": "undefined FUN_00055500()"
+      },
+      "name": "MapFlowHandleSaveSetResult",
+      "signature": "void MapFlowHandleSaveSetResult(void *proxy, void *message)"
+    },
+    {
+      "address": "0x00056a84",
+      "plate_comment": "HandleNavLoadMapResult diagnostic. Requires message length +8==16; request low/high +0xc/+0x10, flag +0x14, result +0x18. Only result==1 advances queued series; other values fail it with load map result failed. Legacy fallback paths run only if series did not handle request. This consumes a result, not evidence the cross-process bridge was fully recovered.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00056a84",
+        "signature": "undefined FUN_00056a84()"
+      },
+      "name": "MapFlowHandleLoadResult",
+      "signature": "void MapFlowHandleLoadResult(void *proxy, void *message)"
+    },
+    {
+      "address": "0x00068c14",
+      "plate_comment": "First recovery step: chooses backup again through 0x3c568, invokes destination helper 0x68b48, sends 0x01033107, then load 0x02033204 for selected backup flag; returns 1 (wait). Helper 0x68b48 forwards a flag vector to unresolved 0x68ae8; its completion/cancellation semantics are not proven here.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00068c14",
+        "signature": "undefined FUN_00068c14()"
+      },
+      "name": "MapFlowRecoverLoadStep",
+      "signature": "int MapFlowRecoverLoadStep(void *capture, void *context, int *native_flag)"
+    },
+    {
+      "address": "0x00069c88",
+      "plate_comment": "Single-map result handler used for series continuation: length 16 and result +0x18==1 advances series, else fails it. Diagnostic strings confusingly say load map result failed; do not identify operation solely from those strings. Legacy paths are distinct from queued load/recovery path.",
+      "expect": {
+        "plate_comment": null,
+        "name": "FUN_00069c88",
+        "signature": "undefined FUN_00069c88()"
+      },
+      "name": "MapFlowHandleSaveResult",
+      "signature": "void MapFlowHandleSaveResult(void *proxy, void *message)"
+    }
+  ]
+}
