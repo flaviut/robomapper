@@ -1,8 +1,10 @@
 # Map maintenance: the concrete path
 
-For S7 firmware `4.3.5_1612`, use **whole-host stop → acknowledged MCU heartbeat hold-off → matching-set backup/replacement → cold start**. This avoids implementing live-map transactions or rebuilding opaque persistence regions. It is a source-derived plan, not an operation performed on the robot.
+For S7 firmware `4.3.5_1612`, the intended approach is to stop the application services, pause MCU heartbeat supervision, copy the matching map files, and restart normally. That avoids editing a live map or rebuilding opaque persistence regions.
 
-We have identified the control mechanisms and file formats, built the native helper, and inspected the running robot. Its Linux libraries match the saved firmware. The reported MCU version matches the A14.G1 image once its timestamp formatting is accounted for; [the A14 explanation](A14-HEARTBEAT.md) follows the actual heartbeat handler. The helper has not been uploaded or run, and no services have been stopped. Before using it, we still need a fresh status reading and confirmation that the vendor software is not about to start a scheduled action or firmware update.
+We attempted the service stop once. The helper still detected a loader task and refused before opening UART, so no backup or map changes occurred. Recovery restored the original exclusions and rebooted; SSH and the expected services returned. [The session record](MAINTENANCE-SESSION.md) explains what ran, and [the refusal explanation](WHY-MAINTENANCE-STOPPED.md) describes what we still need to identify. Leave the robot running rather than repeating the attempt without that information.
+
+We have identified the control mechanisms and file formats, built the native helper, and inspected the running robot. Its Linux libraries match the saved firmware. The reported MCU version matches the A14.G1 image once its timestamp formatting is accounted for; [the A14 explanation](A14-HEARTBEAT.md) follows the actual heartbeat handler. The helper was uploaded and used during that attempt: its exclusion request succeeded, but its UART operation refused before calling the vendor API. Fresh telemetry showed the robot idle and the updater inactive before and after the normal reboot. The stopped backup procedure has not yet completed.
 
 ## 1. Have the helper ready before stopping anything
 
@@ -56,8 +58,10 @@ Per-file replacement is not multi-file atomic. Keep the complete quarantine for 
 
 ## What we still need before using it
 
-The helper is built locally, but has not been deployed. Read [the live observations](DEVICE-FACTS.md) and [the current status](CURRENT-ROBOT-STATUS.md) before arranging a service stop. Those readings expire: the robot was idle at 96% and discharging, not reported docked, and the vendor schedule/update state had not yet been established. Leave it running until those checks and the reversible command controls are ready.
+First identify which task caused the refusal and why the shell's executable check missed it. The updated helper can record the PID, thread ID, state and matching rule without relaxing its refusal. It has been built locally but not deployed. The old logs lack those details, so neither a zombie nor a surviving thread can be named as the cause.
+
+The [vendor status investigation](VENDOR-STATUS.md) found no enabled cleaning timers and observed the updater idle. After recovery, the robot again reported idle at 96% with no error or cleaning activity. Those readings expire and do not justify another stop by themselves. A further attempt needs a fresh reading and a plan to capture the missing task information while retaining independent recovery.
 
 Take a new stopped backup before editing; the live persistence files no longer have the historical sizes, so do not reuse the old assumption that the runtime and primary copies are identical. An unchanged matching-set restore or a small fixed-frame patch remains the intended first operation. If the edit changes connectivity, dimensions or coordinates, this procedure does not supply the necessary transformation or import sequence.
 
-No tests, validators, replay suites, review agents or device operations were run for this investigation. The four component documents contain the source/function addresses behind these conclusions.
+No tests, validators, replay suites or review agents were used for this work. One approved service-stop attempt ran and recovered normally; no UART request, stopped backup or map replacement occurred. The component documents contain the source details, and the session record contains the observed outcome.
