@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
 import { loadMap } from './map.ts'
 import { saveMap } from './deploy.ts'
+import type { EditInput } from './edits.ts'
 import { maxMapBytes } from './ssh.ts'
 
 async function handleMap(req: IncomingMessage, res: ServerResponse) {
@@ -35,7 +36,9 @@ async function handleMap(req: IncomingMessage, res: ServerResponse) {
       chunks.push(Buffer.from(chunk))
     }
 
-    const input: unknown = JSON.parse(Buffer.concat(chunks).toString('utf8'))
+    const input = JSON.parse(Buffer.concat(chunks).toString('utf8')) as EditInput & {
+      hostname?: string, confirmation?: string
+    }
     if (!input || typeof input !== 'object' || !('hostname' in input)
       || typeof input.hostname !== 'string') {
       res.writeHead(400).end(JSON.stringify({ error: 'A hostname is required.' }))

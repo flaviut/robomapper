@@ -1,5 +1,7 @@
 import type { RobotMap } from './maps.ts'
 
+type Raster = Pick<RobotMap, 'width' | 'height' | 'cells' | 'rooms'>
+
 export interface View {
   x: number
   y: number
@@ -56,7 +58,7 @@ export function roomColor(id: number): [number, number, number] {
   }) as [number, number, number]
 }
 
-export function mapImage(map: RobotMap): Uint8ClampedArray<ArrayBuffer> {
+export function mapImage(map: Raster): Uint8ClampedArray<ArrayBuffer> {
   const image = new Uint8ClampedArray(map.cells.length * 4)
   const colors = Array.from({ length: 64 }, (_, id) => roomColor(id))
   for (let i = 0; i < map.cells.length; i++) {
@@ -75,7 +77,7 @@ export function mapImage(map: RobotMap): Uint8ClampedArray<ArrayBuffer> {
   return image
 }
 
-export function roomLabels(map: RobotMap) {
+export function roomLabels(map: Raster) {
   const sums = new Map<number, { x: number, y: number, count: number }>()
   for (let i = 0; i < map.rooms.length; i++) {
     const id = map.rooms[i]!

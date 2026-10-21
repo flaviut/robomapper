@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { setTimeout as pause } from 'node:timers/promises'
 import { readTar, packTar } from './archive.ts'
 import { Backup } from './backup.ts'
-import { applyEdit, parseEdit, type MapEdit } from './edits.ts'
+import { applyEdit, parseEdit, type EditInput, type MapEdit } from './edits.ts'
 import { Maintenance } from './maintenance.ts'
 import { inspectMap, loadMap } from './map.ts'
 import { readRegion } from './persistence.ts'
@@ -64,7 +64,7 @@ async function waitFor<T>(read: () => Promise<T | null>, milliseconds: number): 
   throw new Error('The robot did not finish the operation in time.')
 }
 
-export async function saveMap(hostname: string, input: unknown) {
+export async function saveMap(hostname: string, input: EditInput) {
   const edit = parseEdit(input)
   // Validate the export before starting maintenance, including room-grid bounds.
   applyEdit(edit)

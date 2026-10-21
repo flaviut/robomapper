@@ -7,7 +7,7 @@ export interface RobotMap {
   checksum: string
   cells: Uint8Array
   rooms: Uint8Array
-  native?: { raster: string, persistence: string }
+  native: { raster: string, persistence: string }
 }
 
 type MapData = Omit<RobotMap, 'cells' | 'rooms'> & { cells: string, rooms: string, error?: string }
@@ -24,7 +24,6 @@ export async function loadMap(hostname: string): Promise<RobotMap> {
 }
 
 export async function saveMap(hostname: string, map: RobotMap, cells: Uint8Array, rooms: Uint8Array): Promise<RobotMap> {
-  if (!map.native) throw new Error('Reload the map before saving.')
   const response = await fetch('/api/map/save', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ native: map.native, cells: encodeCells(cells), rooms: encodeCells(rooms),

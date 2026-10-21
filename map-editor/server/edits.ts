@@ -3,6 +3,12 @@ import { inspectMap } from './map.ts'
 import { inspectRooms, writeRooms } from './rooms.ts'
 import { maxMapBytes } from './ssh.ts'
 
+export interface EditInput {
+  native: { raster: string, persistence: string }
+  cells: string
+  rooms: string
+}
+
 export interface MapEdit {
   raster: Buffer
   persistence: Buffer
@@ -18,10 +24,7 @@ function decode(value: unknown): Buffer {
   return data
 }
 
-export function parseEdit(input: unknown): MapEdit {
-  if (!input || typeof input !== 'object' || !('native' in input) || !input.native
-    || typeof input.native !== 'object' || !('raster' in input.native) || !('persistence' in input.native)
-    || !('cells' in input) || !('rooms' in input)) throw new Error('Reload the map before saving.')
+export function parseEdit(input: EditInput): MapEdit {
   const raster = decode(input.native.raster)
   const persistence = decode(input.native.persistence)
   const map = inspectMap(raster)
