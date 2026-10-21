@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "lane": "consistency",
+  "status": "checkpoint: useful bounded static slice complete; operational backup/restore blocked",
+  "base_commit": "4c804b4",
+  "commits": [
+    {
+      "commit": "aab7efec9620c937e6d5b4bb1680ae315c3e86cd",
+      "subject": "Record buffered map load resource lifecycle and restore constraints",
+      "role": "Evidence, focused generated C/instructions, annotation proposal, provisional dependencies, static byte-preserving contract and reproducible checks"
+    }
+  ],
+  "commit_note": "This handoff is committed separately immediately after the listed evidence commit. Its containing commit is discoverable with git log -- analysis/re/evidence/restore/consistency/handoff.json; a document cannot embed its own commit hash.",
+  "ownership": "analysis/re/evidence/restore/consistency/** only",
+  "authoritative_findings_output": "/home/user/.local/state/pi/agent/sessions/--home-user-tmp-illegalplainape--/subagent-artifacts/outputs/73859b02-03aa-462b-8d1e-4c79ecacec94/restore/consistency.md",
+  "method": "Static only. Source-root retool.py copied the existing closed baseline into ignored lane scratch twice (discovery and replay). No baseline opened/mutated, no new import/function creation, no original firmware execution/device access/internet searches/private capture processing, no changes outside owned subtree in Git.",
+  "selected_entries": {
+    "program": "librobopersist.so",
+    "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+    "even_VAs": ["0x1c620", "0x1d10c", "0x17fcc", "0x17cdc", "0xd1c8", "0xd44c", "0xd578", "0xda1c"],
+    "tracked_input": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librobopersist.so",
+    "loader": {"language": "ARM:LE:32:v8", "compiler": "default", "image_base": "0x0", "source": "copied pinned baseline, no loader changes"}
+  },
+  "supported_conclusions": [
+    "Closed local lifecycle gap: PersistLoadMapInfo 0x1c620 normal foreign-owner mmap success returns through buffered restore without its sole direct close call (error path 0x1ca4a) and with no direct munmap call. Observed local fd/mapping release is absent; process-wide leak rate and external cleanup are not established.",
+    "Worker 0x1d10c cleanup unmaps/closes its own task resources, clears resource fields, writes state0 and posts capacity. This neither cleans the foreign loader stack locals nor proves all destinations succeeded.",
+    "Freshness has two separate obstacles: grid cache hit and matching shared persistence buffer. The known grid-drop/read branch is not an all-process/all-load invalidation protocol.",
+    "Provisional backup unit identifies grid, same-flag persistence and catalog roles with instruction/path provenance. Database state, vmap and per-map configuration companion requirements remain unresolved; none is silently labeled rebuildable or historical.",
+    "No observable examined barrier proves disk completion of the whole map set, consistent multi-file/multi-region snapshot, cache freshness and fsync/power-loss durability together. Each strength is separated in dependencies.json and restore-contract.json."
+  ],
+  "artifacts": {
+    "focused": "focused/selected.json, types.json and eight labeled decompiler C exports",
+    "evidence": "evidence.json C01-C04 with instruction ranges, binary identity and focused export hashes",
+    "annotation_proposal": "annotations.json updates only the existing load-function plate comment after guarded shared annotation replay; preserves names, signatures, types and unknown ABI/layout fields",
+    "dependency_manifest_and_ordering_graph": "dependencies.json (explicitly incomplete, conditional required/derived/unresolved classifications; no historical-only companion established)",
+    "restore_contract": "restore-contract.json (requirements/blockers/runtime checks, not device instructions)",
+    "validation": "validate.py, test_validate.py, validation.json, replay.py, replay-validation.json"
+  },
+  "validation_commands_results": [
+    {"command": "python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py copy <lane scratch>/project", "result": "passed twice; immutable baseline copied, never opened directly"},
+    {"command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/consistency/validate.py --reopened analysis/re/evidence/restore/consistency/scratch/annotated --out analysis/re/evidence/restore/consistency/validation.json", "result": "passed: 2090 focused and 4637 contextual instruction records match original ELF PT_LOAD bytes; four tracked binary hashes verified; 25 constructor path literals verified; reopened semantic types and byte-identical C/selected records"},
+    {"command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/consistency -p test_validate.py -v", "result": "passed: 7 tests including tampered bytes, odd entry, bad entry offset, unmapped VA, invalid ELF and non-identity PT_LOAD mapping rejection/control"},
+    {"command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/consistency/replay.py --out <absolute lane>/scratch/replay-check", "result": "passed: fresh private baseline copy, guarded shared then lane annotations, separate reopen without replay; all focused C hashes and selected records reproduced; types structurally equal (JSON object key order can vary)"},
+    {"command": "git diff --cached --check", "result": "initial failure on verbatim generated C whitespace resolved with lane-local .gitattributes matching existing shared decompiler-tree policy; passed before evidence commit; generated output bytes unchanged"}
+  ],
+  "unresolved_dependencies": [
+    "State-6 producer and intended semantics; only existing cancellation/repair/load exceptions known. Do not name it completed or safe.",
+    "Lifecycle lane: non-destructive all-writer quiescence/restart, writer/mmap ownership and unknown hardware constraints.",
+    "Flow lane: exact request/result completion correlation, startup disk selection and genuine cold load.",
+    "Metadata lane: coherent multi-region epoch/setter synchronization and supported edits; byte preservation only here.",
+    "Exact database opener/path, transactions and journal/WAL companions; vmap use sites and per-map configuration filenames/key mapping.",
+    "Full interprocedural callback/exception cleanup and runtime foreign-mapping retention; no process-wide leak rate asserted.",
+    "Kernel/library/cache behavior and power-loss durability remain unverified."
+  ],
+  "next_bounded_targets": [
+    "Resolve AppProxy backup database constructor/opener and its actual filename/SQLite pragmas; classify main/journal/WAL companion requirements without executing firmware.",
+    "Enumerate xrefs to librrslamdrv.so:0x26b60 first-12 vmap string slots and bounded nav 0x1a7488/0x1a7624 config helpers, proving which companions are actually consumed.",
+    "Trace exact stores to buffered task state offset using instructions and all cross-binary users; recover missing functions only with explicit ELF/EHABI/CFG boundary proof. Close state6 rather than assigning semantics from readers.",
+    "After static callgraph closure and supervisor approval, design non-destructive runtime checks listed in restore-contract.json; no device operations are authorized by this handoff."
+  ],
+  "review_gate": "Independent reviewer required; static evidence acceptance is not operational restore approval.",
+  "no_staged_files_at_evidence_checkpoint": true
+}
