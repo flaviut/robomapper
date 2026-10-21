@@ -140,7 +140,7 @@
       "from": "WatchDoge",
       "to": "libraries",
       "relation": "internal stop mode 1 sends SIGHUP then polls tracked PID disappearance, with SIGKILL fallback",
-      "evidence": "0x19ae0 -> 0x191c4 at 0x19c12; heartbeat call 0x19c96 and wait 0x19cee; existing normal-stop findings",
+      "evidence": "0x19ae0 -> 0x191c4 at 0x19c12; mode==1 at 0x19c18/0x19c1a branches to 0x19dc8, heartbeat call 0x19de8 and wait 0x19e0a; shared evidence/WatchDoge/selected.json. Calls 0x19c96/0x19cee belong to mode 2 after the rrlogd name check.",
       "qualification": "No known safe external maintenance interface established. No waitpid, child-tree closure, file/cache/persistence completion barrier; SIGHUP handlers of each writer unproved."
     },
     {
