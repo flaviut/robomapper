@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "instruction_records_checked": 616,
+  "saved_config_files_checked": 9,
+  "candidate_elf_paths_screened": 91,
+  "checks": [
+    "tracked binary SHA256",
+    "PT_LOAD-backed instruction bytes",
+    "exact EHABI start and next ceiling",
+    "19-instruction helper match",
+    "full saved helper export",
+    "all focused C hashes",
+    "candidate screen reproduced",
+    "graph node references",
+    "Ghidra evidence byte/function identity and rollback flags"
+  ],
+  "limits": [
+    "No runtime process/driver/MCU, writer exit, durability or restore validation."
+  ]
+}

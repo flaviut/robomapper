@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "status": "static candidate lifecycle; NOT a deployable maintenance procedure",
+  "identity_records": [
+    "proof/selected.json",
+    "instruction-clips.json",
+    "writer-candidates.json",
+    "configuration.json",
+    "loader-lead.json"
+  ],
+  "address_convention": "All entries/sites are even virtual instruction addresses; Thumb tag is separate.",
+  "nodes": [
+    {
+      "id": "init",
+      "kind": "saved configuration",
+      "provenance": "configuration.json:etc/inittab",
+      "runtime_activation": "unproved"
+    },
+    {
+      "id": "WatchDoge",
+      "kind": "supervisor",
+      "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6"
+    },
+    {
+      "id": "rr_loader",
+      "kind": "configured key process; potential navigation/grid/persistence host",
+      "sha256": "020d6d7de7d282ecec3e845e4664113b11df82656701d42de7e901595c5f5125",
+      "binding": "INFERENCE: dlopen/plugins symbols exist; matching active config.json was not found in inspected saved rootfs; exact plugin hosting unproved"
+    },
+    {
+      "id": "RoboController",
+      "kind": "configured key process; shared-map/catalog candidate",
+      "provenance": "writer-candidates.json; configuration.json; direct map writer calls not closed in this slice"
+    },
+    {
+      "id": "AppProxy",
+      "kind": "configured non-key process; database/catalog command-side writer",
+      "provenance": "AppProxy 0x23210 MapFlowUpdateBackupDb and 0x51628; existing orchestration evidence"
+    },
+    {
+      "id": "libraries",
+      "kind": "write-capable code, not standalone processes",
+      "provenance": "librobopersist.so 0x1bb20/0x1d10c, librrslamdrv.so 0x12c34, librrnavdrv.so 0x68428; existing components"
+    },
+    {
+      "id": "alternate-processes",
+      "kind": "RoboControllerR/FR and RoboControllerM/MT plus alternate rr_loader arguments",
+      "provenance": "configuration.json; all import candidates hashed in writer-candidates.json"
+    },
+    {
+      "id": "external-agents",
+      "kind": "saved optional Valetudo launch; adbd/dropbear remote command entry; manual writers/descendants; updater or alternate image writers not excluded",
+      "coverage": "open; not all are direct map writers"
+    },
+    {
+      "id": "linux-watchdog",
+      "kind": "unverified kernel implementation"
+    },
+    {
+      "id": "MCU",
+      "kind": "unverified matching image/handler/normal producer"
+    }
+  ],
+  "edges": [
+    {
+      "from": "init",
+      "to": "WatchDoge",
+      "relation": "respawn on supervisor exit",
+      "evidence": "configuration.json:etc/inittab line 3",
+      "qualification": "Configured behavior only; init implementation/environment/active boot configuration not executed or verified."
+    },
+    {
+      "from": "init",
+      "to": "external-agents",
+      "relation": "rcS scripts; S10rc_local to rc.local background reserve script; independently respawn adbd/dropbear",
+      "evidence": "configuration.json",
+      "qualification": "Background branch is not a writer-start barrier; saved customization is not proof of on-device state."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "rr_loader",
+      "relation": "ProcessList key=1; start/adopt/check",
+      "evidence": "configuration.json; WatchDoge 0x171e0, 0x17f68",
+      "qualification": "Only enabled tracked names/PIDs covered; children and PID reuse not closed."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "RoboController",
+      "relation": "ProcessList key=1; start/adopt/check",
+      "evidence": "configuration.json; WatchDoge 0x171e0, 0x17f68"
+    },
+    {
+      "from": "WatchDoge",
+      "to": "AppProxy",
+      "relation": "ProcessList key=0; eligible missing record can be directly restarted by scan",
+      "evidence": "0x17f68: call 0x18278 to WdogStartRecord 0x16eb8; enabled-byte/missing/key predicates in full selected record"
+    },
+    {
+      "from": "rr_loader",
+      "to": "libraries",
+      "relation": "possible plugin hosting",
+      "evidence": "tracked rr_loader dlopen import and plugins/pluginsPath strings; see handoff",
+      "qualification": "INFERENCE, not established process-to-plugin binding. Missing active loader config is a blocker."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "WatchDoge",
+      "relation": "startup refresh -> mode-1 stop -> enabled start",
+      "evidence": "0x1467e -> 0x17510; 0x146a2 mode=1, 0x146a8 -> 0x19ae0; 0x146d0 -> 0x171e0"
+    },
+    {
+      "from": "WatchDoge",
+      "to": "WatchDoge",
+      "relation": "exclusion IPC -> file write -> strlen -> event 8 or 9",
+      "evidence": "0x1e7a8: 0x1e95e -> 0x1dffc, 0x1e964 -> strlen PLT, branch and 0x1e970 -> 0x1e75c; existing ipc-short-string-reset finding",
+      "qualification": "C-string length >2 selects 8, otherwise 9; packet length is not this branch's selector; failed write/queue delivery are not reliable completion."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "WatchDoge",
+      "relation": "event 8 reload excludes; unmatched names re-enabled",
+      "evidence": "0x142e4 event dispatch to 0x18400; existing exclusions-parser, reenable-without-reset and reload-ack-send findings",
+      "qualification": "Configuration-reset-free branch exists. Matching positive PIDs get SIGKILL and tracked PID=-1 without wait; does not invoke normal-stop heartbeat control. Ack-like 0x03070343 is not exit/flush acknowledgment."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "WatchDoge",
+      "relation": "event 9 destructive reset then event-8 fallthrough",
+      "evidence": "0x147fe onward in 0x142e4; 0x1e09c and existing destructive-reset-side-effects finding",
+      "qualification": "Not a maintenance/re-enable path."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "init",
+      "relation": "re-enabled missing key process -> scan status 2 -> teardown, stop, exit/reboot escalation",
+      "evidence": "0x18382..0x1839e status-2 branch in 0x17f68; 0x14978 scan, 0x1497c cmp #2; 0x14856 teardown; 0x14908 mode-1 stop then 0x1493a exit path in 0x142e4",
+      "qualification": "Not the same as non-key direct restart. Init respawn is saved-config conditional; runtime boot flags/failure counters can affect escalation. Cannot promise reset-free all-key restart."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "libraries",
+      "relation": "internal stop mode 1 sends SIGHUP then polls tracked PID disappearance, with SIGKILL fallback",
+      "evidence": "0x19ae0 -> 0x191c4 at 0x19c12; heartbeat call 0x19c96 and wait 0x19cee; existing normal-stop findings",
+      "qualification": "No known safe external maintenance interface established. No waitpid, child-tree closure, file/cache/persistence completion barrier; SIGHUP handlers of each writer unproved."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "linux-watchdog",
+      "relation": "feeder callback -> signal mask helper -> init -> feed/sleep -> close",
+      "evidence": "proof/selected.json: 0x1af46 -> 0x1abd8, 0x1af4a -> 0x1ad68, 0x1af52 -> 0x1aec8, 0x1af58 sleep(8), 0x1af62 -> 0x1ac20",
+      "qualification": "0x1abd8 invokes sigfillset/pthread_sigmask only; not a hardware configuration gap anymore. ioctl acceptance, nowayout, magic-close, effective signal mask and scheduling remain unproved."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "linux-watchdog",
+      "relation": "signal handler common prelude closes device even on user-signal branches",
+      "evidence": "0x1d0ae -> 0x1ac20; 0x1d074 and existing signal-handler-not-maintenance finding",
+      "qualification": "Do not use SIGUSR1/SIGUSR2/SIGTERM or suspension as maintenance recipes."
+    },
+    {
+      "from": "WatchDoge",
+      "to": "MCU",
+      "relation": "normal-stop mode-dependent heartbeat control through libuart_api rua_keep_mcu_heartbeat",
+      "evidence": "0x19c96/0x19de8 -> PLT 0x13e70; UART SHA256 914317e600a73255cb6523e987ab3ab99b5168c47026503fcb3fe797f9961529 at 0x11564/0x11690; existing uart-heartbeat-command finding",
+      "qualification": "Mode 1 requests 120 per positive tracked process; mode 2 only for rrlogd; mode 0/exclusion reload does not. Command 0xd3/value 120 or -1 interpretation/acceptance and normal heartbeat producer remain unknown. No MCU image chosen."
+    }
+  ],
+  "required_barriers_in_order": [
+    "Gate every command producer, unsupervised agent, updater and descendant; prove selected boot mode/process-host set.",
+    "Prove Linux watchdog and MCU behavior under the exact intended userspace transition; maintain independently verified liveness.",
+    "Obtain writer-specific completion/quiesce acknowledgments including detached persistence workers, catalog, grid, database and shared-memory setters.",
+    "Prove supervisor cannot respawn/adopt a writer during the window; confirm exit, descendants, fd/mmap/shared-memory references and identity (not PID/name alone).",
+    "Establish coherent backup/durability/cache invalidation with consistency lane before modifying any file.",
+    "Re-establish correct startup selection and plugin ownership; verify all required writers, heartbeat producers and end-to-end load/result coherence before releasing command gates."
+  ],
+  "deployment": "blocked; none of the above is a stop/reset command sequence"
+}

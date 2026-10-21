@@ -1,31 +1,108 @@
 {
-  "status": "first-slice-checked-static-only",
-  "commits": [],
+  "format_version": 1,
+  "status": "checked bounded static slice; safe all-writer lifecycle NOT established; deployment blocked",
+  "base_commit": "4c804b41c7bdee290e1675c0ab2c095e6e0f0e4d",
+  "ownership": "analysis/re/evidence/restore/lifecycle/**",
+  "commits": [
+    {
+      "commit": "0b226e3",
+      "purpose": "First checkpoint: bounded WatchDoge signal-mask helper recovery and replay proof."
+    }
+  ],
+  "commit_note": "Final graph/provenance artifact commit will be recorded in the following metadata-only checkpoint; the metadata commit cannot self-identify its own hash.",
+  "authoritative_findings": {
+    "path": "/home/user/.local/state/pi/agent/sessions/--home-user-tmp-illegalplainape--/subagent-artifacts/outputs/73859b02-03aa-462b-8d1e-4c79ecacec94/restore/lifecycle.md",
+    "sha256": "0e7b3e2c3ea899b9c8da6e1668c3a9c894a14461bbf0abc3b6aafd12f696d36b"
+  },
+  "constraints_observed": [
+    "Only owned repository subtree changed; no shared tooling/manifest/annotations/recovery/RESULTS/board mutation.",
+    "Required source-root retool.py copied the closed baseline; only private copies opened for analysis.",
+    "No device access, original firmware execution, internet source searches, pushing or nested agents.",
+    "Saved source-root prose used as hypotheses only; no private captures, map payloads, full inventories, projects or logs published.",
+    "No new binary imports; preserved existing symbols and ABI/layout fields; generated C explicitly decompiler output."
+  ],
   "selected_entries": [
     {
       "program": "WatchDoge",
+      "binary_path": "binaries/4.3.5_1612/opt/rockrobo/watchdog/WatchDoge",
       "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
-      "entries": [
-        "0x1abd8",
+      "new_entry": "0x1abd8",
+      "body": "0x1abd8-0x1ac07",
+      "context_entries": [
         "0x1af18",
         "0x1ac08"
-      ]
+      ],
+      "loader_settings": {
+        "language": "ARM:LE:32:v8",
+        "compiler": "default",
+        "image_base": "0x10000",
+        "mode": "Thumb per instruction; even function VAs"
+      }
     }
   ],
+  "artifacts": {
+    "focused_generated_C_and_instructions": "proof/",
+    "recovery_request": "request.json",
+    "lane_recovery_and_read_only_discovery": "scripts/",
+    "plate_comment_only_annotation": "annotations.json",
+    "lifecycle_writer_graph": "graph.json",
+    "instruction_clips": "instruction-clips.json",
+    "saved_configuration_hashes_and_safe_excerpts": "configuration.json",
+    "bounded_tracked_ELF_screen": "writer-candidates.json",
+    "unproved_loader_lead": "loader-lead.json",
+    "replay": "replay.py",
+    "validation": "validate.py and validation.json"
+  },
   "validation": [
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/lifecycle/replay.py --out analysis/re/evidence/restore/lifecycle/.scratch/replay-one",
-      "result": "passed: seven commands, byte identity and existing functions preserved, saved reopen identical, conflict rejection rolled back"
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/lifecycle/replay.py --out \"$PWD/analysis/re/evidence/restore/lifecycle/.scratch/replay-one\"",
+      "result": "passed: six subprocess commands, helper recovery, unchanged bytes/functions, saved reopen identical, conflict rejection semantic rollback."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/lifecycle/replay.py --out \"$PWD/analysis/re/evidence/restore/lifecycle/.scratch/replay-two\"",
+      "result": "failed intermediate refactor: Java local variable target duplicated; corrected to nonreturnTarget; no result accepted; logs private."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/lifecycle/replay.py --out \"$PWD/analysis/re/evidence/restore/lifecycle/.scratch/replay-three\"",
+      "result": "passed: fresh private baseline copy with corrected helper; six commands; selected/types/C identical to prior successful fresh replay."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/lifecycle/validate.py --saved-rootfs /home/user/tmp/illegalplainape/analysis/rootfs --out analysis/re/evidence/restore/lifecycle/validation.json",
+      "result": "passed: 616 instruction records; hash-bound PT_LOAD bytes/EHABI/helper/C/source checks; 91 ELF-path candidate screen reproduced; 9 saved configuration files checked; graph references valid."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/lifecycle/validate.py",
+      "result": "passed without saved rootfs: repository-only checks; saved configuration checks intentionally skipped."
+    },
+    {
+      "command": "git diff --check; Python ast.parse and JSON parsing for owned publication files",
+      "result": "passed"
     }
   ],
   "supported_conclusions": [
-    "0x1abd8 body recovered from exact bytes/EHABI/CFG, contains sigfillset then pthread_sigmask(0,&local,NULL), not direct MCU/watchdog setup."
+    "0x1abd8 is a bounded sigfillset/pthread_sigmask helper, not direct Linux watchdog/MCU setup; numeric how=0 mask behavior is ABI inference, effective runtime mask unmeasured.",
+    "Configuration-reset-free event 8 reload exists; event 9 resets configuration. Exclusion kills do not provide writer exit/flush/heartbeat barriers; re-enable is distinct from starting.",
+    "Non-key direct restart and missing-key status-2 teardown/exit escalation are different; init respawn from saved config is conditional, not measured runtime fact.",
+    "Internal normal-stop mode 1 is a SIGHUP/poll/heartbeat candidate, not an established external safe maintenance interface; modes 0/2 differ.",
+    "Possible writer/host and external producer graph is a lower bound, not all-writer coverage. 91 tracked ELF paths screened; seven dependency/import candidates recorded; rr_loader hosting remains inference."
   ],
   "unresolved_dependencies": [
-    "All-writer inventory and conditional lifecycle graph in progress; no runtime safety claim.",
-    "No watchdog driver/MCU acceptance/normal heartbeat producer proof."
+    "Active boot configuration, exact loader config/plugin binding and every writer/descendant/shared-memory owner.",
+    "Writer SIGHUP cleanup, detached worker join/completion, catalog/database/grid companion consistency, cache invalidation and durability.",
+    "Safe external invocation of graceful stop while preventing respawn/adoption, and controlled key-process restart.",
+    "Matching Linux watchdog implementation/runtime options/nowayout/magic-close acceptance.",
+    "Normal MCU heartbeat producer, matching MCU handler/image and command 0xd3 acceptance/semantics.",
+    "Flow and consistency lane contracts for command gating, startup selection, result coherence and durable backup set."
+  ],
+  "required_runtime_validation": [
+    "Observe actual process trees, modules, fds/mappings and command sources without mutation; establish identity beyond PID/name.",
+    "Validate hardware watchdog and MCU liveness under the exact proposed transition before any stop/reset use.",
+    "Measure writer-specific completion and durable coherent files/cache state, then controlled restart and end-to-end load results. No such test was run."
   ],
   "next_bounded_targets": [
-    "Finalize configuration-provenance graph and stop/restart barrier inventory; no firmware/device execution."
-  ]
+    "Trace rr_loader config/plugin selection and UART callers using matching local artifacts; do not choose arbitrary MCU image.",
+    "Inspect rr_loader/RoboController/AppProxy SIGHUP handlers for worker completion and child/fd/shared-memory closure.",
+    "Follow status-2 recovery/boot flags and demonstrate whether a configuration-preserving controlled key restart is possible without reset exposure."
+  ],
+  "review_gate": "required independent review of static artifacts; not device-use acceptance"
 }

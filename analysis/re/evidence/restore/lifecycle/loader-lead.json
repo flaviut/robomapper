@@ -1,0 +1,34 @@
+{
+  "program": "rr_loader",
+  "binary_path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/rr_loader",
+  "sha256": "020d6d7de7d282ecec3e845e4664113b11df82656701d42de7e901595c5f5125",
+  "selected_string_records": [
+    {
+      "text": "dlopen",
+      "file_offset": "0x2730",
+      "qualification": "data/string evidence only; not an instruction/caller or runtime ownership proof"
+    },
+    {
+      "text": "plugins",
+      "file_offset": "0xd6e4",
+      "qualification": "data/string evidence only; not an instruction/caller or runtime ownership proof"
+    },
+    {
+      "text": "pluginsPath",
+      "file_offset": "0xd8c0",
+      "qualification": "data/string evidence only; not an instruction/caller or runtime ownership proof"
+    },
+    {
+      "text": "./config.json",
+      "file_offset": "0xe388",
+      "qualification": "data/string evidence only; not an instruction/caller or runtime ownership proof"
+    },
+    {
+      "text": "/dev/uart_mcu",
+      "file_offset": "0xd504",
+      "qualification": "data/string evidence only; not an instruction/caller or runtime ownership proof"
+    }
+  ],
+  "loader": "No new Ghidra import; raw tracked ELF bytes plus readelf only",
+  "qualification": "Possible host/normal heartbeat lead only; no matching active config.json found in inspected saved rootfs, no heartbeat sender proven."
+}

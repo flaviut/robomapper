@@ -1,0 +1,251 @@
+{
+  "version": 1,
+  "source": "read-only saved rootfs; no data/config payloads or credentials published",
+  "records": [
+    {
+      "saved_path": "etc/inittab",
+      "sha256": "2f4083a576ccbf9dbaa8b2afa4555b1a9cb91faeca52e95b74d8c76987a9167b",
+      "classification": "saved configuration, not authenticated as exact tracked firmware content; runtime activation unproved",
+      "excerpts": [
+        {
+          "line": 1,
+          "text": "::sysinit:/etc/init/rcS S start"
+        },
+        {
+          "line": 3,
+          "text": "::respawn:WatchDoge $RR_ROOT/watchdog >> $RR_UDATA/rockrobo/rrlog/watchdog.log 2>&1"
+        },
+        {
+          "line": 4,
+          "text": "::respawn:/usr/bin/adbd"
+        },
+        {
+          "line": 5,
+          "text": "::respawn:/usr/sbin/dropbear -F"
+        },
+        {
+          "line": 6,
+          "text": "#::respawn:/sbin/getty -L ttyS0 115200 vt100"
+        }
+      ]
+    },
+    {
+      "saved_path": "etc/init/rcS",
+      "sha256": "e09a7328efdc5c7af7762508194790911e63171e894d9913b97a3931b76918f6",
+      "classification": "saved configuration, not authenticated as exact tracked firmware content; runtime activation unproved",
+      "excerpts": [
+        {
+          "line": 30,
+          "text": "run_scripts() {"
+        },
+        {
+          "line": 32,
+          "text": "        [ -x $i ] && $i $2 2>&1"
+        },
+        {
+          "line": 40,
+          "text": "    run_scripts \"$1\" \"$2\""
+        },
+        {
+          "line": 42,
+          "text": "    run_scripts \"S\" \"$2\""
+        }
+      ]
+    },
+    {
+      "saved_path": "etc/init/S04wdgenv",
+      "sha256": "29e49838a9bf9ac497f259f24ae75e43305604606da2db9ec2a2394bcd84c831",
+      "classification": "saved configuration, not authenticated as exact tracked firmware content; runtime activation unproved",
+      "excerpts": [
+        {
+          "line": 8,
+          "text": "    mkdir -p $RR_UDATA/rockrobo/map"
+        },
+        {
+          "line": 31,
+          "text": "    stop)"
+        },
+        {
+          "line": 33,
+          "text": "    restart)"
+        }
+      ]
+    },
+    {
+      "saved_path": "etc/init/S10rc_local",
+      "sha256": "b73cad0af210d53012fc385cfc4f13f8e9a1e4d5131beda757ce329c86962ef6",
+      "classification": "saved configuration, not authenticated as exact tracked firmware content; runtime activation unproved",
+      "excerpts": [
+        {
+          "line": 8,
+          "text": "# Short-Description: Run /etc/rc.local if it exist"
+        },
+        {
+          "line": 14,
+          "text": "do_start() {"
+        },
+        {
+          "line": 16,
+          "text": "    if [ -x /etc/rc.local ]; then"
+        },
+        {
+          "line": 17,
+          "text": "        /etc/rc.local"
+        },
+        {
+          "line": 25,
+          "text": "        do_start"
+        },
+        {
+          "line": 27,
+          "text": "    restart|reload|force-reload)"
+        },
+        {
+          "line": 31,
+          "text": "    stop)"
+        }
+      ]
+    },
+    {
+      "saved_path": "etc/init/RRENV",
+      "sha256": "e634c5024a9fc30b638ace70cefa53c6ee86719c709389aff988aeceb816eace",
+      "classification": "saved configuration, not authenticated as exact tracked firmware content; runtime activation unproved",
+      "excerpts": [
+        {
+          "line": 20,
+          "text": "export NAV_CONFIG_PATH=/opt/rockrobo/cleaner/conf"
+        },
+        {
+          "line": 33,
+          "text": "export HWDOG_OPTION=1"
+        },
+        {
+          "line": 39,
+          "text": "export PATH=/bin:/usr/bin:/sbin:/usr/sbin:/opt/rockrobo/rrlog:/opt/rockrobo/cleaner/bin:/opt/rockrobo/wlan:/opt/rockrobo/watchdog:/opt/rockrobo/miio:/opt/rockrobo/firmware:/opt/rockrobo/rriot"
+        },
+        {
+          "line": 41,
+          "text": "export LD_LIBRARY_PATH=/lib:/lib/arm-linux-gnueabihf:/usr/lib:usr/lib/arm-linux-gnueabihf:/opt/rockrobo/cleaner/lib:/mnt/default"
+        }
+      ]
+    },
+    {
+      "saved_path": "etc/rc.local",
+      "sha256": "8220a8fbfd179ad4efbda98ec275044197e5faf1639dcaa52ae8e518a140a012",
+      "classification": "saved configuration, not authenticated as exact tracked firmware content; runtime activation unproved",
+      "excerpts": [
+        {
+          "line": 15,
+          "text": "if [[ -f /mnt/reserve/_root.sh ]]; then"
+        },
+        {
+          "line": 16,
+          "text": "    /mnt/reserve/_root.sh &"
+        }
+      ]
+    },
+    {
+      "saved_path": "opt/rockrobo/watchdog/ProcessList.conf",
+      "sha256": "851147bd3a63e5759fd5addc4e96a782e49b6235ce5057d4fdc35831c75ec98b",
+      "classification": "saved configuration, not authenticated as exact tracked firmware content; runtime activation unproved",
+      "excerpts": [
+        {
+          "line": 2,
+          "text": "rrlogd,setsid rrlogd /opt/rockrobo/rrlog/rrlog.conf >> /mnt/data/rockrobo/rrlog/rrlog.log 2>&1&,1,300,1"
+        },
+        {
+          "line": 3,
+          "text": "rr_loader,setsid rr_loader -d&,1,5,1"
+        },
+        {
+          "line": 4,
+          "text": "RoboController,setsid RoboController&,1,3,0"
+        },
+        {
+          "line": 5,
+          "text": "AppProxy,setsid AppProxy >/dev/null 2>&1&,0,3,0"
+        },
+        {
+          "line": 6,
+          "text": "wlanmgr,setsid wlanmgr&,0,3,0"
+        },
+        {
+          "line": 7,
+          "text": "SysUpdate,setsid SysUpdate&,0,3,0"
+        },
+        {
+          "line": 8,
+          "text": "rriot_rr,setsid rriot_rr -d&,0,3,0"
+        },
+        {
+          "line": 9,
+          "text": "miio_client,setsid miio_client -d /mnt/data/miio/ -l 1 >> /mnt/data/rockrobo/rrlog/miio.log 2>&1&,0,1,0"
+        }
+      ]
+    },
+    {
+      "saved_path": "opt/rockrobo/watchdog/ProcessListFR.conf",
+      "sha256": "8bb590a3683a2b1f024b67f2d918f8a36b8bdc9422a5a644873900dc54d0f6a0",
+      "classification": "saved configuration, not authenticated as exact tracked firmware content; runtime activation unproved",
+      "excerpts": [
+        {
+          "line": 2,
+          "text": "rrlogd,setsid rrlogd /opt/rockrobo/rrlog/rrlogmt.conf&,1,40,1"
+        },
+        {
+          "line": 3,
+          "text": "rr_loader,setsid rr_loader -d&,1,5,1"
+        },
+        {
+          "line": 4,
+          "text": "RoboControllerR,setsid RoboControllerR&,1,3,0"
+        },
+        {
+          "line": 5,
+          "text": "AppProxy,setsid AppProxy&,0,3,0"
+        },
+        {
+          "line": 6,
+          "text": "wlanmgr,setsid wlanmgr&,0,3,0"
+        }
+      ]
+    },
+    {
+      "saved_path": "opt/rockrobo/watchdog/ProcessListMT.conf",
+      "sha256": "74148952225aebd388e757c28f551f3d3205eb3975693523c1ea12cc97d0e562",
+      "classification": "saved configuration, not authenticated as exact tracked firmware content; runtime activation unproved",
+      "excerpts": [
+        {
+          "line": 2,
+          "text": "rrlogd,setsid rrlogd -m /opt/rockrobo/rrlog/rrlogmt.conf&,1,40,1"
+        },
+        {
+          "line": 3,
+          "text": "rr_loader,setsid rr_loader -d -s&,1,5,1"
+        },
+        {
+          "line": 4,
+          "text": "RoboControllerM,setsid RoboControllerM&,1,3,0"
+        },
+        {
+          "line": 5,
+          "text": "AppProxy,setsid AppProxy&,0,3,0"
+        },
+        {
+          "line": 6,
+          "text": "wlanmgr,setsid wlanmgr&,0,3,0"
+        }
+      ]
+    },
+    {
+      "saved_path": "analysis/reserve-root.sh (outside rootfs)",
+      "sha256": "9cdddb3d8e42ed4b90c30fae92dfbe65d606f0a83a9dbc90fa03b8347d7d3f55",
+      "classification": "saved local customization; execution/presence on device unproved",
+      "facts": [
+        "Conditionally launches an external Valetudo executable in background.",
+        "Not a WatchDoge ProcessList record in the inspected lists."
+      ],
+      "excerpts": []
+    }
+  ]
+}

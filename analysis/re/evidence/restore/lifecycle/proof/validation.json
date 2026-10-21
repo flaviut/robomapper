@@ -6,7 +6,7 @@
         "/etc/profiles/per-user/user/bin/python3",
         "/home/user/tmp/illegalplainape/analysis/re/tooling/retool.py",
         "copy",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project"
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/project"
       ],
       "exit_code": 0
     },
@@ -14,17 +14,17 @@
       "argv": [
         "/etc/profiles/per-user/user/bin/python3",
         "/home/user/tmp/illegalplainape/analysis/re/recovery/recover.py",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/project",
         "/home/user/tmp/illegalplainape/analysis/re/recovery/requests/WatchDoge.json",
         "--out",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/recover-feeder"
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/recover-feeder"
       ],
       "exit_code": 0
     },
     {
       "argv": [
         "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/project",
         "pinned",
         "-process",
         "WatchDoge",
@@ -36,7 +36,7 @@
         "-postScript",
         "RecoverLifecycle.java",
         "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/request.json",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/recover-signal-mask.json"
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/recover-signal-mask.json"
       ],
       "exit_code": 0
     },
@@ -45,7 +45,7 @@
         "/etc/profiles/per-user/user/bin/python3",
         "/home/user/tmp/illegalplainape/analysis/re/tooling/retool.py",
         "run",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/project",
         "WatchDoge",
         "--annotations",
         "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/annotations.json",
@@ -54,7 +54,7 @@
         "0x1af18",
         "0x1ac08",
         "--out",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/annotated"
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/annotated"
       ],
       "exit_code": 0
     },
@@ -63,21 +63,21 @@
         "/etc/profiles/per-user/user/bin/python3",
         "/home/user/tmp/illegalplainape/analysis/re/tooling/retool.py",
         "run",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/project",
         "WatchDoge",
         "--functions",
         "0x1abd8",
         "0x1af18",
         "0x1ac08",
         "--out",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/reopened"
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/reopened"
       ],
       "exit_code": 0
     },
     {
       "argv": [
         "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/project",
         "pinned",
         "-process",
         "WatchDoge",
@@ -89,7 +89,7 @@
         "-postScript",
         "RecoverLifecycle.java",
         "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/request.json",
-        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/rejection.json"
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-three/rejection.json"
       ],
       "exit_code": 0
     }
@@ -125,5 +125,12 @@
     "0x1abd8": "8805f9469d0b193738a75f0ff6e8d725dbf86e2202ccd5269365681a812f4a0a",
     "0x1af18": "5820f1b808187d0b9f01c6e487c1c646aa75bcdc442d51fe30ede9d8e9dc274d",
     "0x1ac08": "965981d9c7e9aae3f501e35e854f1eb0e71fe1833648f50e55a810c8388e4c2e"
+  },
+  "independent_prior_replay_c_equal": true,
+  "source_sha256": {
+    "scripts/RecoverLifecycle.java": "790fbc458d1f2abbb79dd51963496b96f3ad8550b3a4dddc15dd21deaf0dce31",
+    "replay.py": "0c50b6d9c87c9793fec5e5088e7a4182bab6ae3bf613087f84c35fd5e69c00a5",
+    "request.json": "fbb465a374ea72a77b533e6ba76d7827d74c78350789a3bfa9e5a1d79ca1a3bf",
+    "annotations.json": "2a36813c9e5f6c78a6ee2f9ee9ef0ec7a7d3e0bbd4f34c14b037a2806fdcc9ba"
   }
 }

@@ -55,7 +55,6 @@ public class RecoverLifecycle extends HeadlessScript {
   String hash=originalHash();need(hash.equals(str(q,"sha256")),"HASH_MISMATCH");
   need(currentProgram.getLanguageID().toString().equals("ARM:LE:32:v8") && currentProgram.getCompilerSpec().getCompilerSpecID().toString().equals("default"),"unexpected language/compiler");
   long entry=num(q,"entry"), end=num(q,"bound_end");need((entry&1)==0,"ODD_ENTRY");
-  boolean app=true; // This bounded helper also ends with an explicit __stack_chk_fail call.
   need(program.equals("WatchDoge") && hash.equals("3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6") && entry==0x1abd8 && end==0x1ac07,"UNREVIEWED_ENTRY_OR_BOUND");
   Address start=toAddr(entry), stop=toAddr(end);AddressSet bound=new AddressSet(start,stop);
   need(str(q,"expected_context").equals("RegisterValue(contextreg): mask=0xc000000000000000 value=0x0000000000000000"),"unreviewed expected context");
@@ -83,8 +82,8 @@ public class RecoverLifecycle extends HeadlessScript {
   int pre=memory.getInt(toAddr(uwva));long signed=((long)(pre<<1))>>1;
   need(uwva+signed==entry,"unwind start mismatch");
   int nxt=memory.getInt(toAddr(uwva+8));need(uwva+8+(((long)(nxt<<1))>>1)==next,"next unwind mismatch");
-  if(app){JsonObject nr=q.getAsJsonObject("nonreturn_call");need(num(nr,"site")==0x1ac04 && num(nr,"target")==0x1376c && str(nr,"symbol").equals("__stack_chk_fail"),"nonreturn metadata");Function target=fm.getFunctionAt(toAddr(0x1376c));need(target!=null && target.getName().equals("__stack_chk_fail"),"nonreturn symbol mismatch");}
-  else need(q.get("nonreturn_call").isJsonNull(),"unexpected nonreturn");
+  JsonObject nr=q.getAsJsonObject("nonreturn_call");need(num(nr,"site")==0x1ac04 && num(nr,"target")==0x1376c && str(nr,"symbol").equals("__stack_chk_fail"),"nonreturn metadata");
+  Function nonreturnTarget=fm.getFunctionAt(toAddr(0x1376c));need(nonreturnTarget!=null && nonreturnTarget.getName().equals("__stack_chk_fail"),"nonreturn symbol mismatch");
   SortedMap<String,String> before=functions();String memBefore=memoryHash();
   ctx.setValue(currentProgram.getRegister("TMode"),start,stop,BigInteger.ONE);
   AddressSet discovered=Disassembler.getDisassembler(currentProgram,monitor,null).disassemble(start,bound,true);
@@ -97,7 +96,7 @@ public class RecoverLifecycle extends HeadlessScript {
    body.add(i.getMinAddress(),i.getMaxAddress());var flow=i.getFlowType();
    need(!flow.isComputed() || flow.isTerminal(),"unreviewed computed flow");
    if(!flow.isCall())for(Address target:i.getFlows()){need(bound.contains(target),"external branch");todo.add(target);}
-   boolean nonreturn=app && a.equals(toAddr(0x1ac04));
+   boolean nonreturn=a.equals(toAddr(0x1ac04));
    if(nonreturn)need(i.getFlows().length==1 && i.getFlows()[0].equals(toAddr(0x1376c)),"nonreturn target");
    Address fall=i.getFallThrough();if(fall!=null && !nonreturn){need(bound.contains(fall),"fallthrough escape "+a);todo.add(fall);}
   }

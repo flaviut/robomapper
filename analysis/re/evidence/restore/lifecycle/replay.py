@@ -29,7 +29,10 @@ def run(out, source):
         proc = subprocess.run(list(map(str, argv)), capture_output=True, text=True)
         commands.append({'argv': list(map(str, argv)), 'exit_code': proc.returncode})
         (out / ('command-%d.txt' % len(commands))).write_text(proc.stdout + proc.stderr)
-        if proc.returncode:
+        output = proc.stdout + proc.stderr
+        headless_failed = str(argv[0]) == str(tool.HEADLESS) and (
+            'ERROR REPORT SCRIPT ERROR' in output or 'REPORT: Save succeeded' not in output)
+        if proc.returncode or headless_failed:
             raise RuntimeError('command failed: inspect private command logs')
 
     project = out / 'project'
