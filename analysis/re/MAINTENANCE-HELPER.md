@@ -1,12 +1,12 @@
 # Native map-maintenance helper
 
-**The helper now builds locally for the saved ARMhf runtime, but it has not been deployed or run.** It provides only two explicit operations: sending WatchDoge exclusion content through the existing private IPC API, and requesting MCU heartbeat hold-off through `rua_keep_mcu_heartbeat(-1)`. Neither operation starts automatically. No SSH connection or robot change occurred in this work.
+The helper sends WatchDoge exclusion content through the private IPC API or requests MCU heartbeat hold-off through `rua_keep_mcu_heartbeat(-1)`. Both operations ran during the successful [stopped backup](MAINTENANCE-PROCEDURE.md); the robot then returned through normal reboot. Neither operation starts automatically.
 
 The source is [tools/map-maint/map-maint.c](../../tools/map-maint/map-maint.c). Its two operation functions, `send_exclusions` and `disable_mcu`, keep library loading and vendor calls out of the argument and input handling. [Service control](MAP-SERVICE-CONTROL.md#minimal-one-shot-helper-contract) supplies the IPC contract; [heartbeat control](MAP-HEARTBEAT-CONTROL.md#supported-userspace-call-without-stopping-watchdoge) supplies the UART API. The later [A14 investigation](A14-HEARTBEAT.md) establishes the matching variant's sentinel branch and explains why an acknowledgment is not semantic confirmation.
 
 ## What the commands mean
 
-These are interface descriptions, **not instructions to run them on the robot yet**:
+These commands are interfaces, not a complete maintenance sequence. Preserve the original exclusions and arm independent recovery before stopping services:
 
 ```text
 map-maint --help
@@ -30,7 +30,7 @@ The sender zeroes a 76-byte packet, uses message ID `0x07030342`, includes the t
 
 ### Requesting MCU hold-off
 
-`mcu-disable` checks ownership before loading `libuart_api.so.4.0.2`, and checks again immediately before calling it. It reads device metadata for `/dev/ttyS2` and `/dev/uart_mcu`, then inspects every visible process task, including tasks with unshared descriptor tables. It rejects a remaining `rr_loader` executable or process name and any character-device descriptor whose device number matches either UART node. Matching device numbers also catches aliases and open descriptors to a removed node. Permission errors, incomplete directory reads or other inspection failures cause refusal; processes and descriptors that disappear during inspection are skipped.
+`mcu-disable` checks ownership before loading `libuart_api.so.4.0.2`, and checks again immediately before calling it. It reads device metadata for `/dev/ttyS2` and `/dev/uart_mcu`, then inspects every visible process task, including tasks with unshared descriptor tables. It rejects a remaining `rr_loader` executable or task name and any character-device descriptor whose device number matches either UART node. The task-name check permits only a positively observed zombie (`Z`) whose executable lookup failed with `ENOENT` or `ESRCH`; that task's descriptor checks and all sibling-task checks still run. An unknown state or inspection error never grants this exception. Loader refusals identify the PID, thread ID, best-effort state and matching rule. Matching device numbers also catches aliases and open descriptors to a removed node. Permission errors, incomplete directory reads or other inspection failures cause refusal; processes and descriptors that disappear during inspection are skipped.
 
 The helper never opens UART directly and sends no raw ioctls or packets. Only after the checks does it call `rua_keep_mcu_heartbeat(-1)` once. The existing vendor API supplies initialization, its nonblocking exclusive TTY lock, framing, its own retries, the acknowledged exchange and temporary ownership cleanup. A nonzero API result produces exit 1 and a message telling the operator not to begin file maintenance. The helper adds no retries, service actions or signal handling for WatchDoge.
 
@@ -82,9 +82,11 @@ Compare the displayed development-package hash with the recorded value before ex
 
 The output and object file stay under ignored `tools/map-maint/build/`. Only source, the build script, its ignore rule and this document are tracked. The script does not run the output. Do not use an emulator, execute vendor firmware or copy the binary to the robot as part of building it.
 
-## What the built ELF shows
+## Build identities and ELF inspection
 
-The final local binary is **17,312 bytes**, with SHA256 **`4ace18a953eff862a6c3815179a6e35ec3e1bf5e4d5e86cd19f39eb2944d51a0`**. Ordinary build inspection used:
+The successfully deployed binary is **21,500 bytes**, with SHA256 **`fb75e397eb09c51aa1a0402918fe55c357363be5843e6e7f896e6b7d7d8987f0`**. Its source SHA256 is `637ca1de45ee0082dad6eeeaf429be97ead58365bb07125c1ecbcb8fc7341b0f`.
+
+The initial binary, before refusal diagnostics and the zombie correction, was **17,312 bytes**, SHA256 `4ace18a953eff862a6c3815179a6e35ec3e1bf5e4d5e86cd19f39eb2944d51a0`. The following ELF observations came from that initial build:
 
 ```sh
 readelf -h -l -d -V -A -n tools/map-maint/build/map-maint
@@ -99,8 +101,6 @@ The saved vendor dependencies are present: IPC needs rrlog, libconfig, pthread, 
 
 The locally rechecked MD5 values for the saved IPC and UART libraries are respectively `ebc857c5b2bd067cf36b6269d5368ac3` and `5c9d6a7b81bc2d9467b6d0f791ae6ace`, matching the prior [device observations](DEVICE-FACTS.md). Other dependency files were inspected locally, not newly compared with the running robot.
 
-## What is still unresolved before use
+## Runtime limits
 
-The local build removes the missing-native-caller problem; it does not authorize the service-off procedure. The parent still needs to choose the actual command/service gate, confirm current stationary/idle/update conditions and recovery access, and decide whether the framed acknowledgment plus the A14 implementation evidence is sufficient for the intended maintenance window. No semantic sentinel readback was found or added. Dependency search paths and the helper's actual target startup have not been exercised.
-
-No robot connection, upload, service stop, UART open, reboot, firmware change or map-file change occurred. No tests, suites, validators, replay, emulator, review agents or new testing machinery were used. The executable was built and inspected only; its operation and the vendor libraries were never executed.
+Target startup, the dependency search path, exclusion delivery and native return 0 were observed during the [completed stopped backup](MAINTENANCE-PROCEDURE.md). No map file was edited or restored. There is still no semantic sentinel readback or demonstrated independent rescue connection. A successful backup does not make arbitrary map replacement safe or remove the need for fresh status, ownership checks and independent recovery on another run.
