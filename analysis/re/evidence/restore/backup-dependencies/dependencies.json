@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "status": "partial static checkpoint; adds to predecessor, does not replace a complete backup contract",
+  "predecessor": "../consistency/dependencies.json and ../consistency/restore-contract.json",
+  "classification_rule": "Required means preserve exact observed logical state if configured/present, not unconditional deployment existence or a sufficient consistent backup set.",
+  "items": [
+    {
+      "id": "application-database",
+      "compiled_path": "AppProxy BSS string at 0x35367c + /rockrobo/robot.db",
+      "reachable_usage": "AppProxy constructor 0x63f90 allocates database at proxy+0x68 and invokes 0x20440. The first handle at database+0x40 owns bakmaps and its read/insert/update prepared statements. Existing map backup helper 0x3a430 uses this database with external ID native_flag-2.",
+      "configured_requirement": "Preserve robot.db exact bytes when retaining application backup rows, including schema and unrelated shared contents. It is not established as a rebuildable substitute for native map files. Compiled open flags 6 do not establish a journal mode.",
+      "runtime_existence": "Not inspected. Root string initialization, open return and deployed database header unknown.",
+      "journal_configuration": "No journal/WAL pragma in the audited initializer SQL; actual mode unresolved. Parser keyword journal_mode and a vacuum synchronous pragma literal alone are not configuration edges.",
+      "conditional_companions": [
+        "robot.db-journal: retain/interpret if present and relevant to an active/recovery transaction; no claim that a main-file-only copy is coherent",
+        "robot.db-wal and robot.db-shm: mode/usage not established; preserve present companions provisionally with identities rather than assuming absence, mandatory existence or reconstructibility"
+      ],
+      "limits": "No SQLite acquisition/recovery procedure or durability claim. Exact companion presence/semantics require mode/header and all-writer evidence, not suffix enumeration alone.",
+      "evidence": ["BD01", "BD02"]
+    },
+    {
+      "id": "slam-configuration",
+      "compiled_path": "${cached NAV_DYNAMIC_CONFIG_PATH, or compiled empty string}/slam_info.cfg",
+      "reachable_usage": "Singleton 0x1a6374 constructs the config in read mode 2. Setter/getter 0x1a7488/0x1a7624 use Map<decimal native flag>.Moved. Getter starts with true fallback; fallback does not prove equivalence to saved bytes.",
+      "configured_requirement": "Required to preserve this observed per-map configuration state as one shared file, not separate files named for each flag. Other keys are out of this bounded audit; preserve the entire existing file unchanged.",
+      "runtime_existence": "Not inspected; actual environment root not inferred from native hardcoded grid paths or persistence fallback.",
+      "staging_path": "same path + .cache",
+      "staging_role": "writeFile(cache) then rename(cache, final). Normal constructor reads final. Cache is a work product with possibly newer in-flight bytes, not a normal second load input or proof of completion.",
+      "evidence": ["BD04", "BD05"]
+    },
+    {
+      "id": "vmap",
+      "compiled_path": "last_vmap for native flag1; user_vmap<flag-2> for flags2..11; mobility_test_vmap at constructor slot0",
+      "reachable_usage": "0x26a7c slot formula flag+6, used by 0xc410 cases5/6 for positive flag; calls wrappers 0x20ad0/0x20c24 then virtual slots +0x10/+0x0c on object+0x44.",
+      "configured_requirement": "Still conditional/unresolved: preserve present companion bytes provisionally. Concrete virtual implementation and file I/O not identified; default virtual comparison branch can return success without I/O. Neither always required nor historical/rebuildable established.",
+      "runtime_existence": "Not inspected. Compiled path, reachable dispatch and actual file opening remain distinct facts.",
+      "evidence": ["BD03"]
+    }
+  ],
+  "unchanged_blockers": [
+    "Native grid, native persistence, catalog and these companions have no established shared writer epoch/barrier.",
+    "Journal/WAL mode, actual path roots, concrete vmap implementation and runtime existence unresolved.",
+    "No device access, original firmware execution, private capture processing, all-writer quiescence, cache freshness or power-loss durability validation.",
+    "State6 completion producer not directly reached; no new meaning assigned. Buffered load lifecycle not repeated."
+  ]
+}

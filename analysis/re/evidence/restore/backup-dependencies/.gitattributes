@@ -1,0 +1,2 @@
+# Preserve verbatim decompiler output, including its whitespace.
+*.c -whitespace

@@ -1,0 +1,5724 @@
+[
+  {
+    "address": "0x001a6374",
+    "name": "FUN_001a6374",
+    "qualified_name": "FUN_001a6374",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_001a6374()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[001a6374, 001a63e7]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      1729396
+    ],
+    "callers": [
+      "0x001a6414"
+    ],
+    "instructions": [
+      {
+        "address": "0x001a6374",
+        "instruction": "push {r3,r4,r5,r6,r7,lr}",
+        "bytes": "f8b5",
+        "flows": []
+      },
+      {
+        "address": "0x001a6376",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x001a6378",
+        "instruction": "ldr r5,[0x001a63f8]",
+        "bytes": "1f4d",
+        "flows": []
+      },
+      {
+        "address": "0x001a637a",
+        "instruction": "movs r3,#0x0",
+        "bytes": "0023",
+        "flows": []
+      },
+      {
+        "address": "0x001a637c",
+        "instruction": "ldr r2,[0x001a63fc]",
+        "bytes": "1f4a",
+        "flows": []
+      },
+      {
+        "address": "0x001a637e",
+        "instruction": "mov.w r7,#0xffffffff",
+        "bytes": "4ff0ff37",
+        "flows": []
+      },
+      {
+        "address": "0x001a6382",
+        "instruction": "add r5,pc",
+        "bytes": "7d44",
+        "flows": []
+      },
+      {
+        "address": "0x001a6384",
+        "instruction": "str r5,[r4,#0x8]",
+        "bytes": "a560",
+        "flows": []
+      },
+      {
+        "address": "0x001a6386",
+        "instruction": "ldr r5,[0x001a6400]",
+        "bytes": "1e4d",
+        "flows": []
+      },
+      {
+        "address": "0x001a6388",
+        "instruction": "add r2,pc",
+        "bytes": "7a44",
+        "flows": []
+      },
+      {
+        "address": "0x001a638a",
+        "instruction": "ldr r0,[0x001a6404]",
+        "bytes": "1e48",
+        "flows": []
+      },
+      {
+        "address": "0x001a638c",
+        "instruction": "adds r2,#0x8",
+        "bytes": "0832",
+        "flows": []
+      },
+      {
+        "address": "0x001a638e",
+        "instruction": "add r5,pc",
+        "bytes": "7d44",
+        "flows": []
+      },
+      {
+        "address": "0x001a6390",
+        "instruction": "ldr r1,[0x001a6408]",
+        "bytes": "1d49",
+        "flows": []
+      },
+      {
+        "address": "0x001a6392",
+        "instruction": "ldr.w lr,[0x001a640c]",
+        "bytes": "dff878e0",
+        "flows": []
+      },
+      {
+        "address": "0x001a6396",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x001a6398",
+        "instruction": "ldr r6,[0x001a6410]",
+        "bytes": "1d4e",
+        "flows": []
+      },
+      {
+        "address": "0x001a639a",
+        "instruction": "add r1,pc",
+        "bytes": "7944",
+        "flows": []
+      },
+      {
+        "address": "0x001a639c",
+        "instruction": "add lr,pc",
+        "bytes": "fe44",
+        "flows": []
+      },
+      {
+        "address": "0x001a639e",
+        "instruction": "str r2,[r4,#0x0]",
+        "bytes": "2260",
+        "flows": []
+      },
+      {
+        "address": "0x001a63a0",
+        "instruction": "str r0,[r4,#0xc]",
+        "bytes": "e060",
+        "flows": []
+      },
+      {
+        "address": "0x001a63a2",
+        "instruction": "add r6,pc",
+        "bytes": "7e44",
+        "flows": []
+      },
+      {
+        "address": "0x001a63a4",
+        "instruction": "str r1,[r4,#0x10]",
+        "bytes": "2161",
+        "flows": []
+      },
+      {
+        "address": "0x001a63a6",
+        "instruction": "add.w r0,r4,#0x34",
+        "bytes": "04f13400",
+        "flows": []
+      },
+      {
+        "address": "0x001a63aa",
+        "instruction": "mov r1,r5",
+        "bytes": "2946",
+        "flows": []
+      },
+      {
+        "address": "0x001a63ac",
+        "instruction": "str.w lr,[r4,#0x14]",
+        "bytes": "c4f814e0",
+        "flows": []
+      },
+      {
+        "address": "0x001a63b0",
+        "instruction": "movs r2,#0x2",
+        "bytes": "0222",
+        "flows": []
+      },
+      {
+        "address": "0x001a63b2",
+        "instruction": "str r6,[r4,#0x18]",
+        "bytes": "a661",
+        "flows": []
+      },
+      {
+        "address": "0x001a63b4",
+        "instruction": "str r5,[r4,#0x4]",
+        "bytes": "6560",
+        "flows": []
+      },
+      {
+        "address": "0x001a63b6",
+        "instruction": "strb r3,[r4,#0x1d]",
+        "bytes": "6377",
+        "flows": []
+      },
+      {
+        "address": "0x001a63b8",
+        "instruction": "strb r3,[r4,#0x1e]",
+        "bytes": "a377",
+        "flows": []
+      },
+      {
+        "address": "0x001a63ba",
+        "instruction": "strb r3,[r4,#0x1f]",
+        "bytes": "e377",
+        "flows": []
+      },
+      {
+        "address": "0x001a63bc",
+        "instruction": "strb.w r3,[r4,#0x20]",
+        "bytes": "84f82030",
+        "flows": []
+      },
+      {
+        "address": "0x001a63c0",
+        "instruction": "strb.w r3,[r4,#0x21]",
+        "bytes": "84f82130",
+        "flows": []
+      },
+      {
+        "address": "0x001a63c4",
+        "instruction": "strb.w r3,[r4,#0x22]",
+        "bytes": "84f82230",
+        "flows": []
+      },
+      {
+        "address": "0x001a63c8",
+        "instruction": "str r3,[r4,#0x2c]",
+        "bytes": "e362",
+        "flows": []
+      },
+      {
+        "address": "0x001a63ca",
+        "instruction": "str r7,[r4,#0x28]",
+        "bytes": "a762",
+        "flows": []
+      },
+      {
+        "address": "0x001a63cc",
+        "instruction": "str r7,[r4,#0x30]",
+        "bytes": "2763",
+        "flows": []
+      },
+      {
+        "address": "0x001a63ce",
+        "instruction": "bl 0x00141e28",
+        "bytes": "9bf72bfd",
+        "flows": [
+          "0x00141e28"
+        ]
+      },
+      {
+        "address": "0x001a63d2",
+        "instruction": "mov r0,r4",
+        "bytes": "2046",
+        "flows": []
+      },
+      {
+        "address": "0x001a63d4",
+        "instruction": "bl 0x001a6064",
+        "bytes": "fff746fe",
+        "flows": [
+          "0x001a6064"
+        ]
+      },
+      {
+        "address": "0x001a63d8",
+        "instruction": "bl 0x0026a4a0",
+        "bytes": "c4f062f8",
+        "flows": [
+          "0x0026a4a0"
+        ]
+      },
+      {
+        "address": "0x001a63dc",
+        "instruction": "adds r0,#0x0",
+        "bytes": "0030",
+        "flows": []
+      },
+      {
+        "address": "0x001a63de",
+        "instruction": "it ne",
+        "bytes": "18bf",
+        "flows": []
+      },
+      {
+        "address": "0x001a63e0",
+        "instruction": "mov.ne r0,#0x1",
+        "bytes": "0120",
+        "flows": []
+      },
+      {
+        "address": "0x001a63e2",
+        "instruction": "strb r0,[r4,#0x1c]",
+        "bytes": "2077",
+        "flows": []
+      },
+      {
+        "address": "0x001a63e4",
+        "instruction": "mov r0,r4",
+        "bytes": "2046",
+        "flows": []
+      },
+      {
+        "address": "0x001a63e6",
+        "instruction": "pop {r3,r4,r5,r6,r7,pc}",
+        "bytes": "f8bd",
+        "flows": []
+      }
+    ],
+    "c_file": "0x001a6374.c"
+  },
+  {
+    "address": "0x001a73b4",
+    "name": "FUN_001a73b4",
+    "qualified_name": "FUN_001a73b4",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_001a73b4()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[001a73b4, 001a7459]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      1733556
+    ],
+    "callers": [
+      "0x001a7488",
+      "0x001a7624",
+      "0x001a771c",
+      "0x001a78b8"
+    ],
+    "instructions": [
+      {
+        "address": "0x001a73b4",
+        "instruction": "push {r4,r5,r6,r7,r8,r9,lr}",
+        "bytes": "2de9f043",
+        "flows": []
+      },
+      {
+        "address": "0x001a73b8",
+        "instruction": "sub sp,#0x1c",
+        "bytes": "87b0",
+        "flows": []
+      },
+      {
+        "address": "0x001a73ba",
+        "instruction": "ldr r4,[0x001a7470]",
+        "bytes": "2d4c",
+        "flows": []
+      },
+      {
+        "address": "0x001a73bc",
+        "instruction": "add r5,sp,#0x10",
+        "bytes": "04ad",
+        "flows": []
+      },
+      {
+        "address": "0x001a73be",
+        "instruction": "ldr r3,[0x001a7474]",
+        "bytes": "2d4b",
+        "flows": []
+      },
+      {
+        "address": "0x001a73c0",
+        "instruction": "mov r7,r0",
+        "bytes": "0746",
+        "flows": []
+      },
+      {
+        "address": "0x001a73c2",
+        "instruction": "add r4,pc",
+        "bytes": "7c44",
+        "flows": []
+      },
+      {
+        "address": "0x001a73c4",
+        "instruction": "ldr.w r9,[r1,#0x18]",
+        "bytes": "d1f81890",
+        "flows": []
+      },
+      {
+        "address": "0x001a73c8",
+        "instruction": "ldr r6,[0x001a7478]",
+        "bytes": "2b4e",
+        "flows": []
+      },
+      {
+        "address": "0x001a73ca",
+        "instruction": "mov r0,r5",
+        "bytes": "2846",
+        "flows": []
+      },
+      {
+        "address": "0x001a73cc",
+        "instruction": "ldr.w r8,[r4,r3]",
+        "bytes": "54f80380",
+        "flows": []
+      },
+      {
+        "address": "0x001a73d0",
+        "instruction": "ldr r3,[0x001a747c]",
+        "bytes": "2a4b",
+        "flows": []
+      },
+      {
+        "address": "0x001a73d2",
+        "instruction": "ldr.w r1,[r8,#0x0]",
+        "bytes": "d8f80010",
+        "flows": []
+      },
+      {
+        "address": "0x001a73d6",
+        "instruction": "add r3,pc",
+        "bytes": "7b44",
+        "flows": []
+      },
+      {
+        "address": "0x001a73d8",
+        "instruction": "str r1,[sp,#0x14]",
+        "bytes": "0591",
+        "flows": []
+      },
+      {
+        "address": "0x001a73da",
+        "instruction": "ldr r1,[r4,r6]",
+        "bytes": "a159",
+        "flows": []
+      },
+      {
+        "address": "0x001a73dc",
+        "instruction": "str r2,[sp,#0x0]",
+        "bytes": "0092",
+        "flows": []
+      },
+      {
+        "address": "0x001a73de",
+        "instruction": "movs r2,#0x10",
+        "bytes": "1022",
+        "flows": []
+      },
+      {
+        "address": "0x001a73e0",
+        "instruction": "blx 0x0003c0d4",
+        "bytes": "94f678ee",
+        "flows": [
+          "0x0003c0d4"
+        ]
+      },
+      {
+        "address": "0x001a73e4",
+        "instruction": "mov r0,r9",
+        "bytes": "4846",
+        "flows": []
+      },
+      {
+        "address": "0x001a73e6",
+        "instruction": "blx 0x0003d088",
+        "bytes": "95f650ee",
+        "flows": [
+          "0x0003d088"
+        ]
+      },
+      {
+        "address": "0x001a73ea",
+        "instruction": "mov r2,r9",
+        "bytes": "4a46",
+        "flows": []
+      },
+      {
+        "address": "0x001a73ec",
+        "instruction": "movs r1,#0x0",
+        "bytes": "0021",
+        "flows": []
+      },
+      {
+        "address": "0x001a73ee",
+        "instruction": "mov r3,r0",
+        "bytes": "0346",
+        "flows": []
+      },
+      {
+        "address": "0x001a73f0",
+        "instruction": "mov r0,r5",
+        "bytes": "2846",
+        "flows": []
+      },
+      {
+        "address": "0x001a73f2",
+        "instruction": "blx 0x0003d4f8",
+        "bytes": "96f682e8",
+        "flows": [
+          "0x0003d4f8"
+        ]
+      },
+      {
+        "address": "0x001a73f6",
+        "instruction": "ldr r2,[r0,#0x0]",
+        "bytes": "0268",
+        "flows": []
+      },
+      {
+        "address": "0x001a73f8",
+        "instruction": "ldr r3,[0x001a7480]",
+        "bytes": "214b",
+        "flows": []
+      },
+      {
+        "address": "0x001a73fa",
+        "instruction": "str r2,[r7,#0x0]",
+        "bytes": "3a60",
+        "flows": []
+      },
+      {
+        "address": "0x001a73fc",
+        "instruction": "ldr r3,[r4,r3]",
+        "bytes": "e358",
+        "flows": []
+      },
+      {
+        "address": "0x001a73fe",
+        "instruction": "add.w r2,r3,#0xc",
+        "bytes": "03f10c02",
+        "flows": []
+      },
+      {
+        "address": "0x001a7402",
+        "instruction": "str r2,[r0,#0x0]",
+        "bytes": "0260",
+        "flows": []
+      },
+      {
+        "address": "0x001a7404",
+        "instruction": "ldr r2,[sp,#0x10]",
+        "bytes": "049a",
+        "flows": []
+      },
+      {
+        "address": "0x001a7406",
+        "instruction": "sub.w r0,r2,#0xc",
+        "bytes": "a2f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x001a740a",
+        "instruction": "cmp r0,r3",
+        "bytes": "9842",
+        "flows": []
+      },
+      {
+        "address": "0x001a740c",
+        "instruction": "bne 0x001a7420",
+        "bytes": "08d1",
+        "flows": [
+          "0x001a7420"
+        ]
+      },
+      {
+        "address": "0x001a740e",
+        "instruction": "ldr r2,[sp,#0x14]",
+        "bytes": "059a",
+        "flows": []
+      },
+      {
+        "address": "0x001a7410",
+        "instruction": "mov r0,r7",
+        "bytes": "3846",
+        "flows": []
+      },
+      {
+        "address": "0x001a7412",
+        "instruction": "ldr.w r3,[r8,#0x0]",
+        "bytes": "d8f80030",
+        "flows": []
+      },
+      {
+        "address": "0x001a7416",
+        "instruction": "cmp r2,r3",
+        "bytes": "9a42",
+        "flows": []
+      },
+      {
+        "address": "0x001a7418",
+        "instruction": "bne 0x001a7456",
+        "bytes": "1dd1",
+        "flows": [
+          "0x001a7456"
+        ]
+      },
+      {
+        "address": "0x001a741a",
+        "instruction": "add sp,#0x1c",
+        "bytes": "07b0",
+        "flows": []
+      },
+      {
+        "address": "0x001a741c",
+        "instruction": "pop.w {r4,r5,r6,r7,r8,r9,pc}",
+        "bytes": "bde8f083",
+        "flows": []
+      },
+      {
+        "address": "0x001a7420",
+        "instruction": "ldr r3,[0x001a7484]",
+        "bytes": "184b",
+        "flows": []
+      },
+      {
+        "address": "0x001a7422",
+        "instruction": "ldr r3,[r4,r3]",
+        "bytes": "e358",
+        "flows": []
+      },
+      {
+        "address": "0x001a7424",
+        "instruction": "cbz r3,0x001a744a",
+        "bytes": "8bb1",
+        "flows": [
+          "0x001a744a"
+        ]
+      },
+      {
+        "address": "0x001a7426",
+        "instruction": "subs r2,#0x4",
+        "bytes": "043a",
+        "flows": []
+      },
+      {
+        "address": "0x001a7428",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001a742c",
+        "instruction": "ldrex r3,[r2,#0x0]",
+        "bytes": "52e8003f",
+        "flows": []
+      },
+      {
+        "address": "0x001a7430",
+        "instruction": "subs r1,r3,#0x1",
+        "bytes": "591e",
+        "flows": []
+      },
+      {
+        "address": "0x001a7432",
+        "instruction": "strex r4,r1,[r2,#0x0]",
+        "bytes": "42e80014",
+        "flows": []
+      },
+      {
+        "address": "0x001a7436",
+        "instruction": "cmp r4,#0x0",
+        "bytes": "002c",
+        "flows": []
+      },
+      {
+        "address": "0x001a7438",
+        "instruction": "bne 0x001a742c",
+        "bytes": "f8d1",
+        "flows": [
+          "0x001a742c"
+        ]
+      },
+      {
+        "address": "0x001a743a",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001a743e",
+        "instruction": "cmp r3,#0x0",
+        "bytes": "002b",
+        "flows": []
+      },
+      {
+        "address": "0x001a7440",
+        "instruction": "bgt 0x001a740e",
+        "bytes": "e5dc",
+        "flows": [
+          "0x001a740e"
+        ]
+      },
+      {
+        "address": "0x001a7442",
+        "instruction": "add r1,sp,#0xc",
+        "bytes": "03a9",
+        "flows": []
+      },
+      {
+        "address": "0x001a7444",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "96f62ce9",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x001a7448",
+        "instruction": "b 0x001a740e",
+        "bytes": "e1e7",
+        "flows": [
+          "0x001a740e"
+        ]
+      },
+      {
+        "address": "0x001a744a",
+        "instruction": "ldr.w r3,[r2,#-0x4]",
+        "bytes": "52f8043c",
+        "flows": []
+      },
+      {
+        "address": "0x001a744e",
+        "instruction": "subs r1,r3,#0x1",
+        "bytes": "591e",
+        "flows": []
+      },
+      {
+        "address": "0x001a7450",
+        "instruction": "str.w r1,[r2,#-0x4]",
+        "bytes": "42f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x001a7454",
+        "instruction": "b 0x001a743e",
+        "bytes": "f3e7",
+        "flows": [
+          "0x001a743e"
+        ]
+      },
+      {
+        "address": "0x001a7456",
+        "instruction": "blx 0x0003c57c",
+        "bytes": "95f692e8",
+        "flows": [
+          "0x0003c57c"
+        ]
+      }
+    ],
+    "c_file": "0x001a73b4.c"
+  },
+  {
+    "address": "0x001a7488",
+    "name": "FUN_001a7488",
+    "qualified_name": "FUN_001a7488",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_001a7488()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[001a7488, 001a75d5]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      1733768
+    ],
+    "callers": [
+      "0x00067144"
+    ],
+    "instructions": [
+      {
+        "address": "0x001a7488",
+        "instruction": "push {r4,r5,r6,r7,r8,r9,r10,lr}",
+        "bytes": "2de9f047",
+        "flows": []
+      },
+      {
+        "address": "0x001a748c",
+        "instruction": "sub sp,#0x40",
+        "bytes": "90b0",
+        "flows": []
+      },
+      {
+        "address": "0x001a748e",
+        "instruction": "ldr r6,[0x001a7608]",
+        "bytes": "5e4e",
+        "flows": []
+      },
+      {
+        "address": "0x001a7490",
+        "instruction": "add r7,sp,#0x28",
+        "bytes": "0aaf",
+        "flows": []
+      },
+      {
+        "address": "0x001a7492",
+        "instruction": "ldr r3,[0x001a760c]",
+        "bytes": "5e4b",
+        "flows": []
+      },
+      {
+        "address": "0x001a7494",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x001a7496",
+        "instruction": "add r6,pc",
+        "bytes": "7e44",
+        "flows": []
+      },
+      {
+        "address": "0x001a7498",
+        "instruction": "str r2,[sp,#0x1c]",
+        "bytes": "0792",
+        "flows": []
+      },
+      {
+        "address": "0x001a749a",
+        "instruction": "mov r5,r1",
+        "bytes": "0d46",
+        "flows": []
+      },
+      {
+        "address": "0x001a749c",
+        "instruction": "mov r2,r1",
+        "bytes": "0a46",
+        "flows": []
+      },
+      {
+        "address": "0x001a749e",
+        "instruction": "ldr.w r9,[r6,r3]",
+        "bytes": "56f80390",
+        "flows": []
+      },
+      {
+        "address": "0x001a74a2",
+        "instruction": "mov r1,r0",
+        "bytes": "0146",
+        "flows": []
+      },
+      {
+        "address": "0x001a74a4",
+        "instruction": "mov r0,r7",
+        "bytes": "3846",
+        "flows": []
+      },
+      {
+        "address": "0x001a74a6",
+        "instruction": "ldr.w r3,[r9,#0x0]",
+        "bytes": "d9f80030",
+        "flows": []
+      },
+      {
+        "address": "0x001a74aa",
+        "instruction": "str r3,[sp,#0x3c]",
+        "bytes": "0f93",
+        "flows": []
+      },
+      {
+        "address": "0x001a74ac",
+        "instruction": "bl 0x001a73b4",
+        "bytes": "fff782ff",
+        "flows": [
+          "0x001a73b4"
+        ]
+      },
+      {
+        "address": "0x001a74b0",
+        "instruction": "ldr r1,[sp,#0x1c]",
+        "bytes": "0799",
+        "flows": []
+      },
+      {
+        "address": "0x001a74b2",
+        "instruction": "movs r3,#0xcd",
+        "bytes": "cd23",
+        "flows": []
+      },
+      {
+        "address": "0x001a74b4",
+        "instruction": "ldr.w r12,[0x001a7610]",
+        "bytes": "dff858c1",
+        "flows": []
+      },
+      {
+        "address": "0x001a74b8",
+        "instruction": "movs r2,#0x1",
+        "bytes": "0122",
+        "flows": []
+      },
+      {
+        "address": "0x001a74ba",
+        "instruction": "ldr r0,[0x001a7614]",
+        "bytes": "5648",
+        "flows": []
+      },
+      {
+        "address": "0x001a74bc",
+        "instruction": "str r1,[sp,#0x10]",
+        "bytes": "0491",
+        "flows": []
+      },
+      {
+        "address": "0x001a74be",
+        "instruction": "add r12,pc",
+        "bytes": "fc44",
+        "flows": []
+      },
+      {
+        "address": "0x001a74c0",
+        "instruction": "ldr r1,[sp,#0x28]",
+        "bytes": "0a99",
+        "flows": []
+      },
+      {
+        "address": "0x001a74c2",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x001a74c4",
+        "instruction": "ldr.w lr,[0x001a7618]",
+        "bytes": "dff850e1",
+        "flows": []
+      },
+      {
+        "address": "0x001a74c8",
+        "instruction": "str r0,[sp,#0x4]",
+        "bytes": "0190",
+        "flows": []
+      },
+      {
+        "address": "0x001a74ca",
+        "instruction": "movs r0,#0x3",
+        "bytes": "0320",
+        "flows": []
+      },
+      {
+        "address": "0x001a74cc",
+        "instruction": "add lr,pc",
+        "bytes": "fe44",
+        "flows": []
+      },
+      {
+        "address": "0x001a74ce",
+        "instruction": "str r1,[sp,#0xc]",
+        "bytes": "0391",
+        "flows": []
+      },
+      {
+        "address": "0x001a74d0",
+        "instruction": "str.w r12,[sp,#0x8]",
+        "bytes": "cdf808c0",
+        "flows": []
+      },
+      {
+        "address": "0x001a74d4",
+        "instruction": "movs r1,#0x6",
+        "bytes": "0621",
+        "flows": []
+      },
+      {
+        "address": "0x001a74d6",
+        "instruction": "str.w lr,[sp,#0x0]",
+        "bytes": "cdf800e0",
+        "flows": []
+      },
+      {
+        "address": "0x001a74da",
+        "instruction": "blx 0x0003c5b0",
+        "bytes": "95f66ae8",
+        "flows": [
+          "0x0003c5b0"
+        ]
+      },
+      {
+        "address": "0x001a74de",
+        "instruction": "ldr r3,[0x001a761c]",
+        "bytes": "4f4b",
+        "flows": []
+      },
+      {
+        "address": "0x001a74e0",
+        "instruction": "ldr r2,[sp,#0x28]",
+        "bytes": "0a9a",
+        "flows": []
+      },
+      {
+        "address": "0x001a74e2",
+        "instruction": "ldr.w r8,[r6,r3]",
+        "bytes": "56f80380",
+        "flows": []
+      },
+      {
+        "address": "0x001a74e6",
+        "instruction": "sub.w r0,r2,#0xc",
+        "bytes": "a2f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x001a74ea",
+        "instruction": "cmp r0,r8",
+        "bytes": "4045",
+        "flows": []
+      },
+      {
+        "address": "0x001a74ec",
+        "instruction": "bne 0x001a7560",
+        "bytes": "38d1",
+        "flows": [
+          "0x001a7560"
+        ]
+      },
+      {
+        "address": "0x001a74ee",
+        "instruction": "add.w r10,sp,#0x24",
+        "bytes": "0df1240a",
+        "flows": []
+      },
+      {
+        "address": "0x001a74f2",
+        "instruction": "mov r0,r10",
+        "bytes": "5046",
+        "flows": []
+      },
+      {
+        "address": "0x001a74f4",
+        "instruction": "mov r2,r5",
+        "bytes": "2a46",
+        "flows": []
+      },
+      {
+        "address": "0x001a74f6",
+        "instruction": "mov r1,r4",
+        "bytes": "2146",
+        "flows": []
+      },
+      {
+        "address": "0x001a74f8",
+        "instruction": "add.w r10,r4,#0x34",
+        "bytes": "04f1340a",
+        "flows": []
+      },
+      {
+        "address": "0x001a74fc",
+        "instruction": "bl 0x001a73b4",
+        "bytes": "fff75aff",
+        "flows": [
+          "0x001a73b4"
+        ]
+      },
+      {
+        "address": "0x001a7500",
+        "instruction": "ldr r1,[sp,#0x24]",
+        "bytes": "0999",
+        "flows": []
+      },
+      {
+        "address": "0x001a7502",
+        "instruction": "ldr r2,[r4,#0x8]",
+        "bytes": "a268",
+        "flows": []
+      },
+      {
+        "address": "0x001a7504",
+        "instruction": "movs r0,#0x8",
+        "bytes": "0820",
+        "flows": []
+      },
+      {
+        "address": "0x001a7506",
+        "instruction": "movs r3,#0x0",
+        "bytes": "0023",
+        "flows": []
+      },
+      {
+        "address": "0x001a7508",
+        "instruction": "str r3,[sp,#0x28]",
+        "bytes": "0a93",
+        "flows": []
+      },
+      {
+        "address": "0x001a750a",
+        "instruction": "str r1,[sp,#0x34]",
+        "bytes": "0d91",
+        "flows": []
+      },
+      {
+        "address": "0x001a750c",
+        "instruction": "str r2,[sp,#0x38]",
+        "bytes": "0e92",
+        "flows": []
+      },
+      {
+        "address": "0x001a750e",
+        "instruction": "str r3,[sp,#0x2c]",
+        "bytes": "0b93",
+        "flows": []
+      },
+      {
+        "address": "0x001a7510",
+        "instruction": "str r3,[sp,#0x30]",
+        "bytes": "0c93",
+        "flows": []
+      },
+      {
+        "address": "0x001a7512",
+        "instruction": "blx 0x0003cbf0",
+        "bytes": "95f66eeb",
+        "flows": [
+          "0x0003cbf0"
+        ]
+      },
+      {
+        "address": "0x001a7516",
+        "instruction": "add r5,sp,#0x34",
+        "bytes": "0dad",
+        "flows": []
+      },
+      {
+        "address": "0x001a7518",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x001a751a",
+        "instruction": "str r0,[sp,#0x28]",
+        "bytes": "0a90",
+        "flows": []
+      },
+      {
+        "address": "0x001a751c",
+        "instruction": "add r3,sp,#0x1c",
+        "bytes": "07ab",
+        "flows": []
+      },
+      {
+        "address": "0x001a751e",
+        "instruction": "ldmia r5!,{r0,r1}",
+        "bytes": "03cd",
+        "flows": []
+      },
+      {
+        "address": "0x001a7520",
+        "instruction": "mov.w r2,#0xffffffff",
+        "bytes": "4ff0ff32",
+        "flows": []
+      },
+      {
+        "address": "0x001a7524",
+        "instruction": "add.w r5,r4,#0x8",
+        "bytes": "04f10805",
+        "flows": []
+      },
+      {
+        "address": "0x001a7528",
+        "instruction": "str r5,[sp,#0x30]",
+        "bytes": "0c95",
+        "flows": []
+      },
+      {
+        "address": "0x001a752a",
+        "instruction": "str r5,[sp,#0x2c]",
+        "bytes": "0b95",
+        "flows": []
+      },
+      {
+        "address": "0x001a752c",
+        "instruction": "str r0,[r4,#0x0]",
+        "bytes": "2060",
+        "flows": []
+      },
+      {
+        "address": "0x001a752e",
+        "instruction": "mov r0,r10",
+        "bytes": "5046",
+        "flows": []
+      },
+      {
+        "address": "0x001a7530",
+        "instruction": "str r1,[r4,#0x4]",
+        "bytes": "6160",
+        "flows": []
+      },
+      {
+        "address": "0x001a7532",
+        "instruction": "mov r1,r7",
+        "bytes": "3946",
+        "flows": []
+      },
+      {
+        "address": "0x001a7534",
+        "instruction": "bl 0x0015cd40",
+        "bytes": "b5f704fc",
+        "flows": [
+          "0x0015cd40"
+        ]
+      },
+      {
+        "address": "0x001a7538",
+        "instruction": "ldr r0,[sp,#0x28]",
+        "bytes": "0a98",
+        "flows": []
+      },
+      {
+        "address": "0x001a753a",
+        "instruction": "cbz r0,0x001a7540",
+        "bytes": "08b1",
+        "flows": [
+          "0x001a7540"
+        ]
+      },
+      {
+        "address": "0x001a753c",
+        "instruction": "blx 0x0003cac4",
+        "bytes": "95f6c2ea",
+        "flows": [
+          "0x0003cac4"
+        ]
+      },
+      {
+        "address": "0x001a7540",
+        "instruction": "ldr r3,[sp,#0x24]",
+        "bytes": "099b",
+        "flows": []
+      },
+      {
+        "address": "0x001a7542",
+        "instruction": "sub.w r0,r3,#0xc",
+        "bytes": "a3f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x001a7546",
+        "instruction": "cmp r0,r8",
+        "bytes": "4045",
+        "flows": []
+      },
+      {
+        "address": "0x001a7548",
+        "instruction": "bne 0x001a7590",
+        "bytes": "22d1",
+        "flows": [
+          "0x001a7590"
+        ]
+      },
+      {
+        "address": "0x001a754a",
+        "instruction": "mov r0,r10",
+        "bytes": "5046",
+        "flows": []
+      },
+      {
+        "address": "0x001a754c",
+        "instruction": "bl 0x00141c24",
+        "bytes": "9af76afb",
+        "flows": [
+          "0x00141c24"
+        ]
+      },
+      {
+        "address": "0x001a7550",
+        "instruction": "ldr r2,[sp,#0x3c]",
+        "bytes": "0f9a",
+        "flows": []
+      },
+      {
+        "address": "0x001a7552",
+        "instruction": "ldr.w r3,[r9,#0x0]",
+        "bytes": "d9f80030",
+        "flows": []
+      },
+      {
+        "address": "0x001a7556",
+        "instruction": "cmp r2,r3",
+        "bytes": "9a42",
+        "flows": []
+      },
+      {
+        "address": "0x001a7558",
+        "instruction": "bne 0x001a75d2",
+        "bytes": "3bd1",
+        "flows": [
+          "0x001a75d2"
+        ]
+      },
+      {
+        "address": "0x001a755a",
+        "instruction": "add sp,#0x40",
+        "bytes": "10b0",
+        "flows": []
+      },
+      {
+        "address": "0x001a755c",
+        "instruction": "pop.w {r4,r5,r6,r7,r8,r9,r10,pc}",
+        "bytes": "bde8f087",
+        "flows": []
+      },
+      {
+        "address": "0x001a7560",
+        "instruction": "ldr r3,[0x001a7620]",
+        "bytes": "2f4b",
+        "flows": []
+      },
+      {
+        "address": "0x001a7562",
+        "instruction": "ldr r3,[r6,r3]",
+        "bytes": "f358",
+        "flows": []
+      },
+      {
+        "address": "0x001a7564",
+        "instruction": "cbz r3,0x001a75c6",
+        "bytes": "7bb3",
+        "flows": [
+          "0x001a75c6"
+        ]
+      },
+      {
+        "address": "0x001a7566",
+        "instruction": "subs r2,#0x4",
+        "bytes": "043a",
+        "flows": []
+      },
+      {
+        "address": "0x001a7568",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001a756c",
+        "instruction": "ldrex r3,[r2,#0x0]",
+        "bytes": "52e8003f",
+        "flows": []
+      },
+      {
+        "address": "0x001a7570",
+        "instruction": "subs r1,r3,#0x1",
+        "bytes": "591e",
+        "flows": []
+      },
+      {
+        "address": "0x001a7572",
+        "instruction": "strex lr,r1,[r2,#0x0]",
+        "bytes": "42e8001e",
+        "flows": []
+      },
+      {
+        "address": "0x001a7576",
+        "instruction": "cmp.w lr,#0x0",
+        "bytes": "bef1000f",
+        "flows": []
+      },
+      {
+        "address": "0x001a757a",
+        "instruction": "bne 0x001a756c",
+        "bytes": "f7d1",
+        "flows": [
+          "0x001a756c"
+        ]
+      },
+      {
+        "address": "0x001a757c",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001a7580",
+        "instruction": "cmp r3,#0x0",
+        "bytes": "002b",
+        "flows": []
+      },
+      {
+        "address": "0x001a7582",
+        "instruction": "add.w r10,sp,#0x24",
+        "bytes": "0df1240a",
+        "flows": []
+      },
+      {
+        "address": "0x001a7586",
+        "instruction": "bgt 0x001a74f2",
+        "bytes": "b4dc",
+        "flows": [
+          "0x001a74f2"
+        ]
+      },
+      {
+        "address": "0x001a7588",
+        "instruction": "mov r1,r10",
+        "bytes": "5146",
+        "flows": []
+      },
+      {
+        "address": "0x001a758a",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "96f68ae8",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x001a758e",
+        "instruction": "b 0x001a74f2",
+        "bytes": "b0e7",
+        "flows": [
+          "0x001a74f2"
+        ]
+      },
+      {
+        "address": "0x001a7590",
+        "instruction": "ldr r2,[0x001a7620]",
+        "bytes": "234a",
+        "flows": []
+      },
+      {
+        "address": "0x001a7592",
+        "instruction": "ldr r2,[r6,r2]",
+        "bytes": "b258",
+        "flows": []
+      },
+      {
+        "address": "0x001a7594",
+        "instruction": "cbz r2,0x001a75ba",
+        "bytes": "8ab1",
+        "flows": [
+          "0x001a75ba"
+        ]
+      },
+      {
+        "address": "0x001a7596",
+        "instruction": "subs r3,#0x4",
+        "bytes": "043b",
+        "flows": []
+      },
+      {
+        "address": "0x001a7598",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001a759c",
+        "instruction": "ldrex r2,[r3,#0x0]",
+        "bytes": "53e8002f",
+        "flows": []
+      },
+      {
+        "address": "0x001a75a0",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x001a75a2",
+        "instruction": "strex r4,r1,[r3,#0x0]",
+        "bytes": "43e80014",
+        "flows": []
+      },
+      {
+        "address": "0x001a75a6",
+        "instruction": "cmp r4,#0x0",
+        "bytes": "002c",
+        "flows": []
+      },
+      {
+        "address": "0x001a75a8",
+        "instruction": "bne 0x001a759c",
+        "bytes": "f8d1",
+        "flows": [
+          "0x001a759c"
+        ]
+      },
+      {
+        "address": "0x001a75aa",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001a75ae",
+        "instruction": "cmp r2,#0x0",
+        "bytes": "002a",
+        "flows": []
+      },
+      {
+        "address": "0x001a75b0",
+        "instruction": "bgt 0x001a754a",
+        "bytes": "cbdc",
+        "flows": [
+          "0x001a754a"
+        ]
+      },
+      {
+        "address": "0x001a75b2",
+        "instruction": "mov r1,r7",
+        "bytes": "3946",
+        "flows": []
+      },
+      {
+        "address": "0x001a75b4",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "96f674e8",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x001a75b8",
+        "instruction": "b 0x001a754a",
+        "bytes": "c7e7",
+        "flows": [
+          "0x001a754a"
+        ]
+      },
+      {
+        "address": "0x001a75ba",
+        "instruction": "ldr.w r2,[r3,#-0x4]",
+        "bytes": "53f8042c",
+        "flows": []
+      },
+      {
+        "address": "0x001a75be",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x001a75c0",
+        "instruction": "str.w r1,[r3,#-0x4]",
+        "bytes": "43f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x001a75c4",
+        "instruction": "b 0x001a75ae",
+        "bytes": "f3e7",
+        "flows": [
+          "0x001a75ae"
+        ]
+      },
+      {
+        "address": "0x001a75c6",
+        "instruction": "ldr.w r3,[r2,#-0x4]",
+        "bytes": "52f8043c",
+        "flows": []
+      },
+      {
+        "address": "0x001a75ca",
+        "instruction": "subs r1,r3,#0x1",
+        "bytes": "591e",
+        "flows": []
+      },
+      {
+        "address": "0x001a75cc",
+        "instruction": "str.w r1,[r2,#-0x4]",
+        "bytes": "42f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x001a75d0",
+        "instruction": "b 0x001a7580",
+        "bytes": "d6e7",
+        "flows": [
+          "0x001a7580"
+        ]
+      },
+      {
+        "address": "0x001a75d2",
+        "instruction": "blx 0x0003c57c",
+        "bytes": "94f6d4ef",
+        "flows": [
+          "0x0003c57c"
+        ]
+      }
+    ],
+    "c_file": "0x001a7488.c"
+  },
+  {
+    "address": "0x001a7624",
+    "name": "FUN_001a7624",
+    "qualified_name": "FUN_001a7624",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_001a7624()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[001a7624, 001a76eb]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      1734180
+    ],
+    "callers": [
+      "0x00068428",
+      "0x0020e78c"
+    ],
+    "instructions": [
+      {
+        "address": "0x001a7624",
+        "instruction": "push {r4,r5,r6,r7,r8,lr}",
+        "bytes": "2de9f041",
+        "flows": []
+      },
+      {
+        "address": "0x001a7628",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x001a762a",
+        "instruction": "ldr r5,[0x001a770c]",
+        "bytes": "384d",
+        "flows": []
+      },
+      {
+        "address": "0x001a762c",
+        "instruction": "sub sp,#0x28",
+        "bytes": "8ab0",
+        "flows": []
+      },
+      {
+        "address": "0x001a762e",
+        "instruction": "ldr r3,[0x001a7710]",
+        "bytes": "384b",
+        "flows": []
+      },
+      {
+        "address": "0x001a7630",
+        "instruction": "mov r2,r1",
+        "bytes": "0a46",
+        "flows": []
+      },
+      {
+        "address": "0x001a7632",
+        "instruction": "add r5,pc",
+        "bytes": "7d44",
+        "flows": []
+      },
+      {
+        "address": "0x001a7634",
+        "instruction": "add r0,sp,#0xc",
+        "bytes": "03a8",
+        "flows": []
+      },
+      {
+        "address": "0x001a7636",
+        "instruction": "mov r1,r4",
+        "bytes": "2146",
+        "flows": []
+      },
+      {
+        "address": "0x001a7638",
+        "instruction": "movs r7,#0x1",
+        "bytes": "0127",
+        "flows": []
+      },
+      {
+        "address": "0x001a763a",
+        "instruction": "ldr r6,[r5,r3]",
+        "bytes": "ee58",
+        "flows": []
+      },
+      {
+        "address": "0x001a763c",
+        "instruction": "str r7,[sp,#0x8]",
+        "bytes": "0297",
+        "flows": []
+      },
+      {
+        "address": "0x001a763e",
+        "instruction": "ldr r3,[r6,#0x0]",
+        "bytes": "3368",
+        "flows": []
+      },
+      {
+        "address": "0x001a7640",
+        "instruction": "str r3,[sp,#0x24]",
+        "bytes": "0993",
+        "flows": []
+      },
+      {
+        "address": "0x001a7642",
+        "instruction": "bl 0x001a73b4",
+        "bytes": "fff7b7fe",
+        "flows": [
+          "0x001a73b4"
+        ]
+      },
+      {
+        "address": "0x001a7646",
+        "instruction": "ldr r1,[r4,#0x8]",
+        "bytes": "a168",
+        "flows": []
+      },
+      {
+        "address": "0x001a7648",
+        "instruction": "movs r0,#0x8",
+        "bytes": "0820",
+        "flows": []
+      },
+      {
+        "address": "0x001a764a",
+        "instruction": "ldr r2,[sp,#0xc]",
+        "bytes": "039a",
+        "flows": []
+      },
+      {
+        "address": "0x001a764c",
+        "instruction": "movs r3,#0x0",
+        "bytes": "0023",
+        "flows": []
+      },
+      {
+        "address": "0x001a764e",
+        "instruction": "str r3,[sp,#0x10]",
+        "bytes": "0493",
+        "flows": []
+      },
+      {
+        "address": "0x001a7650",
+        "instruction": "str r1,[sp,#0x20]",
+        "bytes": "0891",
+        "flows": []
+      },
+      {
+        "address": "0x001a7652",
+        "instruction": "str r2,[sp,#0x1c]",
+        "bytes": "0792",
+        "flows": []
+      },
+      {
+        "address": "0x001a7654",
+        "instruction": "str r3,[sp,#0x14]",
+        "bytes": "0593",
+        "flows": []
+      },
+      {
+        "address": "0x001a7656",
+        "instruction": "str r3,[sp,#0x18]",
+        "bytes": "0693",
+        "flows": []
+      },
+      {
+        "address": "0x001a7658",
+        "instruction": "blx 0x0003cbf0",
+        "bytes": "95f6caea",
+        "flows": [
+          "0x0003cbf0"
+        ]
+      },
+      {
+        "address": "0x001a765c",
+        "instruction": "add r2,sp,#0x1c",
+        "bytes": "07aa",
+        "flows": []
+      },
+      {
+        "address": "0x001a765e",
+        "instruction": "add.w r8,r4,#0x34",
+        "bytes": "04f13408",
+        "flows": []
+      },
+      {
+        "address": "0x001a7662",
+        "instruction": "str r0,[sp,#0x10]",
+        "bytes": "0490",
+        "flows": []
+      },
+      {
+        "address": "0x001a7664",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x001a7666",
+        "instruction": "ldmia r2!,{r0,r1}",
+        "bytes": "03ca",
+        "flows": []
+      },
+      {
+        "address": "0x001a7668",
+        "instruction": "add r7,sp,#0x10",
+        "bytes": "04af",
+        "flows": []
+      },
+      {
+        "address": "0x001a766a",
+        "instruction": "add r3,sp,#0x8",
+        "bytes": "02ab",
+        "flows": []
+      },
+      {
+        "address": "0x001a766c",
+        "instruction": "mov.w r2,#0xffffffff",
+        "bytes": "4ff0ff32",
+        "flows": []
+      },
+      {
+        "address": "0x001a7670",
+        "instruction": "adds r4,#0x8",
+        "bytes": "0834",
+        "flows": []
+      },
+      {
+        "address": "0x001a7672",
+        "instruction": "str.w r0,[r4,#-0x8]",
+        "bytes": "44f8080c",
+        "flows": []
+      },
+      {
+        "address": "0x001a7676",
+        "instruction": "mov r0,r8",
+        "bytes": "4046",
+        "flows": []
+      },
+      {
+        "address": "0x001a7678",
+        "instruction": "str.w r1,[r4,#-0x4]",
+        "bytes": "44f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x001a767c",
+        "instruction": "mov r1,r7",
+        "bytes": "3946",
+        "flows": []
+      },
+      {
+        "address": "0x001a767e",
+        "instruction": "str r4,[sp,#0x18]",
+        "bytes": "0694",
+        "flows": []
+      },
+      {
+        "address": "0x001a7680",
+        "instruction": "str r4,[sp,#0x14]",
+        "bytes": "0594",
+        "flows": []
+      },
+      {
+        "address": "0x001a7682",
+        "instruction": "bl 0x0015d268",
+        "bytes": "b5f7f1fd",
+        "flows": [
+          "0x0015d268"
+        ]
+      },
+      {
+        "address": "0x001a7686",
+        "instruction": "ldr r0,[sp,#0x10]",
+        "bytes": "0498",
+        "flows": []
+      },
+      {
+        "address": "0x001a7688",
+        "instruction": "cbz r0,0x001a768e",
+        "bytes": "08b1",
+        "flows": [
+          "0x001a768e"
+        ]
+      },
+      {
+        "address": "0x001a768a",
+        "instruction": "blx 0x0003cac4",
+        "bytes": "95f61cea",
+        "flows": [
+          "0x0003cac4"
+        ]
+      },
+      {
+        "address": "0x001a768e",
+        "instruction": "ldr r3,[0x001a7714]",
+        "bytes": "214b",
+        "flows": []
+      },
+      {
+        "address": "0x001a7690",
+        "instruction": "ldr r2,[sp,#0xc]",
+        "bytes": "039a",
+        "flows": []
+      },
+      {
+        "address": "0x001a7692",
+        "instruction": "ldr r3,[r5,r3]",
+        "bytes": "eb58",
+        "flows": []
+      },
+      {
+        "address": "0x001a7694",
+        "instruction": "sub.w r0,r2,#0xc",
+        "bytes": "a2f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x001a7698",
+        "instruction": "cmp r0,r3",
+        "bytes": "9842",
+        "flows": []
+      },
+      {
+        "address": "0x001a769a",
+        "instruction": "bne 0x001a76b2",
+        "bytes": "0ad1",
+        "flows": [
+          "0x001a76b2"
+        ]
+      },
+      {
+        "address": "0x001a769c",
+        "instruction": "ldr r0,[sp,#0x8]",
+        "bytes": "0298",
+        "flows": []
+      },
+      {
+        "address": "0x001a769e",
+        "instruction": "ldr r2,[sp,#0x24]",
+        "bytes": "099a",
+        "flows": []
+      },
+      {
+        "address": "0x001a76a0",
+        "instruction": "adds r0,#0x0",
+        "bytes": "0030",
+        "flows": []
+      },
+      {
+        "address": "0x001a76a2",
+        "instruction": "ldr r3,[r6,#0x0]",
+        "bytes": "3368",
+        "flows": []
+      },
+      {
+        "address": "0x001a76a4",
+        "instruction": "it ne",
+        "bytes": "18bf",
+        "flows": []
+      },
+      {
+        "address": "0x001a76a6",
+        "instruction": "mov.ne r0,#0x1",
+        "bytes": "0120",
+        "flows": []
+      },
+      {
+        "address": "0x001a76a8",
+        "instruction": "cmp r2,r3",
+        "bytes": "9a42",
+        "flows": []
+      },
+      {
+        "address": "0x001a76aa",
+        "instruction": "bne 0x001a76e8",
+        "bytes": "1dd1",
+        "flows": [
+          "0x001a76e8"
+        ]
+      },
+      {
+        "address": "0x001a76ac",
+        "instruction": "add sp,#0x28",
+        "bytes": "0ab0",
+        "flows": []
+      },
+      {
+        "address": "0x001a76ae",
+        "instruction": "pop.w {r4,r5,r6,r7,r8,pc}",
+        "bytes": "bde8f081",
+        "flows": []
+      },
+      {
+        "address": "0x001a76b2",
+        "instruction": "ldr r3,[0x001a7718]",
+        "bytes": "194b",
+        "flows": []
+      },
+      {
+        "address": "0x001a76b4",
+        "instruction": "ldr r3,[r5,r3]",
+        "bytes": "eb58",
+        "flows": []
+      },
+      {
+        "address": "0x001a76b6",
+        "instruction": "cbz r3,0x001a76dc",
+        "bytes": "8bb1",
+        "flows": [
+          "0x001a76dc"
+        ]
+      },
+      {
+        "address": "0x001a76b8",
+        "instruction": "subs r2,#0x4",
+        "bytes": "043a",
+        "flows": []
+      },
+      {
+        "address": "0x001a76ba",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001a76be",
+        "instruction": "ldrex r3,[r2,#0x0]",
+        "bytes": "52e8003f",
+        "flows": []
+      },
+      {
+        "address": "0x001a76c2",
+        "instruction": "subs r1,r3,#0x1",
+        "bytes": "591e",
+        "flows": []
+      },
+      {
+        "address": "0x001a76c4",
+        "instruction": "strex r4,r1,[r2,#0x0]",
+        "bytes": "42e80014",
+        "flows": []
+      },
+      {
+        "address": "0x001a76c8",
+        "instruction": "cmp r4,#0x0",
+        "bytes": "002c",
+        "flows": []
+      },
+      {
+        "address": "0x001a76ca",
+        "instruction": "bne 0x001a76be",
+        "bytes": "f8d1",
+        "flows": [
+          "0x001a76be"
+        ]
+      },
+      {
+        "address": "0x001a76cc",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001a76d0",
+        "instruction": "cmp r3,#0x0",
+        "bytes": "002b",
+        "flows": []
+      },
+      {
+        "address": "0x001a76d2",
+        "instruction": "bgt 0x001a769c",
+        "bytes": "e3dc",
+        "flows": [
+          "0x001a769c"
+        ]
+      },
+      {
+        "address": "0x001a76d4",
+        "instruction": "mov r1,r7",
+        "bytes": "3946",
+        "flows": []
+      },
+      {
+        "address": "0x001a76d6",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "95f6e4ef",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x001a76da",
+        "instruction": "b 0x001a769c",
+        "bytes": "dfe7",
+        "flows": [
+          "0x001a769c"
+        ]
+      },
+      {
+        "address": "0x001a76dc",
+        "instruction": "ldr.w r3,[r2,#-0x4]",
+        "bytes": "52f8043c",
+        "flows": []
+      },
+      {
+        "address": "0x001a76e0",
+        "instruction": "subs r1,r3,#0x1",
+        "bytes": "591e",
+        "flows": []
+      },
+      {
+        "address": "0x001a76e2",
+        "instruction": "str.w r1,[r2,#-0x4]",
+        "bytes": "42f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x001a76e6",
+        "instruction": "b 0x001a76d0",
+        "bytes": "f3e7",
+        "flows": [
+          "0x001a76d0"
+        ]
+      },
+      {
+        "address": "0x001a76e8",
+        "instruction": "blx 0x0003c57c",
+        "bytes": "94f648ef",
+        "flows": [
+          "0x0003c57c"
+        ]
+      }
+    ],
+    "c_file": "0x001a7624.c"
+  },
+  {
+    "address": "0x00141d68",
+    "name": "FUN_00141d68",
+    "qualified_name": "FUN_00141d68",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_00141d68()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[00141d68, 00141dcf] [00141dd2, 00141de5]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      1318248
+    ],
+    "callers": [
+      "0x00141e28",
+      "0x0015cd20"
+    ],
+    "instructions": [
+      {
+        "address": "0x00141d68",
+        "instruction": "push {r4,r5,r6,lr}",
+        "bytes": "70b5",
+        "flows": []
+      },
+      {
+        "address": "0x00141d6a",
+        "instruction": "sub sp,#0x10",
+        "bytes": "84b0",
+        "flows": []
+      },
+      {
+        "address": "0x00141d6c",
+        "instruction": "ldr r4,[0x00141df4]",
+        "bytes": "214c",
+        "flows": []
+      },
+      {
+        "address": "0x00141d6e",
+        "instruction": "ldr r3,[0x00141df8]",
+        "bytes": "224b",
+        "flows": []
+      },
+      {
+        "address": "0x00141d70",
+        "instruction": "add r4,pc",
+        "bytes": "7c44",
+        "flows": []
+      },
+      {
+        "address": "0x00141d72",
+        "instruction": "ldr r0,[0x00141dfc]",
+        "bytes": "2248",
+        "flows": []
+      },
+      {
+        "address": "0x00141d74",
+        "instruction": "ldr r5,[r4,r3]",
+        "bytes": "e558",
+        "flows": []
+      },
+      {
+        "address": "0x00141d76",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x00141d78",
+        "instruction": "ldr r3,[r0,#0x0]",
+        "bytes": "0368",
+        "flows": []
+      },
+      {
+        "address": "0x00141d7a",
+        "instruction": "ldr r2,[r5,#0x0]",
+        "bytes": "2a68",
+        "flows": []
+      },
+      {
+        "address": "0x00141d7c",
+        "instruction": "lsls r3,r3,#0x1f",
+        "bytes": "db07",
+        "flows": []
+      },
+      {
+        "address": "0x00141d7e",
+        "instruction": "str r2,[sp,#0xc]",
+        "bytes": "0392",
+        "flows": []
+      },
+      {
+        "address": "0x00141d80",
+        "instruction": "bpl 0x00141d92",
+        "bytes": "07d5",
+        "flows": [
+          "0x00141d92"
+        ]
+      },
+      {
+        "address": "0x00141d82",
+        "instruction": "ldr r2,[sp,#0xc]",
+        "bytes": "039a",
+        "flows": []
+      },
+      {
+        "address": "0x00141d84",
+        "instruction": "ldr r3,[r5,#0x0]",
+        "bytes": "2b68",
+        "flows": []
+      },
+      {
+        "address": "0x00141d86",
+        "instruction": "ldr r0,[0x00141e00]",
+        "bytes": "1e48",
+        "flows": []
+      },
+      {
+        "address": "0x00141d88",
+        "instruction": "cmp r2,r3",
+        "bytes": "9a42",
+        "flows": []
+      },
+      {
+        "address": "0x00141d8a",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x00141d8c",
+        "instruction": "bne 0x00141de2",
+        "bytes": "29d1",
+        "flows": [
+          "0x00141de2"
+        ]
+      },
+      {
+        "address": "0x00141d8e",
+        "instruction": "add sp,#0x10",
+        "bytes": "04b0",
+        "flows": []
+      },
+      {
+        "address": "0x00141d90",
+        "instruction": "pop {r4,r5,r6,pc}",
+        "bytes": "70bd",
+        "flows": []
+      },
+      {
+        "address": "0x00141d92",
+        "instruction": "blx 0x0003c67c",
+        "bytes": "faf674ec",
+        "flows": [
+          "0x0003c67c"
+        ]
+      },
+      {
+        "address": "0x00141d96",
+        "instruction": "cmp r0,#0x0",
+        "bytes": "0028",
+        "flows": []
+      },
+      {
+        "address": "0x00141d98",
+        "instruction": "beq 0x00141d82",
+        "bytes": "f3d0",
+        "flows": [
+          "0x00141d82"
+        ]
+      },
+      {
+        "address": "0x00141d9a",
+        "instruction": "ldr r6,[0x00141e04]",
+        "bytes": "1a4e",
+        "flows": []
+      },
+      {
+        "address": "0x00141d9c",
+        "instruction": "add r6,pc",
+        "bytes": "7e44",
+        "flows": []
+      },
+      {
+        "address": "0x00141d9e",
+        "instruction": "mov r0,r6",
+        "bytes": "3046",
+        "flows": []
+      },
+      {
+        "address": "0x00141da0",
+        "instruction": "blx 0x0003d5e8",
+        "bytes": "fbf622ec",
+        "flows": [
+          "0x0003d5e8"
+        ]
+      },
+      {
+        "address": "0x00141da4",
+        "instruction": "cbz r0,0x00141dd2",
+        "bytes": "a8b1",
+        "flows": [
+          "0x00141dd2"
+        ]
+      },
+      {
+        "address": "0x00141da6",
+        "instruction": "mov r0,r6",
+        "bytes": "3046",
+        "flows": []
+      },
+      {
+        "address": "0x00141da8",
+        "instruction": "blx 0x0003d5e8",
+        "bytes": "fbf61eec",
+        "flows": [
+          "0x0003d5e8"
+        ]
+      },
+      {
+        "address": "0x00141dac",
+        "instruction": "add r2,sp,#0x4",
+        "bytes": "01aa",
+        "flows": []
+      },
+      {
+        "address": "0x00141dae",
+        "instruction": "mov r1,r0",
+        "bytes": "0146",
+        "flows": []
+      },
+      {
+        "address": "0x00141db0",
+        "instruction": "ldr r0,[0x00141e08]",
+        "bytes": "1548",
+        "flows": []
+      },
+      {
+        "address": "0x00141db2",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x00141db4",
+        "instruction": "blx 0x0003dc24",
+        "bytes": "fbf636ef",
+        "flows": [
+          "0x0003dc24"
+        ]
+      },
+      {
+        "address": "0x00141db8",
+        "instruction": "ldr r0,[0x00141e0c]",
+        "bytes": "1448",
+        "flows": []
+      },
+      {
+        "address": "0x00141dba",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x00141dbc",
+        "instruction": "blx 0x0003cae4",
+        "bytes": "faf692ee",
+        "flows": [
+          "0x0003cae4"
+        ]
+      },
+      {
+        "address": "0x00141dc0",
+        "instruction": "ldr r3,[0x00141e10]",
+        "bytes": "134b",
+        "flows": []
+      },
+      {
+        "address": "0x00141dc2",
+        "instruction": "ldr r2,[0x00141e14]",
+        "bytes": "144a",
+        "flows": []
+      },
+      {
+        "address": "0x00141dc4",
+        "instruction": "ldr r0,[0x00141e18]",
+        "bytes": "1448",
+        "flows": []
+      },
+      {
+        "address": "0x00141dc6",
+        "instruction": "add r2,pc",
+        "bytes": "7a44",
+        "flows": []
+      },
+      {
+        "address": "0x00141dc8",
+        "instruction": "ldr r1,[r4,r3]",
+        "bytes": "e158",
+        "flows": []
+      },
+      {
+        "address": "0x00141dca",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x00141dcc",
+        "instruction": "blx 0x0003d168",
+        "bytes": "fbf6cce9",
+        "flows": [
+          "0x0003d168"
+        ]
+      },
+      {
+        "address": "0x00141dd2",
+        "instruction": "ldr r1,[0x00141e1c]",
+        "bytes": "1249",
+        "flows": []
+      },
+      {
+        "address": "0x00141dd4",
+        "instruction": "add r2,sp,#0x8",
+        "bytes": "02aa",
+        "flows": []
+      },
+      {
+        "address": "0x00141dd6",
+        "instruction": "ldr r0,[0x00141e20]",
+        "bytes": "1248",
+        "flows": []
+      },
+      {
+        "address": "0x00141dd8",
+        "instruction": "add r1,pc",
+        "bytes": "7944",
+        "flows": []
+      },
+      {
+        "address": "0x00141dda",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x00141ddc",
+        "instruction": "blx 0x0003dc24",
+        "bytes": "fbf622ef",
+        "flows": [
+          "0x0003dc24"
+        ]
+      },
+      {
+        "address": "0x00141de0",
+        "instruction": "b 0x00141db8",
+        "bytes": "eae7",
+        "flows": [
+          "0x00141db8"
+        ]
+      },
+      {
+        "address": "0x00141de2",
+        "instruction": "blx 0x0003c57c",
+        "bytes": "faf6cceb",
+        "flows": [
+          "0x0003c57c"
+        ]
+      }
+    ],
+    "c_file": "0x00141d68.c"
+  },
+  {
+    "address": "0x00141e28",
+    "name": "FUN_00141e28",
+    "qualified_name": "FUN_00141e28",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_00141e28()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[00141e28, 00141e4d]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      1318440
+    ],
+    "callers": [
+      "0x0015d070",
+      "0x0015d248",
+      "0x0015d7b0",
+      "0x0015d7d0",
+      "0x001a6374"
+    ],
+    "instructions": [
+      {
+        "address": "0x00141e28",
+        "instruction": "push {r4,r5,r6,lr}",
+        "bytes": "70b5",
+        "flows": []
+      },
+      {
+        "address": "0x00141e2a",
+        "instruction": "movs r3,#0x0",
+        "bytes": "0023",
+        "flows": []
+      },
+      {
+        "address": "0x00141e2c",
+        "instruction": "str.w r3,[r0,#0x104]",
+        "bytes": "c0f80431",
+        "flows": []
+      },
+      {
+        "address": "0x00141e30",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x00141e32",
+        "instruction": "str.w r3,[r0,#0x108]",
+        "bytes": "c0f80831",
+        "flows": []
+      },
+      {
+        "address": "0x00141e36",
+        "instruction": "mov r5,r1",
+        "bytes": "0d46",
+        "flows": []
+      },
+      {
+        "address": "0x00141e38",
+        "instruction": "mov r6,r2",
+        "bytes": "1646",
+        "flows": []
+      },
+      {
+        "address": "0x00141e3a",
+        "instruction": "bl 0x00141d68",
+        "bytes": "fff795ff",
+        "flows": [
+          "0x00141d68"
+        ]
+      },
+      {
+        "address": "0x00141e3e",
+        "instruction": "ldr r2,[r0,#0x0]",
+        "bytes": "0268",
+        "flows": []
+      },
+      {
+        "address": "0x00141e40",
+        "instruction": "mov r3,r6",
+        "bytes": "3346",
+        "flows": []
+      },
+      {
+        "address": "0x00141e42",
+        "instruction": "mov r1,r5",
+        "bytes": "2946",
+        "flows": []
+      },
+      {
+        "address": "0x00141e44",
+        "instruction": "mov r0,r4",
+        "bytes": "2046",
+        "flows": []
+      },
+      {
+        "address": "0x00141e46",
+        "instruction": "bl 0x00141600",
+        "bytes": "fff7dbfb",
+        "flows": [
+          "0x00141600"
+        ]
+      },
+      {
+        "address": "0x00141e4a",
+        "instruction": "mov r0,r4",
+        "bytes": "2046",
+        "flows": []
+      },
+      {
+        "address": "0x00141e4c",
+        "instruction": "pop {r4,r5,r6,pc}",
+        "bytes": "70bd",
+        "flows": []
+      }
+    ],
+    "c_file": "0x00141e28.c"
+  },
+  {
+    "address": "0x00141600",
+    "name": "FUN_00141600",
+    "qualified_name": "FUN_00141600",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_00141600()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[00141600, 00141a77]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      1316352
+    ],
+    "callers": [
+      "0x00141e28",
+      "0x00141e5c"
+    ],
+    "instructions": [
+      {
+        "address": "0x00141600",
+        "instruction": "push {r4,r5,r6,r7,r8,r9,r10,r11,lr}",
+        "bytes": "2de9f04f",
+        "flows": []
+      },
+      {
+        "address": "0x00141604",
+        "instruction": "sub sp,#0x4c",
+        "bytes": "93b0",
+        "flows": []
+      },
+      {
+        "address": "0x00141606",
+        "instruction": "ldr.w r6,[0x00141b7c]",
+        "bytes": "dff87465",
+        "flows": []
+      },
+      {
+        "address": "0x0014160a",
+        "instruction": "mov r5,r0",
+        "bytes": "0546",
+        "flows": []
+      },
+      {
+        "address": "0x0014160c",
+        "instruction": "ldr.w r4,[0x00141b80]",
+        "bytes": "dff87045",
+        "flows": []
+      },
+      {
+        "address": "0x00141610",
+        "instruction": "movs r0,#0x18",
+        "bytes": "1820",
+        "flows": []
+      },
+      {
+        "address": "0x00141612",
+        "instruction": "add r6,pc",
+        "bytes": "7e44",
+        "flows": []
+      },
+      {
+        "address": "0x00141614",
+        "instruction": "str r3,[sp,#0x20]",
+        "bytes": "0893",
+        "flows": []
+      },
+      {
+        "address": "0x00141616",
+        "instruction": "mov r10,r2",
+        "bytes": "9246",
+        "flows": []
+      },
+      {
+        "address": "0x00141618",
+        "instruction": "mov r9,r1",
+        "bytes": "8946",
+        "flows": []
+      },
+      {
+        "address": "0x0014161a",
+        "instruction": "ldr r3,[r6,r4]",
+        "bytes": "3359",
+        "flows": []
+      },
+      {
+        "address": "0x0014161c",
+        "instruction": "str r3,[sp,#0x24]",
+        "bytes": "0993",
+        "flows": []
+      },
+      {
+        "address": "0x0014161e",
+        "instruction": "ldr r3,[r3,#0x0]",
+        "bytes": "1b68",
+        "flows": []
+      },
+      {
+        "address": "0x00141620",
+        "instruction": "str r3,[sp,#0x44]",
+        "bytes": "1193",
+        "flows": []
+      },
+      {
+        "address": "0x00141622",
+        "instruction": "blx 0x0003cbf0",
+        "bytes": "fbf6e6ea",
+        "flows": [
+          "0x0003cbf0"
+        ]
+      },
+      {
+        "address": "0x00141626",
+        "instruction": "ldr.w r3,[0x00141b84]",
+        "bytes": "dff85c35",
+        "flows": []
+      },
+      {
+        "address": "0x0014162a",
+        "instruction": "movs r2,#0x1",
+        "bytes": "0122",
+        "flows": []
+      },
+      {
+        "address": "0x0014162c",
+        "instruction": "add r3,pc",
+        "bytes": "7b44",
+        "flows": []
+      },
+      {
+        "address": "0x0014162e",
+        "instruction": "adds r3,#0x8",
+        "bytes": "0833",
+        "flows": []
+      },
+      {
+        "address": "0x00141630",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x00141632",
+        "instruction": "str r2,[r0,#0x4]",
+        "bytes": "4260",
+        "flows": []
+      },
+      {
+        "address": "0x00141634",
+        "instruction": "str r2,[r0,#0x8]",
+        "bytes": "8260",
+        "flows": []
+      },
+      {
+        "address": "0x00141636",
+        "instruction": "str.w r3,[r0],#0xc",
+        "bytes": "40f80c3b",
+        "flows": []
+      },
+      {
+        "address": "0x0014163a",
+        "instruction": "blx 0x0003d4a4",
+        "bytes": "fbf634ef",
+        "flows": [
+          "0x0003d4a4"
+        ]
+      },
+      {
+        "address": "0x0014163e",
+        "instruction": "ldr.w r3,[0x00141b88]",
+        "bytes": "dff84835",
+        "flows": []
+      },
+      {
+        "address": "0x00141642",
+        "instruction": "mov r0,r4",
+        "bytes": "2046",
+        "flows": []
+      },
+      {
+        "address": "0x00141644",
+        "instruction": "ldr r2,[r4,#0x0]",
+        "bytes": "2268",
+        "flows": []
+      },
+      {
+        "address": "0x00141646",
+        "instruction": "ldr r1,[r6,r3]",
+        "bytes": "f158",
+        "flows": []
+      },
+      {
+        "address": "0x00141648",
+        "instruction": "ldr r3,[r2,#0x10]",
+        "bytes": "1369",
+        "flows": []
+      },
+      {
+        "address": "0x0014164a",
+        "instruction": "blx r3",
+        "bytes": "9847",
+        "flows": [
+          "0x0014158c"
+        ]
+      },
+      {
+        "address": "0x0014164c",
+        "instruction": "ldr.w r7,[r5,#0x108]",
+        "bytes": "d5f80871",
+        "flows": []
+      },
+      {
+        "address": "0x00141650",
+        "instruction": "str.w r4,[r5,#0x108]",
+        "bytes": "c5f80841",
+        "flows": []
+      },
+      {
+        "address": "0x00141654",
+        "instruction": "str.w r0,[r5,#0x104]",
+        "bytes": "c5f80401",
+        "flows": []
+      },
+      {
+        "address": "0x00141658",
+        "instruction": "cbz r7,0x00141684",
+        "bytes": "a7b1",
+        "flows": [
+          "0x00141684"
+        ]
+      },
+      {
+        "address": "0x0014165a",
+        "instruction": "ldr.w r3,[0x00141b8c]",
+        "bytes": "dff83035",
+        "flows": []
+      },
+      {
+        "address": "0x0014165e",
+        "instruction": "ldr r3,[r6,r3]",
+        "bytes": "f358",
+        "flows": []
+      },
+      {
+        "address": "0x00141660",
+        "instruction": "cmp r3,#0x0",
+        "bytes": "002b",
+        "flows": []
+      },
+      {
+        "address": "0x00141662",
+        "instruction": "beq.w 0x00141836",
+        "bytes": "00f0e880",
+        "flows": [
+          "0x00141836"
+        ]
+      },
+      {
+        "address": "0x00141666",
+        "instruction": "adds r3,r7,#0x4",
+        "bytes": "3b1d",
+        "flows": []
+      },
+      {
+        "address": "0x00141668",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x0014166c",
+        "instruction": "ldrex r2,[r3,#0x0]",
+        "bytes": "53e8002f",
+        "flows": []
+      },
+      {
+        "address": "0x00141670",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x00141672",
+        "instruction": "strex r0,r1,[r3,#0x0]",
+        "bytes": "43e80010",
+        "flows": []
+      },
+      {
+        "address": "0x00141676",
+        "instruction": "cmp r0,#0x0",
+        "bytes": "0028",
+        "flows": []
+      },
+      {
+        "address": "0x00141678",
+        "instruction": "bne 0x0014166c",
+        "bytes": "f8d1",
+        "flows": [
+          "0x0014166c"
+        ]
+      },
+      {
+        "address": "0x0014167a",
+        "instruction": "cmp r2,#0x1",
+        "bytes": "012a",
+        "flows": []
+      },
+      {
+        "address": "0x0014167c",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x00141680",
+        "instruction": "beq.w 0x00141890",
+        "bytes": "00f00681",
+        "flows": [
+          "0x00141890"
+        ]
+      },
+      {
+        "address": "0x00141684",
+        "instruction": "add r1,sp,#0x34",
+        "bytes": "0da9",
+        "flows": []
+      },
+      {
+        "address": "0x00141686",
+        "instruction": "ldr.w r2,[0x00141b90]",
+        "bytes": "dff80825",
+        "flows": []
+      },
+      {
+        "address": "0x0014168a",
+        "instruction": "ldr.w r3,[0x00141b94]",
+        "bytes": "dff80835",
+        "flows": []
+      },
+      {
+        "address": "0x0014168e",
+        "instruction": "movs r4,#0x1",
+        "bytes": "0124",
+        "flows": []
+      },
+      {
+        "address": "0x00141690",
+        "instruction": "ldr.w r0,[0x00141b98]",
+        "bytes": "dff80405",
+        "flows": []
+      },
+      {
+        "address": "0x00141694",
+        "instruction": "mov r7,r1",
+        "bytes": "0f46",
+        "flows": []
+      },
+      {
+        "address": "0x00141696",
+        "instruction": "str r1,[sp,#0x2c]",
+        "bytes": "0b91",
+        "flows": []
+      },
+      {
+        "address": "0x00141698",
+        "instruction": "add.w r11,sp,#0x3c",
+        "bytes": "0df13c0b",
+        "flows": []
+      },
+      {
+        "address": "0x0014169c",
+        "instruction": "mov r1,r5",
+        "bytes": "2946",
+        "flows": []
+      },
+      {
+        "address": "0x0014169e",
+        "instruction": "str.w r10,[sp,#0xc]",
+        "bytes": "cdf80ca0",
+        "flows": []
+      },
+      {
+        "address": "0x001416a2",
+        "instruction": "mov.w r12,#0x0",
+        "bytes": "4ff0000c",
+        "flows": []
+      },
+      {
+        "address": "0x001416a6",
+        "instruction": "strb.w r4,[r5,#0x110]",
+        "bytes": "85f81041",
+        "flows": []
+      },
+      {
+        "address": "0x001416aa",
+        "instruction": "add r2,pc",
+        "bytes": "7a44",
+        "flows": []
+      },
+      {
+        "address": "0x001416ac",
+        "instruction": "add r3,pc",
+        "bytes": "7b44",
+        "flows": []
+      },
+      {
+        "address": "0x001416ae",
+        "instruction": "str r2,[sp,#0x8]",
+        "bytes": "0292",
+        "flows": []
+      },
+      {
+        "address": "0x001416b0",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x001416b2",
+        "instruction": "str.w r12,[r5,#0x10c]",
+        "bytes": "c5f80cc1",
+        "flows": []
+      },
+      {
+        "address": "0x001416b6",
+        "instruction": "mov r2,r4",
+        "bytes": "2246",
+        "flows": []
+      },
+      {
+        "address": "0x001416b8",
+        "instruction": "str r3,[sp,#0x4]",
+        "bytes": "0193",
+        "flows": []
+      },
+      {
+        "address": "0x001416ba",
+        "instruction": "movs r3,#0x20",
+        "bytes": "2023",
+        "flows": []
+      },
+      {
+        "address": "0x001416bc",
+        "instruction": "strb.w r12,[r1],#0x1",
+        "bytes": "01f801cb",
+        "flows": []
+      },
+      {
+        "address": "0x001416c0",
+        "instruction": "str r0,[sp,#0x0]",
+        "bytes": "0090",
+        "flows": []
+      },
+      {
+        "address": "0x001416c2",
+        "instruction": "movs r0,#0x3",
+        "bytes": "0320",
+        "flows": []
+      },
+      {
+        "address": "0x001416c4",
+        "instruction": "str r1,[sp,#0x1c]",
+        "bytes": "0791",
+        "flows": []
+      },
+      {
+        "address": "0x001416c6",
+        "instruction": "movs r1,#0x7",
+        "bytes": "0721",
+        "flows": []
+      },
+      {
+        "address": "0x001416c8",
+        "instruction": "blx 0x0003c5b0",
+        "bytes": "faf672ef",
+        "flows": [
+          "0x0003c5b0"
+        ]
+      },
+      {
+        "address": "0x001416cc",
+        "instruction": "mov r2,r7",
+        "bytes": "3a46",
+        "flows": []
+      },
+      {
+        "address": "0x001416ce",
+        "instruction": "mov r1,r10",
+        "bytes": "5146",
+        "flows": []
+      },
+      {
+        "address": "0x001416d0",
+        "instruction": "mov r0,r11",
+        "bytes": "5846",
+        "flows": []
+      },
+      {
+        "address": "0x001416d2",
+        "instruction": "blx 0x0003dc24",
+        "bytes": "fcf6a8ea",
+        "flows": [
+          "0x0003dc24"
+        ]
+      },
+      {
+        "address": "0x001416d6",
+        "instruction": "ldr.w r1,[0x00141b9c]",
+        "bytes": "dff8c414",
+        "flows": []
+      },
+      {
+        "address": "0x001416da",
+        "instruction": "mov r2,r4",
+        "bytes": "2246",
+        "flows": []
+      },
+      {
+        "address": "0x001416dc",
+        "instruction": "mov r0,r11",
+        "bytes": "5846",
+        "flows": []
+      },
+      {
+        "address": "0x001416de",
+        "instruction": "add r1,pc",
+        "bytes": "7944",
+        "flows": []
+      },
+      {
+        "address": "0x001416e0",
+        "instruction": "blx 0x0003c4e0",
+        "bytes": "faf6feee",
+        "flows": [
+          "0x0003c4e0"
+        ]
+      },
+      {
+        "address": "0x001416e4",
+        "instruction": "mov r2,r0",
+        "bytes": "0246",
+        "flows": []
+      },
+      {
+        "address": "0x001416e6",
+        "instruction": "ldr.w r3,[0x00141ba0]",
+        "bytes": "dff8b834",
+        "flows": []
+      },
+      {
+        "address": "0x001416ea",
+        "instruction": "ldr r1,[r2,#0x0]",
+        "bytes": "1168",
+        "flows": []
+      },
+      {
+        "address": "0x001416ec",
+        "instruction": "add.w r8,sp,#0x48",
+        "bytes": "0df14808",
+        "flows": []
+      },
+      {
+        "address": "0x001416f0",
+        "instruction": "mov r0,r9",
+        "bytes": "4846",
+        "flows": []
+      },
+      {
+        "address": "0x001416f2",
+        "instruction": "str.w r1,[r8,#-0x8]!",
+        "bytes": "48f8081d",
+        "flows": []
+      },
+      {
+        "address": "0x001416f6",
+        "instruction": "ldr r4,[r6,r3]",
+        "bytes": "f458",
+        "flows": []
+      },
+      {
+        "address": "0x001416f8",
+        "instruction": "add.w r3,r4,#0xc",
+        "bytes": "04f10c03",
+        "flows": []
+      },
+      {
+        "address": "0x001416fc",
+        "instruction": "str r3,[r2,#0x0]",
+        "bytes": "1360",
+        "flows": []
+      },
+      {
+        "address": "0x001416fe",
+        "instruction": "blx 0x0003d088",
+        "bytes": "fbf6c4ec",
+        "flows": [
+          "0x0003d088"
+        ]
+      },
+      {
+        "address": "0x00141702",
+        "instruction": "mov r1,r9",
+        "bytes": "4946",
+        "flows": []
+      },
+      {
+        "address": "0x00141704",
+        "instruction": "mov r2,r0",
+        "bytes": "0246",
+        "flows": []
+      },
+      {
+        "address": "0x00141706",
+        "instruction": "mov r0,r8",
+        "bytes": "4046",
+        "flows": []
+      },
+      {
+        "address": "0x00141708",
+        "instruction": "blx 0x0003c4e0",
+        "bytes": "faf6eaee",
+        "flows": [
+          "0x0003c4e0"
+        ]
+      },
+      {
+        "address": "0x0014170c",
+        "instruction": "mov r2,r0",
+        "bytes": "0246",
+        "flows": []
+      },
+      {
+        "address": "0x0014170e",
+        "instruction": "add.w r1,r4,#0xc",
+        "bytes": "04f10c01",
+        "flows": []
+      },
+      {
+        "address": "0x00141712",
+        "instruction": "ldr r3,[r2,#0x0]",
+        "bytes": "1368",
+        "flows": []
+      },
+      {
+        "address": "0x00141714",
+        "instruction": "ldr r0,[sp,#0x1c]",
+        "bytes": "0798",
+        "flows": []
+      },
+      {
+        "address": "0x00141716",
+        "instruction": "str r1,[r2,#0x0]",
+        "bytes": "1160",
+        "flows": []
+      },
+      {
+        "address": "0x00141718",
+        "instruction": "movs r2,#0x80",
+        "bytes": "8022",
+        "flows": []
+      },
+      {
+        "address": "0x0014171a",
+        "instruction": "mov r1,r3",
+        "bytes": "1946",
+        "flows": []
+      },
+      {
+        "address": "0x0014171c",
+        "instruction": "str r3,[sp,#0x28]",
+        "bytes": "0a93",
+        "flows": []
+      },
+      {
+        "address": "0x0014171e",
+        "instruction": "blx 0x0003cb58",
+        "bytes": "fbf61cea",
+        "flows": [
+          "0x0003cb58"
+        ]
+      },
+      {
+        "address": "0x00141722",
+        "instruction": "ldr r3,[sp,#0x28]",
+        "bytes": "0a9b",
+        "flows": []
+      },
+      {
+        "address": "0x00141724",
+        "instruction": "sub.w r0,r3,#0xc",
+        "bytes": "a3f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x00141728",
+        "instruction": "cmp r0,r4",
+        "bytes": "a042",
+        "flows": []
+      },
+      {
+        "address": "0x0014172a",
+        "instruction": "bne.w 0x00141956",
+        "bytes": "40f01481",
+        "flows": [
+          "0x00141956"
+        ]
+      },
+      {
+        "address": "0x0014172e",
+        "instruction": "add r3,sp,#0x38",
+        "bytes": "0eab",
+        "flows": []
+      },
+      {
+        "address": "0x00141730",
+        "instruction": "ldr r2,[sp,#0x40]",
+        "bytes": "109a",
+        "flows": []
+      },
+      {
+        "address": "0x00141732",
+        "instruction": "sub.w r0,r2,#0xc",
+        "bytes": "a2f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x00141736",
+        "instruction": "cmp r0,r4",
+        "bytes": "a042",
+        "flows": []
+      },
+      {
+        "address": "0x00141738",
+        "instruction": "bne.w 0x001419ea",
+        "bytes": "40f05781",
+        "flows": [
+          "0x001419ea"
+        ]
+      },
+      {
+        "address": "0x0014173c",
+        "instruction": "ldr r2,[sp,#0x3c]",
+        "bytes": "0f9a",
+        "flows": []
+      },
+      {
+        "address": "0x0014173e",
+        "instruction": "sub.w r0,r2,#0xc",
+        "bytes": "a2f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x00141742",
+        "instruction": "cmp r0,r4",
+        "bytes": "a042",
+        "flows": []
+      },
+      {
+        "address": "0x00141744",
+        "instruction": "bne.w 0x00141922",
+        "bytes": "40f0ed80",
+        "flows": [
+          "0x00141922"
+        ]
+      },
+      {
+        "address": "0x00141748",
+        "instruction": "mov r1,r10",
+        "bytes": "5146",
+        "flows": []
+      },
+      {
+        "address": "0x0014174a",
+        "instruction": "add r2,sp,#0x30",
+        "bytes": "0caa",
+        "flows": []
+      },
+      {
+        "address": "0x0014174c",
+        "instruction": "mov r0,r3",
+        "bytes": "1846",
+        "flows": []
+      },
+      {
+        "address": "0x0014174e",
+        "instruction": "str r3,[sp,#0x28]",
+        "bytes": "0a93",
+        "flows": []
+      },
+      {
+        "address": "0x00141750",
+        "instruction": "blx 0x0003dc24",
+        "bytes": "fcf668ea",
+        "flows": [
+          "0x0003dc24"
+        ]
+      },
+      {
+        "address": "0x00141754",
+        "instruction": "ldr r3,[sp,#0x28]",
+        "bytes": "0a9b",
+        "flows": []
+      },
+      {
+        "address": "0x00141756",
+        "instruction": "ldr.w r1,[0x00141ba4]",
+        "bytes": "dff84c14",
+        "flows": []
+      },
+      {
+        "address": "0x0014175a",
+        "instruction": "movs r2,#0x1",
+        "bytes": "0122",
+        "flows": []
+      },
+      {
+        "address": "0x0014175c",
+        "instruction": "add.w r10,r5,#0x81",
+        "bytes": "05f1810a",
+        "flows": []
+      },
+      {
+        "address": "0x00141760",
+        "instruction": "mov r0,r3",
+        "bytes": "1846",
+        "flows": []
+      },
+      {
+        "address": "0x00141762",
+        "instruction": "add r1,pc",
+        "bytes": "7944",
+        "flows": []
+      },
+      {
+        "address": "0x00141764",
+        "instruction": "blx 0x0003c4e0",
+        "bytes": "faf6bcee",
+        "flows": [
+          "0x0003c4e0"
+        ]
+      },
+      {
+        "address": "0x00141768",
+        "instruction": "mov r2,r0",
+        "bytes": "0246",
+        "flows": []
+      },
+      {
+        "address": "0x0014176a",
+        "instruction": "add.w r3,r4,#0xc",
+        "bytes": "04f10c03",
+        "flows": []
+      },
+      {
+        "address": "0x0014176e",
+        "instruction": "ldr r1,[r2,#0x0]",
+        "bytes": "1168",
+        "flows": []
+      },
+      {
+        "address": "0x00141770",
+        "instruction": "mov r0,r9",
+        "bytes": "4846",
+        "flows": []
+      },
+      {
+        "address": "0x00141772",
+        "instruction": "str r1,[sp,#0x3c]",
+        "bytes": "0f91",
+        "flows": []
+      },
+      {
+        "address": "0x00141774",
+        "instruction": "str r3,[r2,#0x0]",
+        "bytes": "1360",
+        "flows": []
+      },
+      {
+        "address": "0x00141776",
+        "instruction": "blx 0x0003d088",
+        "bytes": "fbf688ec",
+        "flows": [
+          "0x0003d088"
+        ]
+      },
+      {
+        "address": "0x0014177a",
+        "instruction": "mov r1,r9",
+        "bytes": "4946",
+        "flows": []
+      },
+      {
+        "address": "0x0014177c",
+        "instruction": "mov r2,r0",
+        "bytes": "0246",
+        "flows": []
+      },
+      {
+        "address": "0x0014177e",
+        "instruction": "mov r0,r11",
+        "bytes": "5846",
+        "flows": []
+      },
+      {
+        "address": "0x00141780",
+        "instruction": "blx 0x0003c4e0",
+        "bytes": "faf6aeee",
+        "flows": [
+          "0x0003c4e0"
+        ]
+      },
+      {
+        "address": "0x00141784",
+        "instruction": "mov lr,r0",
+        "bytes": "8646",
+        "flows": []
+      },
+      {
+        "address": "0x00141786",
+        "instruction": "ldr.w r1,[0x00141ba8]",
+        "bytes": "dff82014",
+        "flows": []
+      },
+      {
+        "address": "0x0014178a",
+        "instruction": "ldr.w r7,[lr,#0x0]",
+        "bytes": "def80070",
+        "flows": []
+      },
+      {
+        "address": "0x0014178e",
+        "instruction": "add.w r3,r4,#0xc",
+        "bytes": "04f10c03",
+        "flows": []
+      },
+      {
+        "address": "0x00141792",
+        "instruction": "mov r0,r8",
+        "bytes": "4046",
+        "flows": []
+      },
+      {
+        "address": "0x00141794",
+        "instruction": "movs r2,#0x6",
+        "bytes": "0622",
+        "flows": []
+      },
+      {
+        "address": "0x00141796",
+        "instruction": "add r1,pc",
+        "bytes": "7944",
+        "flows": []
+      },
+      {
+        "address": "0x00141798",
+        "instruction": "str r7,[sp,#0x40]",
+        "bytes": "1097",
+        "flows": []
+      },
+      {
+        "address": "0x0014179a",
+        "instruction": "str.w r3,[lr,#0x0]",
+        "bytes": "cef80030",
+        "flows": []
+      },
+      {
+        "address": "0x0014179e",
+        "instruction": "blx 0x0003c4e0",
+        "bytes": "faf6a0ee",
+        "flows": [
+          "0x0003c4e0"
+        ]
+      },
+      {
+        "address": "0x001417a2",
+        "instruction": "mov r3,r0",
+        "bytes": "0346",
+        "flows": []
+      },
+      {
+        "address": "0x001417a4",
+        "instruction": "add.w r2,r4,#0xc",
+        "bytes": "04f10c02",
+        "flows": []
+      },
+      {
+        "address": "0x001417a8",
+        "instruction": "ldr.w r9,[r3,#0x0]",
+        "bytes": "d3f80090",
+        "flows": []
+      },
+      {
+        "address": "0x001417ac",
+        "instruction": "mov r0,r10",
+        "bytes": "5046",
+        "flows": []
+      },
+      {
+        "address": "0x001417ae",
+        "instruction": "str r2,[r3,#0x0]",
+        "bytes": "1a60",
+        "flows": []
+      },
+      {
+        "address": "0x001417b0",
+        "instruction": "movs r2,#0x80",
+        "bytes": "8022",
+        "flows": []
+      },
+      {
+        "address": "0x001417b2",
+        "instruction": "mov r1,r9",
+        "bytes": "4946",
+        "flows": []
+      },
+      {
+        "address": "0x001417b4",
+        "instruction": "blx 0x0003cb58",
+        "bytes": "fbf6d0e9",
+        "flows": [
+          "0x0003cb58"
+        ]
+      },
+      {
+        "address": "0x001417b8",
+        "instruction": "sub.w r0,r9,#0xc",
+        "bytes": "a9f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x001417bc",
+        "instruction": "cmp r0,r4",
+        "bytes": "a042",
+        "flows": []
+      },
+      {
+        "address": "0x001417be",
+        "instruction": "bne.w 0x0014198c",
+        "bytes": "40f0e580",
+        "flows": [
+          "0x0014198c"
+        ]
+      },
+      {
+        "address": "0x001417c2",
+        "instruction": "ldr r3,[sp,#0x40]",
+        "bytes": "109b",
+        "flows": []
+      },
+      {
+        "address": "0x001417c4",
+        "instruction": "sub.w r0,r3,#0xc",
+        "bytes": "a3f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x001417c8",
+        "instruction": "cmp r0,r4",
+        "bytes": "a042",
+        "flows": []
+      },
+      {
+        "address": "0x001417ca",
+        "instruction": "bne.w 0x001419bc",
+        "bytes": "40f0f780",
+        "flows": [
+          "0x001419bc"
+        ]
+      },
+      {
+        "address": "0x001417ce",
+        "instruction": "ldr r3,[sp,#0x3c]",
+        "bytes": "0f9b",
+        "flows": []
+      },
+      {
+        "address": "0x001417d0",
+        "instruction": "sub.w r0,r3,#0xc",
+        "bytes": "a3f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x001417d4",
+        "instruction": "cmp r0,r4",
+        "bytes": "a042",
+        "flows": []
+      },
+      {
+        "address": "0x001417d6",
+        "instruction": "bne 0x001418c2",
+        "bytes": "74d1",
+        "flows": [
+          "0x001418c2"
+        ]
+      },
+      {
+        "address": "0x001417d8",
+        "instruction": "ldr r3,[sp,#0x38]",
+        "bytes": "0e9b",
+        "flows": []
+      },
+      {
+        "address": "0x001417da",
+        "instruction": "sub.w r0,r3,#0xc",
+        "bytes": "a3f10c00",
+        "flows": []
+      },
+      {
+        "address": "0x001417de",
+        "instruction": "cmp r0,r4",
+        "bytes": "a042",
+        "flows": []
+      },
+      {
+        "address": "0x001417e0",
+        "instruction": "bne.w 0x001418f2",
+        "bytes": "40f08780",
+        "flows": [
+          "0x001418f2"
+        ]
+      },
+      {
+        "address": "0x001417e4",
+        "instruction": "ldr r3,[sp,#0x20]",
+        "bytes": "089b",
+        "flows": []
+      },
+      {
+        "address": "0x001417e6",
+        "instruction": "subs r3,#0x1",
+        "bytes": "013b",
+        "flows": []
+      },
+      {
+        "address": "0x001417e8",
+        "instruction": "cmp r3,#0x1",
+        "bytes": "012b",
+        "flows": []
+      },
+      {
+        "address": "0x001417ea",
+        "instruction": "bls 0x00141854",
+        "bytes": "33d9",
+        "flows": [
+          "0x00141854"
+        ]
+      },
+      {
+        "address": "0x001417ec",
+        "instruction": "ldr.w r0,[r5,#0x104]",
+        "bytes": "d5f80401",
+        "flows": []
+      },
+      {
+        "address": "0x001417f0",
+        "instruction": "blx 0x0003c08c",
+        "bytes": "faf64cec",
+        "flows": [
+          "0x0003c08c"
+        ]
+      },
+      {
+        "address": "0x001417f4",
+        "instruction": "str.w r0,[r5,#0x10c]",
+        "bytes": "c5f80c01",
+        "flows": []
+      },
+      {
+        "address": "0x001417f8",
+        "instruction": "cmp r0,#0x0",
+        "bytes": "0028",
+        "flows": []
+      },
+      {
+        "address": "0x001417fa",
+        "instruction": "beq 0x0014186e",
+        "bytes": "38d0",
+        "flows": [
+          "0x0014186e"
+        ]
+      },
+      {
+        "address": "0x001417fc",
+        "instruction": "ldr r2,[sp,#0x1c]",
+        "bytes": "079a",
+        "flows": []
+      },
+      {
+        "address": "0x001417fe",
+        "instruction": "movs r6,#0x0",
+        "bytes": "0026",
+        "flows": []
+      },
+      {
+        "address": "0x00141800",
+        "instruction": "ldr r1,[0x00141bac]",
+        "bytes": "ea49",
+        "flows": []
+      },
+      {
+        "address": "0x00141802",
+        "instruction": "movs r3,#0x3f",
+        "bytes": "3f23",
+        "flows": []
+      },
+      {
+        "address": "0x00141804",
+        "instruction": "ldr r0,[0x00141bb0]",
+        "bytes": "ea48",
+        "flows": []
+      },
+      {
+        "address": "0x00141806",
+        "instruction": "ldr r4,[0x00141bb4]",
+        "bytes": "eb4c",
+        "flows": []
+      },
+      {
+        "address": "0x00141808",
+        "instruction": "add r1,pc",
+        "bytes": "7944",
+        "flows": []
+      },
+      {
+        "address": "0x0014180a",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x0014180c",
+        "instruction": "str r2,[sp,#0xc]",
+        "bytes": "0392",
+        "flows": []
+      },
+      {
+        "address": "0x0014180e",
+        "instruction": "str r1,[sp,#0x8]",
+        "bytes": "0291",
+        "flows": []
+      },
+      {
+        "address": "0x00141810",
+        "instruction": "add r4,pc",
+        "bytes": "7c44",
+        "flows": []
+      },
+      {
+        "address": "0x00141812",
+        "instruction": "str r0,[sp,#0x4]",
+        "bytes": "0190",
+        "flows": []
+      },
+      {
+        "address": "0x00141814",
+        "instruction": "movs r2,#0x1",
+        "bytes": "0122",
+        "flows": []
+      },
+      {
+        "address": "0x00141816",
+        "instruction": "str r4,[sp,#0x0]",
+        "bytes": "0094",
+        "flows": []
+      },
+      {
+        "address": "0x00141818",
+        "instruction": "movs r1,#0x7",
+        "bytes": "0721",
+        "flows": []
+      },
+      {
+        "address": "0x0014181a",
+        "instruction": "movs r0,#0x3",
+        "bytes": "0320",
+        "flows": []
+      },
+      {
+        "address": "0x0014181c",
+        "instruction": "strb.w r6,[r5,#0x110]",
+        "bytes": "85f81061",
+        "flows": []
+      },
+      {
+        "address": "0x00141820",
+        "instruction": "blx 0x0003c5b0",
+        "bytes": "faf6c6ee",
+        "flows": [
+          "0x0003c5b0"
+        ]
+      },
+      {
+        "address": "0x00141824",
+        "instruction": "ldr r3,[sp,#0x24]",
+        "bytes": "099b",
+        "flows": []
+      },
+      {
+        "address": "0x00141826",
+        "instruction": "ldr r2,[sp,#0x44]",
+        "bytes": "119a",
+        "flows": []
+      },
+      {
+        "address": "0x00141828",
+        "instruction": "ldr r3,[r3,#0x0]",
+        "bytes": "1b68",
+        "flows": []
+      },
+      {
+        "address": "0x0014182a",
+        "instruction": "cmp r2,r3",
+        "bytes": "9a42",
+        "flows": []
+      },
+      {
+        "address": "0x0014182c",
+        "instruction": "bne.w 0x00141a74",
+        "bytes": "40f02281",
+        "flows": [
+          "0x00141a74"
+        ]
+      },
+      {
+        "address": "0x00141830",
+        "instruction": "add sp,#0x4c",
+        "bytes": "13b0",
+        "flows": []
+      },
+      {
+        "address": "0x00141832",
+        "instruction": "pop.w {r4,r5,r6,r7,r8,r9,r10,r11,pc}",
+        "bytes": "bde8f08f",
+        "flows": []
+      },
+      {
+        "address": "0x00141836",
+        "instruction": "ldr r3,[r7,#0x4]",
+        "bytes": "7b68",
+        "flows": []
+      },
+      {
+        "address": "0x00141838",
+        "instruction": "cmp r3,#0x1",
+        "bytes": "012b",
+        "flows": []
+      },
+      {
+        "address": "0x0014183a",
+        "instruction": "add.w r2,r3,#0xffffffff",
+        "bytes": "03f1ff32",
+        "flows": []
+      },
+      {
+        "address": "0x0014183e",
+        "instruction": "str r2,[r7,#0x4]",
+        "bytes": "7a60",
+        "flows": []
+      },
+      {
+        "address": "0x00141840",
+        "instruction": "bne.w 0x00141684",
+        "bytes": "7ff420af",
+        "flows": [
+          "0x00141684"
+        ]
+      },
+      {
+        "address": "0x00141844",
+        "instruction": "ldr r3,[r7,#0x0]",
+        "bytes": "3b68",
+        "flows": []
+      },
+      {
+        "address": "0x00141846",
+        "instruction": "mov r0,r7",
+        "bytes": "3846",
+        "flows": []
+      },
+      {
+        "address": "0x00141848",
+        "instruction": "ldr r3,[r3,#0x8]",
+        "bytes": "9b68",
+        "flows": []
+      },
+      {
+        "address": "0x0014184a",
+        "instruction": "blx r3",
+        "bytes": "9847",
+        "flows": []
+      },
+      {
+        "address": "0x0014184c",
+        "instruction": "ldr r3,[r7,#0x8]",
+        "bytes": "bb68",
+        "flows": []
+      },
+      {
+        "address": "0x0014184e",
+        "instruction": "subs r2,r3,#0x1",
+        "bytes": "5a1e",
+        "flows": []
+      },
+      {
+        "address": "0x00141850",
+        "instruction": "str r2,[r7,#0x8]",
+        "bytes": "ba60",
+        "flows": []
+      },
+      {
+        "address": "0x00141852",
+        "instruction": "b 0x001418b2",
+        "bytes": "2ee0",
+        "flows": [
+          "0x001418b2"
+        ]
+      },
+      {
+        "address": "0x00141854",
+        "instruction": "ldr r1,[sp,#0x1c]",
+        "bytes": "0799",
+        "flows": []
+      },
+      {
+        "address": "0x00141856",
+        "instruction": "ldr.w r0,[r5,#0x104]",
+        "bytes": "d5f80401",
+        "flows": []
+      },
+      {
+        "address": "0x0014185a",
+        "instruction": "blx 0x0003c408",
+        "bytes": "faf6d6ed",
+        "flows": [
+          "0x0003c408"
+        ]
+      },
+      {
+        "address": "0x0014185e",
+        "instruction": "ldr.w r0,[r5,#0x104]",
+        "bytes": "d5f80401",
+        "flows": []
+      },
+      {
+        "address": "0x00141862",
+        "instruction": "blx 0x0003c08c",
+        "bytes": "faf614ec",
+        "flows": [
+          "0x0003c08c"
+        ]
+      },
+      {
+        "address": "0x00141866",
+        "instruction": "str.w r0,[r5,#0x10c]",
+        "bytes": "c5f80c01",
+        "flows": []
+      },
+      {
+        "address": "0x0014186a",
+        "instruction": "cmp r0,#0x0",
+        "bytes": "0028",
+        "flows": []
+      },
+      {
+        "address": "0x0014186c",
+        "instruction": "bne 0x001417fc",
+        "bytes": "c6d1",
+        "flows": [
+          "0x001417fc"
+        ]
+      },
+      {
+        "address": "0x0014186e",
+        "instruction": "ldr r2,[sp,#0x1c]",
+        "bytes": "079a",
+        "flows": []
+      },
+      {
+        "address": "0x00141870",
+        "instruction": "movs r1,#0x3",
+        "bytes": "0321",
+        "flows": []
+      },
+      {
+        "address": "0x00141872",
+        "instruction": "ldr r6,[0x00141bb8]",
+        "bytes": "d14e",
+        "flows": []
+      },
+      {
+        "address": "0x00141874",
+        "instruction": "mov r0,r1",
+        "bytes": "0846",
+        "flows": []
+      },
+      {
+        "address": "0x00141876",
+        "instruction": "ldr r5,[0x00141bbc]",
+        "bytes": "d14d",
+        "flows": []
+      },
+      {
+        "address": "0x00141878",
+        "instruction": "movs r3,#0x43",
+        "bytes": "4323",
+        "flows": []
+      },
+      {
+        "address": "0x0014187a",
+        "instruction": "ldr r4,[0x00141bc0]",
+        "bytes": "d14c",
+        "flows": []
+      },
+      {
+        "address": "0x0014187c",
+        "instruction": "add r6,pc",
+        "bytes": "7e44",
+        "flows": []
+      },
+      {
+        "address": "0x0014187e",
+        "instruction": "add r5,pc",
+        "bytes": "7d44",
+        "flows": []
+      },
+      {
+        "address": "0x00141880",
+        "instruction": "str r2,[sp,#0xc]",
+        "bytes": "0392",
+        "flows": []
+      },
+      {
+        "address": "0x00141882",
+        "instruction": "add r4,pc",
+        "bytes": "7c44",
+        "flows": []
+      },
+      {
+        "address": "0x00141884",
+        "instruction": "movs r2,#0x1",
+        "bytes": "0122",
+        "flows": []
+      },
+      {
+        "address": "0x00141886",
+        "instruction": "stm sp,{r4,r5,r6}",
+        "bytes": "8de87000",
+        "flows": []
+      },
+      {
+        "address": "0x0014188a",
+        "instruction": "blx 0x0003c5b0",
+        "bytes": "faf692ee",
+        "flows": [
+          "0x0003c5b0"
+        ]
+      },
+      {
+        "address": "0x0014188e",
+        "instruction": "b 0x00141824",
+        "bytes": "c9e7",
+        "flows": [
+          "0x00141824"
+        ]
+      },
+      {
+        "address": "0x00141890",
+        "instruction": "ldr r3,[r7,#0x0]",
+        "bytes": "3b68",
+        "flows": []
+      },
+      {
+        "address": "0x00141892",
+        "instruction": "mov r0,r7",
+        "bytes": "3846",
+        "flows": []
+      },
+      {
+        "address": "0x00141894",
+        "instruction": "ldr r3,[r3,#0x8]",
+        "bytes": "9b68",
+        "flows": []
+      },
+      {
+        "address": "0x00141896",
+        "instruction": "blx r3",
+        "bytes": "9847",
+        "flows": []
+      },
+      {
+        "address": "0x00141898",
+        "instruction": "add.w r2,r7,#0x8",
+        "bytes": "07f10802",
+        "flows": []
+      },
+      {
+        "address": "0x0014189c",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001418a0",
+        "instruction": "ldrex r3,[r2,#0x0]",
+        "bytes": "52e8003f",
+        "flows": []
+      },
+      {
+        "address": "0x001418a4",
+        "instruction": "subs r1,r3,#0x1",
+        "bytes": "591e",
+        "flows": []
+      },
+      {
+        "address": "0x001418a6",
+        "instruction": "strex r0,r1,[r2,#0x0]",
+        "bytes": "42e80010",
+        "flows": []
+      },
+      {
+        "address": "0x001418aa",
+        "instruction": "cmp r0,#0x0",
+        "bytes": "0028",
+        "flows": []
+      },
+      {
+        "address": "0x001418ac",
+        "instruction": "bne 0x001418a0",
+        "bytes": "f8d1",
+        "flows": [
+          "0x001418a0"
+        ]
+      },
+      {
+        "address": "0x001418ae",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001418b2",
+        "instruction": "cmp r3,#0x1",
+        "bytes": "012b",
+        "flows": []
+      },
+      {
+        "address": "0x001418b4",
+        "instruction": "bne.w 0x00141684",
+        "bytes": "7ff4e6ae",
+        "flows": [
+          "0x00141684"
+        ]
+      },
+      {
+        "address": "0x001418b8",
+        "instruction": "ldr r3,[r7,#0x0]",
+        "bytes": "3b68",
+        "flows": []
+      },
+      {
+        "address": "0x001418ba",
+        "instruction": "mov r0,r7",
+        "bytes": "3846",
+        "flows": []
+      },
+      {
+        "address": "0x001418bc",
+        "instruction": "ldr r3,[r3,#0xc]",
+        "bytes": "db68",
+        "flows": []
+      },
+      {
+        "address": "0x001418be",
+        "instruction": "blx r3",
+        "bytes": "9847",
+        "flows": []
+      },
+      {
+        "address": "0x001418c0",
+        "instruction": "b 0x00141684",
+        "bytes": "e0e6",
+        "flows": [
+          "0x00141684"
+        ]
+      },
+      {
+        "address": "0x001418c2",
+        "instruction": "ldr r2,[0x00141b8c]",
+        "bytes": "b24a",
+        "flows": []
+      },
+      {
+        "address": "0x001418c4",
+        "instruction": "ldr r2,[r6,r2]",
+        "bytes": "b258",
+        "flows": []
+      },
+      {
+        "address": "0x001418c6",
+        "instruction": "cmp r2,#0x0",
+        "bytes": "002a",
+        "flows": []
+      },
+      {
+        "address": "0x001418c8",
+        "instruction": "beq.w 0x00141a1c",
+        "bytes": "00f0a880",
+        "flows": [
+          "0x00141a1c"
+        ]
+      },
+      {
+        "address": "0x001418cc",
+        "instruction": "subs r3,#0x4",
+        "bytes": "043b",
+        "flows": []
+      },
+      {
+        "address": "0x001418ce",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001418d2",
+        "instruction": "ldrex r2,[r3,#0x0]",
+        "bytes": "53e8002f",
+        "flows": []
+      },
+      {
+        "address": "0x001418d6",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x001418d8",
+        "instruction": "strex r7,r1,[r3,#0x0]",
+        "bytes": "43e80017",
+        "flows": []
+      },
+      {
+        "address": "0x001418dc",
+        "instruction": "cmp r7,#0x0",
+        "bytes": "002f",
+        "flows": []
+      },
+      {
+        "address": "0x001418de",
+        "instruction": "bne 0x001418d2",
+        "bytes": "f8d1",
+        "flows": [
+          "0x001418d2"
+        ]
+      },
+      {
+        "address": "0x001418e0",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001418e4",
+        "instruction": "cmp r2,#0x0",
+        "bytes": "002a",
+        "flows": []
+      },
+      {
+        "address": "0x001418e6",
+        "instruction": "bgt.w 0x001417d8",
+        "bytes": "3ff777af",
+        "flows": [
+          "0x001417d8"
+        ]
+      },
+      {
+        "address": "0x001418ea",
+        "instruction": "mov r1,r8",
+        "bytes": "4146",
+        "flows": []
+      },
+      {
+        "address": "0x001418ec",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "fbf6d8ee",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x001418f0",
+        "instruction": "b 0x001417d8",
+        "bytes": "72e7",
+        "flows": [
+          "0x001417d8"
+        ]
+      },
+      {
+        "address": "0x001418f2",
+        "instruction": "ldr r2,[0x00141b8c]",
+        "bytes": "a64a",
+        "flows": []
+      },
+      {
+        "address": "0x001418f4",
+        "instruction": "ldr r2,[r6,r2]",
+        "bytes": "b258",
+        "flows": []
+      },
+      {
+        "address": "0x001418f6",
+        "instruction": "cmp r2,#0x0",
+        "bytes": "002a",
+        "flows": []
+      },
+      {
+        "address": "0x001418f8",
+        "instruction": "beq.w 0x00141a36",
+        "bytes": "00f09d80",
+        "flows": [
+          "0x00141a36"
+        ]
+      },
+      {
+        "address": "0x001418fc",
+        "instruction": "subs r3,#0x4",
+        "bytes": "043b",
+        "flows": []
+      },
+      {
+        "address": "0x001418fe",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x00141902",
+        "instruction": "ldrex r2,[r3,#0x0]",
+        "bytes": "53e8002f",
+        "flows": []
+      },
+      {
+        "address": "0x00141906",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x00141908",
+        "instruction": "strex r4,r1,[r3,#0x0]",
+        "bytes": "43e80014",
+        "flows": []
+      },
+      {
+        "address": "0x0014190c",
+        "instruction": "cmp r4,#0x0",
+        "bytes": "002c",
+        "flows": []
+      },
+      {
+        "address": "0x0014190e",
+        "instruction": "bne 0x00141902",
+        "bytes": "f8d1",
+        "flows": [
+          "0x00141902"
+        ]
+      },
+      {
+        "address": "0x00141910",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x00141914",
+        "instruction": "cmp r2,#0x0",
+        "bytes": "002a",
+        "flows": []
+      },
+      {
+        "address": "0x00141916",
+        "instruction": "bgt.w 0x001417e4",
+        "bytes": "3ff765af",
+        "flows": [
+          "0x001417e4"
+        ]
+      },
+      {
+        "address": "0x0014191a",
+        "instruction": "mov r1,r8",
+        "bytes": "4146",
+        "flows": []
+      },
+      {
+        "address": "0x0014191c",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "fbf6c0ee",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x00141920",
+        "instruction": "b 0x001417e4",
+        "bytes": "60e7",
+        "flows": [
+          "0x001417e4"
+        ]
+      },
+      {
+        "address": "0x00141922",
+        "instruction": "ldr r1,[0x00141b8c]",
+        "bytes": "9a49",
+        "flows": []
+      },
+      {
+        "address": "0x00141924",
+        "instruction": "ldr r1,[r6,r1]",
+        "bytes": "7158",
+        "flows": []
+      },
+      {
+        "address": "0x00141926",
+        "instruction": "cmp r1,#0x0",
+        "bytes": "0029",
+        "flows": []
+      },
+      {
+        "address": "0x00141928",
+        "instruction": "beq 0x00141a28",
+        "bytes": "7ed0",
+        "flows": [
+          "0x00141a28"
+        ]
+      },
+      {
+        "address": "0x0014192a",
+        "instruction": "subs r2,#0x4",
+        "bytes": "043a",
+        "flows": []
+      },
+      {
+        "address": "0x0014192c",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x00141930",
+        "instruction": "ldrex r1,[r2,#0x0]",
+        "bytes": "52e8001f",
+        "flows": []
+      },
+      {
+        "address": "0x00141934",
+        "instruction": "subs r7,r1,#0x1",
+        "bytes": "4f1e",
+        "flows": []
+      },
+      {
+        "address": "0x00141936",
+        "instruction": "strex lr,r7,[r2,#0x0]",
+        "bytes": "42e8007e",
+        "flows": []
+      },
+      {
+        "address": "0x0014193a",
+        "instruction": "cmp.w lr,#0x0",
+        "bytes": "bef1000f",
+        "flows": []
+      },
+      {
+        "address": "0x0014193e",
+        "instruction": "bne 0x00141930",
+        "bytes": "f7d1",
+        "flows": [
+          "0x00141930"
+        ]
+      },
+      {
+        "address": "0x00141940",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x00141944",
+        "instruction": "cmp r1,#0x0",
+        "bytes": "0029",
+        "flows": []
+      },
+      {
+        "address": "0x00141946",
+        "instruction": "bgt.w 0x00141748",
+        "bytes": "3ff7ffae",
+        "flows": [
+          "0x00141748"
+        ]
+      },
+      {
+        "address": "0x0014194a",
+        "instruction": "mov r1,r8",
+        "bytes": "4146",
+        "flows": []
+      },
+      {
+        "address": "0x0014194c",
+        "instruction": "str r3,[sp,#0x28]",
+        "bytes": "0a93",
+        "flows": []
+      },
+      {
+        "address": "0x0014194e",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "fbf6a8ee",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x00141952",
+        "instruction": "ldr r3,[sp,#0x28]",
+        "bytes": "0a9b",
+        "flows": []
+      },
+      {
+        "address": "0x00141954",
+        "instruction": "b 0x00141748",
+        "bytes": "f8e6",
+        "flows": [
+          "0x00141748"
+        ]
+      },
+      {
+        "address": "0x00141956",
+        "instruction": "ldr r2,[0x00141b8c]",
+        "bytes": "8d4a",
+        "flows": []
+      },
+      {
+        "address": "0x00141958",
+        "instruction": "ldr r2,[r6,r2]",
+        "bytes": "b258",
+        "flows": []
+      },
+      {
+        "address": "0x0014195a",
+        "instruction": "cmp r2,#0x0",
+        "bytes": "002a",
+        "flows": []
+      },
+      {
+        "address": "0x0014195c",
+        "instruction": "beq.w 0x00141a68",
+        "bytes": "00f08480",
+        "flows": [
+          "0x00141a68"
+        ]
+      },
+      {
+        "address": "0x00141960",
+        "instruction": "subs r3,#0x4",
+        "bytes": "043b",
+        "flows": []
+      },
+      {
+        "address": "0x00141962",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x00141966",
+        "instruction": "ldrex r2,[r3,#0x0]",
+        "bytes": "53e8002f",
+        "flows": []
+      },
+      {
+        "address": "0x0014196a",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x0014196c",
+        "instruction": "strex r7,r1,[r3,#0x0]",
+        "bytes": "43e80017",
+        "flows": []
+      },
+      {
+        "address": "0x00141970",
+        "instruction": "cmp r7,#0x0",
+        "bytes": "002f",
+        "flows": []
+      },
+      {
+        "address": "0x00141972",
+        "instruction": "bne 0x00141966",
+        "bytes": "f8d1",
+        "flows": [
+          "0x00141966"
+        ]
+      },
+      {
+        "address": "0x00141974",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x00141978",
+        "instruction": "cmp r2,#0x0",
+        "bytes": "002a",
+        "flows": []
+      },
+      {
+        "address": "0x0014197a",
+        "instruction": "add r3,sp,#0x38",
+        "bytes": "0eab",
+        "flows": []
+      },
+      {
+        "address": "0x0014197c",
+        "instruction": "bgt.w 0x00141730",
+        "bytes": "3ff7d8ae",
+        "flows": [
+          "0x00141730"
+        ]
+      },
+      {
+        "address": "0x00141980",
+        "instruction": "mov r1,r3",
+        "bytes": "1946",
+        "flows": []
+      },
+      {
+        "address": "0x00141982",
+        "instruction": "str r3,[sp,#0x28]",
+        "bytes": "0a93",
+        "flows": []
+      },
+      {
+        "address": "0x00141984",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "fbf68cee",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x00141988",
+        "instruction": "ldr r3,[sp,#0x28]",
+        "bytes": "0a9b",
+        "flows": []
+      },
+      {
+        "address": "0x0014198a",
+        "instruction": "b 0x00141730",
+        "bytes": "d1e6",
+        "flows": [
+          "0x00141730"
+        ]
+      },
+      {
+        "address": "0x0014198c",
+        "instruction": "ldr r3,[0x00141b8c]",
+        "bytes": "7f4b",
+        "flows": []
+      },
+      {
+        "address": "0x0014198e",
+        "instruction": "ldr r3,[r6,r3]",
+        "bytes": "f358",
+        "flows": []
+      },
+      {
+        "address": "0x00141990",
+        "instruction": "cmp r3,#0x0",
+        "bytes": "002b",
+        "flows": []
+      },
+      {
+        "address": "0x00141992",
+        "instruction": "beq 0x00141a5c",
+        "bytes": "63d0",
+        "flows": [
+          "0x00141a5c"
+        ]
+      },
+      {
+        "address": "0x00141994",
+        "instruction": "sub.w r9,r9,#0x4",
+        "bytes": "a9f10409",
+        "flows": []
+      },
+      {
+        "address": "0x00141998",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x0014199c",
+        "instruction": "ldrex r3,[r9,#0x0]",
+        "bytes": "59e8003f",
+        "flows": []
+      },
+      {
+        "address": "0x001419a0",
+        "instruction": "subs r2,r3,#0x1",
+        "bytes": "5a1e",
+        "flows": []
+      },
+      {
+        "address": "0x001419a2",
+        "instruction": "strex r1,r2,[r9,#0x0]",
+        "bytes": "49e80021",
+        "flows": []
+      },
+      {
+        "address": "0x001419a6",
+        "instruction": "cmp r1,#0x0",
+        "bytes": "0029",
+        "flows": []
+      },
+      {
+        "address": "0x001419a8",
+        "instruction": "bne 0x0014199c",
+        "bytes": "f8d1",
+        "flows": [
+          "0x0014199c"
+        ]
+      },
+      {
+        "address": "0x001419aa",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001419ae",
+        "instruction": "cmp r3,#0x0",
+        "bytes": "002b",
+        "flows": []
+      },
+      {
+        "address": "0x001419b0",
+        "instruction": "bgt.w 0x001417c2",
+        "bytes": "3ff707af",
+        "flows": [
+          "0x001417c2"
+        ]
+      },
+      {
+        "address": "0x001419b4",
+        "instruction": "ldr r1,[sp,#0x2c]",
+        "bytes": "0b99",
+        "flows": []
+      },
+      {
+        "address": "0x001419b6",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "fbf674ee",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x001419ba",
+        "instruction": "b 0x001417c2",
+        "bytes": "02e7",
+        "flows": [
+          "0x001417c2"
+        ]
+      },
+      {
+        "address": "0x001419bc",
+        "instruction": "ldr r2,[0x00141b8c]",
+        "bytes": "734a",
+        "flows": []
+      },
+      {
+        "address": "0x001419be",
+        "instruction": "ldr r2,[r6,r2]",
+        "bytes": "b258",
+        "flows": []
+      },
+      {
+        "address": "0x001419c0",
+        "instruction": "cmp r2,#0x0",
+        "bytes": "002a",
+        "flows": []
+      },
+      {
+        "address": "0x001419c2",
+        "instruction": "beq 0x00141a50",
+        "bytes": "45d0",
+        "flows": [
+          "0x00141a50"
+        ]
+      },
+      {
+        "address": "0x001419c4",
+        "instruction": "subs r3,#0x4",
+        "bytes": "043b",
+        "flows": []
+      },
+      {
+        "address": "0x001419c6",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001419ca",
+        "instruction": "ldrex r2,[r3,#0x0]",
+        "bytes": "53e8002f",
+        "flows": []
+      },
+      {
+        "address": "0x001419ce",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x001419d0",
+        "instruction": "strex r7,r1,[r3,#0x0]",
+        "bytes": "43e80017",
+        "flows": []
+      },
+      {
+        "address": "0x001419d4",
+        "instruction": "cmp r7,#0x0",
+        "bytes": "002f",
+        "flows": []
+      },
+      {
+        "address": "0x001419d6",
+        "instruction": "bne 0x001419ca",
+        "bytes": "f8d1",
+        "flows": [
+          "0x001419ca"
+        ]
+      },
+      {
+        "address": "0x001419d8",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001419dc",
+        "instruction": "cmp r2,#0x0",
+        "bytes": "002a",
+        "flows": []
+      },
+      {
+        "address": "0x001419de",
+        "instruction": "bgt.w 0x001417ce",
+        "bytes": "3ff7f6ae",
+        "flows": [
+          "0x001417ce"
+        ]
+      },
+      {
+        "address": "0x001419e2",
+        "instruction": "ldr r1,[sp,#0x2c]",
+        "bytes": "0b99",
+        "flows": []
+      },
+      {
+        "address": "0x001419e4",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "fbf65cee",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x001419e8",
+        "instruction": "b 0x001417ce",
+        "bytes": "f1e6",
+        "flows": [
+          "0x001417ce"
+        ]
+      },
+      {
+        "address": "0x001419ea",
+        "instruction": "ldr r1,[0x00141b8c]",
+        "bytes": "6849",
+        "flows": []
+      },
+      {
+        "address": "0x001419ec",
+        "instruction": "ldr r1,[r6,r1]",
+        "bytes": "7158",
+        "flows": []
+      },
+      {
+        "address": "0x001419ee",
+        "instruction": "cbz r1,0x00141a42",
+        "bytes": "41b3",
+        "flows": [
+          "0x00141a42"
+        ]
+      },
+      {
+        "address": "0x001419f0",
+        "instruction": "subs r2,#0x4",
+        "bytes": "043a",
+        "flows": []
+      },
+      {
+        "address": "0x001419f2",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x001419f6",
+        "instruction": "ldrex r1,[r2,#0x0]",
+        "bytes": "52e8001f",
+        "flows": []
+      },
+      {
+        "address": "0x001419fa",
+        "instruction": "subs r7,r1,#0x1",
+        "bytes": "4f1e",
+        "flows": []
+      },
+      {
+        "address": "0x001419fc",
+        "instruction": "strex lr,r7,[r2,#0x0]",
+        "bytes": "42e8007e",
+        "flows": []
+      },
+      {
+        "address": "0x00141a00",
+        "instruction": "cmp.w lr,#0x0",
+        "bytes": "bef1000f",
+        "flows": []
+      },
+      {
+        "address": "0x00141a04",
+        "instruction": "bne 0x001419f6",
+        "bytes": "f7d1",
+        "flows": [
+          "0x001419f6"
+        ]
+      },
+      {
+        "address": "0x00141a06",
+        "instruction": "dmb #0x1b",
+        "bytes": "bff35b8f",
+        "flows": []
+      },
+      {
+        "address": "0x00141a0a",
+        "instruction": "cmp r1,#0x0",
+        "bytes": "0029",
+        "flows": []
+      },
+      {
+        "address": "0x00141a0c",
+        "instruction": "bgt.w 0x0014173c",
+        "bytes": "3ff796ae",
+        "flows": [
+          "0x0014173c"
+        ]
+      },
+      {
+        "address": "0x00141a10",
+        "instruction": "mov r1,r3",
+        "bytes": "1946",
+        "flows": []
+      },
+      {
+        "address": "0x00141a12",
+        "instruction": "str r3,[sp,#0x28]",
+        "bytes": "0a93",
+        "flows": []
+      },
+      {
+        "address": "0x00141a14",
+        "instruction": "blx 0x0003d6a0",
+        "bytes": "fbf644ee",
+        "flows": [
+          "0x0003d6a0"
+        ]
+      },
+      {
+        "address": "0x00141a18",
+        "instruction": "ldr r3,[sp,#0x28]",
+        "bytes": "0a9b",
+        "flows": []
+      },
+      {
+        "address": "0x00141a1a",
+        "instruction": "b 0x0014173c",
+        "bytes": "8fe6",
+        "flows": [
+          "0x0014173c"
+        ]
+      },
+      {
+        "address": "0x00141a1c",
+        "instruction": "ldr.w r2,[r3,#-0x4]",
+        "bytes": "53f8042c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a20",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x00141a22",
+        "instruction": "str.w r1,[r3,#-0x4]",
+        "bytes": "43f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a26",
+        "instruction": "b 0x001418e4",
+        "bytes": "5de7",
+        "flows": [
+          "0x001418e4"
+        ]
+      },
+      {
+        "address": "0x00141a28",
+        "instruction": "ldr.w r1,[r2,#-0x4]",
+        "bytes": "52f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a2c",
+        "instruction": "add.w lr,r1,#0xffffffff",
+        "bytes": "01f1ff3e",
+        "flows": []
+      },
+      {
+        "address": "0x00141a30",
+        "instruction": "str.w lr,[r2,#-0x4]",
+        "bytes": "42f804ec",
+        "flows": []
+      },
+      {
+        "address": "0x00141a34",
+        "instruction": "b 0x00141944",
+        "bytes": "86e7",
+        "flows": [
+          "0x00141944"
+        ]
+      },
+      {
+        "address": "0x00141a36",
+        "instruction": "ldr.w r2,[r3,#-0x4]",
+        "bytes": "53f8042c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a3a",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x00141a3c",
+        "instruction": "str.w r1,[r3,#-0x4]",
+        "bytes": "43f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a40",
+        "instruction": "b 0x00141914",
+        "bytes": "68e7",
+        "flows": [
+          "0x00141914"
+        ]
+      },
+      {
+        "address": "0x00141a42",
+        "instruction": "ldr.w r1,[r2,#-0x4]",
+        "bytes": "52f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a46",
+        "instruction": "add.w lr,r1,#0xffffffff",
+        "bytes": "01f1ff3e",
+        "flows": []
+      },
+      {
+        "address": "0x00141a4a",
+        "instruction": "str.w lr,[r2,#-0x4]",
+        "bytes": "42f804ec",
+        "flows": []
+      },
+      {
+        "address": "0x00141a4e",
+        "instruction": "b 0x00141a0a",
+        "bytes": "dce7",
+        "flows": [
+          "0x00141a0a"
+        ]
+      },
+      {
+        "address": "0x00141a50",
+        "instruction": "ldr.w r2,[r3,#-0x4]",
+        "bytes": "53f8042c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a54",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x00141a56",
+        "instruction": "str.w r1,[r3,#-0x4]",
+        "bytes": "43f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a5a",
+        "instruction": "b 0x001419dc",
+        "bytes": "bfe7",
+        "flows": [
+          "0x001419dc"
+        ]
+      },
+      {
+        "address": "0x00141a5c",
+        "instruction": "ldr.w r3,[r9,#-0x4]",
+        "bytes": "59f8043c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a60",
+        "instruction": "subs r2,r3,#0x1",
+        "bytes": "5a1e",
+        "flows": []
+      },
+      {
+        "address": "0x00141a62",
+        "instruction": "str.w r2,[r9,#-0x4]",
+        "bytes": "49f8042c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a66",
+        "instruction": "b 0x001419ae",
+        "bytes": "a2e7",
+        "flows": [
+          "0x001419ae"
+        ]
+      },
+      {
+        "address": "0x00141a68",
+        "instruction": "ldr.w r2,[r3,#-0x4]",
+        "bytes": "53f8042c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a6c",
+        "instruction": "subs r1,r2,#0x1",
+        "bytes": "511e",
+        "flows": []
+      },
+      {
+        "address": "0x00141a6e",
+        "instruction": "str.w r1,[r3,#-0x4]",
+        "bytes": "43f8041c",
+        "flows": []
+      },
+      {
+        "address": "0x00141a72",
+        "instruction": "b 0x00141978",
+        "bytes": "81e7",
+        "flows": [
+          "0x00141978"
+        ]
+      },
+      {
+        "address": "0x00141a74",
+        "instruction": "blx 0x0003c57c",
+        "bytes": "faf682ed",
+        "flows": [
+          "0x0003c57c"
+        ]
+      }
+    ],
+    "c_file": "0x00141600.c"
+  },
+  {
+    "address": "0x00141c24",
+    "name": "FUN_00141c24",
+    "qualified_name": "FUN_00141c24",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_00141c24()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[00141c24, 00141cbb]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      1317924
+    ],
+    "callers": [
+      "0x0015d070",
+      "0x0015d248",
+      "0x001a67e4",
+      "0x001a69e0",
+      "0x001a6d68",
+      "0x001a6e20",
+      "0x001a7488",
+      "0x001a771c",
+      "0x001c6840",
+      "0x00223628",
+      "0x00223c70"
+    ],
+    "instructions": [
+      {
+        "address": "0x00141c24",
+        "instruction": "push {r4,r5,r6,r7,lr}",
+        "bytes": "f0b5",
+        "flows": []
+      },
+      {
+        "address": "0x00141c26",
+        "instruction": "add.w r5,r0,#0x81",
+        "bytes": "00f18105",
+        "flows": []
+      },
+      {
+        "address": "0x00141c2a",
+        "instruction": "mov r4,r0",
+        "bytes": "0446",
+        "flows": []
+      },
+      {
+        "address": "0x00141c2c",
+        "instruction": "sub sp,#0x1c",
+        "bytes": "87b0",
+        "flows": []
+      },
+      {
+        "address": "0x00141c2e",
+        "instruction": "ldr.w r0,[r0,#0x104]",
+        "bytes": "d0f80401",
+        "flows": []
+      },
+      {
+        "address": "0x00141c32",
+        "instruction": "mov r1,r5",
+        "bytes": "2946",
+        "flows": []
+      },
+      {
+        "address": "0x00141c34",
+        "instruction": "blx 0x0003c374",
+        "bytes": "faf69eeb",
+        "flows": [
+          "0x0003c374"
+        ]
+      },
+      {
+        "address": "0x00141c38",
+        "instruction": "ldr r0,[0x00141cf8]",
+        "bytes": "2f48",
+        "flows": []
+      },
+      {
+        "address": "0x00141c3a",
+        "instruction": "movs r3,#0x5e",
+        "bytes": "5e23",
+        "flows": []
+      },
+      {
+        "address": "0x00141c3c",
+        "instruction": "ldr r7,[0x00141cfc]",
+        "bytes": "2f4f",
+        "flows": []
+      },
+      {
+        "address": "0x00141c3e",
+        "instruction": "movs r2,#0x1",
+        "bytes": "0122",
+        "flows": []
+      },
+      {
+        "address": "0x00141c40",
+        "instruction": "ldr r6,[0x00141d00]",
+        "bytes": "2f4e",
+        "flows": []
+      },
+      {
+        "address": "0x00141c42",
+        "instruction": "add r0,pc",
+        "bytes": "7844",
+        "flows": []
+      },
+      {
+        "address": "0x00141c44",
+        "instruction": "add r7,pc",
+        "bytes": "7f44",
+        "flows": []
+      },
+      {
+        "address": "0x00141c46",
+        "instruction": "str r0,[sp,#0x8]",
+        "bytes": "0290",
+        "flows": []
+      },
+      {
+        "address": "0x00141c48",
+        "instruction": "add r6,pc",
+        "bytes": "7e44",
+        "flows": []
+      },
+      {
+        "address": "0x00141c4a",
+        "instruction": "movs r1,#0x7",
+        "bytes": "0721",
+        "flows": []
+      },
+      {
+        "address": "0x00141c4c",
+        "instruction": "str r5,[sp,#0xc]",
+        "bytes": "0395",
+        "flows": []
+      },
+      {
+        "address": "0x00141c4e",
+        "instruction": "movs r0,#0x3",
+        "bytes": "0320",
+        "flows": []
+      },
+      {
+        "address": "0x00141c50",
+        "instruction": "stm sp,{r6,r7}",
+        "bytes": "8de8c000",
+        "flows": []
+      },
+      {
+        "address": "0x00141c54",
+        "instruction": "blx 0x0003c5b0",
+        "bytes": "faf6acec",
+        "flows": [
+          "0x0003c5b0"
+        ]
+      },
+      {
+        "address": "0x00141c58",
+        "instruction": "adds r4,#0x1",
+        "bytes": "0134",
+        "flows": []
+      },
+      {
+        "address": "0x00141c5a",
+        "instruction": "mov r0,r5",
+        "bytes": "2846",
+        "flows": []
+      },
+      {
+        "address": "0x00141c5c",
+        "instruction": "mov r1,r4",
+        "bytes": "2146",
+        "flows": []
+      },
+      {
+        "address": "0x00141c5e",
+        "instruction": "blx 0x0003d66c",
+        "bytes": "fbf606ed",
+        "flows": [
+          "0x0003d66c"
+        ]
+      },
+      {
+        "address": "0x00141c62",
+        "instruction": "cbz r0,0x00141c90",
+        "bytes": "a8b1",
+        "flows": [
+          "0x00141c90"
+        ]
+      },
+      {
+        "address": "0x00141c64",
+        "instruction": "ldr.w lr,[0x00141d04]",
+        "bytes": "dff89ce0",
+        "flows": []
+      },
+      {
+        "address": "0x00141c68",
+        "instruction": "movs r1,#0x3",
+        "bytes": "0321",
+        "flows": []
+      },
+      {
+        "address": "0x00141c6a",
+        "instruction": "ldr r7,[0x00141d08]",
+        "bytes": "274f",
+        "flows": []
+      },
+      {
+        "address": "0x00141c6c",
+        "instruction": "mov r0,r1",
+        "bytes": "0846",
+        "flows": []
+      },
+      {
+        "address": "0x00141c6e",
+        "instruction": "ldr r6,[0x00141d0c]",
+        "bytes": "274e",
+        "flows": []
+      },
+      {
+        "address": "0x00141c70",
+        "instruction": "add lr,pc",
+        "bytes": "fe44",
+        "flows": []
+      },
+      {
+        "address": "0x00141c72",
+        "instruction": "add r7,pc",
+        "bytes": "7f44",
+        "flows": []
+      },
+      {
+        "address": "0x00141c74",
+        "instruction": "movs r3,#0x6d",
+        "bytes": "6d23",
+        "flows": []
+      },
+      {
+        "address": "0x00141c76",
+        "instruction": "add r6,pc",
+        "bytes": "7e44",
+        "flows": []
+      },
+      {
+        "address": "0x00141c78",
+        "instruction": "str r4,[sp,#0x10]",
+        "bytes": "0494",
+        "flows": []
+      },
+      {
+        "address": "0x00141c7a",
+        "instruction": "movs r2,#0x1",
+        "bytes": "0122",
+        "flows": []
+      },
+      {
+        "address": "0x00141c7c",
+        "instruction": "str r5,[sp,#0xc]",
+        "bytes": "0395",
+        "flows": []
+      },
+      {
+        "address": "0x00141c7e",
+        "instruction": "str.w lr,[sp,#0x8]",
+        "bytes": "cdf808e0",
+        "flows": []
+      },
+      {
+        "address": "0x00141c82",
+        "instruction": "str r7,[sp,#0x4]",
+        "bytes": "0197",
+        "flows": []
+      },
+      {
+        "address": "0x00141c84",
+        "instruction": "str r6,[sp,#0x0]",
+        "bytes": "0096",
+        "flows": []
+      },
+      {
+        "address": "0x00141c86",
+        "instruction": "blx 0x0003c5b0",
+        "bytes": "faf694ec",
+        "flows": [
+          "0x0003c5b0"
+        ]
+      },
+      {
+        "address": "0x00141c8a",
+        "instruction": "movs r0,#0x0",
+        "bytes": "0020",
+        "flows": []
+      },
+      {
+        "address": "0x00141c8c",
+        "instruction": "add sp,#0x1c",
+        "bytes": "07b0",
+        "flows": []
+      },
+      {
+        "address": "0x00141c8e",
+        "instruction": "pop {r4,r5,r6,r7,pc}",
+        "bytes": "f0bd",
+        "flows": []
+      },
+      {
+        "address": "0x00141c90",
+        "instruction": "ldr.w lr,[0x00141d10]",
+        "bytes": "dff87ce0",
+        "flows": []
+      },
+      {
+        "address": "0x00141c94",
+        "instruction": "movs r3,#0x68",
+        "bytes": "6823",
+        "flows": []
+      },
+      {
+        "address": "0x00141c96",
+        "instruction": "ldr r7,[0x00141d14]",
+        "bytes": "1f4f",
+        "flows": []
+      },
+      {
+        "address": "0x00141c98",
+        "instruction": "movs r2,#0x1",
+        "bytes": "0122",
+        "flows": []
+      },
+      {
+        "address": "0x00141c9a",
+        "instruction": "ldr r6,[0x00141d18]",
+        "bytes": "1f4e",
+        "flows": []
+      },
+      {
+        "address": "0x00141c9c",
+        "instruction": "add lr,pc",
+        "bytes": "fe44",
+        "flows": []
+      },
+      {
+        "address": "0x00141c9e",
+        "instruction": "add r7,pc",
+        "bytes": "7f44",
+        "flows": []
+      },
+      {
+        "address": "0x00141ca0",
+        "instruction": "movs r1,#0x7",
+        "bytes": "0721",
+        "flows": []
+      },
+      {
+        "address": "0x00141ca2",
+        "instruction": "add r6,pc",
+        "bytes": "7e44",
+        "flows": []
+      },
+      {
+        "address": "0x00141ca4",
+        "instruction": "str r4,[sp,#0x10]",
+        "bytes": "0494",
+        "flows": []
+      },
+      {
+        "address": "0x00141ca6",
+        "instruction": "str r5,[sp,#0xc]",
+        "bytes": "0395",
+        "flows": []
+      },
+      {
+        "address": "0x00141ca8",
+        "instruction": "movs r0,#0x3",
+        "bytes": "0320",
+        "flows": []
+      },
+      {
+        "address": "0x00141caa",
+        "instruction": "str.w lr,[sp,#0x8]",
+        "bytes": "cdf808e0",
+        "flows": []
+      },
+      {
+        "address": "0x00141cae",
+        "instruction": "str r7,[sp,#0x4]",
+        "bytes": "0197",
+        "flows": []
+      },
+      {
+        "address": "0x00141cb0",
+        "instruction": "str r6,[sp,#0x0]",
+        "bytes": "0096",
+        "flows": []
+      },
+      {
+        "address": "0x00141cb2",
+        "instruction": "blx 0x0003c5b0",
+        "bytes": "faf67eec",
+        "flows": [
+          "0x0003c5b0"
+        ]
+      },
+      {
+        "address": "0x00141cb6",
+        "instruction": "movs r0,#0x1",
+        "bytes": "0120",
+        "flows": []
+      },
+      {
+        "address": "0x00141cb8",
+        "instruction": "add sp,#0x1c",
+        "bytes": "07b0",
+        "flows": []
+      },
+      {
+        "address": "0x00141cba",
+        "instruction": "pop {r4,r5,r6,r7,pc}",
+        "bytes": "f0bd",
+        "flows": []
+      }
+    ],
+    "c_file": "0x00141c24.c"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "instructions_verified_against_original_ELF": {
+    "AppProxy": 2570,
+    "librrslamdrv.so": 922,
+    "librrnavdrv.so": 871
+  },
+  "functions": 16,
+  "literals": 36,
+  "reopened": "not requested",
+  "limits": "Byte/replay identity and explicit anchors only; not semantic correctness, runtime existence, coherent snapshot or durability."
+}
