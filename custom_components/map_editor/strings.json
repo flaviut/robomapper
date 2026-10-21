@@ -1,32 +1,34 @@
 {
-  "title": "S7 Map Editor",
+  "title": "robomapper",
   "config": {
     "step": {
       "user": {
         "title": "Connect to the robot",
-        "description": "Requires root SSH key access and firmware 4.3.5_1612. The private key must already exist inside Home Assistant's filesystem. Verify the robot's SHA256 host-key fingerprint through a trusted connection; changed keys are rejected. Saving is experimental and reboots the robot.",
+        "description": "Enter your robot's address.",
         "data": {
           "host": "Robot hostname or IP address",
-          "port": "SSH port",
-          "key_path": "Private key path inside Home Assistant",
-          "fingerprint": "Trusted SSH host-key fingerprint (SHA256:…)",
-          "vacuum_entity": "Existing vacuum (optional link only)"
+          "port": "SSH port"
         }
+      },
+      "authorize": {
+        "title": "Authorize robomapper",
+        "description": "Run this command from a computer with SSH access to the robot, then select Submit:\n\n```sh\n{command}\n```"
       },
       "reconfigure": {
         "title": "Update robot connection",
-        "description": "Keep the same robot address. Verify a changed SSH host key through a trusted connection before updating its fingerprint.",
         "data": {
           "host": "Robot hostname or IP address",
-          "port": "SSH port",
-          "key_path": "Private key path inside Home Assistant",
-          "fingerprint": "Trusted SSH host-key fingerprint (SHA256:…)",
-          "vacuum_entity": "Existing vacuum (optional link only)"
+          "port": "SSH port"
         }
       }
     },
     "error": {
-      "cannot_connect": "Could not verify the connection. Check the address, key path, trusted fingerprint, root access and firmware 4.3.5_1612."
+      "cannot_connect": "Could not connect. Check the robot address and SSH port.",
+      "authorization_required": "Run the authorization command, then retry.",
+      "root_required": "Robot SSH access must allow root.",
+      "unsupported_firmware": "Unsupported firmware.",
+      "host_key_changed": "The robot's SSH identity changed. Remove and add the robot to reconnect.",
+      "key_failed": "Could not create or read the SSH key. Check Home Assistant's configuration directory permissions."
     },
     "abort": {
       "already_configured": "This robot is already configured.",

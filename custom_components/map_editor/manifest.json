@@ -1,6 +1,6 @@
 {
   "domain": "map_editor",
-  "name": "S7 Map Editor",
+  "name": "robomapper",
   "codeowners": ["@flaviut"],
   "config_flow": true,
   "dependencies": ["http", "panel_custom", "websocket_api"],

@@ -8,9 +8,8 @@ import { chromium, type Browser } from 'playwright'
 const assets = new URL('../../custom_components/map_editor/frontend/', import.meta.url)
 
 // Serve the release bundle, not Vite's development backend.
-test('HA panel loads, links a vacuum and resumes a save after reload', async () => {
+test('HA panel loads and resumes a save after reload', async () => {
   let stage = 'idle'
-  let linked = true
   const calls: { action: string, entry_id?: string, data?: { confirmation?: string } }[] = []
   const cells = Buffer.alloc(64, 32).toString('base64')
   const rooms = Buffer.alloc(64, 1).toString('base64')
@@ -23,7 +22,7 @@ test('HA panel loads, links a vacuum and resumes a save after reload', async () 
       const input = JSON.parse(Buffer.concat(chunks).toString()) as typeof calls[number]
       calls.push(input)
       let result: unknown
-      if (input.action === 'entries') result = [{ id: 'robot-entry', name: 'robot.local', ...(linked ? { vacuum_entity: 'vacuum.robot' } : {}) }]
+      if (input.action === 'entries') result = [{ id: 'robot-entry', name: 'robot.local' }]
       else if (input.action === 'load') result = map
       else {
         if (input.action === 'save') stage = 'saving'
@@ -45,7 +44,6 @@ test('HA panel loads, links a vacuum and resumes a save after reload', async () 
         panel.hass = { callWS: async message => (await fetch('/rpc', {
           method: 'POST', body: JSON.stringify(message),
         })).json() };
-        panel.addEventListener('hass-more-info', event => { document.body.dataset.entity = event.detail.entityId; });
         document.body.append(panel);
       </script></body></html>`)
   })
@@ -69,8 +67,6 @@ test('HA panel loads, links a vacuum and resumes a save after reload', async () 
     const background = await page.locator('header').evaluate(node => getComputedStyle(node).backgroundColor)
     assert.notEqual(background, 'rgba(0, 0, 0, 0)')
     await page.screenshot({ path: new URL('../artifacts/hass-panel.png', import.meta.url).pathname })
-    await page.getByRole('button', { name: 'Open vacuum', exact: true }).click()
-    assert.equal(await page.locator('body').getAttribute('data-entity'), 'vacuum.robot')
     assert.ok(await page.locator('canvas').evaluate(node => node.getBoundingClientRect().width > 0))
     await page.getByRole('button', { name: 'Save', exact: true }).click()
     await page.getByRole('button', { name: 'Save and restart', exact: true }).click()
@@ -87,13 +83,6 @@ test('HA panel loads, links a vacuum and resumes a save after reload', async () 
     assert.deepEqual(errors, [])
     await page.close()
 
-    linked = false
-    const unlinked = await browser.newPage()
-    await unlinked.goto(`http://127.0.0.1:${address.port}/`)
-    await unlinked.getByLabel('Robot', { exact: true }).waitFor()
-    assert.equal(await unlinked.getByRole('button', { name: 'Open vacuum', exact: true }).count(), 0)
-    await unlinked.getByRole('button', { name: 'Load map', exact: true }).click()
-    await unlinked.locator('canvas').waitFor({ state: 'visible' })
   } finally {
     await browser?.close()
     await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()))

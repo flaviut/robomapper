@@ -15,6 +15,7 @@ from homeassistant.exceptions import Unauthorized
 from custom_components import map_editor
 from custom_components.map_editor.api import _request
 from custom_components.map_editor.config_flow import ConfigFlow
+from custom_components.map_editor.service import AuthorizationError, SetupError
 
 _DATA = {"host": "robot.local", "port": 22, "key_path": "/config/key", "fingerprint": "SHA256:test"}
 
@@ -95,10 +96,10 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(Unauthorized):
             _request(self.hass, self.connection, {"id": 1, "type": "map_editor", "action": "entries"})
 
-    async def test_api_lists_optional_link(self):
+    async def test_api_lists_robots(self):
         await self._call("entries")
         self.connection.send_result.assert_called_once_with(1, [
-            {"id": self.entry.entry_id, "name": "robot.local", "vacuum_entity": None},
+            {"id": self.entry.entry_id, "name": "robot.local"},
         ])
 
     async def test_api_rejects_unknown_entry(self):
@@ -118,16 +119,128 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
         flow.context = {"source": "user"}
         flow.flow_id = "test"
         flow.handler = "map_editor"
-        with patch("custom_components.map_editor.config_flow.connect_robot", new=AsyncMock()):
-            result = await flow.async_step_user({**_DATA, "host": "new.local"})
+        result = await flow.async_step_user()
+        self.assertEqual(set(result["data_schema"].schema), {"host", "port"})
+        result = await flow.async_step_user({"host": "new.local", "port": 22})
+        self.assertEqual(result["step_id"], "authorize")
+        command = result["description_placeholders"]["command"]
+        self.assertIn("ssh-ed25519 ", command)
+        self.assertIn("root@new.local", command)
+        self.assertIn("authorized_keys", command)
+        key_path = Path(self.tmp.name) / "map_editor" / "id_ed25519"
+        self.assertEqual(key_path.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(key_path.parent.stat().st_mode & 0o777, 0o700)
+        data = {**_DATA, "host": "new.local", "key_path": str(key_path)}
+        with patch("custom_components.map_editor.config_flow.enroll_robot", new=AsyncMock(return_value=data)):
+            result = await flow.async_step_authorize({})
         self.assertEqual(result["type"], "create_entry")
-        self.assertNotIn("vacuum_entity", result["data"])
+        self.assertEqual(result["data"], data)
+
+    def _reconfigure_flow(self):
+        self.entry.runtime_data = SimpleNamespace(busy=lambda: False)
+        flow = ConfigFlow()
+        flow.hass = self.hass
+        flow.context = {"source": "reconfigure", "entry_id": self.entry.entry_id}
+        flow.flow_id = "test"
+        flow.handler = "map_editor"
+        return flow
+
+    async def test_reconfigure_reuses_working_access_without_key_setup(self):
+        flow = self._reconfigure_flow()
+        with (
+            patch("custom_components.map_editor.config_flow.enroll_robot",
+                  new=AsyncMock(return_value=dict(_DATA))) as enroll,
+            patch("custom_components.map_editor.config_flow.setup_access",
+                  new=AsyncMock(return_value="ssh-ed25519 test")) as setup,
+            patch("custom_components.map_editor.robot.asyncssh.generate_private_key") as generate,
+            patch("custom_components.map_editor.robot.asyncssh.read_private_key") as read,
+            patch.object(self.hass.config_entries, "async_schedule_reload") as reload,
+        ):
+            result = await flow.async_step_reconfigure({"host": "robot.local", "port": 22})
+        self.assertEqual(result["type"], "abort")
+        self.assertEqual(result["reason"], "reconfigure_successful")
+        enroll.assert_awaited_once_with(_DATA)
+        setup.assert_not_awaited()
+        generate.assert_not_called()
+        read.assert_not_called()
+        reload.assert_called_once_with(self.entry.entry_id)
+        self.assertEqual(dict(self.entry.data), _DATA)
+
+    async def test_reconfigure_requests_authorization_only_after_access_is_denied(self):
+        flow = self._reconfigure_flow()
+        calls = []
+
+        async def enroll(data):
+            calls.append("enroll")
+            if len(calls) == 1:
+                raise AuthorizationError()
+            return dict(data)
+
+        async def setup(path, host, port):
+            calls.append("setup")
+            return "authorization command"
+
+        with (
+            patch("custom_components.map_editor.config_flow.enroll_robot",
+                  new=AsyncMock(side_effect=enroll)) as enroll_mock,
+            patch("custom_components.map_editor.config_flow.setup_access",
+                  new=AsyncMock(side_effect=setup)) as setup_mock,
+            patch.object(self.hass.config_entries, "async_schedule_reload") as reload,
+        ):
+            result = await flow.async_step_reconfigure({"host": "robot.local", "port": 22})
+            self.assertEqual(result["step_id"], "authorize")
+            self.assertEqual(calls, ["enroll", "setup"])
+            self.assertEqual(result["description_placeholders"]["command"], "authorization command")
+            self.assertEqual(flow._data, _DATA)
+            setup_mock.assert_awaited_once_with(_DATA["key_path"], _DATA["host"], _DATA["port"])
+            result = await flow.async_step_authorize({})
+        self.assertEqual(result["reason"], "reconfigure_successful")
+        self.assertEqual(enroll_mock.await_count, 2)
+        for call in enroll_mock.await_args_list:
+            self.assertEqual(call.args, (_DATA,))
+        reload.assert_called_once_with(self.entry.entry_id)
+        self.assertEqual(dict(self.entry.data), _DATA)
+
+    async def test_reconfigure_unrelated_setup_failure_does_not_request_authorization(self):
+        for code in ("cannot_connect", "key_failed"):
+            with self.subTest(code=code):
+                flow = self._reconfigure_flow()
+                with (
+                    patch("custom_components.map_editor.config_flow.enroll_robot",
+                          new=AsyncMock(side_effect=SetupError(code))) as enroll,
+                    patch("custom_components.map_editor.config_flow.setup_access",
+                          new=AsyncMock()) as setup,
+                    patch.object(self.hass.config_entries, "async_schedule_reload") as reload,
+                ):
+                    result = await flow.async_step_reconfigure({"host": "robot.local", "port": 22})
+                self.assertEqual(result["step_id"], "reconfigure")
+                self.assertEqual(result["errors"], {"base": code})
+                self.assertIsNone(result["description_placeholders"])
+                enroll.assert_awaited_once_with(_DATA)
+                setup.assert_not_awaited()
+                reload.assert_not_called()
+                self.assertEqual(dict(self.entry.data), _DATA)
+
+    async def test_reconfigure_authorization_key_failure_stays_on_reconfigure(self):
+        flow = self._reconfigure_flow()
+        with (
+            patch("custom_components.map_editor.config_flow.enroll_robot",
+                  new=AsyncMock(side_effect=AuthorizationError())),
+            patch("custom_components.map_editor.config_flow.setup_access",
+                  new=AsyncMock(side_effect=OSError("key is not writable"))),
+        ):
+            result = await flow.async_step_reconfigure({"host": "robot.local", "port": 22})
+        self.assertEqual(result["step_id"], "reconfigure")
+        self.assertEqual(result["errors"], {"base": "key_failed"})
+        self.assertIsNone(result["description_placeholders"])
 
     async def test_flow_rejects_unverified_connection(self):
         flow = ConfigFlow()
         flow.hass = self.hass
-        with patch("custom_components.map_editor.config_flow.connect_robot", new=AsyncMock(side_effect=ValueError("wrong firmware"))):
-            result = await flow.async_step_user(_DATA)
+        flow.context = {"source": "user"}
+        await flow.async_step_user({"host": "new.local", "port": 22})
+        with patch("custom_components.map_editor.config_flow.enroll_robot", new=AsyncMock(side_effect=ValueError("wrong firmware"))):
+            result = await flow.async_step_authorize({})
         self.assertEqual(result["errors"], {"base": "cannot_connect"})
 
 

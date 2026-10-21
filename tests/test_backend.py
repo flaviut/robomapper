@@ -10,7 +10,7 @@ import unittest
 import asyncssh
 
 from custom_components.map_editor import codec
-from custom_components.map_editor.robot import Robot
+from custom_components.map_editor.robot import Robot, SetupError
 from custom_components.map_editor.service import Editor
 from test_codec import fixture, region
 
@@ -181,8 +181,9 @@ class TransportTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_changed_host_key_rejected(self):
         robot = Robot("127.0.0.1", self.server.get_port(), str(self.key_path), "SHA256:wrong")
-        with self.assertRaises(asyncssh.HostKeyNotVerifiable):
+        with self.assertRaises(SetupError) as raised:
             await robot.check()
+        self.assertEqual(raised.exception.code, "host_key_changed")
 
     async def test_corrupt_backup_never_authorizes(self):
         self.digest = "0" * 32

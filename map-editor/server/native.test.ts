@@ -16,7 +16,7 @@ import { inspectRooms } from './rooms.ts'
 import { readRegion } from './persistence.ts'
 
 const run = promisify(execFile)
-const script = fileURLToPath(new URL('../../tools/map-maint/save.sh', import.meta.url))
+const script = fileURLToPath(new URL('../../custom_components/map_editor/tools/save.sh', import.meta.url))
 
 function integer(value: number): Buffer {
   const bytes: number[] = []

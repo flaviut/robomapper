@@ -9,12 +9,6 @@ _COMPONENT = _ROOT / "custom_components" / "map_editor"
 
 
 class DistributionTests(unittest.TestCase):
-    def test_tool_bundle_matches_sources(self):
-        for name, source in (("save.sh", "save.sh"), ("map-maint", "bin/map-maint")):
-            with self.subTest(name=name):
-                self.assertEqual((_COMPONENT / "tools" / name).read_bytes(),
-                                 (_ROOT / "tools" / "map-maint" / source).read_bytes())
-
     def test_translations_match(self):
         self.assertEqual(json.loads((_COMPONENT / "strings.json").read_text()),
                          json.loads((_COMPONENT / "translations/en.json").read_text()))

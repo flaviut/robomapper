@@ -8,20 +8,35 @@ import json
 import logging
 import os
 from pathlib import Path
+import shlex
 from uuid import uuid4
 
 from .codec import apply_edit, load_map, make_patch, pack_tar, parse_edit, read_tar
-from .robot import Robot
+from .robot import AuthorizationError, Robot, SetupError, host_key, setup_key
 
 _LOGGER = logging.getLogger(__name__)
 
 
+async def setup_access(path: str, host: str, port: int) -> str:
+    public_key = await asyncio.to_thread(setup_key, path)
+    destination = shlex.quote(f"root@{host}")
+    return (
+        f"printf '%s\\n' {shlex.quote(public_key)} | ssh -p {port} {destination} "
+        "'umask 077; mkdir -p ~/.ssh; cat >> ~/.ssh/authorized_keys'"
+    )
+
+
+async def enroll_robot(data: dict) -> dict:
+    data = dict(data)
+    if not data.get("fingerprint"):
+        data["fingerprint"] = await host_key(data["host"], data["port"])
+    await connect_robot(data)
+    return data
+
+
 async def connect_robot(data: dict) -> Robot:
     robot = Robot(data["host"], data["port"], data["key_path"], data["fingerprint"])
-    try:
-        await robot.check()
-    except Exception as err:
-        raise ValueError("Could not verify root SSH access and firmware 4.3.5_1612.") from err
+    await robot.check()
     return robot
 
 

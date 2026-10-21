@@ -37,7 +37,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if not frontend.async_panel_exists(hass, DOMAIN):
         await panel_custom.async_register_panel(
             hass, frontend_url_path=DOMAIN, webcomponent_name="s7-map-editor",
-            sidebar_title="S7 Map Editor", sidebar_icon="mdi:floor-plan",
+            sidebar_title="robomapper", sidebar_icon="mdi:floor-plan",
             module_url=f"{_ASSETS}/panel.js?v=0.1.0", embed_iframe=False,
             require_admin=True,
         )

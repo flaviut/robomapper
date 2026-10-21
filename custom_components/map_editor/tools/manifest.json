@@ -1,6 +1,6 @@
 {
   "firmware": "4.3.5_1612",
-  "source": "../map-maint.c",
+  "source": "../../../tools/map-maint/map-maint.c",
   "sourceSha256": "637ca1de45ee0082dad6eeeaf429be97ead58365bb07125c1ecbcb8fc7341b0f",
   "sha256": "fb75e397eb09c51aa1a0402918fe55c357363be5843e6e7f896e6b7d7d8987f0",
   "size": 21500

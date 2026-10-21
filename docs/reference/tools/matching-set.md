@@ -16,7 +16,7 @@ review fresh status, identities and stop.sh
   -> observe real map, stationary pose and fresh quiet status
 ```
 
-The editor uses its own [`save.sh`](../../../tools/map-maint/save.sh); these scripts are for manual matching-set work. `approved-once` is an explicit invocation argument, not a substitute for checking readiness. Neither a deadline nor `sync` bounds blocked flash I/O or reboot time. Keep uninterrupted power and SSH available. A failed rollback or surviving operations child prevents normal reboot; services remain excluded and require intervention.
+The editor uses its own [`save.sh`](../../../custom_components/map_editor/tools/save.sh); these scripts are for manual matching-set work. `approved-once` is an explicit invocation argument, not a substitute for checking readiness. Neither a deadline nor `sync` bounds blocked flash I/O or reboot time. Keep uninterrupted power and SSH available. A failed rollback or surviving operations child prevents normal reboot; services remain excluded and require intervention.
 
 ## File operations
 

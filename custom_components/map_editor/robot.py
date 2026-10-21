@@ -3,6 +3,8 @@
 import asyncio
 from contextlib import asynccontextmanager
 import hashlib
+import os
+from pathlib import Path
 import re
 
 import asyncssh
@@ -10,6 +12,42 @@ import asyncssh
 from .codec import MAX_ARCHIVE, MAX_MAP
 
 _ROOT = "/mnt/data/rockrobo"
+
+
+class SetupError(ValueError):
+    """ValueError-compatible setup failure with a config-flow translation key."""
+
+    def __init__(self, code: str, message: str | None = None):
+        super().__init__(message if message is not None else code)
+        self.code = code
+
+
+class AuthorizationError(SetupError):
+    """SSH authentication rejection or a missing local private key."""
+
+    def __init__(self, message: str | None = None):
+        super().__init__("authorization_required", message)
+
+
+def setup_key(path: str) -> str:
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    if not target.exists():
+        key = asyncssh.generate_private_key("ssh-ed25519")
+        with open(target, "xb", opener=lambda name, flags: os.open(name, flags, 0o600)) as file:
+            file.write(key.export_private_key())
+    return asyncssh.read_private_key(target).export_public_key().decode().strip()
+
+
+async def host_key(host: str, port: int) -> str:
+    try:
+        async with asyncio.timeout(15):
+            key = await asyncssh.get_server_host_key(host, port=port, config=None)
+        if key is None:
+            raise ValueError("Robot did not provide an SSH host key.")
+        return key.get_fingerprint()
+    except (OSError, asyncssh.Error, ValueError) as err:
+        raise SetupError("cannot_connect") from err
 
 
 class _Host(asyncssh.SSHClient):
@@ -29,7 +67,14 @@ class Robot:
 
     @asynccontextmanager
     async def _connect(self):
-        key = await asyncio.to_thread(asyncssh.read_private_key, self._key_path)
+        try:
+            key = await asyncio.to_thread(asyncssh.read_private_key, self._key_path)
+        except FileNotFoundError as err:
+            raise AuthorizationError("The local SSH private key is missing. Set up robot authorization again.") from err
+        except (OSError, ValueError) as err:
+            raise SetupError(
+                "key_failed", "Could not read the local SSH private key. Check its contents and permissions.",
+            ) from err
         async with asyncssh.connect(
             self._host, port=self._port, username="root", client_keys=[key],
             client_factory=lambda: _Host(self._fingerprint), known_hosts=(),
@@ -67,9 +112,24 @@ class Robot:
         return bytes(result)
 
     async def check(self):
-        result = await self._run("id -u; cat /etc/os-release", limit=8192)
-        if not result.startswith(b"0\n") or b"ROBOROCK_VERSION=4.3.5_1612\n" not in result:
-            raise ValueError("Requires root SSH access and firmware 4.3.5_1612.")
+        try:
+            result = await self._run("id -u; cat /etc/os-release", limit=8192)
+        except SetupError:
+            raise
+        except asyncssh.PermissionDenied as err:
+            raise AuthorizationError() from err
+        except asyncssh.HostKeyNotVerifiable as err:
+            raise SetupError("host_key_changed") from err
+        except (OSError, asyncssh.Error, ValueError) as err:
+            raise SetupError("cannot_connect") from err
+        if not result.startswith(b"0\n"):
+            raise SetupError(
+                "root_required", "The SSH session does not have root access. Check the robot's SSH configuration.",
+            )
+        if b"ROBOROCK_VERSION=4.3.5_1612\n" not in result:
+            raise SetupError(
+                "unsupported_firmware", "The robot's firmware is not supported. See the integration documentation.",
+            )
 
     async def read_map(self) -> tuple[bytes, bytes]:
         return tuple(await asyncio.gather(*(

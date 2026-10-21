@@ -55,9 +55,9 @@ export async function saveMap(hostname: string, input: EditInput) {
     log(`Robot files: ${work}; local backup: ${backup.path}`)
 
     step('Upload save script and native helper')
-    const tools = new URL('../../tools/map-maint/', import.meta.url)
+    const tools = new URL('../../custom_components/map_editor/tools/', import.meta.url)
     const payload = packTar({ 'save.sh': await readFile(new URL('save.sh', tools)),
-      'map-maint': await readFile(new URL('bin/map-maint', tools)) })
+      'map-maint': await readFile(new URL('map-maint', tools)) })
     const boot = await uploadSave(hostname, work, payload, log)
     await backup.save('request.json', Buffer.from(JSON.stringify({ hostname, work, boot,
       source: createHash('sha256').update(edit.raster).digest('hex') }) + '\n'))

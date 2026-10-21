@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { loadMap, saveMap, saveStatus, type RobotMap } from './lib/maps'
-  import { inHass, openVacuum, request, type RobotEntry } from './lib/hass'
+  import { inHass, request, type RobotEntry } from './lib/hass'
   import MapViewer from './MapViewer.svelte'
   import { loadSession, saveSession, saveView, saveDraft } from './lib/session'
   import type { View } from './lib/view'
@@ -13,7 +13,6 @@
   let error = $state('')
   let map = $state<RobotMap | null>(null)
   let source = $state('')
-  const selected = $derived(entries.find(entry => entry.id === (source || hostname)))
   const sourceName = $derived(homeAssistant ? entries.find(entry => entry.id === source)?.name ?? source : source)
   let sessionId = $state('')
   let initialView = $state<View>()
@@ -138,7 +137,7 @@
 
 <div data-theme="dark" class="flex h-dvh flex-col bg-base-200">
   <header class="flex flex-wrap items-center gap-4 border-b border-base-300 bg-base-100 px-4 py-3">
-    <h1 class="mr-auto text-lg font-semibold">S7 Map Editor</h1>
+    <h1 class="mr-auto text-lg font-semibold">robomapper</h1>
     <form onsubmit={openMap} class="flex flex-wrap items-center gap-2">
       {#if homeAssistant}
         <label for="robot" class="text-sm">Robot</label>
@@ -156,9 +155,6 @@
         {loading ? 'Loading…' : 'Load map'}
       </button>
     </form>
-    {#if selected?.vacuum_entity}
-      <button class="btn btn-ghost btn-sm" onclick={() => openVacuum(selected.vacuum_entity!)}>Open vacuum</button>
-    {/if}
     <button class="btn btn-sm" disabled={!map || loading || action !== 'idle'} onclick={() => confirmation?.showModal()}>
       {action === 'save' ? 'Saving…' : 'Save'}
     </button>
@@ -179,7 +175,7 @@
   <dialog bind:this={confirmation} class="modal" aria-labelledby="save-title">
     <div class="modal-box">
       <h2 id="save-title" class="text-lg font-semibold">Save changes?</h2>
-      <p class="py-4">Save changes to {sourceName} and restart the robot? This experimental operation replaces native map files. Keep the robot idle and powered.</p>
+      <p class="py-4">Save changes to {sourceName} and restart the robot?</p>
       <div class="modal-action">
         <button class="btn btn-sm" onclick={() => confirmation?.close()}>Cancel</button>
         <button class="btn btn-primary btn-sm" onclick={save}>Save and restart</button>

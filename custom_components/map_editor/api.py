@@ -26,8 +26,7 @@ def register_api(hass):
 async def _request(hass, connection, msg):
     if msg["action"] == "entries":
         connection.send_result(msg["id"], [
-            {"id": entry.entry_id, "name": entry.title,
-             "vacuum_entity": entry.data.get("vacuum_entity")}
+            {"id": entry.entry_id, "name": entry.title}
             for entry in hass.config_entries.async_entries(_DOMAIN)
             if entry.state is ConfigEntryState.LOADED
         ])

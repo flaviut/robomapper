@@ -9,7 +9,7 @@ class MapEditorPanel extends HTMLElement {
 
   set hass(value: HomeAssistant) {
     this.current = value
-    setHass(value, this)
+    setHass(value)
     this.start()
   }
 
