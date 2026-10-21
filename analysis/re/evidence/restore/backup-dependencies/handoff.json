@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "lane": "backup-dependencies",
+  "base_ref": "6cd68d68070400ddd8a327f1c3e09538df01fd63",
+  "status": "bounded useful partial checkpoint; operational backup/restore and exact journal mode blocked",
+  "commits": [
+    {"commit": "61ceab8737c835a300e17d2484474b15b54b2a6f", "subject": "Record map database opener and configuration/vmap companion dependencies", "role": "16 focused C exports, ELF instructions/literals, claims BD01-BD05, conditional dependency manifest and validation/replay"}
+  ],
+  "commit_note": "This handoff is committed separately; find its containing commit with git log -- analysis/re/evidence/restore/backup-dependencies/handoff.json. It does not embed its own hash.",
+  "ownership": "analysis/re/evidence/restore/backup-dependencies/** only in Git",
+  "findings_output": "/home/user/.local/state/pi/agent/sessions/--home-user-tmp-illegalplainape--/subagent-artifacts/outputs/b4b541c7-70d1-4635-88ba-475c1e60f203/restore-next/backup-dependencies.md",
+  "method": "Local static analysis only; source-root retool.py copied immutable closed baseline twice into new ignored lane scratch, then used pinned Ghidra 12.0.4. No firmware execution, device access, internet, saved-capture processing, new entry creation or shared annotation/tooling changes. Baseline names/signatures/ABI preserved. No buffered-load lifecycle reanalysis.",
+  "identities": {
+    "AppProxy": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+    "librrslamdrv.so": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+    "librrnavdrv.so": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475"
+  },
+  "supported_claims": [
+    {"id": "BD01", "summary": "Map backup database is AppProxy object+0x68 initialized by 0x20440; first handle +0x40 owns bakmaps and path base-global 0x35367c + /rockrobo/robot.db. Exact deployed base not resolved.", "anchors": "AppProxy 0x6494c/0x64950, 0x2047a/0x20480/0x20484/0x2048a, 0x2081a/0x2083e/0x20886; evidence.json and focused/AppProxy"},
+    {"id": "BD02", "summary": "Initializer SQL resolves to schema/migrations, not a journal/WAL selection pragma. Actual journal mode remains unresolved; embedded SQLite parser keywords do not configure this DB.", "anchors": "AppProxy 0x20530..0x205e2 and SQL pointers 0x1207c0..0x1207ec; evidence.json literals"},
+    {"id": "BD03", "summary": "Vmap names have reachable switch/slot/virtual dispatch consumers, but concrete virtual implementer and actual disk I/O not closed. Default comparison branch can return success without I/O; no universal required or historical classification.", "anchors": "librrslamdrv.so 0x26a7c; 0xc694/0xc69c and 0xc6ea/0xc6f2; wrappers 0x20ad0/0x20c24; predecessor constructor slots"},
+    {"id": "BD04-BD05", "summary": "Shared slam_info.cfg contains per-native-flag Map<decimal flag>.Moved state. Cached NAV_DYNAMIC_CONFIG_PATH root (compiled empty fallback) plus /slam_info.cfg is read in mode2; writes go through .cache then rename. Preserve whole final file for exact config state; cache is staging, not normal second load input or barrier.", "anchors": "librrnavdrv.so 0x1a6374, 0x1a73b4, 0x1a7488/0x1a7624, 0x141d68/0x141e28/0x141600 and 0x141c24; instruction arguments 0x141854..0x14185a and 0x141c26..0x141c5e"}
+  ],
+  "commands_results": [
+    {"command": "python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py copy <new ignored lane scratch>/project", "result": "passed twice; no direct baseline opening"},
+    {"command": "python3 retool.py run <private project> librrnavdrv.so --functions 0x1a6374 0x1a647c 0x141d1c --out <new scratch output>", "result": "expected rejection of absent 0x141d1c; no function creation; later existing-entry-only batch passed. This was an export request failure, not infrastructure failure."},
+    {"command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/backup-dependencies/validate.py", "result": "passed: 4363 mapped instruction records, 36 literals/pointers and original thunk bytes across 3 SHA256-pinned inputs"},
+    {"command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/backup-dependencies -p test_validate.py -v", "result": "passed: 7 negative/control tests; no predecessor checker bug changed"},
+    {"command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/backup-dependencies/replay.py --out <absolute lane>/scratch/replay-check", "result": "passed: fresh private copy, sequential exports of all three programs, separate reopen; all 16 C and selected records byte-identical, types semantically equal. Final validator rerun against the same fresh replay also verified the added predecessor vmap literals and bounded thunk."},
+    {"command": "git diff --cached --check; git check-ignore <lane>/scratch/replay-check/exports/AppProxy/selected.json; git status --porcelain; git diff --cached --name-only", "result": "passed: whitespace policy preserves generated bytes; scratch ignored; evidence checkpoint clean with no staged files"}
+  ],
+  "limits": [
+    "Actual DB base initialization, deployed existence/open result, header/journal mode, transaction state, external users and companion presence unknown. Conditional suffix candidates are not proof of required deployed files.",
+    "Concrete vmap virtual implementation not traced; dispatch is not actual file usage. No rebuildability or universal mandatory-vmap claim.",
+    "Only Map<flag>.Moved config key mapped; whole-file byte preservation avoids regenerating unknown keys. Actual environment root unknown.",
+    "No all-writer epoch/barrier; native files/catalog/DB/config can differ in age. No complete snapshot, cache freshness, semantic restore safety or power-loss durability claim.",
+    "State6 producer was not directly reached and was not investigated secondarily. No new completion semantics assigned."
+  ],
+  "next_bounded_target": "Resolve AppProxy 0x35367c base initializer and database journal initialization/header interpretation, then identify concrete vmap virtual methods at object+0x44 slots +0x0c/+0x10. Do not recover missing entries or alter shared tooling without approval. Preserve explicit all-writer-epoch blocker.",
+  "review_gate": "Independent reviewer required; static evidence acceptance only, no operational restore approval.",
+  "no_staged_files_at_evidence_checkpoint": true
+}
