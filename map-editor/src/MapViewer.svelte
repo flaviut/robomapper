@@ -4,7 +4,7 @@
   import { fitView, zoomView, mapImage, roomLabels, type View } from './lib/view'
   import { Cell, CellEditor, cellRect, type CellRect, type Point } from './lib/editor'
 
-  const Tool = { Pan: 'Pan', Select: 'Select', Erase: 'Erase', Wall: 'Wall' } as const
+  const Tool = { Pan: 'Pan', Select: 'Select', Erase: 'Erase', Line: 'Line' } as const
   type Tool = typeof Tool[keyof typeof Tool]
 
   let { map, source, initialView, initialCells, onview, onedit }: {
@@ -137,7 +137,7 @@
     if (active === Tool.Pan || active === Tool.Select) return
 
     selection = null
-    editor.line(point, point, active === Tool.Wall ? Cell.Wall : Cell.Unknown)
+    editor.line(point, point, active === Tool.Line ? Cell.Wall : Cell.Unknown)
     editVersion++
   }
 
@@ -155,8 +155,14 @@
       return
     }
 
-    editor.line(pointer.point, point, pointer.tool === Tool.Wall ? Cell.Wall : Cell.Unknown)
-    pointer.point = point
+    if (pointer.tool === Tool.Line) {
+      // Replace the preview from the fixed anchor, preserving cells under old previews.
+      editor.cancel()
+      editor.line(pointer.point, point, Cell.Wall)
+    } else {
+      editor.line(pointer.point, point, Cell.Unknown)
+      pointer.point = point
+    }
     editVersion++
   }
 
@@ -166,13 +172,13 @@
     const active = pointer.tool
     pointer = null
     dragging = false
-    if ((active === Tool.Erase || active === Tool.Wall) && editor.commit()) changed()
+    if ((active === Tool.Erase || active === Tool.Line) && editor.commit()) changed()
   }
 
   function cancelDrag() {
     if (!pointer) return
     const id = pointer.id
-    if (pointer.tool === Tool.Erase || pointer.tool === Tool.Wall) {
+    if (pointer.tool === Tool.Erase || pointer.tool === Tool.Line) {
       editor.cancel()
       editVersion++
     }

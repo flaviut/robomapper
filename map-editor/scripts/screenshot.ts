@@ -23,12 +23,12 @@ async function main() {
   } })
   if (values.help) {
     console.log(`Usage:
-  pnpm screenshot --map FILE [--rooms FILE] [--tool Wall] [--output FILE]
+  pnpm screenshot --map FILE [--rooms FILE] [--tool Line] [--output FILE]
   pnpm screenshot --hostname HOST [--tool Select] [--output FILE]
 
 Captures a 1440 × 1000 desktop view. Starts and stops its own local server.
 Local files never connect to a robot. --hostname explicitly loads over SSH.
-Tools: Pan, Select, Erase, Wall. Output: artifacts/map-editor.png.
+Tools: Pan, Select, Erase, Line. Output: artifacts/map-editor.png.
 Uses Chromium on PATH, or Playwright's installed browser.
 Set CHROMIUM_PATH to choose another executable.`)
     return
@@ -36,7 +36,7 @@ Set CHROMIUM_PATH to choose another executable.`)
   if (Boolean(values.map) === Boolean(values.hostname)) throw new Error('Choose --map FILE or --hostname HOST.')
   if (values.rooms && !values.map) throw new Error('--rooms requires --map.')
   const tool = values.tool ?? 'Pan'
-  if (!['Pan', 'Select', 'Erase', 'Wall'].includes(tool)) throw new Error('Unknown tool. Choose Pan, Select, Erase, or Wall.')
+  if (!['Pan', 'Select', 'Erase', 'Line'].includes(tool)) throw new Error('Unknown tool. Choose Pan, Select, Erase, or Line.')
 
   let fixture: string | undefined
   if (values.map) {

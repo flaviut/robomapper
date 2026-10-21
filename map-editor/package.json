@@ -9,6 +9,7 @@
     "build": "pnpm check && vite build",
     "preview": "vite preview",
     "test": "node --experimental-strip-types --test server/*.test.ts server/*.test.mjs",
+    "test:ui": "node --experimental-strip-types --test scripts/*.test.ts",
     "screenshot": "node --experimental-strip-types scripts/screenshot.ts",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
