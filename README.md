@@ -1,6 +1,16 @@
 # robomapper
 
-Edit a robot vacuum's occupancy map and room IDs from Home Assistant, then save the changes to the robot over SSH. No MQTT or existing vacuum integration is required.
+Edit a robot vacuum's occupancy map and room IDs from Home Assistant.
+
+![robomapper map editor in Home Assistant](docs/images/robomapper.png)
+
+## Features
+
+- Paint floor, walls, and unknown areas.
+- Assign room IDs.
+- Undo and redo map edits.
+- Load maps from the robot and save changes back.
+- Back up maps before saving.
 
 Supported robots:
 
