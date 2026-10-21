@@ -35,7 +35,7 @@ Compare the displayed development-package hash with the recorded value before ex
 
 [build.sh](../../tools/map-maint/build.sh) uses the unwrapped cross compiler and explicitly selected assembler/linker. It excludes default libc headers and default start libraries. The only dynamic link inputs are the saved `libdl.so.2`, `libc.so.6` and `ld-linux-armhf.so.3`; the 2.19 development package supplies the old start/nonshared pieces. This avoids silently importing a new `__libc_start_main` or stat ABI. Stack protection remains enabled. Initial link attempts identified a missing unwrapped linker path and the loader-owned stack guard; the final script supplies both explicitly.
 
-The output and object file stay under ignored `tools/map-maint/build/`. Only source, the build script, its ignore rule and this document are tracked. The script does not run the output. Do not use an emulator, execute vendor firmware or copy the binary to the robot as part of building it.
+The output and object file stay under ignored `tools/map-maint/build/`. The editor ships the tested helper as `tools/map-maint/bin/map-maint`; its manifest records the binary and source hashes. After rebuilding, replace that packaged binary and update its manifest before distributing the editor. The build script does not run or deploy the output. Do not use an emulator or execute vendor firmware.
 
 ## Build identities and ELF inspection
 

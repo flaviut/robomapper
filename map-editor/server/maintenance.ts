@@ -1,43 +1,40 @@
-import { createHash } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { maxArchiveBytes, packTar } from './archive.ts'
 import { checkHost, runRemote } from './ssh.ts'
+import { checkReady } from './readiness.ts'
 
 const toolsRoot = new URL('../../tools/map-maint/', import.meta.url)
-const root = '/mnt/data/rockrobo'
 
 export class Maintenance {
   private host: string
   private session: string
 
-  constructor(host: string, session: string) {
+  constructor(host: string) {
     checkHost(host)
-    if (!/^\/mnt\/data\/map-[a-zA-Z0-9][a-zA-Z0-9._-]{0,70}$/.test(session)) {
-      throw new Error('Configure a fresh /mnt/data/map-* maintenance session.')
-    }
     this.host = host
-    this.session = session
+    this.session = `/mnt/data/map-editor-${randomUUID()}`
   }
 
+  get path(): string { return this.session }
+
   async prepare(): Promise<string> {
-    const files = Object.fromEntries(await Promise.all(['matching-set.sh', 'operations.sh', 'recover.sh'].map(async name =>
+    const names = ['matching-set.sh', 'operations.sh', 'recover.sh', 'session.sh', 'profile.md5']
+    const files = Object.fromEntries(await Promise.all(names.map(async name =>
       [name, await readFile(fileURLToPath(new URL(name, toolsRoot)))] as const)))
+    files['map-maint'] = await readFile(new URL('bin/map-maint', toolsRoot))
     const hashes = Object.entries(files).map(([name, data]) => `${createHash('md5').update(data).digest('hex')}  ${name}\n`).join('')
     const output = await runRemote(this.host, `set -eu
 umask 077
 B=${this.session}
 [ "$(id -u)" = 0 ]
 grep -q '^ROBOROCK_VERSION=4.3.5_1612$' /etc/os-release
-[ -d "$B" ] && [ ! -L "$B" ]
-[ ! -e "$B/recovery.ready" ] && [ ! -e "$B/operations.identity" ] && [ ! -e "$B/matching" ]
-[ "$(cat "$B/boot-id")" = "$(cat /proc/sys/kernel/random/boot_id)" ]
-[ -f "$B/stop.sh" ] && [ ! -L "$B/stop.sh" ]
-(cd "$B"; md5sum -c original.md5; md5sum -c inputs.md5) >/dev/null
-cmp ${root}/exclude_process.conf "$B/exclude.original"
+mkdir -m 700 "$B"
 mkdir -m 700 "$B/editor-tools"
 tar -xpf - -C "$B/editor-tools"
 (cd "$B/editor-tools"; md5sum -c tools.md5) >/dev/null
+/bin/sh "$B/editor-tools/session.sh" prepare "$B"
 printf 'Upload requested.\\n' > "$B/editor-upload"
 cat "$B/boot-id"`, packTar({ ...files, 'tools.md5': Buffer.from(hashes) }))
     const boot = output.toString().trim()
@@ -50,9 +47,12 @@ cat "$B/boot-id"`, packTar({ ...files, 'tools.md5': Buffer.from(hashes) }))
   }
 
   async arm() {
+    const admission = await checkReady(this.host)
     await runRemote(this.host, `set -eu
 B=${this.session}
-(trap '' HUP; exec setsid /bin/sh "$B/editor-tools/recover.sh" "$B" approved-once) </dev/null >"$B/recovery.log" 2>&1 &`)
+cat > "$B/admission.json"
+(trap '' HUP; exec setsid /bin/sh "$B/editor-tools/recover.sh" "$B" approved-once) </dev/null >"$B/recovery.log" 2>&1 &`,
+    Buffer.from(JSON.stringify(admission) + '\n'))
   }
 
   async ready(): Promise<boolean> {

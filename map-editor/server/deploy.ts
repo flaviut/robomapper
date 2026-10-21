@@ -68,12 +68,9 @@ export async function saveMap(hostname: string, input: EditInput) {
   const edit = parseEdit(input)
   // Validate the export before starting maintenance, including room-grid bounds.
   applyEdit(edit)
-  const session = process.env.MAP_EDITOR_SESSION
-  if (!session) {
-    throw new Error('Prepare a maintenance session for this robot before saving.')
-  }
-  if (active.has(hostname)) throw new Error('A save is already running for this robot.')
-  const robot = new Maintenance(hostname, session)
+  if (active.size) throw new Error('A save is already running.')
+  const robot = new Maintenance(hostname)
+  const session = robot.path
   active.add(hostname)
   let armed = false
   let backup: Backup | undefined
