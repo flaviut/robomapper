@@ -30,7 +30,7 @@
   ],
   "replay_limits": "Use NEW ignored lane-local output directories. Helpers compare selected C and helper-defined records; not all entry metadata is independently regenerated. Replays require the recorded local source-root harness, closed baseline and pinned tools; clean-checkout/no-cache portability is not established for these new slices.",
   "logs": "/tmp/map-restore-review-416aef9 (temporary; includes execution-status.json, replay-status.json and independently parsed original-ELF hex/LLVM disassembly)",
-  "review": "Independent semantic review of exact416aef9 pending; reviewers inspect parent execution logs and original-ELF readouts, not independent execution.",
+  "review": "Independent semantic reviews of exact416aef9 accepted: review/native-host.md (OK with notes), review/room-backup.md (OK); no issues found. Reviewers inspected parent execution logs and original-ELF readouts, not independent executions. Acceptance is static evidence only.",
   "limits": [
     "Native scheduler/subscriber edges and complete result provenance remain unclosed.",
     "Embedded loader defaults do not prove active deployment or all-writer ownership; generic joins/callbacks are not a proven persistence barrier.",

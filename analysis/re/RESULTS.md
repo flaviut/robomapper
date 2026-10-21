@@ -32,7 +32,7 @@ The helper copies a closed local baseline if available, otherwise imports manife
 
 The [restore investigation board](evidence/restore/board.json) tracks additional evidence outside the original 154-function index. The [first follow-up review](evidence/restore/review/flow-lifecycle.md) accepts bounded controller/lifecycle findings; its [metadata/consistency companion](evidence/restore/review/metadata-consistency.md) accepts conditional segmentation and snapshot findings. Neither approves device restore. WatchDoge `0x1abd8` is now recovered as a bounded helper; it no longer remains an entry gap.
 
-The [second follow-up](evidence/restore/second-wave.json), with [parent validation](evidence/restore/second-validation.json), adds four static checkpoints pending independent review:
+The [second follow-up](evidence/restore/second-wave.json), with [parent validation](evidence/restore/second-validation.json), adds four static checkpoints. Independent [native/host](evidence/restore/review/native-host.md) and [room/backup](evidence/restore/review/room-backup.md) reviews accepted them with no issues:
 
 - [Native route](evidence/restore/native-route/handoff.json): identifies the actual navigation request decoder, distinct from the controller route. Load-task capture, candidate completion dispatch and result encoding are bounded observations; intervening scheduler/subscriber edges remain unclosed.
 - [Writer host](evidence/restore/writer-host/handoff.json): authenticated decoding identifies navigation/SLAM in embedded loader defaults. SIGHUP sets a flag; generic cleanup joins threads and calls plugin callbacks. Active configuration and concrete persistence-worker completion remain unproved.

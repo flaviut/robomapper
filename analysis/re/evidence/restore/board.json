@@ -68,6 +68,6 @@
   "validation": "analysis/re/evidence/restore/parent-validation.json",
   "review_run": "1bf12201-94bd-439f-9a5c-dfc1a3c904d3",
   "review": "review/flow-lifecycle.md and review/metadata-consistency.md: OK with notes; P2 fixes 2903748 and 6c61e62 inspected. Parent executed checks; reviewers inspected results.",
-  "second_wave": "second-wave.json: four bounded slices integrated at 416aef9; parent validators, 26 tests and fresh sequential replays passed. Independent review pending.",
-  "next": "Resolve second-wave review findings before acceptance; see second-validation.json. No operational restore acceptance."
+  "second_wave": "second-wave.json: four bounded slices integrated at 416aef9; parent validators, 26 tests and fresh sequential replays passed. Both independent reviews accepted with no issues; see review/native-host.md and review/room-backup.md.",
+  "next": "Static checkpoint accepted. Remaining targets are in second-wave.json and lane handoffs; no further lanes assigned. No operational restore acceptance."
 }
