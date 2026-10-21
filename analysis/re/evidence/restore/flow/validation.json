@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "binary_hashes": 3,
+  "functions": 14,
+  "instruction_byte_checks": 2383,
+  "claim_anchor_checks": 14,
+  "scope": "Static byte/ELF/C consistency and exact claim anchors, not runtime behavior."
+}
