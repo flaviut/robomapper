@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "pnpm check && vite build",
     "preview": "vite preview",
+    "test": "node --experimental-strip-types --test server/*.test.ts",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
