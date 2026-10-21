@@ -33,7 +33,7 @@ The latter contains `/opt/rockrobo/firmware/img/`. This identifies a packaged pr
 
 ## What not to stop
 
-[Offline workflow](OFFLINE-MAP-WORKFLOW.md) and source-root `analysis/SUPERVISION.md` trace WatchDoge's independent `/dev/watchdog` feed thread: requested timeout 16, feed every eight seconds. Leave that process running. Its exclusion SIGKILL path does not first call `rua_keep_mcu_heartbeat(120)`; its normal all-process-stop path does. Do not substitute either signal handling or an empty exclusion payload for a maintenance command.
+The [offline workflow](OFFLINE-MAP-WORKFLOW.md) and [service-control reference](MAP-SERVICE-CONTROL.md) trace WatchDoge's independent `/dev/watchdog` feed thread: requested timeout 16, feed every eight seconds. Leave that process running. Its exclusion SIGKILL path does not first call `rua_keep_mcu_heartbeat(120)`; its normal all-process-stop path does. Do not substitute either signal handling or an empty exclusion payload for a maintenance command.
 
 ## Chassis initialization, sending and finalization
 

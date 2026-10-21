@@ -2,7 +2,7 @@
 
 **Prefer a cold restart: keep application exclusions active in the running WatchDoge, restore the original exclusion file on disk without reloading it, then reboot after the map work.** This avoids the missing-key restart branch and clears tmpfs-backed map buffers. Keep WatchDoge itself running: neither a WatchDoge signal nor its init-script `stop` case is an application-maintenance interface.
 
-This is a static candidate for saved firmware `4.3.5_1612`, not an observed device procedure. Hardware liveness while a host is absent is a separate prerequisite. The saved normal process list marks `rr_loader` and `RoboController` key=1 and `AppProxy` key=0. Embedded loader configuration hosts both navigation and SLAM, **and chassis**, so killing the loader is not a map-only operation. See [the offline workflow](OFFLINE-MAP-WORKFLOW.md) for matching-set backup and replacement boundaries.
+The [maintenance procedure](MAINTENANCE-PROCEDURE.md) demonstrates this exclusion-based stop, untouched backup and normal reboot on firmware `4.3.5_1612`. The alternatives discussed below, including warm adoption and booting into exclusions, remain code-derived rather than demonstrated. Hardware liveness while a host is absent is a separate prerequisite. The saved normal process list marks `rr_loader` and `RoboController` key=1 and `AppProxy` key=0. Embedded loader configuration hosts both navigation and SLAM, **and chassis**, so killing the loader is not a map-only operation. See [the offline workflow](OFFLINE-MAP-WORKFLOW.md) for matching-set backup and replacement boundaries.
 
 ## Exclusions and restart behavior established in code
 
@@ -25,6 +25,12 @@ For first map replacement, do not take that extra dependency. Leave the live exc
 ## Scope and provenance
 
 All addresses are virtual addresses, even instruction addresses with Thumb state recorded separately in existing evidence. WatchDoge SHA256 is `3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6`. Saved files under `/home/user/tmp/illegalplainape/analysis/rootfs` and the [writer-host findings](evidence/restore/writer-host/README.md) establish defaults, not the actual running argv, selected process list or device state. No robot access, firmware execution, configuration modification, tests, validators or new evidence infrastructure were used.
+
+## Keep the Linux watchdog feeder running
+
+WatchDoge opens `/dev/watchdog`, requests timeout 16, applies the vendor `HWDOG_OPTION`, and starts a feed thread that sleeps eight seconds between feeds. Suspending WatchDoge stops that thread too. Closing the device writes the magic-close byte `V`, but the driver's acceptance of that request and vendor option is not established. Do not stop WatchDoge to obtain a maintenance window. The [watchdog findings](evidence/components/watchdoge.json) trace initialization at `0x1ad68`, timeout/options near `0x1ade0`, feeding at `0x1af4a` and closing at `0x1ac20`.
+
+The chassis heartbeat is separate: [the heartbeat reference](MAP-HEARTBEAT-CONTROL.md) follows the producer in `rr_loader`, and the [A14 analysis](A14-HEARTBEAT.md) follows the matching MCU's sentinel handling. Keeping the Linux feeder alive does not replace chassis heartbeat control.
 
 ## Concrete plugin exit: cooperative loops, not a public map-only stop
 
@@ -82,7 +88,7 @@ Similarly, saved `/etc/init/S04wdgenv` has empty `stop` and `restart` arms. `/et
 
 ## Candidate operational sequence
 
-**Hardware prerequisite:** [MAP-HEARTBEAT-CONTROL.md](MAP-HEARTBEAT-CONTROL.md) identifies the candidate gate: after `rr_loader` and its UART ownership are gone, invoke the existing native `rua_keep_mcu_heartbeat(-1)` API and require return 0. The inspected MCU consumer skips missing-heartbeat escalation for that sentinel; installed-image applicability remains a device input. A target-native invoker is not yet supplied. Exclusions alone, including the sender-free maintenance boot below, do not establish heartbeat liveness. Do not enter file maintenance until that invocation succeeds; do not assume the sentinel survives reboot or that the finite value 120 grants 120 seconds. The Linux `/dev/watchdog` feeder remains WatchDoge throughout the maintenance interval. A deliberate reboot ends that interval and runs normal shutdown/startup; it is not a promise that watchdog liveness survives arbitrary boot configurations.
+**Hardware prerequisite:** [MAP-HEARTBEAT-CONTROL.md](MAP-HEARTBEAT-CONTROL.md) identifies the candidate gate: after `rr_loader` and its UART ownership are gone, invoke the existing native `rua_keep_mcu_heartbeat(-1)` API and require return 0. The inspected MCU consumer skips missing-heartbeat escalation for that sentinel; installed-image applicability remains a device input. The [native helper](MAINTENANCE-HELPER.md) supplies that invocation and was used in the completed stopped backup. Exclusions alone, including the sender-free maintenance boot below, do not establish heartbeat liveness. Do not enter file maintenance until that invocation succeeds; do not assume the sentinel survives reboot or that the finite value 120 grants 120 seconds. The Linux `/dev/watchdog` feeder remains WatchDoge throughout the maintenance interval. A deliberate reboot ends that interval and runs normal shutdown/startup; it is not a promise that watchdog liveness survives arbitrary boot configurations.
 
 ### 1. Gate commands and identify this deployment
 
@@ -96,7 +102,7 @@ Bound the remaining producers, rather than trying to prove every possible concur
 
 Save the **current** exclusion file's bytes, owner/mode and original presence/absence in a separate, private maintenance directory. Do this before native IPC, which truncates the file. Keep that saved file out of the map restore set so restoring an older map cannot silently restore old supervision settings. If the original file is an unexpected symlink/nonregular object, resolve its ownership/path first rather than applying the regular-file examples below.
 
-For a live entry, use only an existing sender matching the native contract above (none is supplied here), with the original exclusions plus required targets. Require event 8, never event 9. This abruptly kills positive tracked map-host PIDs and prevents their supervised respawn. The 63-byte cap can make this inconvenient when also retaining command-producer exclusions. Do not work around it by dropping original exclusions or racing the IPC file write with a second write.
+For a live entry, use the [native helper](MAINTENANCE-HELPER.md) matching the contract above, with the original exclusions plus required targets. Require event 8, never event 9. This abruptly kills positive tracked map-host PIDs and prevents their supervised respawn. The 63-byte cap can make this inconvenient when also retaining command-producer exclusions. Do not work around it by dropping original exclusions or racing the IPC file write with a second write.
 
 **Simpler sender-free entry: prepare maintenance exclusions on disk, then reboot into them.** This costs an extra boot but uses existing shell/file operations and WatchDoge startup, with no live IPC sender and no IPC payload cap. It is conditional on the same MCU/heartbeat prerequisite, not a bypass for it. With a regular file or original absence established, the following is a candidate shell sequence, **not executed during this investigation**. Every command must succeed before proceeding; do not reuse an existing maintenance directory or overwrite the saved original:
 

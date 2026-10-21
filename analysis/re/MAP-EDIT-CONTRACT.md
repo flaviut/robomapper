@@ -2,28 +2,34 @@
 
 For firmware `4.3.5_1612`, the bounded offline candidate is a **small occupancy/confidence patch in an existing RRSLAM frame**, followed, if needed, by ordinary vendor room operations. Do not transplant structs from OpenSLAM, change coordinate frames, or paint room IDs into the occupancy raster. A correct digest establishes file integrity, not navigation safety. A false-free patch over a real obstacle is dangerous even when every byte-level constraint holds.
 
-This is static guidance, not observed device behavior. Service stop/restart and cold-start prerequisites are in [the offline workflow](OFFLINE-MAP-WORKFLOW.md). Those prerequisites must hold before replacing anything. Saved source data under `/home/user/tmp/illegalplainape/analysis` is read-only reference material here.
+Map editing and restoration remain unperformed. The [maintenance procedure](MAINTENANCE-PROCEDURE.md) demonstrates service stop, untouched backup and normal reboot; it does not establish safe import of an edited map. Keep original firmware and backup data unchanged while preparing a candidate.
 
 ## First bounded edit
 
 Start from one known-good matching snapshot. Keep an untouched copy of all slots and companions. Use the *actual boot-consumed slot*, not an assumption that `user_map0` alone is authoritative: the native last-map path requests flag 1 (`last_map`), while primary flag 2 is `user_map0` and backup flag 6 is `user_map4`. Do not edit the genuine backup slot merely to make every file identical.
 
-Source-root `analysis/map_codec.py`, `HEADER`, `load_map`, `load_pgm` and `main`, establishes this narrow encoding recipe:
+The [offline codec](../../tools/map-maint/map_codec.py) implements this narrow encoding recipe; the [storage reference](MAP-STORAGE.md#rrslam-version-2-raster) describes the fields:
 
 * Preserve the exact first **30 bytes**, including magic `RRSLAM`, little-endian version 2, view-header size 20, scale 20, signed left/top and unsigned width/height (`<6sHHIiiII`). The value 20 is not the complete file-prefix length.
 * Keep exactly `width * height` raw one-byte cells in their original order. Change only the intended patch; preserve intermediate confidence values elsewhere. Do not globally threshold, rotate, resample, palette-convert or flip the exported PGM.
 * Replace only the final **16 raw bytes** with `MD5(cells)`, not an ASCII hex digest and not a hash of header+cells. Total length remains `30 + width*height + 16`.
 * Keep `PersistData_<flag>.data`, catalog `SharedMultiMapInfo`, `slam_info.cfg`, vmaps, map-related pose/config companions and `robot.db` with present SQLite companions unchanged for this occupancy-only candidate. Preserve unknown regions, names, restrictions and all other map slots. Whether current boot needs a deliberately patched runtime copy as well is a slot-selection observation, not permission to replace every slot.
 
-The existing codec can stage a same-sized candidate off-device; these commands do not deploy it:
+## Offline codec
+
+The codec uses only Python's standard library. Run it locally from the repository root against a copied raster, not against the robot or the outer backup archive. `inspect` prints header fields and hashes; `export` writes raw cells as an 8-bit binary PGM; `pack` retains the original prefix and computes the new cell digest. These commands do not deploy anything:
 
 ```sh
-python3 /home/user/tmp/illegalplainape/analysis/map_codec.py export SNAPSHOT.map /tmp/map-original.pgm
-# Make a small, deliberate byte-preserving grayscale edit into /tmp/map-edited.pgm.
-python3 /home/user/tmp/illegalplainape/analysis/map_codec.py pack SNAPSHOT.map /tmp/map-edited.pgm /tmp/map-candidate.map
+work=$(mktemp -d /tmp/map-edit.XXXXXX)
+python3 tools/map-maint/map_codec.py inspect SNAPSHOT.map
+python3 tools/map-maint/map_codec.py export SNAPSHOT.map "$work/original.pgm"
+# Save a deliberate same-size edit separately as "$work/edited.pgm".
+python3 tools/map-maint/map_codec.py pack SNAPSHOT.map "$work/edited.pgm" "$work/candidate.map"
 ```
 
-Both output paths must be new. Keep the original PGM unchanged as well. Native cell `(x,y)` is byte `30 + y*width + x`; no display-y inversion belongs in this PGM path. Source-root `ASSESSMENT.md`'s captured rendering is consistent with 0=free, 128=unknown, 255=occupied, but does not give a calibrated probability interpretation for intermediate values. Its PNG preview inverts occupancy for display: do not copy preview colors into native bytes. The codec checks its input dimensions and digest; it does not establish obstacle truth, robot clearance, room connectivity or correspondence with the captured persistence. No new editor or checker is introduced here.
+The private temporary directory keeps map contents out of shared output paths. Both output files must be new; the codec refuses to overwrite an existing destination. Keep the original raster and exported PGM unchanged. It rejects unsupported headers, dimension/length mismatches and a bad input digest; `pack` also requires a same-sized binary PGM with maximum value 255.
+
+Native cell `(x,y)` is byte `30 + y*width + x`; no display-y inversion belongs here. Cells are consistent with 0=free, 128=unknown and 255=occupied, but intermediate probabilities are not calibrated. Do not copy display-preview colors or room-label bytes into the raster. The codec does not establish obstacle truth, robot clearance, room connectivity or correspondence with persistence.
 
 ## What each edit changes
 
@@ -61,7 +67,7 @@ Navigation `0x132c30` calls `rs::segment_gridmap` at `0x132f44`, conditionally r
 
 AppProxy `0x3c194` removes specified IDs from the persisted mapping, retaining other names/IDs; `0x3c2a0` preserves an ordered name vector while replacing each ID with the corresponding returned byte. Result handler `0x670dc` requires a matching pending transaction, nonzero status and a 32-byte response before using pending records at object `+0x3dcc`. An arbitrary raster load is not this transaction.
 
-Sources: [metadata handoff](evidence/restore/metadata/handoff.json), its `exports/librrnavdrv.so/0x00132c30.c`, [room reconciliation](evidence/restore/room-reconcile/FINDINGS.md) and `exports/AppProxy/0x000670dc.c`; source-root `analysis/REGIONS.md` and `PERSISTENCE.md`. The metadata handoff's entry addresses supersede older prose that cited interior instruction anchors as entries.
+Sources: [metadata handoff](evidence/restore/metadata/handoff.json), its `exports/librrnavdrv.so/0x00132c30.c`, [room reconciliation](evidence/restore/room-reconcile/FINDINGS.md) and `exports/AppProxy/0x000670dc.c`. The [region layouts](MAP-REGIONS.md) and [persistence reference](MAP-PERSISTENCE.md) describe the companion state and loading behavior.
 
 ## Names: request ordering and native ID promotion are now identified
 
@@ -71,11 +77,11 @@ The native producer **`librrnavdrv.so:0x69e84`** initializes a 32-byte result wi
 
 `0x69e84` stores the completed result in the continuation associated with object `+0x4c0`; its callback pointer at VA `0x304c30` is Thumb `0x68199`. The callback at `0x68198..0x681ce` dispatches local `MODIFY_SEGMENT_MAP_RESULT` (`0x68`) through `0x67ad0`, preserving the result buffer. Event names are in the native enum string at `0x27600c`; `MODIFY_SEGMENT_MAP` is `0x67`. Combined with AppProxy `0x670dc`'s matched-success branch and `0x3c2a0`, this closes the **positional association**: accepted request names, requested IDs and returned IDs have the same order. It does not establish cross-process atomicity. A later failure may follow earlier per-ID label changes; do not blindly retry using stale IDs after failure.
 
-The name-success branch calls AppProxy **`0x3c6bc`** after updating mappings. That sends save-set IPC **`0x02033212`**, with destinations runtime flag 1 and the current map flag, and the original transaction words. It is therefore not merely an in-memory rename. Native save still uses the detached serializer described in source-root `PERSISTENCE.md`; neither the name response nor the save request is a durable multi-file completion acknowledgment.
+The name-success branch calls AppProxy **`0x3c6bc`** after updating mappings. That sends save-set IPC **`0x02033212`**, with destinations runtime flag 1 and the current map flag, and the original transaction words. It is therefore not merely an in-memory rename. Native save still uses the [detached serializer](MAP-PERSISTENCE.md#map-dependent-saves); neither the name response nor the save request is a durable multi-file completion acknowledgment.
 
 ## Valetudo encoding and the S7 generation boundary
 
-Local source `/home/user/dev/co/Valetudo`, commit `5d905ec2239dd14bbc11ee3785837562306a508e`, is a source comparison, **not evidence of the version installed on the device**. Source-root `ASSESSMENT.md` identifies this firmware as S7 / `roborock.vacuum.a15`. `RoborockS7ValetudoRobot.js` inherits `RoborockGen4ValetudoRobot.js`, whose constructor registers room edit and rename capabilities. The actual 1612 AppProxy dispatch registration contains these exact handlers:
+Local source `/home/user/dev/co/Valetudo`, commit `5d905ec2239dd14bbc11ee3785837562306a508e`, is a source comparison, **not evidence of the version installed on the device**. The [device observations](DEVICE-FACTS.md) identify this firmware as S7 / `roborock.vacuum.a15`. `RoborockS7ValetudoRobot.js` inherits `RoborockGen4ValetudoRobot.js`, whose constructor registers room edit and rename capabilities. The actual 1612 AppProxy dispatch registration contains these exact handlers:
 
 | Operation | JSON method and `params` | 1612 handler / IPC |
 | --- | --- | --- |
