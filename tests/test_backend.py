@@ -66,7 +66,9 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
             self.tasks.append(task)
             return task
 
-        self.editor = Editor(self.robot, self.directory, asyncio.to_thread, spawn)
+        self.spawn = spawn
+        self.save_lock = asyncio.Lock()
+        self.editor = Editor(self.robot, self.directory, asyncio.to_thread, spawn, self.save_lock)
 
     async def asyncTearDown(self):
         for task in self.tasks:
@@ -76,10 +78,10 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_save_survives_request_and_backs_up(self):
         data = {**self.robot.data, "confirmation": "install-and-reboot"}
-        status = self.editor.save(data)
+        status = await self.editor.save(data)
         self.assertEqual(status["state"], "saving")
         with self.assertRaisesRegex(ValueError, "already running"):
-            self.editor.save(data)
+            await self.editor.save(data)
         with self.assertRaisesRegex(ValueError, "save is running"):
             await self.editor.load()
         self.robot.gate.set()
@@ -89,24 +91,38 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(list(self.directory.glob("*/receipt.json"))), 1)
         self.assertEqual((await self.editor.load())["checksum"], codec.inspect_map(self.robot.patch["last_map"])["checksum"])
 
+    async def test_only_one_save_across_entries(self):
+        other = Editor(self.robot, self.directory, asyncio.to_thread, self.spawn, self.save_lock)
+        data = {**self.robot.data, "confirmation": "install-and-reboot"}
+        await self.editor.save(data)
+        with self.assertRaisesRegex(ValueError, "already running"):
+            await other.save(data)
+
     async def test_explicit_confirmation(self):
         with self.assertRaisesRegex(ValueError, "Confirm"):
-            self.editor.save(self.robot.data)
+            await self.editor.save(self.robot.data)
         self.assertFalse(self.tasks)
 
     async def test_failure_never_retries(self):
         self.robot.archive = b"invalid backup"
         self.robot.gate.set()
         with self.assertLogs("custom_components.map_editor.service", level="ERROR"):
-            self.editor.save({**self.robot.data, "confirmation": "install-and-reboot"})
+            await self.editor.save({**self.robot.data, "confirmation": "install-and-reboot"})
             await self.tasks[0]
         self.assertEqual(self.robot.installs, 1)
         self.assertEqual(self.editor.status()["state"], "error")
         self.assertIn("No automatic retry", self.editor.status()["error"])
         self.assertFalse(list(self.directory.glob("*/receipt.json")))
 
+    async def test_cancel_before_start_releases_lock(self):
+        await self.editor.save({**self.robot.data, "confirmation": "install-and-reboot"})
+        self.tasks[0].cancel()
+        await asyncio.gather(*self.tasks, return_exceptions=True)
+        self.assertFalse(self.save_lock.locked())
+        self.assertEqual(self.editor.status()["state"], "error")
+
     async def test_cancellation_reports_uncertainty(self):
-        self.editor.save({**self.robot.data, "confirmation": "install-and-reboot"})
+        await self.editor.save({**self.robot.data, "confirmation": "install-and-reboot"})
         while not self.robot.installs:
             await asyncio.sleep(0.01)
         self.tasks[0].cancel()

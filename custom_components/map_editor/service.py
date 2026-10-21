@@ -59,11 +59,12 @@ def _patch(edit, archive: bytes) -> bytes:
 
 
 class Editor:
-    def __init__(self, robot: Robot, backups: Path, execute, spawn):
+    def __init__(self, robot: Robot, backups: Path, execute, spawn, save_lock: asyncio.Lock):
         self._robot = robot
         self._backups = backups
         self._execute = execute
         self._spawn = spawn
+        self._save_lock = save_lock
         self._task = None
         self._status = {"state": State.IDLE, "stage": ""}
 
@@ -79,14 +80,27 @@ class Editor:
         raster, persistence = await self._robot.read_map()
         return await self._execute(load_map, raster, persistence)
 
-    def save(self, data: dict) -> dict:
-        if self.busy():
+    async def save(self, data: dict) -> dict:
+        if self._save_lock.locked():
             raise ValueError("A save is already running.")
         if data.get("confirmation") != "install-and-reboot":
             raise ValueError("Confirm saving and restart before continuing.")
+        await self._save_lock.acquire()
         self._status = {"state": State.SAVING, "stage": "Validate edits", "id": uuid4().hex}
-        self._task = self._spawn(self._save(data), "map_editor save")
+        coroutine = self._save(data)
+        try:
+            self._task = self._spawn(coroutine, "map_editor save")
+        except Exception:
+            coroutine.close()
+            self._save_lock.release()
+            raise
+        self._task.add_done_callback(self._finished)
         return self.status()
+
+    def _finished(self, task):
+        if task.cancelled():
+            self._status.update(state=State.ERROR, error="Save interrupted. Check the robot before retrying.")
+        self._save_lock.release()
 
     def _stage(self, message: str):
         self._status["stage"] = message
@@ -122,9 +136,6 @@ class Editor:
                 "completed": datetime.now(timezone.utc).isoformat(), "work": work,
             }).encode())
             self._status.update(state=State.DONE, stage="Saved and verified after restart")
-        except asyncio.CancelledError:
-            self._status.update(state=State.ERROR, error="Save interrupted. Check the robot before retrying.")
-            raise
         except Exception as err:
             _LOGGER.exception("Map save failed at %s; backup: %s; robot: %s", self._status["stage"], directory, work)
             self._status.update(state=State.ERROR, error=f"{err} Check the robot before retrying. No automatic retry was made.")

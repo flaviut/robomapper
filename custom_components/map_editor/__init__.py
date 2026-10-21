@@ -1,5 +1,6 @@
 """S7 map editor: authenticated UI and a small SSH-backed service."""
 
+import asyncio
 from pathlib import Path
 
 from homeassistant.components import frontend, panel_custom
@@ -31,6 +32,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry.runtime_data = Editor(
         robot, Path(hass.config.path(DOMAIN, "backups")),
         hass.async_add_executor_job, hass.async_create_background_task,
+        hass.data.setdefault(DOMAIN, asyncio.Lock()),
     )
     if not frontend.async_panel_exists(hass, DOMAIN):
         await panel_custom.async_register_panel(

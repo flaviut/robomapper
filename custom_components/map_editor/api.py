@@ -42,9 +42,12 @@ async def _request(hass, connection, msg):
         if msg["action"] == "load":
             result = await editor.load()
         elif msg["action"] == "save":
-            result = editor.save(msg.get("data", {}))
+            result = await editor.save(msg.get("data", {}))
         else:
             result = editor.status()
+    except ValueError as err:
+        connection.send_error(msg["id"], "invalid_request", str(err))
+        return
     except Exception:
         _LOGGER.exception("Map editor %s failed for %s", msg["action"], entry.title)
         connection.send_error(msg["id"], "robot_error", "Robot operation failed. Check SSH access and the Home Assistant log.")
