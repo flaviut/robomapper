@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "focused_functions": 8,
+  "focused_instructions_verified_against_ELF": 2090,
+  "context_instructions_verified_against_ELF": 4637,
+  "constructor_literals_verified": 25,
+  "binary_sha256": {
+    "librobopersist.so": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+    "librrslamdrv.so": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+    "librrnavdrv.so": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+    "AppProxy": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457"
+  },
+  "reopened_comparison": "passed",
+  "limits": "Byte identity and explicit branch preconditions; not firmware execution, full symbolic execution, runtime completion or durability."
+}

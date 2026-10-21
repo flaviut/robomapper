@@ -1,0 +1,2 @@
+# Preserve byte-identical Ghidra decompiler output, as in the shared C export tree.
+focused/*.c whitespace=-blank-at-eol,-blank-at-eof

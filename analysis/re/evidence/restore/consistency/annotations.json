@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+  "types": [],
+  "functions": [
+    {
+      "address": "0x1c620",
+      "plate_comment": "Buffer-aware load under type-0 metadata and root mutex. States 0/5 or destination mismatch select ForcePersistLoad(0, filename(flag)). State 1 is an error: resets state/owner/mask to zero, model-version 2 aborts; otherwise returns false, NOT fallback file load. Other matching states (including unnamed 6) use buffer: same PID uses pointer, foreign PID opens task-index shm O_RDONLY and mmap(PROT_READ, MAP_SHARED). For each subscribed ID found in buffered descriptors: region lock, callback 0, memcpy recorded length, callback 1, unlock. Can succeed with newer data than file and without every subscribed ID present. Foreign-owner normal success has no local fd close or munmap: mmap success at 0x1ca28 branches via 0x1ca32/0x1ca3e to 0x1c778; close at 0x1ca4a is on failure path only; common restore exits at 0x1c84a..0x1c858 then 0x1c6f2..0x1c708. No munmap call in this function. Worker cleanup at 0x1d1e8..0x1d212 releases its own task mapping/fd, not the foreign loader locals. Static local-resource observation, not proven runtime leak rate, safe shutdown, disk freshness or durability.",
+      "expect": {
+        "plate_comment": "Buffer-aware load under type-0 metadata and root mutex. States 0/5 or destination mismatch select ForcePersistLoad(0, filename(flag)). State 1 is an error: resets state/owner/mask to zero, model-version 2 aborts; otherwise returns false, NOT fallback file load. Other matching states (including unnamed 6) use buffer: same PID uses pointer, foreign PID opens task-index shm O_RDONLY and mmap(PROT_READ, MAP_SHARED). For each subscribed ID found in buffered descriptors: region lock, callback 0, memcpy recorded length, callback 1, unlock. Can succeed with newer data than file and without every subscribed ID present. Foreign mapping lifecycle merits separate scrutiny; no runtime safety guarantee."
+      }
+    }
+  ]
+}

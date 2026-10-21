@@ -1,0 +1,67 @@
+[
+  {
+    "definition": "/shared/MapCatalogEntry\npack()\nStructure MapCatalogEntry {\n   0   uchar   1   primary_flag_byte   \"\"\n   1   uchar   1   backup_flag_byte   \"\"\n   2   uchar   1   unknown_02   \"\"\n   3   uchar   1   name_length_byte   \"\"\n   4   char[32]   32   name_bytes   \"\"\n}\nLength: 36 Alignment: 1\n",
+    "length": 36,
+    "path": "/shared/MapCatalogEntry"
+  },
+  {
+    "definition": "MapCatalogEntry *",
+    "length": 4,
+    "path": "/shared/MapCatalogEntry *"
+  },
+  {
+    "definition": "MapCatalogEntry[4]",
+    "length": 144,
+    "path": "/shared/MapCatalogEntry[4]"
+  },
+  {
+    "definition": "/shared/MapCatalogPayload\npack()\nStructure MapCatalogPayload {\n   0   uchar   1   initialized   \"\"\n   1   MapCatalogEntry[4]   144   entries   \"\"\n   145   uchar[3]   3   unknown_91   \"\"\n   148   MapPersistFlag   4   current_flag   \"\"\n   152   uchar   1   use_new_map   \"\"\n   153   uchar[3]   3   unknown_99   \"\"\n}\nLength: 156 Alignment: 4\n",
+    "length": 156,
+    "path": "/shared/MapCatalogPayload"
+  },
+  {
+    "definition": "typedef MapPersistFlag int",
+    "length": 4,
+    "path": "/shared/MapPersistFlag"
+  },
+  {
+    "definition": "/shared/PersistBufferRegionView\npack()\nStructure PersistBufferRegionView {\n   0   int   4   region_id   \"\"\n   4   uint   4   buffer_offset   \"\"\n   8   uint   4   byte_length   \"\"\n}\nLength: 12 Alignment: 4\n",
+    "length": 12,
+    "path": "/shared/PersistBufferRegionView"
+  },
+  {
+    "definition": "PersistBufferRegionView[30]",
+    "length": 360,
+    "path": "/shared/PersistBufferRegionView[30]"
+  },
+  {
+    "definition": "/shared/PersistBufferRootView\npack()\nStructure PersistBufferRootView {\n   0   uint   4   magic   \"\"\n   4   uint   4   format_version   \"\"\n   8   PersistMapTaskView   416   task   \"\"\n   424   uchar[8]   8   unknown_time_ms_storage   \"\"\n   432   uchar[24]   24   root_mutex_storage   \"\"\n}\nLength: 456 Alignment: 4\n",
+    "length": 456,
+    "path": "/shared/PersistBufferRootView"
+  },
+  {
+    "definition": "PersistBufferRootView *",
+    "length": 4,
+    "path": "/shared/PersistBufferRootView *"
+  },
+  {
+    "definition": "/shared/PersistMapTaskView\npack()\nStructure PersistMapTaskView {\n   0   uint   4   task_index   \"\"\n   4   int   4   owner_pid   \"\"\n   8   PersistTaskState   4   state   \"\"\n   12   uint   4   destination_mask   \"\"\n   16   PersistBufferRegionView[30]   360   regions   \"\"\n   376   uint   4   region_count   \"\"\n   380   int   4   buffer_fd   \"\"\n   384   void *   4   buffer_mapping   \"\"\n   388   uint   4   buffer_length   \"\"\n   392   uchar[24]   24   task_mutex_storage   \"\"\n}\nLength: 416 Alignment: 4\n",
+    "length": 416,
+    "path": "/shared/PersistMapTaskView"
+  },
+  {
+    "definition": "PersistMapTaskView *",
+    "length": 4,
+    "path": "/shared/PersistMapTaskView *"
+  },
+  {
+    "definition": "PersistTaskState",
+    "length": 4,
+    "path": "/shared/PersistTaskState"
+  },
+  {
+    "definition": "PersistTaskState *",
+    "length": 4,
+    "path": "/shared/PersistTaskState *"
+  }
+]

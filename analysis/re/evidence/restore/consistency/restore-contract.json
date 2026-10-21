@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "status": "blocked-for-device-use; byte-preserving requirements only",
+  "scope": "Offline preservation of a known map set, not supported geometry/metadata editing or a validated live restore procedure.",
+  "required_preservation": [
+    "Retain exact whole-file bytes for each selected map grid and matching native-flag persistence file, plus the catalog when preserving selection/primary-backup associations. Record presence or absence, native flag, resolved path, byte length and SHA256 in a private backup manifest. Do not publish private map contents.",
+    "Retain associated primary/backup slots as distinct identities. Do not infer catalog association merely from adjacent filenames, external IDs, file mtime, access(F_OK) or available-slot allocation.",
+    "Preserve unknown grid header bytes, persistence protobuf fields/regions, catalog unknown bytes and opaque metadata. Do not decode/re-encode merely to normalize formats, zero unknown fields or regenerate IDs.",
+    "Resolve actual persistence environment path, grid paths and catalog path independently. Static defaults need not match deployed configuration.",
+    "Preserve present unresolved database/vmap/config companions provisionally with provenance, but do not label them mandatory, rebuildable or historical without caller/config evidence. Never synthesize an absent companion.",
+    "Do not restore captured shared-memory root/task bytes, pointers, fd integers, robust mutex storage or semaphore counters across process lifetimes. Their observed storage layout is not a portable serialized backup format."
+  ],
+  "preconditions_not_yet_satisfied": [
+    "Obtain a non-destructive all-writer quiescence/restart protocol from the lifecycle lane, including process/shared mapping ownership. Cancellation, task-state idle and capacity repair do not satisfy this requirement.",
+    "Establish a stable cross-file/cross-region epoch for the selected files. Per-region snapshot locks and separate grid/catalog/database writers do not establish one.",
+    "Resolve state-6 producers and every relevant completion/error route. Do not interpret the value 6, a save return, ordinary AppProxy ok, or sem_post as committed map-set success.",
+    "Complete database opener/path and transaction/journal/WAL-state evidence, vmap callers and per-map config companion enumeration before declaring the backup unit complete.",
+    "Establish both grid cache and persistence buffer freshness after replacement. The known grid bulk drop covers only flags 1..11; matching persistence loads may still choose a shared buffer. Replacing files alone is insufficient."
+  ],
+  "restore_invariants": [
+    "Keep a byte-identical rollback set and provenance for the pre-restore state, including unresolved companions; do not overwrite the only copy while evaluating restore feasibility.",
+    "Only once all writers and cache/mapping users are proven quiescent may an offline replacement sequence be considered. There is no established atomic multi-file replacement mechanism; any partial installation must be treated as failure requiring rollback, not a valid intermediate map set.",
+    "Verify installed whole-file SHA256 and lengths against the private backup manifest, then verify the intended catalog/native-flag associations and a genuinely disk-backed cold load. Stream-good, save/load booleans and cell digest alone are not sufficient semantic checks.",
+    "Do not promote ordinary close/rename, file visibility, cache invalidation or snapshot consistency into fsync/power-loss durability. A durability protocol and crash/power-loss validation are separate unsatisfied requirements."
+  ],
+  "remaining_runtime_checks": [
+    "Under an approved device plan only: correlate writer ownership and in-flight save lifecycle with independent final-file hashes; inject per-destination open/write/close/rename failures and verify no completion indicator is misinterpreted.",
+    "Repeated foreign-owner successful buffered loads: measure process fd count and mappings, identify external cleanup and process lifetime; repeat mmap/shm_open failure cases. The static local retention observation is not a measured leak rate.",
+    "Observe all state-6 transitions with the producer identity and task/root locking; compare file visibility and errors rather than assigning a name from the numeric value.",
+    "Verify no cooperating setters/writers alter any required file or region during a backup epoch, including catalog and SQLite. Prove the chosen maintenance boundary is not merely scheduler/task acceptance.",
+    "Exercise actual cold-start selection and restored-grid load in the flow lane, checking stale grid caches, shared persistence buffers and mismatched native/external IDs independently. Include flag12 separately if the intended operation uses it.",
+    "Determine actual database path, journal mode, active transaction state and supported consistent acquisition method; ensure journal/WAL dependencies are captured as required by that observed configuration.",
+    "Confirm which vmap/config companions are read after restore, whether missing versus present files change behavior, and whether any are legitimately regenerated. Until then preserve bytes and report unresolved status.",
+    "Validate safe shutdown/restart and durability ordering on a sacrificial/test environment before any operational restore. Kernel/library, storage and power-loss behavior remain unverified here."
+  ],
+  "evidence": [
+    "evidence.json:C01-C04, hash-bound focused instructions and C (decompiler output, not recovered source)",
+    "dependencies.json: conditional file roles, instruction context, path literals, ordering edges and barrier limitations",
+    "Existing immutable persistence/catalog/grid/orchestration component records; no supervisor or request-bridge implementation changed"
+  ]
+}
