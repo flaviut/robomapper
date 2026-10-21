@@ -6,12 +6,18 @@ import hashlib
 import os
 from pathlib import Path
 import re
+import socket
 
 import asyncssh
 
 from .codec import MAX_ARCHIVE, MAX_MAP
 
 _ROOT = "/mnt/data/rockrobo"
+
+# The robot's mDNS responder ignores AAAA queries instead of returning NSEC
+# as RFC 6762 section 6.1 requires. This breaks dual-stack lookup through
+# resolved's DNS stub. Use IPv4 for this firmware.
+_SSH_FAMILY = socket.AF_INET
 
 
 class SetupError(ValueError):
@@ -42,7 +48,9 @@ def setup_key(path: str) -> str:
 async def host_key(host: str, port: int) -> str:
     try:
         async with asyncio.timeout(15):
-            key = await asyncssh.get_server_host_key(host, port=port, config=None)
+            key = await asyncssh.get_server_host_key(
+                host, port=port, config=None, family=_SSH_FAMILY,
+            )
         if key is None:
             raise ValueError("Robot did not provide an SSH host key.")
         return key.get_fingerprint()
@@ -80,7 +88,7 @@ class Robot:
             client_factory=lambda: _Host(self._fingerprint), known_hosts=(),
             config=None, agent_path=None, password_auth=False,
             kbdint_auth=False, connect_timeout=10, login_timeout=10,
-            encoding=None,
+            encoding=None, family=_SSH_FAMILY,
         ) as connection:
             yield connection
 
