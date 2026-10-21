@@ -19,11 +19,12 @@ _LOGGER = logging.getLogger(__name__)
 
 async def setup_access(path: str, host: str, port: int) -> str:
     public_key = await asyncio.to_thread(setup_key, path)
-    destination = shlex.quote(f"root@{host}")
-    return (
-        f"printf '%s\\n' {shlex.quote(public_key)} | ssh -p {port} {destination} "
-        "'umask 077; mkdir -p ~/.ssh; cat >> ~/.ssh/authorized_keys'"
+    script = await asyncio.to_thread(
+        (Path(__file__).parent / "tools" / "authorize.sh").read_text,
     )
+    destination = shlex.quote(f"root@{host}")
+    command = shlex.quote(script)
+    return f"printf '%s\\n' {shlex.quote(public_key)} | ssh -p {port} {destination} {command}"
 
 
 async def enroll_robot(data: dict) -> dict:
