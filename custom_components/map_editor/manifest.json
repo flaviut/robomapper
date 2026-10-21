@@ -1,0 +1,11 @@
+{
+  "domain": "map_editor",
+  "name": "S7 Map Editor",
+  "codeowners": ["@flaviut"],
+  "config_flow": true,
+  "dependencies": ["http", "panel_custom", "websocket_api"],
+  "integration_type": "service",
+  "iot_class": "local_poll",
+  "requirements": ["asyncssh==2.24.0"],
+  "version": "0.1.0"
+}

@@ -1,3 +1,17 @@
+import { inHass, request } from './hass.ts'
+
+export interface SaveStatus {
+  state: 'idle' | 'saving' | 'done' | 'error'
+  stage: string
+  id?: string
+  error?: string
+  backup?: string
+}
+
+export function saveStatus(entryId: string): Promise<SaveStatus> {
+  return request<SaveStatus>('status', entryId)
+}
+
 export interface RobotMap {
   width: number
   height: number
@@ -13,6 +27,7 @@ export interface RobotMap {
 type MapData = Omit<RobotMap, 'cells' | 'rooms'> & { cells: string, rooms: string, error?: string }
 
 export async function loadMap(hostname: string): Promise<RobotMap> {
+  if (inHass()) return decodeMap(await request<MapData>('load', hostname))
   const response = await fetch('/api/map', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -23,7 +38,22 @@ export async function loadMap(hostname: string): Promise<RobotMap> {
   return decodeMap(result)
 }
 
-export async function saveMap(hostname: string, map: RobotMap, cells: Uint8Array, rooms: Uint8Array): Promise<RobotMap> {
+export async function saveMap(hostname: string, map: RobotMap, cells: Uint8Array, rooms: Uint8Array,
+  progress: (status: SaveStatus) => void = () => {}): Promise<RobotMap> {
+  if (inHass()) {
+    let status = await request<SaveStatus>('save', hostname, {
+      native: map.native, cells: encodeCells(cells), rooms: encodeCells(rooms),
+      confirmation: 'install-and-reboot',
+    })
+    while (status.state === 'saving') {
+      progress(status)
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      status = await saveStatus(hostname)
+    }
+    progress(status)
+    if (status.state !== 'done') throw new Error(status.error ?? 'Save was interrupted. Check the robot before retrying.')
+    return loadMap(hostname)
+  }
   const response = await fetch('/api/map/save', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ native: map.native, cells: encodeCells(cells), rooms: encodeCells(rooms),

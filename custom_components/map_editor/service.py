@@ -16,6 +16,15 @@ from .robot import Robot
 _LOGGER = logging.getLogger(__name__)
 
 
+async def connect_robot(data: dict) -> Robot:
+    robot = Robot(data["host"], data["port"], data["key_path"], data["fingerprint"])
+    try:
+        await robot.check()
+    except Exception as err:
+        raise ValueError("Could not verify root SSH access and firmware 4.3.5_1612.") from err
+    return robot
+
+
 class State(StrEnum):
     IDLE = "idle"
     SAVING = "saving"

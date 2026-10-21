@@ -1,0 +1,38 @@
+{
+  "title": "S7 Map Editor",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to the robot",
+        "description": "Requires root SSH key access and firmware 4.3.5_1612. The private key must already exist inside Home Assistant's filesystem. Verify the robot's SHA256 host-key fingerprint through a trusted connection; changed keys are rejected. Saving is experimental and reboots the robot.",
+        "data": {
+          "host": "Robot hostname or IP address",
+          "port": "SSH port",
+          "key_path": "Private key path inside Home Assistant",
+          "fingerprint": "Trusted SSH host-key fingerprint (SHA256:…)",
+          "vacuum_entity": "Existing vacuum (optional link only)"
+        }
+      },
+      "reconfigure": {
+        "title": "Update robot connection",
+        "description": "Keep the same robot address. Verify a changed SSH host key through a trusted connection before updating its fingerprint.",
+        "data": {
+          "host": "Robot hostname or IP address",
+          "port": "SSH port",
+          "key_path": "Private key path inside Home Assistant",
+          "fingerprint": "Trusted SSH host-key fingerprint (SHA256:…)",
+          "vacuum_entity": "Existing vacuum (optional link only)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not verify the connection. Check the address, key path, trusted fingerprint, root access and firmware 4.3.5_1612."
+    },
+    "abort": {
+      "already_configured": "This robot is already configured.",
+      "unique_id_mismatch": "Use the configured robot address, or add a new robot.",
+      "reconfigure_successful": "Connection updated.",
+      "save_running": "Wait for the current save to finish before reconfiguring."
+    }
+  }
+}
