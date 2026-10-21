@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "status": "checked bounded static checkpoint; independent review required; runtime restore/quiescence NOT established",
+  "base_ref": "6cd68d68070400ddd8a327f1c3e09538df01fd63",
+  "ownership": "analysis/re/evidence/restore/writer-host/**",
+  "commits": [
+    {
+      "commit": "afa11059dc69b07a380611403659c490a72ccd1f",
+      "purpose": "Selected generated C, original-ELF and signal evidence, authenticated embedded plugin configuration, static claims, validator/tests and fresh replay."
+    }
+  ],
+  "commit_note": "This handoff and lane-local generated-C whitespace-policy/validation clarification are in a following metadata commit; avoid a self-hash. Discover it with git log -- analysis/re/evidence/restore/writer-host/handoff.json.",
+  "authoritative_findings_path": "/home/user/.local/state/pi/agent/sessions/--home-user-tmp-illegalplainape--/subagent-artifacts/outputs/b4b541c7-70d1-4635-88ba-475c1e60f203/restore-next/writer-host.md",
+  "inputs": {
+    "rr_loader": {
+      "path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/rr_loader",
+      "sha256": "020d6d7de7d282ecec3e845e4664113b11df82656701d42de7e901595c5f5125",
+      "private_import": "Source-root retool.py copy of closed baseline, then private tracked-input import via retool.headless; unchanged shared index/manifest.",
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x10000",
+      "mode": "Thumb per selected entry"
+    },
+    "configured_plugin_hashes_and_export_entries": "proof/configuration.json",
+    "context_read": [
+      "analysis/re/RESULTS.md",
+      "analysis/re/tooling/README.md and source-root retool.py",
+      "restore/board.json and second-wave.json",
+      "restore/lifecycle/handoff.json, loader-lead.json, configuration.json, writer-candidates.json",
+      "restore/review/flow-lifecycle.md",
+      "restore/flow private tracked-input import/replay implementation"
+    ],
+    "instructions_search": "No AGENTS.md found in checkout, source root or inspected ancestor directories."
+  },
+  "supported_claims": [
+    {
+      "id": "config-source-selection",
+      "summary": "Empty copied config path selects embedded rr_unpacking payload; nonempty opens external file. -c FILE/positional paths are supported; ./config.json string alone is not a default-file proof.",
+      "anchors": "proof/c/0x00019da8.c; selected instructions 0x19dc4..0x19e22; proof/c/0x00017fbc.c"
+    },
+    {
+      "id": "configured-navigation-host",
+      "summary": "Authenticated host-only CCM decode identifies seven embedded configured plugins, including SLAM index 4 and navigation index 5 under /opt/rockrobo/cleaner/lib; all corresponding tracked files export rr_load_plugin.",
+      "anchors": "proof/configuration.json with ciphertext/plaintext hashes, extraction VAs/file offsets, parameters, native host library identity and seven plugin ELF identities; config_data.py; tests reject altered ciphertext/tag/AAD"
+    },
+    {
+      "id": "plugin-loading-contract",
+      "summary": "Generic plugins-array iteration, byte-sized IDs, common fields, path concatenation, dlopen and callback validation are instruction-backed and separated from configured ownership and active deployment.",
+      "anchors": "proof/c/0x00017394.c; 0x000180e4.c; 0x000170d8.c; 0x00018c28.c; proof/selected.json"
+    },
+    {
+      "id": "sighup-flag-only-handler",
+      "summary": "Signal-table SIGHUP entry points to existing trampoline 0x18ad4; signal-1 handler path sets loader+0x9c without directly joining/flushing/acknowledging map writers.",
+      "anchors": "proof/elf-evidence.json signal_table at VA0x2f1c8/file0xf1c8; selected instructions 0x18872/0x18896,0x18ae0/0x18ae6,0x18a74..0x18a88"
+    },
+    {
+      "id": "generic-final-is-not-map-barrier",
+      "summary": "main/final ordering includes timer join, reverse-key plugin final traversal, local quit/wake, callback+0x10, stored-thread join, callback+0x14. Concrete map writer completion and timer quit-loop edges remain open.",
+      "anchors": "proof/c/0x00015edc.c; 0x000187fc.c; 0x00016874.c; 0x00017038.c; 0x00019058.c"
+    }
+  ],
+  "validation": {
+    "durable_record": "validation.json",
+    "focused_command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/writer-host/evidence.py",
+    "focused_result": "passed: 19 original-ELF function-entry identities; 1299 selected instruction records; 99 bounded pseudo records; signal table, strings, plugin identity/exports, authenticated configuration and claim-anchor checks",
+    "tests_command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/writer-host -p test_writer_host.py -v",
+    "tests_result": "passed: eight tests, including changed bytes, odd/unmapped VA and ciphertext/tag/AAD corruption rejection",
+    "fresh_sequential_replay_command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/writer-host/replay.py --out \"$PWD/analysis/re/evidence/restore/writer-host/.scratch/final-replay\"",
+    "fresh_sequential_replay_result": "passed: four sequential subprocess commands; new baseline copy/private import; separate reopen selected/types/C equality; read-only pseudo export; 23 published proof artifacts byte-identical",
+    "other_results": [
+      "Python AST and JSON parsing passed.",
+      "git diff 6cd68d6 --check passed with lane-local generated-C whitespace policy; initial staged check flagged only preserved raw Ghidra whitespace and is recorded in validation.json.",
+      "Scratch ignore installed and checked before project/output generation; full inventories/projects/logs remain ignored.",
+      "First host crypto dependency candidate failed as ELFCLASS32 before decoding. Supervisor approved same-protocol retry with native ELF64 x86_64 library, architecture and SHA256 verified before loading; authenticated decode and corruption rejection then passed."
+    ]
+  },
+  "limits": [
+    "No device access, firmware execution, internet source searches, MCU-image selection or hardware acceptance measurements.",
+    "No shared tooling/annotations/manifest/baseline/earlier lane evidence or saved inputs changed; only owned subtree written plus requested external findings artifact.",
+    "No function recovery or annotation performed. Surviving names/signatures/ABI are unchanged, including misleading inferred decompiler prototypes; no handwritten replacement C.",
+    "0x18314 pseudo decoding is not function creation or CFG proof; not claimed as heartbeat production.",
+    "Embedded configured defaults are not active argv/config/module deployment; saved predecessor ProcessLists are conditional context only.",
+    "No complete writer inventory, concrete nav/SLAM final callback contract, detached persistence worker join/flush, coherent snapshot, cache/disk consistency or durability established.",
+    "Replay/byte equality and CCM authentication do not prove semantic correctness, trusted origin, runtime safety or safe quiescence."
+  ],
+  "next_bounded_target": "Inspect existing rr_load_plugin exports in pinned librrnavdrv.so:0x5f830 and librrslamdrv.so:0x6c14, resolve callback slots +0x10/+0x14 and their persistence-worker join/flush edges; separately connect loader quit byte to timer/plugin consumers. No speculative stop sequence.",
+  "repository_checks": {
+    "lane_only": true,
+    "scratch_ignored": true,
+    "no_staged_files_after_commit": "Verify with git diff --cached --name-only; expected empty.",
+    "review_gate": "Independent static review required; no operational restore acceptance."
+  }
+}

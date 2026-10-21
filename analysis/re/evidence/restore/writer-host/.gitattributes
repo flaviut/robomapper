@@ -1,0 +1,2 @@
+# Preserve byte-identical generated decompiler output, following the shared C evidence policy.
+proof/c/*.c whitespace=-blank-at-eol,-blank-at-eof
