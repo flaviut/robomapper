@@ -1,0 +1,92 @@
+[
+  {
+    "program": "RoboController",
+    "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+    "entry": "0x00030958",
+    "kind": "exact ELF EHABI start",
+    "table_va": "0x58d5c",
+    "prel31_word": "0x7ffd7bfc",
+    "next_start": "0x30a88"
+  },
+  {
+    "program": "RoboController",
+    "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+    "entry": "0x00026288",
+    "kind": "exact ELF EHABI start",
+    "table_va": "0x5884c",
+    "prel31_word": "0x7ffcda3c",
+    "next_start": "0x266ac"
+  },
+  {
+    "program": "RoboController",
+    "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+    "entry": "0x00023768",
+    "kind": "exact ELF EHABI start",
+    "table_va": "0x58804",
+    "prel31_word": "0x7ffcaf64",
+    "next_start": "0x24458"
+  },
+  {
+    "program": "RoboController",
+    "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+    "entry": "0x000367ac",
+    "kind": "exact ELF EHABI start",
+    "table_va": "0x5902c",
+    "prel31_word": "0x7ffdd780",
+    "next_start": "0x3871c"
+  },
+  {
+    "program": "RoboController",
+    "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+    "entry": "0x0002cae8",
+    "kind": "exact ELF EHABI start",
+    "table_va": "0x58bac",
+    "prel31_word": "0x7ffd3f3c",
+    "next_start": "0x2cb3c"
+  },
+  {
+    "program": "RoboController",
+    "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+    "entry": "0x00028678",
+    "kind": "exact ELF EHABI start",
+    "table_va": "0x58934",
+    "prel31_word": "0x7ffcfd44",
+    "next_start": "0x28910"
+  },
+  {
+    "program": "RoboController",
+    "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+    "entry": "0x000271a0",
+    "kind": "exact ELF EHABI start",
+    "table_va": "0x58884",
+    "prel31_word": "0x7ffce91c",
+    "next_start": "0x27288"
+  },
+  {
+    "program": "RoboController",
+    "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+    "entry": "0x00027448",
+    "kind": "exact ELF EHABI start",
+    "table_va": "0x5889c",
+    "prel31_word": "0x7ffcebac",
+    "next_start": "0x2763c"
+  },
+  {
+    "program": "libroboipc.so",
+    "sha256": "a7a693c8edd37aa9367f680d2f742ef81f4b8007c97a7720fc02f35ded57a832",
+    "entry": "0x000063ec",
+    "kind": "surviving ELF dynamic FUNC symbol; Thumb bit separate",
+    "symbol": "SendPacket",
+    "symbol_value": "0x63ed",
+    "symbol_size": 200
+  },
+  {
+    "program": "libroboipc.so",
+    "sha256": "a7a693c8edd37aa9367f680d2f742ef81f4b8007c97a7720fc02f35ded57a832",
+    "entry": "0x0000637c",
+    "kind": "surviving ELF dynamic FUNC symbol; Thumb bit separate",
+    "symbol": "_Z13pDoSendPacketP8Packet_tP13SendOptions_t",
+    "symbol_value": "0x637d",
+    "symbol_size": 112
+  }
+]

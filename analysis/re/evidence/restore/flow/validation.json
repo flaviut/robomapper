@@ -4,5 +4,6 @@
   "functions": 14,
   "instruction_byte_checks": 2383,
   "claim_anchor_checks": 14,
+  "independent_elf_entry_boundary_checks": 10,
   "scope": "Static byte/ELF/C consistency and exact claim anchors, not runtime behavior."
 }

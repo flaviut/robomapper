@@ -9,8 +9,12 @@
       "role": "focused evidence and replay"
     },
     {
+      "commit": "38039a6",
+      "role": "durable handoff and generated-C policy"
+    },
+    {
       "ref": "HEAD",
-      "role": "handoff and lane-local generated-C whitespace policy; resolve using git log"
+      "role": "independent ELF entry proof and validation checkpoint"
     }
   ],
   "ownership": "analysis/re/evidence/restore/flow/** only",
@@ -133,6 +137,7 @@
       "functions": 14,
       "instruction_byte_checks": 2383,
       "claim_anchor_checks": 14,
+      "independent_elf_entry_boundary_checks": 10,
       "scope": "Static byte/ELF/C consistency and exact claim anchors, not runtime behavior."
     },
     "commands": [
@@ -155,7 +160,8 @@
     ],
     "future_replay": "Use the same replay command with a NEW scratch output name.",
     "replay_inventory_policy": "Full inventories, private projects and console logs remain only in ignored scratch; 14 focused functions and 2383 instruction records are the tracked evidence.",
-    "limitations": "These tests verify static artifacts and claim anchors, not firmware behavior or a restore procedure."
+    "limitations": "These tests verify static artifacts and claim anchors, not firmware behavior or a restore procedure.",
+    "entry_proofs": "entry-boundaries.json: eight exact original-ELF EHABI starts and two surviving dynamic FUNC symbols independently reconstructed by validate.py. Automatic import bodies can include shared/noncontiguous tails; entry evidence is not a guessed function extent."
   },
   "unresolved_dependencies": [
     "AppProxy (3,2) request decoder, exact result registration/sender and scheduling path into librrnavdrv tasks are not closed by this slice. RC (1,2) path is not substituted for them.",

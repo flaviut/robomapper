@@ -20,6 +20,48 @@ def elf_offset(data, va, size):
     return offsets[0]
 
 
+def sections(data):
+    shoff = struct.unpack_from('<I', data, 32)[0]
+    width, count, names = struct.unpack_from('<HHH', data, 46)
+    rows = [struct.unpack_from('<10I', data, shoff + i * width) for i in range(count)]
+    strings = data[rows[names][4]:rows[names][4] + rows[names][5]]
+    return {strings[r[0]:].split(b'\0', 1)[0].decode(): r for r in rows}
+
+
+def entry_boundary_proofs(binaries, records):
+    proofs = []
+    for program in ('RoboController', 'libroboipc.so'):
+        data = binaries[program]
+        ss = sections(data)
+        for f in (f for f in records if f['program'] == program):
+            entry = int(f['address'], 16)
+            row = {'program': program, 'sha256': f['sha256'], 'entry': f['address']}
+            if program == 'RoboController':
+                section = ss['.ARM.exidx']
+                entries = []
+                for off in range(0, section[5], 8):
+                    word = struct.unpack_from('<I', data, section[4] + off)[0] & 0x7fffffff
+                    displacement = word - (1 << 31) if word & (1 << 30) else word
+                    entries.append((section[3] + off + displacement, section[3] + off, word))
+                i = next(i for i, x in enumerate(entries) if x[0] == entry)
+                row.update(kind='exact ELF EHABI start', table_va=hex(entries[i][1]),
+                           prel31_word=hex(entries[i][2]), next_start=hex(entries[i+1][0]))
+            else:
+                dyn = ss['.dynsym']
+                names = ss['.dynstr']
+                strings = data[names[4]:names[4] + names[5]]
+                matches = []
+                for off in range(0, dyn[5], dyn[9]):
+                    name, value, size, info, _, _ = struct.unpack_from('<IIIBBH', data, dyn[4] + off)
+                    if info & 15 == 2 and value & ~1 == entry:
+                        matches.append({'symbol': strings[name:].split(b'\0', 1)[0].decode(),
+                                        'symbol_value': hex(value), 'symbol_size': size})
+                assert len(matches) == 1
+                row.update(kind='surviving ELF dynamic FUNC symbol; Thumb bit separate', **matches[0])
+            proofs.append(row)
+    return proofs
+
+
 def check_instruction(data, row):
     va, raw = int(row['address'], 16), bytes.fromhex(row['bytes'])
     assert va % 2 == 0, row
@@ -48,6 +90,8 @@ def validate():
         for row in f['instructions']:
             check_instruction(binaries[name], row)
             n += 1
+    proofs = entry_boundary_proofs(binaries, records)
+    assert json.loads((HERE / 'entry-boundaries.json').read_text()) == proofs
     by_entry = {(f['program'], f['address']): {i['address']: i for i in f['instructions']} for f in records}
     required = [
         ('libroboipc.so', '0x0000637c', '0x00006388', 'ubfx r3,r6,#0x10,#0x8'),
@@ -69,6 +113,7 @@ def validate():
         assert by_entry[program, entry][va]['instruction'] == text, (program, va)
     return {'status': 'passed', 'binary_hashes': len(binaries), 'functions': len(records),
             'instruction_byte_checks': n, 'claim_anchor_checks': len(required),
+            'independent_elf_entry_boundary_checks': len(proofs),
             'scope': 'Static byte/ELF/C consistency and exact claim anchors, not runtime behavior.'}
 
 
