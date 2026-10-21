@@ -1,32 +1,58 @@
-# Map maintenance: what works, and where to stop
+# Map maintenance: the stop works, but the backup gate still refuses
 
-**A stopped map backup has not yet worked on this robot.** The first service-stop attempt delivered the exclusion request, but the native helper still found a loader task and refused to open UART. Independent recovery restored the original exclusion bytes and normal reboot brought the services back. That is a demonstrated recovery, not a demonstrated maintenance window. No map files have been edited or restored.
+**The application-stop request and normal reboot recovery worked; a stopped map backup did not.** On October 21, 2026, the second one-shot attempt stopped Valetudo, delivered the application exclusions and passed the executable-absence checks. The improved helper then refused a remaining loader task. Same-boot evidence showed one zombie task—an exited task awaiting collection—with no surviving sibling and no observed UART descriptor links. The unchanged guard still rejects that task name, so the helper never initialized UART or requested MCU heartbeat hold-off. No map archive was started, and no map files were edited or restored.
 
-A second, diagnostic attempt is now privately staged but **has not been armed or run**. Its current admission conditions are not met: at **October 21, 2026, 11:46:52 UTC**, the permitted read-only queries reported OTA `idle`, status `8`, battery **83%**, error `0`, and cleaning, returning, locating and dock-error fields all `0`. The deployed source maps status 8 to docked, not idle. The required idle state and battery of at least 90% must both be established before any service stop. No docking, motion or charging command was sent to change that result.
+Recovery restored the original exclusions on disk and requested normal reboot. The robot returned with its normal services, ordinary loader UART ownership, docked status, no reported activity or error, and OTA idle. **Do not bypass the refusal or treat the diagnostic archive as a map backup.** A complete maintenance procedure still needs an explicitly approved way to handle this demonstrated remaining task without admitting a live loader or UART owner.
 
-The earlier post-boot status `3` was idle. The deployed source also maps `1` and `2` to idle; a gate that accepts only `2` would incorrectly reject that earlier observation. A fresh status is still required immediately before any approved launch.
+The [first session](MAINTENANCE-SESSION.md#approval-and-actual-outcome) also recovered normally but lacked the task evidence. [Why that attempt stopped](WHY-MAINTENANCE-STOPPED.md) explains why executable disappearance alone could not answer whether threads remained alive. This second attempt supplies that missing observation; it does not change the helper's rules.
 
-## The unresolved loader check
+## What the second attempt established
 
-The first attempt's shell saw no loader executable, but the helper's broader check still found a loader identity. The old log did not record which task caused that refusal. An already-exited task awaiting collection, an exited main thread with other threads still alive, and a genuinely surviving loader are different situations. The missing same-boot observation prevents choosing between them. [Why the attempt stopped](WHY-MAINTENANCE-STOPPED.md) explains the difference without treating a possible zombie as an established diagnosis.
+At **11:50:01 UTC**, fresh permitted `get_ota_state` and `get_status` queries reported OTA `idle`, status **8**, battery **84%**, error `0`, and cleaning, returning, locating and dock-error fields all `0`. The deployed source maps 8 to docked. It maps 1, 2 and 3 to idle: the earlier post-boot status 3 was idle, not an error.
 
-The improved helper reports the offending process PID, thread TID, state and whether the executable basename or task name matched. **Its refusal rules are unchanged.** This preparation uses the existing diagnostic build from `worktrees/map-loader-diagnosis/tools/map-maint/build/map-maint`, not the old helper. Its source matches this worktree byte-for-byte (source SHA256 `b3386e9e8dcf8b3ba250bd7c6192f2f472bd52cf3643bc0fe1a991941aa93b2e`); the existing object/build times and embedded diagnostic strings agree with that source revision. The ARM binary was neither executed locally nor rebuilt.
+The initial preparation required idle status and battery at least 90%, and refused to arm when it first observed docked status at 82–83%. After reading all three exact scripts, the parent explicitly authorized **one** attempt with idle 1/2/3 **or docked 8**, battery **at least 80%**, OTA idle and all those error/activity fields zero. This was an explicit admission change, not an interpretation that docked means idle. No motion, docking or charging command was sent. Fresh boot, process start ticks, executable/argument identities, original bytes and staged hashes were checked before launch.
 
-If the helper refuses again, the prepared script first records the reported process/thread, parent, start ticks, state, executable-link result, every available sibling's state/name/executable, and UART descriptor links. It never records process arguments, environment or unrelated descriptor targets. Observation has an eight-second budget and records when that budget prevents a complete scan. The independent recovery deadline remains authoritative. There is no UART retry, zombie exemption, guard bypass or backup after refusal.
+Independent recovery was alive at **11:50:14 UTC**, PID **16279**, start tick **1482903**, in its own process group/session, with uptime deadline **14949**: 120 seconds after arming. Operations then started once, PID **16295**, start tick **1483005**. Its pinned Valetudo TERM and application-exclusion steps passed before the single MCU operation. The sender recorded successful delivery, which is a FIFO write rather than a graceful-save acknowledgment.
 
-## What is prepared for this boot
+At **11:50:16 UTC**, the improved helper reported:
 
-Fresh inspection at **11:43:32 UTC** identified Valetudo 371, WatchDoge 372, ADB 373, the SSH listener 374, logging 445, loader 449, controller 508, AppProxy 510, network manager 512 and miio bridge 514. Their executable paths and restricted role-specific arguments matched normal operation. Start ticks are pinned in the operations script; the scripts also refuse a different boot ID. These are new observations, not PIDs copied from the first attempt. Only loader 449 held the observed `/dev/ttyS2` and `/dev/uart_mcu` links, at descriptors 60 and 61. The helper will independently inspect all tasks before any UART operation.
+```text
+Loader still exists; MCU disable refused. PID=449 TID=449 state=Z reason=comm matches rr_loader
+```
 
-All three live process-list hashes and both vendor-library hashes still match the earlier [session record](MAINTENANCE-SESSION.md). Rereading the lists confirmed that the appended tokens select only the intended loader, controller variants, AppProxy, miio bridge and updater. The full proposed content preserves all 19 original bytes and appends `\nrr_l\nRoboC\nAppP\nmiio\nSysU\n`: 46 content bytes, safely selecting event 8 rather than the destructive short-content event 9. No content has been sent in this preparation.
+The capture finished at **11:50:20 UTC**, before requesting recovery and within its eight-second budget. It recorded the original boot ID, process and thread **449**, parent **1**, start tick **1392**, state **Z**, name `rr_loader`, and an unsuccessful executable-link lookup. The entire sibling enumeration contained only task 449, also Z. The subsequent scan across all visible tasks completed without finding a link to either UART device. No arguments, environment or unrelated descriptor targets were recorded. These are contemporaneous observations, not an inference from reused post-boot PID numbers. Descriptor-link observation is not a replacement for the helper's stronger device-number ownership check.
 
-The new private local directory is `/tmp/map-maint-session-20261021T1145Z`. The matching robot script directory has the same path; the independent original-state directory is `/mnt/data/map-maint-session-20261021T1145Z`, outside `rockrobo`. All three directories are mode `0700`. Scripts and helper are `0700`; original-state files and proposed content are `0600`. Nothing reuses old session markers. Local originals were copied privately over strict-trust SSH after the target's absent SFTP server prevented the initial SCP transfer; no SSH, network or authentication setting was changed.
+Thus the specific blocker is now known: **the helper's name check rejects an exited loader record even when this observation finds no executing sibling or UART link**. Its refusal remains intact. There was one MCU invocation, return 1, no native heartbeat API call, no UART initialization, no retry and no backup. Neither `backup.complete` nor `snapshot/` exists.
 
-The **current** exclusion file was preserved before staging the proposed content. It is present and nonempty, 19 bytes, owner/group `0:0`, mode `0644`, with tar-recorded modification time **October 21, 2026, 07:43:18 UTC**. Its raw-copy MD5 is `e848cdeffe2b0a60a5d3f3e38fd1a2eb`; the new metadata-preserving tar MD5 is `bc5cdd2e73610049925c68cf78f70410`. The saved presence marker distinguishes this from an absent or empty original. Both copies exist locally and on `/mnt/data`. The older session's archive is not the restoration source for this attempt.
+## Recovery and return to normal operation
 
-The following identities match locally and on the robot. The parent must read these exact local scripts and explicitly authorize one attempt before any recovery timer or service operation starts.
+At **11:50:21 UTC**, before restoring originals, recovery recorded the 46-byte maintenance exclusions. After restoration at the same timestamp, it recorded the original 19 bytes, owner/group `0:0`, mode `0644`, and modification time **07:43:18 UTC**. The restored-file tar header exactly matches the new original metadata archive. Recovery compared bytes, synced and requested `/sbin/reboot` without a force flag. It did not send a live exclusion-clear request while key hosts were missing.
 
-| File under the new local/robot script directory | MD5 |
+Bounded SSH reconnection observed a new boot by **11:51:37 UTC**; the robot reported **11:51:36 UTC**, uptime **67.98 seconds** and a different boot ID. At **11:51:50 UTC**, normal executable paths and role-specific arguments were observed for Valetudo 371, WatchDoge 372, ADB 373, SSH listener 374, logging 444, loader 448, controller 507, AppProxy 509, network manager 511 and miio bridge 944. Only loader 448 held the observed UART links, descriptors 60 and 61. The `/tmp` staging directory was gone, as expected after reboot.
+
+Fresh telemetry at **11:51:56 UTC** reported OTA idle, docked status 8, battery **85%**, and error/activity/dock-error fields zero. Original exclusion bytes still matched, with owner/group `0:0` and mode `0644`. A post-boot metadata archive taken at **11:52:16 UTC** records modification time **11:50:44 UTC**, newer than the pre-reboot restored time. The two observations locate the change between restoration and that post-boot capture; **they do not identify its writer**. No write was made to disguise the difference.
+
+Only after normal return were the private session logs, original-state files and diagnostics copied off-device. The local archive is **`/tmp/map-maint-session-20261021T1145Z/returned-session.tar`**, MD5 **`6467d80fea9e3d5a4fab6368eeeee578`**. It is a complete session-record copy, **not a map backup**. The robot retains those records under `/mnt/data/map-maint-session-20261021T1145Z`. No automatic second attempt was made.
+
+## The parts of the procedure that are grounded
+
+These steps explain the observed stop-and-recover route. They are **not** a ready-to-run generic script: this attempt's boot identities and authorization are spent, and its temporary robot scripts disappeared on reboot.
+
+1. **Identify the current deployment and admit a quiet robot.** Use strict-trust SSH and only the established read-only OTA/status queries. Identify the current service executable paths, restricted role-specific arguments and start ticks rather than recycling old PIDs. Observe UART descriptor links without opening devices. Obtain explicit approval for the actual status/battery admission conditions before arming anything.
+2. **Preserve the current supervision settings independently.** Record original presence, raw bytes, owner/group, mode and timestamp in a new private directory outside `rockrobo`, and retain a private off-device copy. This attempt preserved a present-nonempty, 19-byte regular file with mode `0644`; absence and an empty file must not be substituted for it. The raw MD5 was `e848cdeffe2b0a60a5d3f3e38fd1a2eb`; the newly captured metadata tar MD5 was `bc5cdd2e73610049925c68cf78f70410`.
+3. **Arm independent recovery first, then stop the identified producers.** The observed method uses `nohup` plus `setsid`, closed stdin and persistent private logs. Recovery establishes its own identity and 120-second uptime deadline before operations starts separately. Operations TERM-stops only the pinned Valetudo process, sends the full approved event-8 content once, waits for the known host executables to disappear, and keeps WatchDoge, logging, SSH and networking running.
+4. **Respect the native ownership gate.** Invoke the improved helper once. On refusal, capture the actual matched process/thread and all siblings before immediately requesting recovery. Do not ignore a name match merely because one task is Z; a different attempt could have live sibling threads or a remaining owner. This attempt stopped here. No untouched map copy is allowed unless the native operation actually returns 0.
+5. **Restore exclusions on disk only and reboot normally.** Independent recovery ends only the verified operations process group, records the pre-restoration timestamp, restores the saved exclusion bytes/metadata, compares bytes, syncs and requests normal reboot. Do not warm-reenable missing key hosts through IPC or rerun the reserve launcher. After bounded reconnection, establish a new boot, normal services, ordinary UART ownership, original exclusion bytes/owner/mode and fresh quiet/update status before copying private records off-device.
+
+The complete proposed exclusion content preserved all 19 original bytes and appended `\nrr_l\nRoboC\nAppP\nmiio\nSysU\n`: **46 bytes**, plus the native terminating NUL. Rereading all three process lists confirmed the appended tokens select only the intended loader, controller variants, AppProxy, miio bridge and updater. The original rriot exclusions remain intact. This is event 8, not the destructive event selected by content of two bytes or less. Successful delivery can abruptly kill supervised hosts; it is not proof that a save finished.
+
+The [finite matching-set contract](MAP-FILE-CONTRACT.md) remains the intended untouched-backup boundary, including same-epoch database sidecars, recorded absence and separate interrupted work. That acquisition path was **not reached** here. Map restoration, SQL writes, replacement, recovery RPCs and map regeneration are not part of this demonstrated procedure. A later proposal must resolve the actual refusal first, rather than quietly weakening the helper or calling a partial copy a backup.
+
+## Exact private scripts and helper
+
+The local directory `/tmp/map-maint-session-20261021T1145Z` retains the approved files and returned records. The robot used the same temporary path and the separate data directory above. All session directories were `0700`; scripts/helper were `0700`, other saved files `0600`. Local and robot MD5 identities matched before arming:
+
+| File | MD5 |
 | --- | --- |
 | `operations.sh` | `bd234ce7b61a15eabf7604356cef7b1c` |
 | `recover.sh` | `5d9b876a786f28280ec84331f39e3788` |
@@ -34,7 +60,7 @@ The following identities match locally and on the robot. The parent must read th
 | `map-maint` | `d9a7496e370bb6a5f841b525e85513aa` |
 | `exclusions.content` | `d7133013ea99f643db8ff0be97e9c9f0` |
 
-Their local SHA256 values are:
+Local SHA256 identities are:
 
 ```text
 operations.sh       e77b2ca70fcb81c7173acc9220a5223a24b38d1a580446b72dd4ecb8faa94a10
@@ -43,25 +69,12 @@ capture-refusal.sh  4e001173ce351abfca43e74625fcf0be50bba59e9129a693d1a41e42f47e
 map-maint           5458fe2b5721a31e03bb51da444e20ac6b9f9d24b4053fbcfad76e9fccb34b05
 ```
 
-At **11:46:51 UTC**, the robot still had no recovery-ready marker, operations identity, service-touch marker or snapshot directory. The original active exclusion bytes still matched. There was no active configuration write, service signal, UART access or reboot.
+The improved helper was the existing build in `worktrees/map-loader-diagnosis/tools/map-maint/build/map-maint`, not the first attempt's binary. Its source matched this worktree byte-for-byte, SHA256 `b3386e9e8dcf8b3ba250bd7c6192f2f472bd52cf3643bc0fe1a991941aa93b2e`; existing source/object/build times and embedded diagnostics agreed. It was not rebuilt, emulated or executed locally. No tests, suites, validators, replay, review agents or nested agents were run. All SSH connections retained `StrictHostKeyChecking=yes`; the old server's key-exchange warning did not prompt an SSH, trust or network change.
 
-## The proposed one-shot sequence — not yet demonstrated
+## Limits that still matter
 
-Use the prior [session's independent recovery arrangement](MAINTENANCE-SESSION.md#prepared-procedure-approved-for-one-attempt), but never reuse its old scripts or authorization. The newly staged scripts retain the following order:
+Two normal recoveries do not establish an independent rescue channel. ADB has not been exercised, and no pre-boot rescue route or recovery partition has been demonstrated. The 120-second timer bounds the intended wait before recovery, **not** flash flushing, shutdown or return of services. There is no force-reboot fallback or permanent boot hook. Optional metadata capture must not block recovery; failed original-byte restoration must not be hidden by rebooting knowingly wrong exclusions.
 
-1. Establish fresh read-only idle/no-error/no-activity status, OTA idle and battery at least 90%. Recheck this boot, executable/argument identities, start ticks, original exclusions and all pinned hashes. A changed deployment requires fresh preparation, not a guessed replacement PID.
-2. Only after explicit parent approval, start recovery first with `nohup` and `setsid`, closed stdin and private persistent logs. Confirm its identity and 120-second uptime deadline before launching operations in its own session.
-3. Operations sends TERM only to the identified Valetudo process and waits for exit. It then sends the complete event-8 content once, waits for the known application executables to disappear, and checks that WatchDoge, logging, SSH and networking remain alive. Delivery does not acknowledge host cleanup or a completed save.
-4. Invoke the improved `mcu-disable` once. A refusal triggers the bounded same-boot capture and then immediate recovery. Only native API return **0** permits an untouched backup of the [finite matching set](MAP-FILE-CONTRACT.md), including present database sidecars and separately retained interrupted work. No map restore, SQL write, map decoding or replacement is included.
-5. On success, failure or deadline, independent recovery ends only the verified operations process group. It records the timestamp and active exclusion metadata **before** restoring the original exclusions on disk only. It compares restored bytes, records the post-restoration metadata, syncs and requests a normal reboot. It sends no live exclusion-clear message while key hosts are missing.
-6. After bounded SSH reconnection, observe a new boot, normal service executable/argument identities, original exclusion bytes/owner/mode, ordinary loader UART ownership, and fresh read-only idle/update status. Copy persistent logs and diagnostic metadata privately off-device. Call an archive a stopped backup only if its completion marker and all required files survived; an interrupted or missing snapshot is not a backup.
+The flushed original-state directory and logs survive ordinary reboot; the helper, scripts and running timer under `/tmp` do not. Power loss before restoration can leave maintenance exclusions active at the next boot, with no newly installed mechanism to repair that. WatchDoge must remain running during the stopped interval; no WatchDoge signal belongs to this route.
 
-The new recovery script also records a tar header after restoration so its timestamp can be compared with a post-boot observation. A changed timestamp alone does not identify a writer. Optional diagnostic-recording failure does not prevent the established restore/reboot path; a failed original-byte restoration still stops rather than knowingly rebooting with wrong exclusions.
-
-## Recovery limits
-
-The first attempt demonstrated a normal reboot returning services, not a rescue channel independent of Linux. ADB has not been exercised; no pre-boot recovery route or recovery partition has been demonstrated. The 120-second timer bounds the intended wait before recovery, **not** flash flushing, shutdown or return of services. No force reboot or permanent boot hook is installed.
-
-The original bytes and logs under `/mnt/data` survive an ordinary reboot once flushed; the helper, scripts and running timer under `/tmp` do not. Power loss before disk-only restoration can leave maintenance exclusions active on the next boot. No new automatic mechanism repairs that condition. WatchDoge must remain running throughout the service-off interval, and no WatchDoge signal is part of this procedure.
-
-The [A14 heartbeat findings](A14-HEARTBEAT.md) explain the intended hold-off and its limits. Even an API return of 0 would acknowledge a transport exchange, not read the sentinel back. Until an admitted attempt actually passes that gate and produces a complete archive, the practical maintenance instruction is to retain normal operation and these originals, not edit map files behind a refused guard.
+The [A14 heartbeat analysis](A14-HEARTBEAT.md) supports the intended hold-off, but even native return 0 would acknowledge transport rather than read the sentinel back. This attempt never reached that exchange. The remaining task is now a narrowly identified guard-policy decision, not an unexplained live loader: retain the current refusal until that decision is separately approved and implemented. The robot should remain in normal operation meanwhile.
