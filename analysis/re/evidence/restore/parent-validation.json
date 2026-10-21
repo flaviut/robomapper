@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "tested_commit": "d93894fa0efe95f16365ff8b8804f270f8615ff1",
+  "executor": "parent",
+  "status": "passed",
+  "scope": "Static artifact identity, saved-data comparisons and fresh Ghidra replay; no original firmware execution or device access.",
+  "checks": {
+    "flow_validator": "passed: 3 hashes, 14 functions, 2383 instruction records, 14 claim anchors, 10 independent ELF entry proofs",
+    "flow_tests": "4 passed",
+    "lifecycle_validator": "passed: 616 instruction records, 9 saved configuration files, 91 candidate ELF paths",
+    "metadata_validator": "passed: 2 hashes, 7 functions, 2132 instruction records, 207 claim anchors",
+    "metadata_tests": "4 passed",
+    "metadata_captured_pairs": "passed: 2 pairs, 351780 application/segmentation cells compared; aggregate observations only",
+    "consistency_validator": "passed: 8 focused functions, 2090 focused and 4637 contextual instruction records, 25 path literals",
+    "consistency_tests": "7 passed",
+    "committed_diff_whitespace": "passed: git diff 4c804b4 d93894f --check",
+    "fresh_sequential_replays": "passed: flow, lifecycle, metadata, consistency",
+    "committed_C_comparison": "passed: all 32 committed C files byte-identical to fresh replay output (14 flow, 3 lifecycle, 7 metadata, 8 consistency)"
+  },
+  "replay_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/flow/replay.py --out analysis/re/evidence/restore/flow/scratch/parent-review-d93894f",
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/lifecycle/replay.py --out /tmp/map-restore-review-d93894f/lifecycle-replay",
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/metadata/replay.py --out /tmp/map-restore-review-d93894f/metadata-replay",
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/consistency/replay.py --out analysis/re/evidence/restore/consistency/scratch/parent-review-d93894f"
+  ],
+  "reproduction": "Use new output names. Flow and consistency require lane-local scratch; lifecycle and metadata accept new /tmp destinations. Lane handoffs contain focused check commands. Existing closed baseline is copied, never opened directly; flow also imports tracked controller/IPC inputs privately.",
+  "local_logs": "/tmp/map-restore-review-d93894f",
+  "log_retention": "Temporary; the committed check results and replay scripts are the durable record.",
+  "review": "Independent semantic review pending. Reviewers lack command tools; they inspect parent-executed logs rather than claim independent execution.",
+  "limits": [
+    "Byte agreement and replay do not prove complete program semantics or malformed-input safety.",
+    "Saved configuration and captured-map observations do not establish active runtime configuration.",
+    "No all-writer barrier, coherent backup epoch, safe restart, hardware acceptance or power-loss durability is established."
+  ]
+}
