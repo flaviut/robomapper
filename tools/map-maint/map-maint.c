@@ -121,6 +121,7 @@ static int content_ok(const char *text, size_t len)
 {
     size_t start = 0;
     unsigned fields = 0;
+    unsigned tokens = 0;
 
     if (len <= 2)
         return refuse("Exclusion content must exceed two bytes; short content selects destructive event 9.");
@@ -132,15 +133,20 @@ static int content_ok(const char *text, size_t len)
                 return refuse("Empty comma fields can exclude every process; refusing content.");
             if (++fields >= 3)
                 return refuse("WatchDoge reads at most three fields per line; use new lines.");
+            ++tokens;
         } else {
             if (fields && i == start)
                 return refuse("Empty comma fields can exclude every process; refusing content.");
             if (i > start && i - start <= 3)
                 return refuse("A final token on a line must exceed three bytes or WatchDoge ignores it.");
+            if (i > start)
+                ++tokens;
             fields = 0;
         }
         start = i + 1;
     }
+    if (!tokens)
+        return refuse("Content has no exclusion tokens; restore empty originals on disk only, not through IPC.");
     return READY;
 }
 
@@ -279,6 +285,53 @@ static int uart_absent(int proc, const struct stat nodes[2])
     return result;
 }
 
+/* Threads can unshare descriptor tables, so inspect every task, not only leaders. */
+static int tasks_absent(int proc, const struct stat nodes[2])
+{
+    int fd = openat(proc, "task", O_RDONLY | O_DIRECTORY | O_CLOEXEC);
+    DIR *tasks;
+    struct dirent *entry;
+    int task;
+    int result = READY;
+
+    if (fd < 0) {
+        if (errno == ENOENT || errno == ESRCH)
+            return READY;
+        return refuse("Cannot inspect process tasks; MCU disable refused.");
+    }
+    tasks = fdopendir(fd);
+    if (!tasks) {
+        close(fd);
+        return refuse("Cannot inspect process tasks; MCU disable refused.");
+    }
+    for (;;) {
+        errno = 0;
+        entry = readdir(tasks);
+        if (!entry) {
+            if (errno)
+                result = refuse("Incomplete task scan; MCU disable refused.");
+            break;
+        }
+        if (!number(entry->d_name))
+            continue;
+        task = openat(fd, entry->d_name, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
+        if (task < 0) {
+            if (errno == ENOENT || errno == ESRCH)
+                continue;
+            result = refuse("Cannot inspect a process task; MCU disable refused.");
+            break;
+        }
+        result = loader_absent(task);
+        if (result == READY)
+            result = uart_absent(task, nodes);
+        close(task);
+        if (result != READY)
+            break;
+    }
+    closedir(tasks);
+    return result;
+}
+
 /* Metadata only: no UART open, ioctl or packet send belongs in this check. */
 static int owners_absent(void)
 {
@@ -311,9 +364,7 @@ static int owners_absent(void)
             result = refuse("Cannot inspect a process; MCU disable refused.");
             break;
         }
-        result = loader_absent(proc);
-        if (result == READY)
-            result = uart_absent(proc, nodes);
+        result = tasks_absent(proc, nodes);
         close(proc);
         if (result != READY)
             break;
@@ -349,7 +400,8 @@ static int disable_mcu(void)
         fprintf(stderr, "MCU disable init/ack failed (result %d). Do not start file maintenance.\n", result);
         return REFUSED;
     }
-    puts("MCU disable acknowledged. Keep the loader absent; normal chassis startup replaces this request.");
+    puts("MCU hold-off request acknowledged. The transport reply does not confirm the sentinel was stored.\n"
+         "Keep the loader absent; normal chassis startup replaces this request.");
     return READY;
 }
 
