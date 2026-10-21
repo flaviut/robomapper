@@ -9,3 +9,27 @@
   --color-primary: #c7d2fe;
   --color-primary-content: #172554;
 }
+
+[data-theme="hass"] {
+  --color-base-100: var(--card-background-color, #fff);
+  --color-base-200: var(--primary-background-color, #fafafa);
+  --color-base-300: var(--divider-color, #e0e0e0);
+  --color-base-content: var(--primary-text-color, #212121);
+  --color-primary: var(--primary-color, #03a9f4);
+  --color-primary-content: var(--text-primary-color, #fff);
+  --color-secondary: var(--accent-color, #ff9800);
+  --color-secondary-content: var(--text-primary-color, #fff);
+  --color-accent: var(--accent-color, #ff9800);
+  --color-accent-content: var(--text-primary-color, #fff);
+  --color-neutral: var(--secondary-background-color, #e5e5e5);
+  --color-neutral-content: var(--primary-text-color, #212121);
+  --color-info: var(--info-color, #039be5);
+  --color-info-content: var(--text-primary-color, #fff);
+  --color-success: var(--success-color, #43a047);
+  --color-success-content: var(--text-primary-color, #fff);
+  --color-warning: var(--warning-color, #ffa600);
+  --color-warning-content: var(--primary-text-color, #212121);
+  --color-error: var(--error-color, #db4437);
+  --color-error-content: var(--text-primary-color, #fff);
+  font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif);
+}

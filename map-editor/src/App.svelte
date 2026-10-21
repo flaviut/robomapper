@@ -135,7 +135,7 @@
   }
 </script>
 
-<div data-theme="dark" class="flex h-dvh flex-col bg-base-200">
+<div data-theme={homeAssistant ? 'hass' : 'dark'} class="flex h-dvh flex-col bg-base-200 text-base-content">
   {#snippet controls()}
     <div class="flex flex-wrap items-center gap-2">
     <form onsubmit={openMap} class="flex flex-wrap items-center gap-2">
