@@ -8,7 +8,7 @@ Edit a robot's native occupancy map and room IDs from Home Assistant. Saving bac
 
 Requires Home Assistant 2026.10 or later and root SSH key access to the robot.
 
-1. In HACS, add this GitHub repository under **Custom repositories**, category **Integration**.
+1. In HACS, add `https://github.com/flaviut/robomapper` under **Custom repositories**, category **Integration**.
 2. Download **S7 Map Editor** and restart Home Assistant.
 3. Place a dedicated, unencrypted SSH private key at `/config/map_editor/id_ed25519` inside Home Assistant. Restrict the directory to mode `700` and the key to `600`. Its public key must already be authorized for root on the robot.
 4. Verify the robot's SSH host-key fingerprint through a trusted connection. Use its `SHA256:…` fingerprint, not the client key's fingerprint. Changed host keys are rejected.
@@ -65,7 +65,5 @@ Tests use synthetic native files, a local SSH server and Home Assistant 2026.10.
 After changing the robot tools, copy `tools/map-maint/save.sh` and `tools/map-maint/bin/map-maint` into `custom_components/map_editor/tools/`. Rebuild and commit the frontend after UI changes. Tests check that the packaged robot tools match their sources.
 
 ## Publish
-
-Publish the repository to GitHub before adding it to HACS. Set `documentation` and `issue_tracker` in `custom_components/map_editor/manifest.json` to the public repository URLs once they are known. No repository URL is assumed in this checkout.
 
 Keep the compiled frontend and robot tools in the published tree; HACS installs only `custom_components/map_editor/`. Increment the manifest version for releases. Public HACS directory inclusion is separate from installing a custom repository.

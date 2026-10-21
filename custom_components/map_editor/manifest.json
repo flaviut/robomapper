@@ -4,6 +4,8 @@
   "codeowners": ["@flaviut"],
   "config_flow": true,
   "dependencies": ["http", "panel_custom", "websocket_api"],
+  "documentation": "https://github.com/flaviut/robomapper",
+  "issue_tracker": "https://github.com/flaviut/robomapper/issues",
   "integration_type": "service",
   "iot_class": "local_poll",
   "requirements": ["asyncssh==2.24.0"],
