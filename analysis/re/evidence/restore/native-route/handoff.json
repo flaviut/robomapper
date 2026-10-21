@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "lane": "native-route",
+  "base_commit": "6cd68d6",
+  "status": "bounded useful partial checkpoint; independent review required",
+  "ownership": "analysis/re/evidence/restore/native-route/** only",
+  "commits": [
+    {"commit": "be7c67e", "role": "focused native route evidence, static checker/tests and replay"}
+  ],
+  "commit_note": "This handoff is committed separately after the evidence slice; its own hash is intentionally not embedded.",
+  "identity": {
+    "input": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+    "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+    "language": "ARM:LE:32:v8",
+    "compiler": "default",
+    "image_base": "0x0",
+    "selected_existing_entries": ["0x6905c", "0x67ad0", "0x18f1d4", "0x190400"],
+    "entry_recovery": "none; 0x683e0 is read-only pseudo decoding, not a defined or proven function entry"
+  },
+  "inputs_read": [
+    "analysis/re/RESULTS.md",
+    "analysis/re/tooling/README.md and source-root retool.py/ReTool.java",
+    "analysis/re/evidence/restore/board.json",
+    "analysis/re/evidence/restore/second-wave.json",
+    "analysis/re/evidence/restore/flow/handoff.json, instructions.json, FlowDiscover.java, discover.py, replay.py, validate.py",
+    "analysis/re/evidence/components/orchestration.json",
+    "analysis/re/evidence/restore/review/flow-lifecycle.md",
+    "analysis/re/evidence/librrnavdrv.so/selected.json and selected decompiled C",
+    "No AGENTS.md was present in the worktree or checked ancestor directories."
+  ],
+  "supported_claims": [
+    {
+      "id": "native-receiver-not-controller",
+      "summary": "Native IPCClient receive-loop region at exact EHABI start0x18e91c calls RecvPacketEx(2). Original table0x2a2f4c maps full AppProxy IDs0x02033203/04/12 to native events0x54/55/b3. This is request channel(3,2), index53; no controller event3c forwarding assumption.",
+      "anchors": ["bounded.json:0x18e990..0x18ea34", "elf-evidence.json:rows", "claims.json:native-receiver-not-controller"]
+    },
+    {
+      "id": "load-return-completion-shape",
+      "summary": "Existing load task0x6905c preserves raw load return, two captured request words and flag in a completion capture. Original-ELF tableVA0x304b78 holds Thumb0x683e1. Read-only pseudo decoding at0x683e0 selects local event0x52 for selector0x55, otherwise0x70, and forwards four captured words through0x67ad0. No callback entry recovery or scheduling guarantee.",
+      "anchors": ["selected.json:0x69072..0x690c6", "elf-evidence.json:completion_pointer", "bounded.json:pseudo_thumb_linear_not_cfg", "c/0x00067ad0.c"]
+    },
+    {
+      "id": "conditional-result-serialization",
+      "summary": "Native encoder0x18f1d4 maps event0x52 -> wire0x03022302 and fallback0x70 -> wire0x01022106. Both copy four words unchanged with length16. Outgoing region0x190908 invokes this encoder and SendPacket/SendPacketEx branches. Subscriber connection from local completion dispatch remains unclosed.",
+      "anchors": ["elf-evidence.json:rows", "c/0x0018f1d4.c:LAB_0018fa06", "bounded.json:0x1909c8/0x190b1a/0x190c06", "claims.json:conditional-wire-result-encoding"]
+    }
+  ],
+  "validation": {
+    "focused": {"status": "passed", "input_hashes": 1, "generated_c_files": 4, "instruction_byte_checks": 2616, "claim_anchor_checks": 9, "original_elf_boundary_checks": 6},
+    "tests": "six passed: full static check, changed instruction rejection, odd VA rejection, unmapped VA rejection, nonzero data mapping delta, canonical JSON packaging regression",
+    "fresh_replay": "passed using scratch/replay-final: NEW retool baseline copy, sequential selected/reopened export, read-only bounded listing/pseudo decode, six focused artifacts identical",
+    "commands": [
+      {"command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/native-route/validate.py", "result": "passed"},
+      {"command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/native-route -p test_native_route.py -v", "result": "passed; six tests"},
+      {"command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/native-route/replay.py --out analysis/re/evidence/restore/native-route/scratch/replay-checkpoint", "result": "failed; reproduced Java Map.of JSON key-order-only checker issue; parsed records equal before fix"},
+      {"command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/native-route/replay.py --out analysis/re/evidence/restore/native-route/scratch/replay-final", "result": "passed after canonical packaging and regression test"},
+      {"command": "git diff --cached --check", "result": "passed before evidence commit; lane-local generated-C whitespace policy retains exporter bytes"}
+    ],
+    "diagnostics": "Exploratory pseudo-disassembler context API errors are preserved in ignored scratch/bounded2..4 logs; scratch/bounded5 revealed first-instruction ARM context, not authoritative. scratch/bounded6 and fresh replay-final are authoritative. Final script creates a fresh private context per instruction and uses the Thumb target low bit; it does not modify program instruction/function metadata.",
+    "scope": "Original ELF/hash/anchor consistency and reproducibility only; byte equality is not semantic or runtime proof."
+  },
+  "preservation": "Original firmware, captures, shared tooling/annotations/manifest and predecessor evidence unchanged. All projects, logs, inventories and full discovery outputs ignored in lane-local scratch. Baseline copied only through source-root retool.py; no device, firmware execution, internet, function creation or MCU selection.",
+  "limits": [
+    "Native event0x55 subscriber registration and task scheduling into0x6905c are not closed.",
+    "Actual invocation/timing of candidate completion0x683e0 is not closed. No function boundary/CFG recovery proof or generated callback C supplied.",
+    "Local completion0x67ad0 subscriber link to outgoing0x190908 is not closed; full end-to-end AppProxy result provenance remains partial.",
+    "Transport queue opening/registration implementation was not followed beyond the receive call and exact wire lookup. No universal malformed-length/map-flag/stale-key validation claim.",
+    "Raw result copying does not prove accepted result values, file replacement completion, disk flush, cross-file consistency, all-writer quiescence, power-loss durability or runtime restore safety.",
+    "Startup recovery deliberately not investigated in this bounded seam."
+  ],
+  "next_bounded_target": "Close the event0x55 subscriber/scheduler edge into0x6905c and event0x52 subscriber edge from core dispatcher to IPCClient0x190908. Keep fallback event0x70 distinct; only recover0x683e0 after independent original-ELF boundary/CFG/rejection proof and required approval.",
+  "review_gate": "Required independent static review before acceptance/integration; no operational restore approval."
+}
