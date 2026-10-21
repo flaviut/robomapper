@@ -25,3 +25,18 @@ For first map replacement, do not take that extra dependency. Leave the live exc
 ## Scope and provenance
 
 All addresses are virtual addresses, even instruction addresses with Thumb state recorded separately in existing evidence. WatchDoge SHA256 is `3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6`. Saved files under `/home/user/tmp/illegalplainape/analysis/rootfs` and the [writer-host findings](evidence/restore/writer-host/README.md) establish defaults, not the actual running argv, selected process list or device state. No robot access, firmware execution, configuration modification, tests, validators or new evidence infrastructure were used.
+
+## Concrete plugin exit: cooperative loops, not a public map-only stop
+
+Focused Thumb disassembly closes the generic-callback edge left by the writer-host report. SLAM `rr_load_plugin:0x6c14` returns the callback table at VA `0x5440c` (file offset `0x4440c`); navigation `rr_load_plugin:0x5f830` returns VA `0x3044f8` (file offset `0x2f44f8`). Both tables have **null slot +0x10**, so neither provides a pre-join stop callback. Their thread and post-join callbacks are:
+
+| Plugin | Thread slot +8 | Post-join slot +0x14 | Directly established behavior |
+| --- | --- | --- | --- |
+| SLAM | Thumb `0x534d` | Thumb `0x5299` | Loop at `0x537c–0x538e` dispatches messages until `rr_check_quit` is true. Post-join callback sends `0x090907d0`, calls `0x6c48`, then `ReleaseSharedRegion(1)` at `0x530a–0x530c`. |
+| Navigation | Thumb `0x63e69` | Thumb `0x61175` | Thread wrapper calls singleton `0x6110c`, then `0x63d10`. Loop at `0x63dc4–0x63dd8` dispatches until `rr_check_quit`; after exit it calls `0x162938` with argument 1. Post-join wrapper tail-calls singleton vtable slot +0x10. |
+
+These establish cooperative host cleanup, not a map-save barrier or a callable maintenance RPC. [`RRPlugin::final:0x19058`](evidence/restore/writer-host/proof/c/0x00019058.c) sets the per-plugin quit flag, wakes waiters, joins the thread, then calls the post-join slot. [`RRLoader::final:0x187fc`](evidence/restore/writer-host/proof/c/0x000187fc.c) joins the timer first, then finalizes **all** plugins, not just map plugins. Loader SIGHUP sets the loader quit flag at +0x9c; it does not select navigation/SLAM independently. No external plugin-unload or map-only shutdown interface is established by these callbacks. Calling a callback address from another process is not an alternative.
+
+The SLAM shutdown notification and shared-region release happen after thread exit, but detached persistence workers elsewhere in the host are not covered by that join. For offline file work, actual host exit remains the useful boundary. Retaining chassis would instead require an independently grounded chassis-only host/configuration; this document does not authorize modifying the embedded plugin set.
+
+Provenance: original tracked `librrslamdrv.so` SHA256 `b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a`; `librrnavdrv.so` SHA256 `603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475`. Export entries were read using a private `/tmp` copy made by source-root `retool.py copy`; callback instructions were read directly with pinned LLVM objdump in Thumb mode. The baseline did not identify these callback addresses as separate function entries; failed bounded exports were not treated as evidence. No baseline changes or new function definitions were made.
