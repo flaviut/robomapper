@@ -1,0 +1,68 @@
+# Offline map maintenance: a practical service window
+
+**Conditional yes: stopping the map hosts is a realistic route to byte-preserving backup and matching-set restore. Small occupancy-only edits are plausible experiments; arbitrary room/geometry edits are not yet a supported offline operation.** We do not need a live-map transaction protocol or complete decoding of every persistence region to copy existing bytes.
+
+This is a static feasibility finding for `4.3.5_1612`, **NOT a device-tested procedure or executable stop recipe**. No robot, firmware, configuration, prior evidence or shared analysis was changed. No tests, validators or replay suites were run. References below are local; saved rootfs and `map_codec.py` are in the source root `/home/user/tmp/illegalplainape/analysis`, not necessarily tracked here.
+
+| Operation | Practical answer | Boundary |
+| --- | --- | --- |
+| Offline backup | **Yes, conditionally.** Copy the settled on-disk set after its writers exit. | A stable copy preserves the disk state, not necessarily the newest RAM state or a historically consistent save. Prefer an idle, known-good map before stopping. |
+| Exact matching-set restore | **Yes, conditionally.** Restore a previously captured whole set, then cold-start its consumers. | Same robot/firmware assumptions; preserve file identities, companions and catalog associations. Process restart alone may retain shared memory. |
+| Occupancy-only edit | **Plausible, bounded.** Keep the coordinate frame and persistence unchanged; change a small raster area and repair its digest. | Initial experiment only, with rollback. Same dimensions do not guarantee unchanged segmentation or room meaning. |
+| Semantic room/geometry edit | **No general offline recipe yet.** | Splits, merges, origin/scale changes, room IDs/names and restrictions need a coordinated transformation or vendor regeneration/reconciliation. Service stopping does not supply that contract. |
+
+## What stopping actually buys
+
+The [writer-host evidence](evidence/restore/writer-host/README.md) establishes that the embedded `rr_loader` configuration hosts SLAM and navigation, as well as chassis and other plugins. The saved normal `ProcessList.conf` launches `rr_loader -d`, `RoboController` and `AppProxy`. Confirm those defaults against the actual argv/modules once; do not assume a separate SLAM daemon must be found.
+
+**Inference from process lifetime:** once the actual host has exited, its threads—including detached serializers—and private grid caches cannot keep writing or later overwrite replacement files. Exit also releases its mappings and descriptors. Stop the whole host, not just one plugin or one apparent foreground task. Include `RoboController`, `AppProxy`, any actual descendants/extra map users, and unsupervised command producers such as Valetudo. That is a bounded process/mapping observation, not a demand to prove universal concurrency safety.
+
+Exit does **not** make an interrupted save complete, repair stale grid/persistence/catalog/database companions, or remove named POSIX shared-memory objects. `PersistLoadMapInfo` (`librobopersist.so:0x1c620`) can load `/BufferedMapInfo` task data instead of disk; a dead process's private cache and a still-named shared object are different things. Robust mutex recovery is not fresh map initialization. See [persistence](../PERSISTENCE.md) and [buffer lifecycle evidence](evidence/restore/consistency/handoff.json).
+
+A real reboot is attractive because saved `rootfs/etc/init/rcS` mounts `/run` as tmpfs, creates `/run/shm`, and links `/dev/shm` there; `etc/fstab` also specifies tmpfs for `/run/shm`. **Inference:** a fresh boot discards these runtime buffers, unlike merely restarting services. This does not authorize deleting `/dev/shm` in a running system. Verify the actual mount layout before relying on it.
+
+## Keep WatchDoge feeding; disable application supervision separately
+
+Observed in saved `rootfs/etc/inittab`: BusyBox init respawns WatchDoge. Its dedicated `/dev/watchdog` thread feeds every eight seconds after requesting timeout 16. Suspending or killing WatchDoge is not the proposed window. Its signal handler can close the watchdog even on user-signal branches. The saved `S04wdgenv` has **empty stop/restart cases**, and the separate Upstart-style `rrwatchdoge.conf` does not establish a usable BusyBox service-stop command.
+
+WatchDoge's exclusion mechanism is useful but sharp-edged:
+
+* IPC `0x07030342` writes the exclusion file. C-string length greater than two selects event 8; length at most two selects destructive event 9. Never use an empty/short “clear” payload. Parser details also matter: the final no-comma token is accepted only when longer than three characters. Use an intentionally nonmatching longer token for a prospective reset-free clear, retaining unrelated existing exclusions as needed.
+* Event 8 disables matching records, SIGKILLs positive tracked PIDs and sets their tracked PIDs to −1. It does not wait. The reply-like `0x03070343` is not an exit or file-completion acknowledgment.
+* Disabled records are skipped by `WdogScanProcesses` (`0x17f68`). **Later concrete evidence supersedes the earlier summary that reset-free re-enable is wholly unknown:** the scan attempts `WdogAdoptPid` before its missing-key branch (`0x18240`, then key check at `0x1824a–0x1824e`). Adoption stores a positive discovered PID at `0x174d2`. A still-missing key process instead returns status 2 and can trigger supervisor teardown/escalation.
+
+**Practical restart inference:** while records remain excluded, manually starting exactly one instance with the saved command/environment, allowing it to initialize, then clearing exclusions through event 8 could let WatchDoge adopt it instead of treating it as a missing key process. This is credible, not yet device-demonstrated. `WdogFindPid` (`0x17400`) is name-based; multiple PIDs lead `WdogAdoptPid` (`0x174b8`) to a kill-all path. Do not re-enable first and hope missing key processes restart like non-key AppProxy.
+
+**Simpler cold-start candidate:** retain exclusions in the running supervisor throughout the copy/replacement window, prepare the persistent exclusion file for normal next boot **without reloading it into that supervisor**, then perform a controlled reboot. WatchDoge reads the file at startup and starts enabled records. This separates disk preparation from live re-enable and clears runtime shared memory. Leaving matching exclusions on disk and merely rebooting will keep services excluded; reboot alone is not an exclusion reset. Both restart variants need one observed no-replacement rehearsal before restoration.
+
+Sources: [lifecycle graph](evidence/restore/lifecycle/graph.json), `evidence/WatchDoge/selected.json` (`WdogMain`, `WdogReloadExclusions`, `WdogScanProcesses`, `WdogAdoptPid`), and saved `ProcessList*.conf`. The exact loaded list and environment remain a device observation.
+
+## The hardware uncertainty is narrow, but real
+
+WatchDoge's vendor normal-stop path sends `rua_keep_mcu_heartbeat(120)` before bounded process-disappearance polling; exclusion kills do not. UART implementation `libuart_api.so.4.0.2:0x11564` sends command `0xd3`; its MCU meaning/acceptance and normal heartbeat producer remain unknown. It is **not established that 120 means a 120-second safe window**.
+
+Focused binary inspection adds a useful lead: configured `librr_plugin_chassis.so` contains `open_heart_beat`, `heart_beat_period_to_mcu`, and `heart_beat_timeout_from_mcu` (file offsets `0x14718`, `0x14744`, `0x14728`) and imports UART initialization. These are configuration strings, not proof of the producer, but reinforce that killing `rr_loader` may stop MCU traffic as well as map writers. Keeping the Linux feeder alive does not answer that risk. Do not improvise an MCU-disable command. First establish whether the proposed short service-off interval causes a reset or other unsafe behavior, with no map replacement and a known recovery route.
+
+## Preserve a matching set, not just one grid
+
+Use the observed data root and actual environment. Saved `etc/init/RRENV` sets `RR_UDATA=/mnt/data` and `NAV_DYNAMIC_CONFIG_PATH=/mnt/data/rockrobo`; the saved capture includes `slam_info.cfg`, `robot.db`, catalog, grids and persistence there. This narrows earlier unresolved-root summaries, without proving the current runtime environment.
+
+For the captured map, native flags 1/2/6 correspond to runtime/primary/backup: `last_map`, `user_map0`, `user_map4`, paired with `PersistData_1/2/6.data`. Preserve **all present map slots**, `SharedMultiMapInfo`, complete persistence bytes, `slam_info.cfg`, present vmaps, and map-related pose/config companions rather than decoding/rebuilding them. Retain an untouched broader source-directory snapshot for rollback; do not blindly roll back device identity, Wi-Fi, supervision or unrelated settings from an old archive.
+
+AppProxy opens `/rockrobo/robot.db` beneath its data base (`0x20440`) and stores application backup blobs there. Include present SQLite journal/WAL/SHM companions in the stopped snapshot; do not assume a main-file-only copy is enough or delete companions from a different epoch during restore. Capture their presence/absence as well as bytes. Clean database shutdown is preferable; a forced stop may leave recoverable transaction state. Preserve staging files separately as evidence of interruption, not as authoritative final map files.
+
+A stopped set can still contain different-aged native files. Accept a known-good idle snapshot for first rollback; stopping prevents **new** races, not historical inconsistency. [Backup dependencies](evidence/restore/backup-dependencies/dependencies.json) and [consistency dependencies](evidence/restore/consistency/dependencies.json) identify the relevant roles; later database/config findings supersede the earlier unknown-path entries.
+
+For occupancy edits, source-root `map_codec.py:load_map/main` preserves the 30-byte RRSLAM v2 prefix and packs same-sized cells plus MD5 of cells. Preserve intermediate confidence values outside the selected patch; do not threshold the whole raster. This produces a format-shaped grid, not navigation approval. Include the runtime copy if it is the observed boot input—editing `user_map0` alone need not affect `LoadLastMap`, which requests flag 1. Keep genuine backup slots unedited for rollback. Room segmentation/mappings, poses and restrictions live separately; [room reconciliation](evidence/restore/room-reconcile/FINDINGS.md) shows occupancy-dependent label propagation, not guaranteed automatic preservation.
+
+## Candidate sequence — NOT device-tested
+
+1. **Prepare while idle.** Robot stationary, no cleaning/update scheduled; block new Valetudo/app/cloud/timer commands. Resolve actual hosts, children, paths and companions. Stage any edited copy off-device and retain the untouched set. Have an existing recovery route before any stop.
+2. **Stop, then observe exit.** Keep WatchDoge and its Linux feeder running. Use an understood application-supervision exclusion transition; prefer a demonstrated graceful host exit where available, but treat event-8 SIGKILL as abrupt. Loader SIGHUP only sets a quit flag (`0x18a68`); generic final callbacks/joins do not promise a completed save. Wait for the actual processes/threads to disappear and file activity to settle, not merely an IPC reply or fixed sleep. Abort replacement if a writer returns or a process remains stuck.
+3. **Copy before replacing.** Capture bytes, ownership/modes and companion presence from the now-stable set; retain pre-existing temporaries separately. For the first experiment, stop here: replace nothing and establish recovery/resumption.
+4. **Replace only in a demonstrated window.** Install the whole matching restore set, or only the deliberately bounded occupancy changes against its matching unchanged companions. Stage files on the destination filesystem and finish replacements plus storage flush before restart. Per-file replacement is not multi-file atomicity; uninterrupted power and a complete rollback set are assumptions.
+5. **Prefer controlled reboot for first replacement.** Prepare next-boot supervision without live reload, then cold-start to discard tmpfs runtime state. If a warm restart is chosen instead, establish how stale named buffers are reinitialized and demonstrate single-instance manual restart/adoption before clearing exclusions. Keep command producers gated until map load is observed; do not immediately start cleaning.
+
+**Minimal remaining observations:** actual process/module/environment and command-producer inventory; survival of one short no-replacement stop window with Linux feeder still active; successful single-instance adoption or next-boot startup with exclusions handled; and which disk map/companions a cold start actually consumes without immediate recovery overwrite. These observations are enough to choose a practical route; decoding every opaque region or proving live-load acknowledgments is not a prerequisite to byte-preserving work.
+
+If MCU behavior makes the service-off window unusable, the fallback is a **known, controlled pre-service-boot/rescue restore**, before any map consumer starts, with independently maintained watchdog liveness. The existing background `/mnt/reserve/_root.sh` launch in `etc/rc.local` is not that barrier; putting a copy there can race WatchDoge. No suitable rescue/boot gate is established here, and an `init=/bin/sh` boot is not automatically watchdog-safe. Establish that route before using it, rather than inventing new boot configuration during a restore.
