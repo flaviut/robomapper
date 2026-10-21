@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "classification": "multi-seam",
+  "accepted_predecessor": "d93894f plus fixes 6c61e62 and 2903748",
+  "policy": "Static analysis only. Preserve firmware, closed baseline, shared annotations/tooling and existing user files. One writer/private project per worktree; lane-only commits; parent integrates and reviews. No nested agents or device access.",
+  "lanes": [
+    {
+      "key": "native-route",
+      "cwd": "worktrees/native-map-route",
+      "branch": "re/native-map-route",
+      "owns": "analysis/re/evidence/restore/native-route/**",
+      "decision": "Identify native IPC channel (3,2) receiver and map request completion strength, without substituting controller channel (1,2).",
+      "inputs": ["flow/handoff.json", "evidence/components/orchestration.json"],
+      "gate": "Original-ELF-bound route/decoder evidence, selected generated C and replay; explicit unclosed edges."
+    },
+    {
+      "key": "writer-host",
+      "cwd": "worktrees/map-writer-host",
+      "branch": "re/map-writer-host",
+      "owns": "analysis/re/evidence/restore/writer-host/**",
+      "decision": "Resolve rr_loader configuration/plugin ownership and heartbeat or SIGHUP handling relevant to map writers.",
+      "inputs": ["lifecycle/handoff.json", "lifecycle/loader-lead.json"],
+      "gate": "Hash-bound host/config/handler evidence; distinguish plugin capability from active deployment and safe quiescence."
+    },
+    {
+      "key": "room-reconcile",
+      "cwd": "worktrees/map-room-reconcile",
+      "branch": "re/map-room-reconcile",
+      "owns": "analysis/re/evidence/restore/room-reconcile/**",
+      "decision": "Trace segmentation postprocessing and room-ID/name reconciliation after grid regeneration.",
+      "inputs": ["metadata/handoff.json", "metadata/evidence.json"],
+      "gate": "Instruction-backed preservation/regeneration contracts, selected C and reproducible replay; no inferred edit safety."
+    },
+    {
+      "key": "backup-dependencies",
+      "cwd": "worktrees/map-backup-dependencies",
+      "branch": "re/map-backup-dependencies",
+      "owns": "analysis/re/evidence/restore/backup-dependencies/**",
+      "decision": "Resolve actual map database opener/journal configuration and vmap/config companions for a complete backup set.",
+      "inputs": ["consistency/handoff.json", "consistency/dependencies.json"],
+      "gate": "Hash-bound file/dependency evidence, selected C and replay; distinguish necessary files from a coherent snapshot barrier."
+    }
+  ],
+  "handoff": "Each lane writes handoff.json with commits, identities, supported claims, checks, limits and next bounded targets. Parent acceptance follows execution and independent review.",
+  "state": "planned"
+}

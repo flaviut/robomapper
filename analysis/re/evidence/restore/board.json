@@ -22,7 +22,7 @@
       "gate": "Focused generated C, instruction evidence, identities and replay commands; identify completion strength and cold-start file selection.",
       "handoff": "analysis/re/evidence/restore/flow/handoff.json",
       "integrated_commits": ["dcda651", "960064a", "0079183"],
-      "state": "integrated-awaiting-review",
+      "state": "accepted-static-slice",
       "next": "Follow native (3,2) decoder/completion; do not substitute the distinct controller (1,2) route."
     },
     {
@@ -35,7 +35,7 @@
       "gate": "Evidence-backed writer inventory and lifecycle graph; separate proven userspace behavior from unverified hardware behavior.",
       "handoff": "analysis/re/evidence/restore/lifecycle/handoff.json",
       "integrated_commits": ["f8dfe6e", "c4f9a0f", "cf5b408", "d93894f"],
-      "state": "integrated-awaiting-review",
+      "state": "accepted-static-slice",
       "next": "Trace rr_loader plugin ownership, heartbeat producer and writer-specific SIGHUP handling."
     },
     {
@@ -48,7 +48,7 @@
       "gate": "Instruction-backed dependency/coordinate contracts and saved-data checks; explicit preservation versus regeneration rules.",
       "handoff": "analysis/re/evidence/restore/metadata/handoff.json",
       "integrated_commits": ["dfa87e3", "78a85a1"],
-      "state": "integrated-awaiting-review",
+      "state": "accepted-static-slice",
       "next": "Trace post-ID-processing reconciliation and actual name-mapping writer; opaque regions remain unresolved."
     },
     {
@@ -61,11 +61,12 @@
       "gate": "Evidence-backed file/dependency manifest and ordering/barrier graph, distinguishing disk visibility, snapshot consistency and durability.",
       "handoff": "analysis/re/evidence/restore/consistency/handoff.json",
       "integrated_commits": ["eb93dc5", "ec59856"],
-      "state": "integrated-awaiting-review",
+      "state": "accepted-static-slice",
       "next": "Resolve DB opener/journal and vmap/config dependencies; state-6 producers remain unresolved."
     }
   ],
   "validation": "analysis/re/evidence/restore/parent-validation.json",
   "review_run": "1bf12201-94bd-439f-9a5c-dfc1a3c904d3",
-  "next": "Receive independent reviews of d93894f, resolve findings, then assign bounded follow-ups. No operational restore acceptance."
+  "review": "review/flow-lifecycle.md and review/metadata-consistency.md: OK with notes; P2 fixes 2903748 and 6c61e62 inspected. Parent executed checks; reviewers inspected results.",
+  "next": "Follow second-wave.json for bounded follow-ups. No operational restore acceptance."
 }

@@ -26,7 +26,7 @@
   "reproduction": "Use new output names. Flow and consistency require lane-local scratch; lifecycle and metadata accept new /tmp destinations. Lane handoffs contain focused check commands. Existing closed baseline is copied, never opened directly; flow also imports tracked controller/IPC inputs privately.",
   "local_logs": "/tmp/map-restore-review-d93894f",
   "log_retention": "Temporary; the committed check results and replay scripts are the durable record.",
-  "review": "Independent semantic review pending. Reviewers lack command tools; they inspect parent-executed logs rather than claim independent execution.",
+  "review": "Both independent semantic reviews accepted with notes; see review/*.md. Reviewers inspected parent-executed results, not independent executions. P2 scratch-ignore and mode-1 anchor findings resolved in 6c61e62 and 2903748; corrected content inspected.",
   "limits": [
     "Byte agreement and replay do not prove complete program semantics or malformed-input safety.",
     "Saved configuration and captured-map observations do not establish active runtime configuration.",
