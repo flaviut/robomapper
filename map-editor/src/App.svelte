@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import { loadMap, type RobotMap } from './lib/maps'
   import MapViewer from './MapViewer.svelte'
-  import { loadSession, saveSession, saveView } from './lib/session'
+  import { loadSession, saveSession, saveView, saveDraft } from './lib/session'
   import type { View } from './lib/view'
 
   let hostname = $state('')
@@ -12,6 +12,7 @@
   let source = $state('')
   let sessionId = $state('')
   let initialView = $state<View>()
+  let initialCells = $state<Uint8Array>()
   let revision = 0
 
   onMount(() => {
@@ -22,6 +23,7 @@
       source = saved.source
       sessionId = saved.id
       initialView = saved.view
+      initialCells = saved.draft
       hostname ||= saved.source
     }).catch(() => {})
   })
@@ -29,6 +31,13 @@
   function rememberView(view: View) {
     if (!sessionId) return
     void saveView(sessionId, view).catch(() => {})
+  }
+
+  function rememberEdit(cells: Uint8Array) {
+    if (!sessionId) return
+    void saveDraft(sessionId, cells).catch(() => {
+      error = 'Could not save edits in this browser.'
+    })
   }
 
   async function openMap(event: SubmitEvent) {
@@ -46,6 +55,7 @@
       await saveSession(session).catch(() => {})
       sessionId = session.id
       initialView = undefined
+      initialCells = undefined
       map = loaded
       source = host
     } catch (cause) {
@@ -73,7 +83,9 @@
 
   <main class="flex min-h-0 flex-1 justify-center" aria-busy={loading}>
     {#if map}
-      <MapViewer {map} {source} {initialView} onview={rememberView} />
+      {#key sessionId}
+        <MapViewer {map} {source} {initialView} {initialCells} onview={rememberView} onedit={rememberEdit} />
+      {/key}
     {:else}
       <p class="self-center text-sm text-base-content/50">No map loaded</p>
     {/if}

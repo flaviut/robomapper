@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { loadSession, saveSession, saveView } from '../src/lib/session.ts'
+import { loadSession, saveSession, saveView, saveDraft } from '../src/lib/session.ts'
 
 function memoryStore() {
   const records = new Map()
@@ -43,10 +43,20 @@ test('restore the cached map and only its own viewport', async () => {
     await saveView(session.id, view)
     assert.deepEqual(await loadSession(), { ...session, view: { x: 40, y: -10, scale: 3 } })
 
+    const cells = Uint8Array.of(128, 255)
+    const saving = saveDraft(session.id, cells)
+    cells[0] = 255
+    await saving
+    const edited = await loadSession()
+    assert.deepEqual(edited.draft, Uint8Array.of(128, 255))
+    assert.deepEqual(edited.map.cells, session.map.cells)
+    assert.deepEqual(edited.view, { x: 40, y: -10, scale: 3 })
+
     const next = { ...session, id: 'second', source: 'other.local' }
     await saveSession(next)
     assert.deepEqual(await loadSession(), { ...next, view: undefined })
     await saveView(session.id, view)
+    await saveDraft(session.id, Uint8Array.of(255, 255))
     assert.deepEqual(await loadSession(), { ...next, view: undefined })
   } finally {
     if (original === undefined) delete globalThis.indexedDB

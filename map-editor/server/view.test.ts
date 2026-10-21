@@ -15,6 +15,25 @@ test('fit centers the map inside the viewport', () => {
   assert.equal(view.y, 15)
 })
 
+test('fit excludes unknown padding without changing cell coordinates', () => {
+  const cells = new Uint8Array(30).fill(128)
+  cells[1 * 6 + 2] = 255
+  cells[3 * 6 + 3] = 0
+  const view = fitView(200, 120, { width: 6, height: 5, cells })
+  assert.equal(view.scale, 36)
+  assert.equal(view.x, -8)
+  assert.equal(view.y, -30)
+  cells.fill(128)
+  assert.deepEqual(fitView(200, 120, { width: 6, height: 5, cells }), fitView(200, 120, { width: 6, height: 5 }))
+})
+
+test('unknown padding is transparent without hiding measured cells', () => {
+  const image = mapImage(map)
+  assert.equal(image[7], 0)
+  assert.equal(image[3], 255)
+  assert.equal(image[11], 255)
+})
+
 test('zoom preserves the map point beneath the cursor', () => {
   const view = { x: 20, y: -10, scale: 2 }
   const next = zoomView(view, 2, 100, 50)
@@ -27,8 +46,8 @@ test('zoom preserves the map point beneath the cursor', () => {
 test('rooms have stable colors without hiding walls or unknown cells', () => {
   const image = mapImage(map)
   assert.deepEqual([...image.subarray(0, 4)], [...roomColor(16).map(channel => Math.round(192 * 0.8 + channel * 0.2)), 255])
-  assert.deepEqual([...image.subarray(4, 8)], [108, 108, 108, 255])
-  assert.deepEqual([...image.subarray(8, 12)], [24, 24, 24, 255])
+  assert.deepEqual([...image.subarray(4, 8)], [0, 0, 0, 0])
+  assert.deepEqual([...image.subarray(8, 12)], [108, 108, 108, 255])
   assert.deepEqual([...image.subarray(16, 20)], [192, 192, 192, 255])
   assert.notDeepEqual(roomColor(16), roomColor(17))
 })
@@ -39,7 +58,7 @@ test('room tint preserves scan contrast within a room', () => {
   for (let i = 1; i < cells.length; i++) {
     for (let channel = 0; channel < 3; channel++) {
       const contrast = image[(i - 1) * 4 + channel]! - image[i * 4 + channel]!
-      assert.ok(contrast >= (cells[i]! - cells[i - 1]!) * 0.5)
+      assert.ok(contrast >= (cells[i]! - cells[i - 1]!) * 0.25)
     }
   }
 })

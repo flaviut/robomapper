@@ -6,9 +6,40 @@ export interface View {
   scale: number
 }
 
-export function fitView(width: number, height: number, map: { width: number, height: number }): View {
-  const scale = Math.max(0.01, Math.min(width / map.width, height / map.height) * 0.9)
-  return { x: (width - map.width * scale) / 2, y: (height - map.height * scale) / 2, scale }
+interface FitMap {
+  width: number
+  height: number
+  cells?: Uint8Array
+}
+
+function mapBounds(map: FitMap) {
+  const full = { x: 0, y: 0, width: map.width, height: map.height }
+  if (!map.cells) return full
+  let left = map.width
+  let top = map.height
+  let right = -1
+  let bottom = -1
+  for (let i = 0; i < map.cells.length; i++) {
+    if (map.cells[i] === 128) continue
+    const x = i % map.width
+    const y = Math.floor(i / map.width)
+    left = Math.min(left, x)
+    top = Math.min(top, y)
+    right = Math.max(right, x)
+    bottom = Math.max(bottom, y)
+  }
+  if (right < 0) return full
+  return { x: left, y: top, width: right - left + 1, height: bottom - top + 1 }
+}
+
+export function fitView(width: number, height: number, map: FitMap): View {
+  const bounds = mapBounds(map)
+  const scale = Math.max(0.01, Math.min(64, Math.min(width / bounds.width, height / bounds.height) * 0.9))
+  return {
+    x: (width - bounds.width * scale) / 2 - bounds.x * scale,
+    y: (height - bounds.height * scale) / 2 - bounds.y * scale,
+    scale,
+  }
 }
 
 export function zoomView(view: View, factor: number, x: number, y: number): View {
@@ -30,11 +61,12 @@ export function mapImage(map: RobotMap): Uint8ClampedArray<ArrayBuffer> {
   const colors = Array.from({ length: 64 }, (_, id) => roomColor(id))
   for (let i = 0; i < map.cells.length; i++) {
     const cell = map.cells[i]!
-    const shade = Math.round(192 - cell * (168 / 255))
+    if (cell === 128) continue
+    const shade = Math.round(192 - cell * (84 / 255))
     const room = map.rooms[i]!
     const tint = room && cell < 128 ? colors[room] : undefined
 
-    // Muted floors and charcoal obstacles avoid black/white glare while retaining scan detail.
+    // Mid-gray walls contrast with both room fills and the dark background.
     for (let channel = 0; channel < 3; channel++) {
       image[i * 4 + channel] = tint ? Math.round(shade * 0.8 + tint[channel]! * 0.2) : shade
     }

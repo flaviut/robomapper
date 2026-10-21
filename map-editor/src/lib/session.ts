@@ -6,6 +6,7 @@ export interface MapSession {
   source: string
   map: RobotMap
   view?: View
+  draft?: Uint8Array
 }
 
 function openStore(): Promise<IDBDatabase> {
@@ -32,13 +33,17 @@ export async function loadSession(): Promise<MapSession | null> {
     const store = transaction.objectStore('session')
     const session = store.get('map')
     const viewport = store.get('view')
+    const draft = store.get('draft')
     await complete(transaction)
     const saved = session.result as MapSession | undefined
     if (!saved) return null
 
     const position = viewport.result as { id: string, view: View } | undefined
     const view = position?.id === saved.id ? position.view : undefined
-    return { ...saved, view }
+    const edited = draft.result as { id: string, cells: Uint8Array } | undefined
+    const cells = edited?.id === saved.id && edited.cells.length === saved.map.cells.length
+      ? edited.cells : undefined
+    return { ...saved, view, ...(cells ? { draft: cells } : {}) }
   } finally {
     db.close()
   }
@@ -51,6 +56,19 @@ export async function saveSession(session: MapSession): Promise<void> {
     const store = transaction.objectStore('session')
     store.put(session, 'map')
     store.delete('view')
+    store.delete('draft')
+    await complete(transaction)
+  } finally {
+    db.close()
+  }
+}
+
+export async function saveDraft(id: string, cells: Uint8Array): Promise<void> {
+  const snapshot = cells.slice()
+  const db = await openStore()
+  try {
+    const transaction = db.transaction('session', 'readwrite')
+    transaction.objectStore('session').put({ id, cells: snapshot }, 'draft')
     await complete(transaction)
   } finally {
     db.close()
