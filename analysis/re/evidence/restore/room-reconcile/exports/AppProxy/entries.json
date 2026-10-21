@@ -1,0 +1,79 @@
+[
+  {
+    "address": "0x00018990",
+    "name": "SetRoomIdMapping",
+    "qualified_name": "librobopersist.so::SetRoomIdMapping",
+    "name_source": "DEFAULT",
+    "signature": "undefined SetRoomIdMapping(IotTypeEnum param_1, RoomIdMapping * param_2, uint param_3)",
+    "signature_source": "ANALYSIS",
+    "plate_comment": null,
+    "body": "[[00018990, 0001899b]]",
+    "thumb_mode": 0
+  },
+  {
+    "address": "0x00018e6c",
+    "name": "GetRoomIdMapping",
+    "qualified_name": "librobopersist.so::GetRoomIdMapping",
+    "name_source": "DEFAULT",
+    "signature": "undefined GetRoomIdMapping(IotTypeEnum param_1, uint * param_2)",
+    "signature_source": "ANALYSIS",
+    "plate_comment": null,
+    "body": "[[00018e6c, 00018e77]]",
+    "thumb_mode": 0
+  },
+  {
+    "address": "0x0003c148",
+    "name": "FUN_0003c148",
+    "qualified_name": "FUN_0003c148",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_0003c148()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[0003c148, 0003c191]]",
+    "thumb_mode": 1
+  },
+  {
+    "address": "0x0003c194",
+    "name": "FUN_0003c194",
+    "qualified_name": "FUN_0003c194",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_0003c194()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[0003c194, 0003c291] [0003c29c, 0003c29f]]",
+    "thumb_mode": 1
+  },
+  {
+    "address": "0x0003c2a0",
+    "name": "FUN_0003c2a0",
+    "qualified_name": "FUN_0003c2a0",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_0003c2a0()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[0003c2a0, 0003c36b] [0003c376, 0003c379]]",
+    "thumb_mode": 1
+  },
+  {
+    "address": "0x000670dc",
+    "name": "FUN_000670dc",
+    "qualified_name": "FUN_000670dc",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_000670dc()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[000670dc, 000672b1] [000672b8, 000679e7] [000679ec, 00067b9d] [00067c04, 00067c07]]",
+    "thumb_mode": 1
+  },
+  {
+    "address": "0x0006adfc",
+    "name": "FUN_0006adfc",
+    "qualified_name": "FUN_0006adfc",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_0006adfc()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[0006adfc, 0006aec3] [0006aed0, 0006aed3]]",
+    "thumb_mode": 1
+  }
+]
