@@ -73,3 +73,95 @@ This closes channel coexistence at the static API level: no second AppProxy proc
 For the captured original exclusions `rriot_tuya,rriot_rr`, adding `\nrr_loader\nRoboController\nAppProxy\n` remains below the cap (a pre-existing trailing newline also fits). Add any further command-producer exclusions only if the complete content still fits. **Do not truncate the original file or shorten tokens blindly to make it fit.** When the original plus required targets exceeds 63 bytes, the disk-before-reboot variant below avoids the IPC payload limit entirely.
 
 Provenance: native `SendPacket`/`pDoSendPacket` are already [exported in the flow evidence](evidence/restore/flow/c/libroboipc.so/0x000063ec.c). Constructor, index lookup, channel open/write/close, sequence and destructor were exported by a focused import of the tracked library into the same private baseline copy under `/tmp`; source-root tooling and shared evidence were not changed. Native data matrix is VA `0x1c5bc` (file `0xc5bc`); abbreviation table VA `0x1c48c` (file `0xc48c`) maps indices 3/7 to `Ap`/`Wd`. No internet source searches were used.
+
+## Vendor orderly stop is a whole-system path
+
+There is an orderly shutdown notification, but it is **not a keep-WatchDoge-running maintenance mode**. `WdogIpcReceiveLoop:0x1e7a8` handles ID `0x0701002f`, copies its shutdown information and queues events 5/6/7 according to the low byte. `WdogMain:0x142e4` takes those events through `0x14856`: it tears down supervision, calls `WdogHwStopFeeder`, acknowledges with `0x01070030`, then follows poweroff/reboot handling. Do not send this message to open a maintenance window. `WdogStopProcesses:0x19ae0` is the internal reverse-order host stop: SIGHUP via `0x191c4`, mode-dependent heartbeat adjustment, bounded disappearance polling and SIGKILL fallback. Exclusion event 8 does not use it.
+
+Similarly, saved `/etc/init/S04wdgenv` has empty `stop` and `restart` arms. `/etc/inittab` respawns WatchDoge. Its signal handler closes the hardware feeder before signal-specific behavior, so do not send WatchDoge SIGHUP/TERM/USR1/USR2 or suspend it. No separate externally callable orderly application-stop/restart service was found that preserves this feeder. A loader SIGHUP is an understood **host** quit request, not an undocumented supervisor signal, but sending it while the key host is still supervised creates a missing-key race. Sending event 8 first already SIGKILLs it. Do not describe that order as graceful shutdown.
+
+## Candidate operational sequence
+
+**Hardware prerequisite:** [MAP-HEARTBEAT-CONTROL.md](MAP-HEARTBEAT-CONTROL.md) owns whether the actual MCU permits a period without this `rr_loader`/chassis host, or requires an independent heartbeat producer. Nothing here establishes that absence is safe or that command `0xd3` grants a timed window. The Linux `/dev/watchdog` feeder remains WatchDoge throughout the maintenance interval. A deliberate reboot ends that interval and runs normal shutdown/startup; it is not a promise that watchdog liveness survives arbitrary boot configurations.
+
+### 1. Gate commands and identify this deployment
+
+Start stationary, idle and not updating. Disable existing schedules/remote automations for the interval and hold new cleaning, room-edit, restore and firmware-update commands. Confirm the actual normal process list, loader argv/modules and data root match the saved configuration; alternate factory/MT lists require their actual controller names and arguments instead. Keep an administrative shell/recovery route available without opening app/cloud control again.
+
+Valetudo's saved launch is an unsupervised background command in `/mnt/reserve/_root.sh`, itself launched by `rc.local`; no loop is present in the saved reserve script. At the inspected source revision, `backend/index.js` handles SIGTERM/SIGINT with shutdown, and `Valetudo.shutdown` shuts down the scheduler. For a matching deployment, `kill -TERM "$valetudo_pid"` is grounded, **after identifying that PID by executable/argv**. Wait for it to exit. Account for its automatic launch again on each reboot: retain an external command gate and stop the new instance before map work; do not assume it stays stopped across boot. A different deployed version/supervisor needs its own observed launch/stop behavior.
+
+Bound the remaining producers, rather than trying to prove every possible concurrent program absent: stop/exclude the actual `rriot_rr`/other active rriot bridge, `miio_client` and idle updater `SysUpdate`, as well as the three map hosts. This keeps vendor/cloud input and controller timers out of the interval. `rriot_rr` additionally contains `restart_appproxy_process` and `restart AppProxy` strings: treat it as a possible independent AppProxy respawner, not merely an input socket. This string evidence does not establish its exact restart conditions. Do not retain that bridge and rely solely on WatchDoge's AppProxy exclusion. Leave `rrlogd`, WatchDoge and the management network available. No blanket firewall recipe is needed or inferred; preserve the shell path while gating the actual producers.
+
+### 2. Preserve exclusions; choose a live or boot entry
+
+Save the **current** exclusion file's bytes, owner/mode and original presence/absence in a separate, private maintenance directory. Do this before native IPC, which truncates the file. Keep that saved file out of the map restore set so restoring an older map cannot silently restore old supervision settings. If the original file is an unexpected symlink/nonregular object, resolve its ownership/path first rather than applying the regular-file examples below.
+
+For a live entry, use only an existing sender matching the native contract above (none is supplied here), with the original exclusions plus required targets. Require event 8, never event 9. This abruptly kills positive tracked map-host PIDs and prevents their supervised respawn. The 63-byte cap can make this inconvenient when also retaining command-producer exclusions. Do not work around it by dropping original exclusions or racing the IPC file write with a second write.
+
+**Simpler sender-free entry: prepare maintenance exclusions on disk, then reboot into them.** This costs an extra boot but uses existing shell/file operations and WatchDoge startup, with no live IPC sender and no IPC payload cap. It is conditional on the same MCU/heartbeat prerequisite, not a bypass for it. With a regular file or original absence established, the following is a candidate shell sequence, **not executed during this investigation**. Every command must succeed before proceeding; do not reuse an existing maintenance directory or overwrite the saved original:
+
+```sh
+umask 077
+E=/mnt/data/rockrobo/exclude_process.conf
+B=/mnt/data/.map-maintenance
+mkdir -m 700 "$B"
+# If E exists, save its regular-file contents and metadata:
+cp -p "$E" "$B/exclude.original"
+```
+
+If the original file is absent, omit that `cp` and record absence instead:
+
+```sh
+: > "$B/exclude.was-absent"
+```
+
+Construct a separate maintenance file, retaining the original bytes and adding one target per line. The names below are from the saved **normal** process list; include any other active bridge/host established in step 1, not guessed names:
+
+```sh
+{
+    if [ -f "$B/exclude.original" ]; then cat "$B/exclude.original"; fi
+    printf '\nrr_loader\nRoboController\nAppProxy\nrriot_rr\nmiio_client\nSysUpdate\n'
+} > "$B/exclude.maintenance"
+cp "$B/exclude.maintenance" "$E.next"
+chmod 600 "$E.next"
+mv "$E.next" "$E"
+sync
+/sbin/reboot
+```
+
+The first inserted newline separates any unterminated original final line; each appended token is longer than three. A blank line is harmless; an empty **comma field** is not. Existing original tokens remain subject to their original parser quirks. Startup at `0x14644` reloads exclusions, refreshes PIDs at `0x1467e`, stops old tracked instances at `0x146a8`, then starts enabled records at `0x146d0` via `WdogStartEnabled:0x171e0`. Excluded records stay excluded in the subsequent scan. WatchDoge startup has its own stop/heartbeat behavior; do not assume this boot yields an independently sustained MCU feeder if the heartbeat prerequisite is unmet.
+
+### 3. Confirm the actual stopped interval before copying
+
+After event 8 or the maintenance boot, confirm WatchDoge is still running and the **actual** writer hosts, their known descendants/extra map consumers and command bridges are gone. `pidof rr_loader`, `pidof RoboController`, `pidof AppProxy`, and the bridge/updater names provide a first name-based observation, not proof of identity or descendant exit. Follow the PIDs/executable paths and children recorded before stopping; inspect their `/proc/PID/task`/`status` while present and establish their exit. The host's threads stop with it; a detached writer thread does not outlive process exit. A zombie has no executing writer threads, but its unreaped parent/remaining children must not be confused with successful whole-tree shutdown.
+
+Do not proceed while a process remains in uninterruptible sleep, a surviving child still maps the map libraries/opens the target files, or a writer returns. A reply, a successful FIFO write, tracked PID=−1 and a fixed sleep are insufficient. Do not introduce a universal-concurrency proof: the practical boundary is the observed stopped writer-host set plus gated producers, with no open or mapped target files in any identified surviving consumer. Keep WatchDoge running and avoid reloading exclusions during the window.
+
+### 4. Back up, replace, and prepare next boot
+
+Only now take the matching-set snapshot and perform the bounded restore/edit from [OFFLINE-MAP-WORKFLOW.md](OFFLINE-MAP-WORKFLOW.md). Stopping writers does not complete an interrupted save. Retain original file identities/companions, untouched rollback bytes and the independent supervision backup. Finish every intended replacement and flush storage **before** preparing normal boot. If a copy fails or a writer returns, restore the untouched matching set while still excluded, or remain in the maintenance state; do not enable consumers against a partly replaced set.
+
+Restore the current deployment's original exclusion file **on disk only**, without IPC/reload. For an originally present file:
+
+```sh
+cp -p "$B/exclude.original" "$E.next"
+mv "$E.next" "$E"
+sync
+/sbin/reboot
+```
+
+For original absence, remove only the maintenance exclusion file instead of sending empty IPC:
+
+```sh
+rm "$E"
+sync
+/sbin/reboot
+```
+
+An originally empty file follows the present-file branch. This is safe from event 9 because no IPC selector runs. The live supervisor retains its maintenance exclusion vector until reboot; startup reads the restored original file (or enables all records if absent). Keep the administrative/automation gate in place on the next boot until the intended map is loaded; account for the reserve-script Valetudo relaunch again. Reboot clears the saved `/run/shm`-backed runtime buffers, unlike warm adoption, but does not itself guarantee which map/recovery slot is chosen. File-set and recovery selection are outside this service-control document.
+
+**Recovery discipline:** until the file transaction is complete, leave maintenance exclusions on disk. A power loss then retains the application gate on the next boot, subject to the same boot/hardware prerequisite. Restore original exclusions only after rollback/replacement is complete; there is deliberately no "automatic normal-start anyway" path. Do not restore old device/Wi-Fi/supervision files from a map archive. Once normal operation is established, retain the original supervision backup with the maintenance record rather than deleting the only recovery copy mid-window.
+
+## What remains device-dependent
+
+The software findings close parser selection, native FIFO framing/coexistence, exclusion reload, adoption order, multi-instance failure and sender-free boot entry. No application-maintenance stop interface preserving the feeder was found; the proposed choices are exclusions or a maintenance boot, not a fabricated vendor service command. The irreducible inputs are the actual process/configuration/command-gate inventory, hardware liveness with this loader absent (heartbeat document), and successful cold-start selection of the intended matching map set (file/recovery lane). These are concrete deployment conditions, not a request to decode every possible writer or map region.
