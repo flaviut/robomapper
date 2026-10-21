@@ -5,6 +5,7 @@
 !/binaries/
 !/analysis/
 !/docs/
+!/map-editor/
 
 /analysis/*
 !/analysis/*.md
