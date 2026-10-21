@@ -36,13 +36,9 @@ export function parseEdit(input: EditInput): MapEdit {
   return { raster, persistence, cells, rooms, beforeRooms: Buffer.from(inspectRooms(persistence, map), 'base64') }
 }
 
-export function applyEdit(edit: MapEdit, raster = edit.raster, persistence = edit.persistence) {
-  if (!raster.equals(edit.raster)) throw new Error('The robot map changed. Reload it before saving.')
+export function applyEdit(edit: MapEdit) {
+  const { raster, persistence } = edit
   const map = inspectMap(raster)
-  const beforeRooms = Buffer.from(inspectRooms(persistence, map), 'base64')
-  if (!edit.rooms.equals(edit.beforeRooms) && !beforeRooms.equals(edit.beforeRooms)) {
-    throw new Error('The robot rooms changed. Reload the map before saving.')
-  }
   const digest = createHash('md5').update(edit.cells).digest()
   return {
     raster: Buffer.concat([raster.subarray(0, 30), edit.cells, digest]),

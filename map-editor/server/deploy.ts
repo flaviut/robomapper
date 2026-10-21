@@ -29,10 +29,9 @@ export function makePatch(edit: MapEdit, snapshot: Snapshot): Record<string, Buf
   }
   const primary = `user_map${flag - 2}`
   const persistence = `PersistData_${flag}.data`
-  const runtime = applyEdit(edit, member(snapshot, 'last_map'), member(snapshot, 'PersistData_1.data'))
-  const main = applyEdit(edit, member(snapshot, primary), member(snapshot, persistence))
-  return { last_map: runtime.raster, 'PersistData_1.data': runtime.persistence,
-    [primary]: main.raster, [persistence]: main.persistence }
+  const result = applyEdit(edit)
+  return { last_map: result.raster, 'PersistData_1.data': result.persistence,
+    [primary]: result.raster, [persistence]: result.persistence }
 }
 
 export async function saveMap(hostname: string, input: EditInput) {

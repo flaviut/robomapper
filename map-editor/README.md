@@ -29,13 +29,13 @@ Keep the robot idle during reading. Loading is read-only; a live raster is not a
 
 ## Save changes
 
-**Save** installs the edits and restarts the loaded robot after confirmation. It updates the runtime and catalog-selected primary map pairs, preserving the genuine backup and other files. Room names remain unchanged.
+**Save** installs the edits and restarts the loaded robot after confirmation. It updates the runtime and catalog-selected primary map pairs, preserving the genuine backup and other files. Room names are preserved from the loaded map.
 
 Save runs [`save.sh`](../tools/map-maint/save.sh): stop writers, back up the files off-device, install the edits, and reboot. The bundled native helper performs the vendor stop sequence. No manual setup is required. The supported firmware is `4.3.5_1612`.
 
 Keep the robot idle and avoid commands, scheduled cleaning, or updates until restart verification finishes. The editor does not query or alter Wi-Fi, schedules, or updater settings.
 
-If writing fails, the script restores the affected files before rebooting. A changed source map or room grid aborts the save rather than overwriting newer data. Stages, robot output, SSH exit codes, and failures are logged to server stdout; the robot also retains `save.log` beside its backup.
+If writing fails, the script restores the affected files before rebooting. Save overwrites the robot's map even if it changed since loading. Stages, robot output, SSH exit codes, and failures are logged to server stdout; the robot also retains `save.log` beside its backup.
 
 Backups and receipts stay under `$XDG_STATE_HOME/map-editor/backups/`, or `~/.local/state/map-editor/backups/`. Keep them until you have inspected the restarted robot. Saving never starts cleaning. Uninterrupted power remains required; software rollback does not repair power loss during replacement.
 
