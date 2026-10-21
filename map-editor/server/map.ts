@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
-import { readMap, maxMapBytes } from './ssh.ts'
+import { readMap, readRooms, maxMapBytes } from './ssh.ts'
+import { inspectRooms } from './rooms.ts'
 
 export function inspectMap(data: Buffer) {
   if (data.length < 46 || data.length > maxMapBytes) {
@@ -32,5 +33,7 @@ export function inspectMap(data: Buffer) {
 }
 
 export async function loadMap(hostname: string) {
-  return inspectMap(await readMap(hostname))
+  const [raster, persistence] = await Promise.all([readMap(hostname), readRooms(hostname)])
+  const map = inspectMap(raster)
+  return { ...map, rooms: inspectRooms(persistence, map) }
 }

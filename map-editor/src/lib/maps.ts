@@ -6,6 +6,7 @@ export interface RobotMap {
   scale: number
   checksum: string
   cells: Uint8Array
+  rooms: Uint8Array
 }
 
 export async function loadMap(hostname: string): Promise<RobotMap> {
@@ -14,8 +15,16 @@ export async function loadMap(hostname: string): Promise<RobotMap> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ hostname }),
   })
-  const result = await response.json()
+  const result = await response.json() as Omit<RobotMap, 'cells' | 'rooms'> & {
+    cells: string
+    rooms: string
+    error?: string
+  }
   if (!response.ok) throw new Error(result.error ?? 'Map loading failed.')
 
-  return { ...result, cells: Uint8Array.from(atob(result.cells), cell => cell.charCodeAt(0)) }
+  return { ...result, cells: decodeCells(result.cells), rooms: decodeCells(result.rooms) }
+}
+
+function decodeCells(value: string): Uint8Array {
+  return Uint8Array.from(atob(value), cell => cell.charCodeAt(0))
 }

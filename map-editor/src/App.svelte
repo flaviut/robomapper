@@ -1,41 +1,51 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { loadMap, type RobotMap } from './lib/maps'
+  import MapViewer from './MapViewer.svelte'
+  import { loadSession, saveSession, saveView } from './lib/session'
+  import type { View } from './lib/view'
 
   let hostname = $state('')
   let loading = $state(false)
   let error = $state('')
   let map = $state<RobotMap | null>(null)
   let source = $state('')
-  let canvas = $state<HTMLCanvasElement>()
+  let sessionId = $state('')
+  let initialView = $state<View>()
+  let revision = 0
 
   onMount(() => {
     try { hostname = localStorage.getItem('robot-hostname') ?? '' } catch { /* Storage may be disabled. */ }
+    void loadSession().then(saved => {
+      if (!saved || revision) return
+      map = saved.map
+      source = saved.source
+      sessionId = saved.id
+      initialView = saved.view
+      hostname ||= saved.source
+    }).catch(() => {})
   })
 
-  $effect(() => {
-    if (!map || !canvas) return
-
-    const context = canvas.getContext('2d')
-    if (!context) return
-
-    const image = context.createImageData(map.width, map.height)
-    for (let i = 0; i < map.cells.length; i++) {
-      image.data.set([map.cells[i]!, map.cells[i]!, map.cells[i]!, 255], i * 4)
-    }
-    context.putImageData(image, 0, 0)
-  })
+  function rememberView(view: View) {
+    if (!sessionId) return
+    void saveView(sessionId, view).catch(() => {})
+  }
 
   async function openMap(event: SubmitEvent) {
     event.preventDefault()
     if (loading) return
 
     const host = hostname.trim()
+    revision++
     loading = true
     error = ''
     try {
       try { localStorage.setItem('robot-hostname', host) } catch { /* Loading works without storage. */ }
       const loaded = await loadMap(host)
+      const session = { id: crypto.randomUUID(), source: host, map: loaded }
+      await saveSession(session).catch(() => {})
+      sessionId = session.id
+      initialView = undefined
       map = loaded
       source = host
     } catch (cause) {
@@ -46,7 +56,7 @@
   }
 </script>
 
-<div class="flex min-h-dvh flex-col bg-base-200">
+<div class="flex h-dvh flex-col bg-base-200">
   <header class="flex flex-wrap items-center gap-4 border-b border-base-300 bg-base-100 px-4 py-3">
     <h1 class="mr-auto text-lg font-semibold">S7 Map Editor</h1>
     <form onsubmit={openMap} class="flex flex-wrap items-center gap-2">
@@ -61,13 +71,11 @@
 
   {#if error}<p class="alert alert-error m-4" role="alert">{error}</p>{/if}
 
-  <main class="flex min-h-80 flex-1 items-center justify-center p-4" aria-busy={loading}>
+  <main class="flex min-h-0 flex-1 justify-center" aria-busy={loading}>
     {#if map}
-      <canvas bind:this={canvas} width={map.width} height={map.height}
-        class="h-auto max-w-full [image-rendering:pixelated]"
-        aria-label="Map from {source}"></canvas>
+      <MapViewer {map} {source} {initialView} onview={rememberView} />
     {:else}
-      <p class="text-sm text-base-content/50">No map loaded</p>
+      <p class="self-center text-sm text-base-content/50">No map loaded</p>
     {/if}
   </main>
 </div>

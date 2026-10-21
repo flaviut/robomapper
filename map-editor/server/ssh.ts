@@ -4,6 +4,14 @@ export const maxMapBytes = 16 * 1024 * 1024
 export const mapPath = '/mnt/data/rockrobo/last_map'
 
 export function readMap(hostname: string): Promise<Buffer> {
+  return readFile(hostname, mapPath)
+}
+
+export function readRooms(hostname: string): Promise<Buffer> {
+  return readFile(hostname, '/mnt/data/rockrobo/PersistData_1.data')
+}
+
+function readFile(hostname: string, path: string): Promise<Buffer> {
   if (!/^[a-zA-Z0-9][a-zA-Z0-9.-]{0,252}$/.test(hostname)) {
     throw new Error('Enter a hostname or IPv4 address, without a user, port, or URL.')
   }
@@ -14,7 +22,7 @@ export function readMap(hostname: string): Promise<Buffer> {
       '-T', '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=yes',
       '-o', 'ConnectTimeout=10', '-o', 'ConnectionAttempts=1',
       '-o', 'ClearAllForwardings=yes', '-o', 'PermitLocalCommand=no',
-      `root@${hostname}`, `head -c ${maxMapBytes + 1} ${mapPath}`,
+      `root@${hostname}`, `head -c ${maxMapBytes + 1} ${path}`,
     ], { encoding: 'buffer', timeout: 20_000, maxBuffer: maxMapBytes }, (error, stdout) => {
       if (error) {
         reject(new Error('SSH read failed. Check the hostname, root SSH key access, and known_hosts.'))
