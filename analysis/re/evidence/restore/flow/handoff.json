@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "lane": "flow",
+  "status": "bounded-first-slice-partial; ready for independent static review",
+  "base_commit": "4c804b41c7bdee290e1675c0ab2c095e6e0f0e4d",
+  "commits": [
+    {
+      "commit": "96078195944138451e7484e66043fa4f657b18c0",
+      "role": "focused evidence and replay"
+    },
+    {
+      "ref": "HEAD",
+      "role": "handoff and lane-local generated-C whitespace policy; resolve using git log"
+    }
+  ],
+  "ownership": "analysis/re/evidence/restore/flow/** only",
+  "method": "Static ELF import, decompilation and original-byte checks only. No firmware execution, device access, internet, baseline mutation, shared annotations or function creation.",
+  "programs": {
+    "AppProxy": {
+      "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+      "selected_entries": [
+        "0x00039aa4",
+        "0x00039b08",
+        "0x0003c6bc",
+        "0x00037b78"
+      ],
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x10000"
+    },
+    "RoboController": {
+      "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+      "selected_entries": [
+        "0x00030958",
+        "0x00026288",
+        "0x00023768",
+        "0x000367ac",
+        "0x0002cae8",
+        "0x00028678",
+        "0x000271a0",
+        "0x00027448"
+      ],
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x10000"
+    },
+    "libroboipc.so": {
+      "sha256": "a7a693c8edd37aa9367f680d2f742ef81f4b8007c97a7720fc02f35ded57a832",
+      "selected_entries": [
+        "0x000063ec",
+        "0x0000637c"
+      ],
+      "language": "ARM:LE:32:v8",
+      "compiler": "default",
+      "image_base": "0x0"
+    }
+  },
+  "provenance": {
+    "tracked_manifest": "binaries/4.3.5_1612/manifest.json",
+    "import_helper": "discover.py; exact tracked input/hash required; independent new lane-local projects, explicit ARM:LE:32:v8/default and minimum PT_LOAD image base, default headless analysis, max-cpu 2; no automatic external-library import requested",
+    "baseline": "AppProxy exported only from a private copy made using /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py copy; original baseline never opened directly",
+    "variants": [
+      {
+        "program": "RoboController",
+        "sha256": "bf1d43313dd8beaa0c802f9ae4c666138b3bb518f69b4909a746285f3f3947cf",
+        "interpreted": true
+      },
+      {
+        "program": "RoboControllerM",
+        "sha256": "f55b491f05e365dad6eb472a40e913b0d0a0c45a01969d413292423265720da7",
+        "interpreted": false
+      },
+      {
+        "program": "RoboControllerR",
+        "sha256": "61466c3700c3f02d571d64ac97068117f7e321b35e73f4a8a5695ed5e39cebc8",
+        "interpreted": false
+      }
+    ],
+    "applicability": "Controller conclusions apply only to the plain exact hash. Saved non-private firmware config lines ProcessList.conf:4, ProcessListFR.conf:4 and ProcessListMT.conf:4 name plain, R and M respectively. These read-only auxiliary observations do not prove which configuration was active or establish variant equivalence.",
+    "auxiliary_inputs_committed": false
+  },
+  "supported_conclusions": [
+    {
+      "id": "distinct-channel-selection",
+      "status": "instruction-backed",
+      "anchors": [
+        "libroboipc.so:0x637c at 0x6388/0x6390/0x6398",
+        "libroboipc.so:0x63ec at 0x63fe/0x6404/0x6408",
+        "AppProxy:0x39aa4",
+        "AppProxy:0x39b08",
+        "AppProxy:0x3c6bc",
+        "RoboController:0x26288 at 0x263b4..0x263cc"
+      ],
+      "conclusion": "Channel table index is ((id >> 16) & 255)*17 + (id >> 24). AppProxy map IDs 0x02033204/0x02033203/0x02033212 select (3,2), index 53. Controller internal save event 0x3c is encoded as 0x0201001b and selects (1,2), index 19. Do not equate them or invent a controller forwarding edge."
+    },
+    {
+      "id": "controller-save-correlation",
+      "status": "instruction-backed for this controller hash",
+      "anchors": [
+        "RoboController:0x30958 at 0x30970/0x30986/0x309b0/0x309d0..0x30a06",
+        "RoboController:0x23768 at 0x23980..0x2398a/0x23b86..0x23b94/0x2404c..0x24072",
+        "RoboController:0x367ac at 0x36f78/0x37376..0x37418/0x384c8..0x384fe",
+        "RoboController:0x2cae8"
+      ],
+      "conclusion": "Save request stores both key words at object+0x3a0/+0x3a4, emits event 0x3c through destination 2, then appends a 24-byte pending record under +0x36c mutex. Native command 0x2105 with exactly 16 payload bytes becomes event 0x836, retaining all four payload words. The selected result branch rejects zero key and checks +0x3b8 then +0x3d0 before +0x3a0. Both words must match. It removes pending by key before testing result==1, then clears the slot in the observed success/error branches."
+    },
+    {
+      "id": "stale-result-limits",
+      "status": "inference bounded by selected branches",
+      "anchors": [
+        "RoboController:0x367ac at 0x37376..0x373ae/0x373f6..0x37414",
+        "RoboController:0x2cae8",
+        "existing AppProxy 0x245f8 and 0x24450 exports"
+      ],
+      "conclusion": "A different nonzero key cannot take the selected controller slot branch. A reused key can pass these local checks; no epoch or map-flag equality check was seen in this branch, and earlier matching slots have priority. This does not prove practical collision, thread safety or the full stale-message policy. AppProxy series handling separately keys on the two request words; its legacy fallbacks are not a universal stale-result rejection barrier."
+    },
+    {
+      "id": "completion-strength",
+      "status": "bounded static conclusion",
+      "anchors": [
+        "AppProxy:0x37b78",
+        "libroboipc.so:0x637c",
+        "existing librrnavdrv.so:0x67484/0x6732c",
+        "existing librobopersist.so:0x1bb20/0x1d10c"
+      ],
+      "conclusion": "AppProxy send returns after SendPacket/logging without exposing a checked transport-success result. IPC writes 0x4c bytes to the selected channel; this is not native operation completion. Controller result handling retires request state, not a disk flush. Existing native persistence API success is snapshot acceptance, not all-file replacement or durable completion."
+    }
+  ],
+  "validation": {
+    "static": {
+      "status": "passed",
+      "binary_hashes": 3,
+      "functions": 14,
+      "instruction_byte_checks": 2383,
+      "claim_anchor_checks": 14,
+      "scope": "Static byte/ELF/C consistency and exact claim anchors, not runtime behavior."
+    },
+    "commands": [
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/flow/validate.py",
+        "result": "passed"
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/flow -p test_flow_evidence.py -v",
+        "result": "passed; four tests including corrupted bytes, odd VA, unmapped VA rejection"
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/flow/replay.py --out analysis/re/evidence/restore/flow/scratch/replay-checked",
+        "result": "passed; fresh baseline copy, fresh RC and IPC imports, separate reopen, 14 C files and instruction bundle byte-identical"
+      },
+      {
+        "command": "git diff 4c804b4 --check",
+        "result": "passed with lane-local generated-C whitespace policy; verbatim exporter whitespace retained"
+      }
+    ],
+    "future_replay": "Use the same replay command with a NEW scratch output name.",
+    "replay_inventory_policy": "Full inventories, private projects and console logs remain only in ignored scratch; 14 focused functions and 2383 instruction records are the tracked evidence.",
+    "limitations": "These tests verify static artifacts and claim anchors, not firmware behavior or a restore procedure."
+  },
+  "unresolved_dependencies": [
+    "AppProxy (3,2) request decoder, exact result registration/sender and scheduling path into librrnavdrv tasks are not closed by this slice. RC (1,2) path is not substituted for them.",
+    "librrnavdrv.so:0x683e0 remains unrecovered; raw inspection suggests a local event dispatch, but no function creation or C claimed. Review its exact bytes, pointer at 0x304b78, CFG and neighboring bodies before recovery; it is not an exact EHABI start in readelf output.",
+    "Startup true-entry candidate librrnavdrv.so:0x20babc remains unrecovered; 0x20bac0 is interior. No startup file-selection/recovery guarantee.",
+    "AppProxy error callback 0x4afa8 remains unrecovered; existing 0x245f8 callback invocation is not callback-body evidence.",
+    "Controller active variant/configuration and variant equivalence remain unproven; no R/M C interpreted.",
+    "Transport receive queues, handler lifetime, request-key generation/reuse, all result producer paths, restart cleanup and cross-process concurrency remain unproven.",
+    "Asynchronous snapshot acceptance, per-file replacement and durable cross-file completion remain distinct; no fsync/power-loss barrier or safe shutdown/restart established."
+  ],
+  "next_bounded_targets": [
+    "Read-only discovery on existing private nav baseline: locate handlers of literal IDs 0x02033204/03/12 and result send registration; follow the (3,2) route rather than assuming a controller relay.",
+    "Bound and recover only librrnavdrv.so:0x683e0 with explicit original bytes, data-reference/CFG boundary proof and preservation checks, then trace its local event 0x52/0x70 subscribers before assigning a wire result meaning.",
+    "Recover AppProxy:0x4afa8 independently, retain ABI unknowns, then audit timeout/late-result behavior against request-key reuse.",
+    "After result path closure, bound startup 0x20babc and verify cold-start selection without extrapolating from ordinary load success."
+  ],
+  "review_gate": "Required independent review before parent acceptance/integration; no runtime approval.",
+  "external_report": "/home/user/.local/state/pi/agent/sessions/--home-user-tmp-illegalplainape--/subagent-artifacts/outputs/73859b02-03aa-462b-8d1e-4c79ecacec94/restore/flow.md",
+  "context_programs": {
+    "librrnavdrv.so": {
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+      "evidence": "existing analysis/re/evidence/librrnavdrv.so/selected.json; no new function promoted"
+    },
+    "librobopersist.so": {
+      "sha256": "8a1b4fb47407a3e95c96e240e1326e4dbad46f1729d0ad534aa659ac106b542c",
+      "evidence": "existing analysis/re/evidence/components/persistence.json; no lane changes"
+    }
+  }
+}
