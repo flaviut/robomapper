@@ -82,7 +82,7 @@ The restore namespace below is deliberately smaller than `/mnt/data/rockrobo`. *
 
 For this archive that is **17 regular files and one empty directory**: the six native files, `SharedMultiMapInfo`, `slam_info.cfg`, `robot.db`, `appproxy.map`, the four pose/dock/navigation companions, `RoboController.cfg`, `robot.setting`, `lab.cfg`, and `map/`. Tar records these regular files as numeric uid/gid **0:0**, mode **0644**; `map/` is 0755. Future backups should preserve their actual metadata, not impose the captured metadata on a different owner layout. The three configuration files are indivisible shared files: restoring them also rolls back their non-map settings (for example fan/water/dock preferences). This narrow collateral rollback is explicit; there is no attempt to splice selected keys.
 
-**Do not restore:** `exclude_process.conf` (owned by supervision), `apptimer.cfg`/`servertimer.cfg` (scheduling), `robot_status.db` and its sidecars (separate status DB; no captured map-blob table), `rrlog/`, `devtest/`, update/version/sound files, timezone/localtime/country configuration, `lds_info.txt`, `/mnt/data/valetudo_config.json`, `/mnt/data/miio`, `/mnt/data/wlan`, `/mnt/default` identity/calibration, `/mnt/reserve` boot hooks, firmware, or any `/run`/`/dev/shm` object. Keep a broader original archive privately if needed, but do not deploy it wholesale. No secrets need to be printed or entered for this file procedure.
+**Do not restore:** `exclude_process.conf` (owned by supervision), `apptimer.cfg`/`servertimer.cfg` (scheduling), `robot_status.db` and its sidecars (separate status DB, not the `bakmaps` database), `rrlog/`, `devtest/`, update/version/sound files, timezone/localtime/country configuration, `lds_info.txt`, `/mnt/data/valetudo_config.json`, `/mnt/data/miio`, `/mnt/data/wlan`, `/mnt/default` identity/calibration, `/mnt/reserve` boot hooks, firmware, or any `/run`/`/dev/shm` object. Keep a broader original archive privately if needed, but do not deploy it wholesale. No secrets need to be printed or entered for this file procedure.
 
 **Quarantine, do not promote:** `slam_info.cfg.cache`, other managed-name `.cache` work products and `<managed-final>.tmp*`. The capture contains none. A forced stop may leave them with newer bytes; that is not permission to rename one into the final namespace. They should be retained separately for diagnosis and removed from active paths before restoring. Likewise, keep an old live database's sidecars only with that old database in quarantine—never next to the replacement main file.
 
@@ -128,10 +128,23 @@ while IFS= read -r name; do
     fi
 done < "$WORK/namespace"
 tar -cpf "$WORK/files.tar" "$@" || exit 1
+
+# Retain interrupted work separately; never use it as a final-file restore set.
+set --
+while IFS= read -r name; do
+    for path in "$name".cache "$name".tmp*; do
+        if [ -e "$path" ] || [ -L "$path" ]; then
+            set -- "$@" "$path"
+        fi
+    done
+done < "$WORK/namespace"
+if [ "$#" -gt 0 ]; then
+    tar -cpf "$WORK/interrupted-work.tar" "$@" || exit 1
+fi
 sync
 ```
 
-This finite set is for the observed flat root. If current configuration points persistence or AppProxy elsewhere, **stop here and adapt the destination mapping** rather than copying the wrong directory. Do not source an untrusted old environment file into a live shell. The archived `map/` directory is the only recursive member. Preserve any pre-existing managed `.cache`/`.tmp*` files in a separate private interruption archive, not `files.tar`. Keep existing absence/presence lists with the immutable snapshot; do not reconstruct them from the target at restore time. The source `map-and-config.tar` is broader than this manifest: extract only the table's present members to prepare a restore set, never run an unrestricted root extraction of it.
+This finite set is for the observed flat root. If current configuration points persistence or AppProxy elsewhere, **stop here and adapt the destination mapping** rather than copying the wrong directory. Do not source an untrusted old environment file into a live shell. The archived `map/` directory is the only recursive member. The second loop preserves any pre-existing managed `.cache`/`.tmp*` files in a separate private interruption archive, not `files.tar`. Keep existing absence/presence lists with the immutable snapshot; do not reconstruct them from the target at restore time. The source `map-and-config.tar` is broader than this manifest: extract only the table's present members to prepare a restore set, never run an unrestricted root extraction of it.
 
 ### 2. Stage an untouched matching set, then remove the whole current epoch
 
@@ -147,7 +160,8 @@ For example, after trusted snapshot files have been placed under a newly selecte
 ROOT=/mnt/data/rockrobo
 RESTORE=/mnt/data/map-restore-CHOOSE-NEW-ID
 # RESTORE/files.tar, namespace and present already came from the chosen snapshot.
-mkdir -m 700 "$RESTORE/stage" "$RESTORE/quarantine" || exit 1
+mkdir -m 700 "$RESTORE/stage" "$RESTORE/quarantine" \
+    "$RESTORE/interrupted-work" || exit 1
 tar -xpf "$RESTORE/files.tar" -C "$RESTORE/stage" || exit 1
 
 # Hosts must still be stopped; no SQLite handle may be opened on either set.
@@ -156,16 +170,23 @@ while IFS= read -r name; do
         mv "$ROOT/$name" "$RESTORE/quarantine/$name" || exit 1
     fi
 done < "$RESTORE/namespace"
-# Separately quarantine any managed .cache/.tmp* files before installation.
+# Quarantine only work-product suffixes of managed names, never an unrelated glob.
+while IFS= read -r name; do
+    for path in "$ROOT/$name".cache "$ROOT/$name".tmp*; do
+        if [ -e "$path" ] || [ -L "$path" ]; then
+            mv "$path" "$RESTORE/interrupted-work/" || exit 1
+        fi
+    done
+done < "$RESTORE/namespace"
 while IFS= read -r name; do
     mv "$RESTORE/stage/$name" "$ROOT/$name" || exit 1
 done < "$RESTORE/present"
 sync
 ```
 
-The placeholder comment about work products is intentional operator work, **not an instruction to ignore them**: first enumerate only the managed names with suffix `.cache` or `.tmp*`, then move each to a private interruption subdirectory. A blanket `rm *.tmp*` could destroy unrelated state. Do not combine main DB from one acquisition with journal/WAL/SHM from another, copy only the main file from a WAL snapshot, or delete a chosen snapshot's hot rollback journal to avoid recovery. If sidecars exist in a future stopped acquisition, preserve them as one opaque set; normal SQLite opening may recover/checkpoint that same epoch. The captured archive needs no sidecar installation because it has none.
+The work-product loop expands only the managed final names with suffix `.cache` or `.tmp*`; its existence check ignores unmatched literal glob patterns. It moves these bytes into a private interruption subdirectory. A blanket `rm *.tmp*` could destroy unrelated state. Do not combine main DB from one acquisition with journal/WAL/SHM from another, copy only the main file from a WAL snapshot, or delete a chosen snapshot's hot rollback journal to avoid recovery. If sidecars exist in a future stopped acquisition, preserve them as one opaque set; normal SQLite opening may recover/checkpoint that same epoch. The captured archive needs no sidecar installation because it has none.
 
-These per-file renames are **not** multi-file atomic. Keep the hosts stopped after a partial failure. If power fails halfway through, the persistent service/boot gate must prevent consumers from starting against a mixed set; otherwise this candidate cannot promise recovery. The whole quarantine set is the rollback, not individual files cherry-picked from it. `sync` is a practical flush before startup, not a guarantee against failing flash or loss of power during the replacement window.
+These per-file renames are **not** multi-file atomic. Keep the hosts stopped after a partial failure. If power fails halfway through, normal startup can see a mixed set unless an independently available persistent service/boot gate prevents it. No such gate is established by this file lane; uninterrupted power through complete installation is therefore an assumption, not a proved interruption-recovery guarantee. The whole quarantine set is the rollback, not individual files cherry-picked from it. `sync` is a practical flush before startup, not a guarantee against failing flash or loss of power during the replacement window.
 
 ### 3. Cold-start using normal supervision, not a restore/recover RPC
 
@@ -179,7 +200,7 @@ This file lane does **not** need opaque-region decoding or a new replay project 
 
 1. Actual `RR_UDATA`, `NAV_DYNAMIC_CONFIG_PATH`, firmware identity, normal process/module argv and `/dev/shm` mount layout still match the saved configuration; any extra **map-specific final file** added since capture must be identified before the finite namespace is used.
 2. The selected snapshot is from an idle known-good state of this same robot/firmware, with actual member metadata and sidecar presence retained. The saved six-file MD5 observations do not retrospectively certify the entire live-acquired tar; a newly stopped backup is preferable as the first rollback anchor.
-3. A stopped/respawn-blocked interval and reboot route that are hardware-safe, and a persistent boot gate/recovery route for interruption during replacement. This lane does not prescribe MCU commands or claim that an arbitrary `reboot` makes a partial set safe.
+3. A stopped/respawn-blocked interval and controlled reboot route that are hardware-safe. This lane does not prescribe MCU commands or claim that an arbitrary `reboot` makes a partial set safe. If interruption-safe recovery is required beyond the uninterrupted-power candidate, the additional missing input is an independently available pre-consumer boot gate/rescue route; this document does not invent one.
 
 Current runtime journal **policy** need not be determined or changed for this opaque stopped-copy route: sidecar presence and matching main-file epoch are sufficient acquisition inputs. The captured header/sidecar observations are concrete, while actual shutdown completeness, flash health, physical relocation and device behavior after restart remain device facts, not conclusions from static disassembly.
 
