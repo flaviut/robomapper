@@ -7,6 +7,11 @@
 !/docs/
 !/tools/
 !/map-editor/
+!/custom_components/
+!/tests/
+!/hacs.json
+!/README.md
+!/.github/
 
 /tools/*
 !/tools/map-maint/
