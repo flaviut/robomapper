@@ -1,0 +1,36 @@
+{
+  "status": "ok",
+  "scope": "two private captured pairs; no firmware execution",
+  "checks": [
+    {
+      "flag": 2,
+      "application_id": 0,
+      "image_cells_matched": 175890,
+      "mapping_count": 9,
+      "all_nonzero_ids_have_default_mappings": true,
+      "ids_in_conditional_reuse_range_16_to_31": true,
+      "segmentation_tail_nonzero_bytes": 0,
+      "upper_cell_bits_present": [
+        0,
+        64
+      ],
+      "native_digest_valid": true,
+      "application_origin_shift_matches": true
+    },
+    {
+      "flag": 6,
+      "application_id": 4,
+      "image_cells_matched": 175890,
+      "mapping_count": 9,
+      "all_nonzero_ids_have_default_mappings": true,
+      "ids_in_conditional_reuse_range_16_to_31": true,
+      "segmentation_tail_nonzero_bytes": 0,
+      "upper_cell_bits_present": [
+        0,
+        64
+      ],
+      "native_digest_valid": true,
+      "application_origin_shift_matches": true
+    }
+  ]
+}
