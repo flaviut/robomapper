@@ -1,0 +1,74 @@
+{
+  "input": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+  "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+  "table_base": "0x2a2f4c",
+  "rows": [
+    {
+      "table_row": "0x2a31ec",
+      "event": "0x52",
+      "wire_id": "0x3022302",
+      "original_bytes": "5200000002230203"
+    },
+    {
+      "table_row": "0x2a31fc",
+      "event": "0x54",
+      "wire_id": "0x2033203",
+      "original_bytes": "5400000003320302"
+    },
+    {
+      "table_row": "0x2a3204",
+      "event": "0x55",
+      "wire_id": "0x2033204",
+      "original_bytes": "5500000004320302"
+    },
+    {
+      "table_row": "0x2a32c4",
+      "event": "0x70",
+      "wire_id": "0x1022106",
+      "original_bytes": "7000000006210201"
+    },
+    {
+      "table_row": "0x2a347c",
+      "event": "0xb3",
+      "wire_id": "0x2033212",
+      "original_bytes": "b300000012320302"
+    }
+  ],
+  "ehabi_boundaries": [
+    {
+      "entry": "0x6905c",
+      "next_ehabi_start": "0x69284"
+    },
+    {
+      "entry": "0x67ad0",
+      "next_ehabi_start": "0x67ccc"
+    },
+    {
+      "entry": "0x18f1d4",
+      "next_ehabi_start": "0x190098"
+    },
+    {
+      "entry": "0x190400",
+      "next_ehabi_start": "0x190908"
+    },
+    {
+      "entry": "0x18e91c",
+      "next_ehabi_start": "0x18edb4"
+    },
+    {
+      "entry": "0x190908",
+      "next_ehabi_start": "0x190dec"
+    }
+  ],
+  "completion_pointer": {
+    "va": "0x304b78",
+    "file_offset": "0x2f4b78",
+    "thumb_value": "0x683e1",
+    "entry_status": "0x683e0 is not an EHABI start; no function created"
+  },
+  "request_channel": {
+    "source": 3,
+    "destination": 2,
+    "index": 53
+  }
+}

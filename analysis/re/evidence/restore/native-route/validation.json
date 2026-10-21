@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "binary_hashes": 1,
+  "generated_c_files": 4,
+  "instruction_byte_checks": 2616,
+  "claim_anchor_checks": 9,
+  "elf_boundary_checks": 6,
+  "scope": "Static original-byte/hash/anchor consistency; no runtime safety or semantic proof."
+}

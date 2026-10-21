@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "status": "bounded partial static checkpoint; independent review required",
+  "identity": "librrnavdrv.so SHA256 603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+  "claims": [
+    {
+      "id": "native-receiver-not-controller",
+      "strength": "instruction-backed receive-loop decoding, conditional on receipt",
+      "anchors": ["bounded.json:0x18e990..0x18e99c", "bounded.json:0x18ea06..0x18ea34", "elf-evidence.json:rows/table_base", "predecessor flow/instructions.json:libroboipc.so:0x6388/0x6390/0x6398"],
+      "statement": "The native IPCClient receive-loop region at exact original EHABI start 0x18e91c calls surviving RecvPacketEx with r0=2 and a 0x4c-byte packet. Its wire-ID lookup uses 174 eight-byte rows at VA 0x2a2f4c, comparing the wire word at row+4 and reading the native event at row+0. AppProxy 0x02033203 -> event0x54, 0x02033204 -> event0x55, and 0x02033212 -> event0xb3. Their predecessor-proven request-channel index is 53, (3,2), not controller index19 (1,2). No controller forwarding edge is asserted. This identifies the native consumer/decoder, not the lower-level queue-open registration implementation."
+    },
+    {
+      "id": "payload-forwarding-boundary",
+      "strength": "instruction-backed local forwarding only",
+      "anchors": ["bounded.json:0x18ea2e..0x18ea38", "bounded.json:0x18eae0..0x18eb0a", "predecessor flow/c/AppProxy/0x00039aa4.c"],
+      "statement": "After wire-to-event lookup, nonzero packet length at packet+8 selects payload pointer packet+0xc; zero length selects null. The receive loop invokes registered callbacks with the mapped event and payload pointer. These instructions do not enforce a 16-byte load payload or validate native map flags. AppProxy's two request words, native flag and zero are established by predecessor sender evidence, not by a newly inferred native layout. Subscriber binding and scheduling from event0x55 into the selected load task remain unclosed."
+    },
+    {
+      "id": "load-return-to-local-completion",
+      "strength": "instruction-backed construction and read-only Thumb decode; callback invocation timing unclosed",
+      "anchors": ["selected.json:0x69072..0x690c6", "elf-evidence.json:completion_pointer", "bounded.json:pseudo_thumb_linear_not_cfg:0x683e0..0x6841e", "c/0x00067ad0.c"],
+      "statement": "Existing load task0x6905c calls0x68428 with captured flag and r2=1, preserves r0 and builds a 0x30-byte capture: callback table pointer at+0x10, original selector at+0x18, core at+0x1c, two captured words at+0x20/+0x24, flag at+0x28 and raw return word at+0x2c. Original ELF table VA0x304b78 (file offset0x2f4b78, not VA) holds Thumb0x683e1. Read-only pseudo decoding at even0x683e0 uses callback-subobject+8 as selector, compares it to0x55, chooses event0x52 if equal and0x70 otherwise, then invokes0x67ad0(*(core+0x23c),&event,subobject+0x10). That payload is the four captured words at allocation+0x20..+0x2c. Existing0x67ad0 walks a subscriber list and passes event/payload to indirect callbacks. No function was created at0x683e0, no generated callback C is supplied, and the actual invocation/scheduling edge into this callback remains unproven."
+    },
+    {
+      "id": "conditional-wire-result-encoding",
+      "strength": "instruction-backed serializer and send branches; subscriber connection unclosed",
+      "anchors": ["c/0x0018f1d4.c:LAB_0018fa06", "selected.json:0x18f202..0x18f230/0x18fa06..0x18fa1c", "elf-evidence.json:rows event0x52/event0x70", "bounded.json:0x1909c4..0x1909c8/0x190b0e..0x190b22/0x190c02..0x190c0a"],
+      "statement": "The native-to-wire encoder0x18f1d4 uses the same table in the opposite direction: event0x52 -> wire0x03022302 and event0x70 -> wire0x01022106. Both events take a four-word copy branch, setting payload length16 and copying input+0,+4,+8,+12 to packet+0xc..+0x18 unchanged. Outgoing dispatcher region0x190908 calls this encoder, then uses SendPacket without an extra destination capture or0x190400/SendPacketEx when that capture exists. The event0x52 connection from0x67ad0's subscriber list to this outgoing dispatcher is not proven. Therefore the captured load return can be described as a conditional result payload, not a completed end-to-end AppProxy reply or disk barrier."
+    }
+  ],
+  "limits": [
+    "No device access, firmware execution, internet searches, baseline mutation, annotation/signature/name/ABI changes, or guessed function creation.",
+    "0x683e0 is not an exact EHABI start. The explicit Thumb linear decode is a bounded observation, not a recovered function boundary/CFG proof. Branch to stack-check-fail and return are shown, but no recovery request was authorized or applied.",
+    "No subscriber/scheduler closure from native event0x55 to0x6905c, nor from local result dispatch0x67ad0 to the wire sender. No all-path result producer or malformed-input safety claim.",
+    "Raw load return is copied, not converted or independently validated here. Existing persistence snapshot acceptance is not all-file replacement, fsync, cross-file atomicity or power-loss durability.",
+    "Replay and original-byte equality establish artifact consistency only, not semantic or runtime safety. Startup recovery was deliberately not investigated."
+  ],
+  "next_bounded_target": "Trace native event0x55 subscriber registration through NavCore task scheduling to0x6905c, and event0x52 subscriber registration from core+0x23c to IPCClient outgoing0x190908. Preserve distinct fallback event0x70. Recover0x683e0 only after independent boundary/CFG/rejection proof and required supervisor approval."
+}
