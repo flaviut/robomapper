@@ -1,0 +1,129 @@
+{
+  "status": "passed",
+  "commands": [
+    {
+      "argv": [
+        "/etc/profiles/per-user/user/bin/python3",
+        "/home/user/tmp/illegalplainape/analysis/re/tooling/retool.py",
+        "copy",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "/etc/profiles/per-user/user/bin/python3",
+        "/home/user/tmp/illegalplainape/analysis/re/recovery/recover.py",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "/home/user/tmp/illegalplainape/analysis/re/recovery/requests/WatchDoge.json",
+        "--out",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/recover-feeder"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "pinned",
+        "-process",
+        "WatchDoge",
+        "-noanalysis",
+        "-max-cpu",
+        "2",
+        "-scriptPath",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/scripts",
+        "-postScript",
+        "RecoverLifecycle.java",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/request.json",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/recover-signal-mask.json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "/etc/profiles/per-user/user/bin/python3",
+        "/home/user/tmp/illegalplainape/analysis/re/tooling/retool.py",
+        "run",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "WatchDoge",
+        "--annotations",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/annotations.json",
+        "--functions",
+        "0x1abd8",
+        "0x1af18",
+        "0x1ac08",
+        "--out",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/annotated"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "/etc/profiles/per-user/user/bin/python3",
+        "/home/user/tmp/illegalplainape/analysis/re/tooling/retool.py",
+        "run",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "WatchDoge",
+        "--functions",
+        "0x1abd8",
+        "0x1af18",
+        "0x1ac08",
+        "--out",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/reopened"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/project",
+        "pinned",
+        "-process",
+        "WatchDoge",
+        "-noanalysis",
+        "-max-cpu",
+        "2",
+        "-scriptPath",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/scripts",
+        "-postScript",
+        "RecoverLifecycle.java",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/request.json",
+        "/home/user/tmp/illegalplainape/worktrees/map-writer-lifecycle/analysis/re/evidence/restore/lifecycle/.scratch/replay-one/rejection.json"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "recovery": {
+    "entry": "0x0001abd8",
+    "body": "[[0001abd8, 0001ac07]]",
+    "name": "FUN_0001abd8",
+    "signature": "undefined FUN_0001abd8()",
+    "plate_comment": null,
+    "instruction_count": 19,
+    "memory_sha256": "d7905c57cb07fcba9361d008374abb9ed58c70b36dc258bc96b6e5217f84bd9c",
+    "original_sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+    "existing_functions_sha256": "efe1332a3f86df553e2f3d3378f4f99d2e14b96f6d6d4192d1b99f94c2253cbb",
+    "no_existing_function_change": true,
+    "byte_identity": true,
+    "status": "ok",
+    "committed": true,
+    "semantic_before": "04e89afb15b0db5c2d5a57f7b9625eccc09169a7194a875e41e6f6a02ed70dd3",
+    "semantic_after": "c023425d144ae4dfb7ea43fac860d3387b502f879fb25a50bd89b51dd9bb2681",
+    "rejection_no_semantic_mutation": false
+  },
+  "rejection": {
+    "status": "rejected",
+    "error": "java.lang.Exception: CODE_OR_DATA_CONFLICT 0001abd8",
+    "committed": false,
+    "semantic_before": "37296705e20141e29eced1a0e02195b191abe6885937bb6fdba6352ff1f75008",
+    "semantic_after": "37296705e20141e29eced1a0e02195b191abe6885937bb6fdba6352ff1f75008",
+    "rejection_no_semantic_mutation": true
+  },
+  "reopen_byte_identical": true,
+  "c_sha256": {
+    "0x1abd8": "8805f9469d0b193738a75f0ff6e8d725dbf86e2202ccd5269365681a812f4a0a",
+    "0x1af18": "5820f1b808187d0b9f01c6e487c1c646aa75bcdc442d51fe30ede9d8e9dc274d",
+    "0x1ac08": "965981d9c7e9aae3f501e35e854f1eb0e71fe1833648f50e55a810c8388e4c2e"
+  }
+}

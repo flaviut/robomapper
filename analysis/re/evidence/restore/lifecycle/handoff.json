@@ -1,0 +1,31 @@
+{
+  "status": "first-slice-checked-static-only",
+  "commits": [],
+  "selected_entries": [
+    {
+      "program": "WatchDoge",
+      "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+      "entries": [
+        "0x1abd8",
+        "0x1af18",
+        "0x1ac08"
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/lifecycle/replay.py --out analysis/re/evidence/restore/lifecycle/.scratch/replay-one",
+      "result": "passed: seven commands, byte identity and existing functions preserved, saved reopen identical, conflict rejection rolled back"
+    }
+  ],
+  "supported_conclusions": [
+    "0x1abd8 body recovered from exact bytes/EHABI/CFG, contains sigfillset then pthread_sigmask(0,&local,NULL), not direct MCU/watchdog setup."
+  ],
+  "unresolved_dependencies": [
+    "All-writer inventory and conditional lifecycle graph in progress; no runtime safety claim.",
+    "No watchdog driver/MCU acceptance/normal heartbeat producer proof."
+  ],
+  "next_bounded_targets": [
+    "Finalize configuration-provenance graph and stop/restart barrier inventory; no firmware/device execution."
+  ]
+}

@@ -1,0 +1,406 @@
+[
+  {
+    "address": "0x0001abd8",
+    "name": "FUN_0001abd8",
+    "qualified_name": "FUN_0001abd8",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_0001abd8()",
+    "signature_source": "DEFAULT",
+    "plate_comment": "Lane-local bounded recovery. Exact EHABI entry 0x1abd8 at 0x23090; next EHABI start 0x1ac20 is only an outer ceiling. Reachable Thumb body ends 0x1ac07: normal return 0x1ac02 or __stack_chk_fail PLT call 0x1ac04. Existing launcher at 0x1ac08 is not absorbed. Calls sigfillset(\u0026local), then pthread_sigmask(0,\u0026local,NULL); both returns ignored. No direct watchdog ioctl, UART call or writer synchronization. Interpretation as blocking mask is ABI inference; effective runtime signal state not measured. Preserve recovered ABI/signature.",
+    "body": "[[0001abd8, 0001ac07]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      43992
+    ],
+    "callers": [
+      "0x0001af18"
+    ],
+    "instructions": [
+      {
+        "address": "0x0001abd8",
+        "instruction": "push {r4,lr}",
+        "bytes": "10b5",
+        "flows": []
+      },
+      {
+        "address": "0x0001abda",
+        "instruction": "movw r4,#0x4410",
+        "bytes": "44f21044",
+        "flows": []
+      },
+      {
+        "address": "0x0001abde",
+        "instruction": "movt r4,#0x3",
+        "bytes": "c0f20304",
+        "flows": []
+      },
+      {
+        "address": "0x0001abe2",
+        "instruction": "sub sp,#0x88",
+        "bytes": "a2b0",
+        "flows": []
+      },
+      {
+        "address": "0x0001abe4",
+        "instruction": "add r0,sp,#0x4",
+        "bytes": "01a8",
+        "flows": []
+      },
+      {
+        "address": "0x0001abe6",
+        "instruction": "ldr r3,[r4,#0x0]",
+        "bytes": "2368",
+        "flows": []
+      },
+      {
+        "address": "0x0001abe8",
+        "instruction": "str r3,[sp,#0x84]",
+        "bytes": "2193",
+        "flows": []
+      },
+      {
+        "address": "0x0001abea",
+        "instruction": "blx 0x00013850",
+        "bytes": "f8f732ee",
+        "flows": [
+          "0x00013850"
+        ]
+      },
+      {
+        "address": "0x0001abee",
+        "instruction": "movs r2,#0x0",
+        "bytes": "0022",
+        "flows": []
+      },
+      {
+        "address": "0x0001abf0",
+        "instruction": "add r1,sp,#0x4",
+        "bytes": "01a9",
+        "flows": []
+      },
+      {
+        "address": "0x0001abf2",
+        "instruction": "mov r0,r2",
+        "bytes": "1046",
+        "flows": []
+      },
+      {
+        "address": "0x0001abf4",
+        "instruction": "blx 0x00013ab8",
+        "bytes": "f8f760ef",
+        "flows": [
+          "0x00013ab8"
+        ]
+      },
+      {
+        "address": "0x0001abf8",
+        "instruction": "ldr r2,[sp,#0x84]",
+        "bytes": "219a",
+        "flows": []
+      },
+      {
+        "address": "0x0001abfa",
+        "instruction": "ldr r3,[r4,#0x0]",
+        "bytes": "2368",
+        "flows": []
+      },
+      {
+        "address": "0x0001abfc",
+        "instruction": "cmp r2,r3",
+        "bytes": "9a42",
+        "flows": []
+      },
+      {
+        "address": "0x0001abfe",
+        "instruction": "bne 0x0001ac04",
+        "bytes": "01d1",
+        "flows": [
+          "0x0001ac04"
+        ]
+      },
+      {
+        "address": "0x0001ac00",
+        "instruction": "add sp,#0x88",
+        "bytes": "22b0",
+        "flows": []
+      },
+      {
+        "address": "0x0001ac02",
+        "instruction": "pop {r4,pc}",
+        "bytes": "10bd",
+        "flows": []
+      },
+      {
+        "address": "0x0001ac04",
+        "instruction": "blx 0x0001376c",
+        "bytes": "f8f7b2ed",
+        "flows": [
+          "0x0001376c"
+        ]
+      }
+    ],
+    "c_file": "0x0001abd8.c"
+  },
+  {
+    "address": "0x0001af18",
+    "name": "FUN_0001af18",
+    "qualified_name": "FUN_0001af18",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_0001af18()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[0001af18, 0001af69]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      44824
+    ],
+    "callers": [],
+    "instructions": [
+      {
+        "address": "0x0001af18",
+        "instruction": "push {r3,r4,r5,lr}",
+        "bytes": "38b5",
+        "flows": []
+      },
+      {
+        "address": "0x0001af1a",
+        "instruction": "bl 0x0001e738",
+        "bytes": "03f00dfc",
+        "flows": [
+          "0x0001e738"
+        ]
+      },
+      {
+        "address": "0x0001af1e",
+        "instruction": "movw r5,#0x45e4",
+        "bytes": "44f2e455",
+        "flows": []
+      },
+      {
+        "address": "0x0001af22",
+        "instruction": "movt r5,#0x3",
+        "bytes": "c0f20305",
+        "flows": []
+      },
+      {
+        "address": "0x0001af26",
+        "instruction": "mov r2,r0",
+        "bytes": "0246",
+        "flows": []
+      },
+      {
+        "address": "0x0001af28",
+        "instruction": "mov r3,r1",
+        "bytes": "0b46",
+        "flows": []
+      },
+      {
+        "address": "0x0001af2a",
+        "instruction": "movs r0,#0x1",
+        "bytes": "0120",
+        "flows": []
+      },
+      {
+        "address": "0x0001af2c",
+        "instruction": "movw r1,#0xa7c",
+        "bytes": "40f67c21",
+        "flows": []
+      },
+      {
+        "address": "0x0001af30",
+        "instruction": "movt r1,#0x2",
+        "bytes": "c0f20201",
+        "flows": []
+      },
+      {
+        "address": "0x0001af34",
+        "instruction": "blx 0x00013d14",
+        "bytes": "f8f7eeee",
+        "flows": [
+          "0x00013d14"
+        ]
+      },
+      {
+        "address": "0x0001af38",
+        "instruction": "movw r3,#0x43c8",
+        "bytes": "44f2c833",
+        "flows": []
+      },
+      {
+        "address": "0x0001af3c",
+        "instruction": "movt r3,#0x3",
+        "bytes": "c0f20303",
+        "flows": []
+      },
+      {
+        "address": "0x0001af40",
+        "instruction": "ldr r0,[r3,#0x0]",
+        "bytes": "1868",
+        "flows": []
+      },
+      {
+        "address": "0x0001af42",
+        "instruction": "blx 0x00013bbc",
+        "bytes": "f8f73cee",
+        "flows": [
+          "0x00013bbc"
+        ]
+      },
+      {
+        "address": "0x0001af46",
+        "instruction": "bl 0x0001abd8",
+        "bytes": "fff747fe",
+        "flows": [
+          "0x0001abd8"
+        ]
+      },
+      {
+        "address": "0x0001af4a",
+        "instruction": "bl 0x0001ad68",
+        "bytes": "fff70dff",
+        "flows": [
+          "0x0001ad68"
+        ]
+      },
+      {
+        "address": "0x0001af4e",
+        "instruction": "movs r3,#0x1",
+        "bytes": "0123",
+        "flows": []
+      },
+      {
+        "address": "0x0001af50",
+        "instruction": "str r3,[r5,#0x8]",
+        "bytes": "ab60",
+        "flows": []
+      },
+      {
+        "address": "0x0001af52",
+        "instruction": "bl 0x0001aec8",
+        "bytes": "fff7b9ff",
+        "flows": [
+          "0x0001aec8"
+        ]
+      },
+      {
+        "address": "0x0001af56",
+        "instruction": "movs r0,#0x8",
+        "bytes": "0820",
+        "flows": []
+      },
+      {
+        "address": "0x0001af58",
+        "instruction": "blx 0x00013654",
+        "bytes": "f8f77ceb",
+        "flows": [
+          "0x00013654"
+        ]
+      },
+      {
+        "address": "0x0001af5c",
+        "instruction": "ldr r4,[r5,#0x8]",
+        "bytes": "ac68",
+        "flows": []
+      },
+      {
+        "address": "0x0001af5e",
+        "instruction": "cmp r4,#0x0",
+        "bytes": "002c",
+        "flows": []
+      },
+      {
+        "address": "0x0001af60",
+        "instruction": "bne 0x0001af52",
+        "bytes": "f7d1",
+        "flows": [
+          "0x0001af52"
+        ]
+      },
+      {
+        "address": "0x0001af62",
+        "instruction": "bl 0x0001ac20",
+        "bytes": "fff75dfe",
+        "flows": [
+          "0x0001ac20"
+        ]
+      },
+      {
+        "address": "0x0001af66",
+        "instruction": "mov r0,r4",
+        "bytes": "2046",
+        "flows": []
+      },
+      {
+        "address": "0x0001af68",
+        "instruction": "pop {r3,r4,r5,pc}",
+        "bytes": "38bd",
+        "flows": []
+      }
+    ],
+    "c_file": "0x0001af18.c"
+  },
+  {
+    "address": "0x0001ac08",
+    "name": "FUN_0001ac08",
+    "qualified_name": "FUN_0001ac08",
+    "name_source": "DEFAULT",
+    "signature": "undefined FUN_0001ac08()",
+    "signature_source": "DEFAULT",
+    "plate_comment": null,
+    "body": "[[0001ac08, 0001ac1f]]",
+    "thumb_mode": 1,
+    "entry_file_offsets": [
+      44040
+    ],
+    "callers": [
+      "0x000142e4"
+    ],
+    "instructions": [
+      {
+        "address": "0x0001ac08",
+        "instruction": "movs r3,#0x0",
+        "bytes": "0023",
+        "flows": []
+      },
+      {
+        "address": "0x0001ac0a",
+        "instruction": "movw r2,#0xaf19",
+        "bytes": "4af61972",
+        "flows": []
+      },
+      {
+        "address": "0x0001ac0e",
+        "instruction": "movw r0,#0x45e4",
+        "bytes": "44f2e450",
+        "flows": []
+      },
+      {
+        "address": "0x0001ac12",
+        "instruction": "mov r1,r3",
+        "bytes": "1946",
+        "flows": []
+      },
+      {
+        "address": "0x0001ac14",
+        "instruction": "movt r2,#0x1",
+        "bytes": "c0f20102",
+        "flows": []
+      },
+      {
+        "address": "0x0001ac18",
+        "instruction": "movt r0,#0x3",
+        "bytes": "c0f20300",
+        "flows": []
+      },
+      {
+        "address": "0x0001ac1c",
+        "instruction": "b.w 0x00013d38",
+        "bytes": "f9f78cb8",
+        "flows": [
+          "0x00013d38"
+        ]
+      }
+    ],
+    "c_file": "0x0001ac08.c"
+  }
+]

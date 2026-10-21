@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "sha256": "3f9f2f14202434336803f975dddd6221d51ea3a14b5c5b169f50d2dc850311b6",
+  "functions": [
+    {
+      "address": "0x1abd8",
+      "plate_comment": "Lane-local bounded recovery. Exact EHABI entry 0x1abd8 at 0x23090; next EHABI start 0x1ac20 is only an outer ceiling. Reachable Thumb body ends 0x1ac07: normal return 0x1ac02 or __stack_chk_fail PLT call 0x1ac04. Existing launcher at 0x1ac08 is not absorbed. Calls sigfillset(&local), then pthread_sigmask(0,&local,NULL); both returns ignored. No direct watchdog ioctl, UART call or writer synchronization. Interpretation as blocking mask is ABI inference; effective runtime signal state not measured. Preserve recovered ABI/signature.",
+      "expect": {
+        "plate_comment": null
+      }
+    }
+  ],
+  "types": []
+}
