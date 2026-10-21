@@ -211,7 +211,31 @@ static int number(const char *s)
     return 1;
 }
 
-static int loader_absent(int proc)
+/* Best-effort state from the matched task; disappearance never cancels refusal. */
+static int loader_refused(int proc, const char *pid, const char *tid, const char *reason)
+{
+    char text[512];
+    char state = '?';
+    char *end;
+    int fd = openat(proc, "stat", O_RDONLY | O_CLOEXEC);
+    ssize_t n;
+
+    if (fd >= 0) {
+        n = read(fd, text, sizeof(text) - 1);
+        close(fd);
+        if (n > 0) {
+            text[n] = '\0';
+            end = strrchr(text, ')');
+            if (end && strlen(end) >= 4 && end[1] == ' ' && end[3] == ' ')
+                state = end[2];
+        }
+    }
+    fprintf(stderr, "Loader still exists; MCU disable refused. PID=%s TID=%s state=%c reason=%s\n",
+            pid, tid, state, reason);
+    return REFUSED;
+}
+
+static int loader_absent(int proc, const char *pid, const char *tid)
 {
     char text[512];
     ssize_t n = readlinkat(proc, "exe", text, sizeof(text) - 1);
@@ -222,7 +246,7 @@ static int loader_absent(int proc)
     if (n >= 0) {
         text[n] = '\0';
         if (!strcmp(base(text), "rr_loader") || !strcmp(base(text), "rr_loader (deleted)"))
-            return refuse("Loader still exists; MCU disable refused.");
+            return loader_refused(proc, pid, tid, "exe basename matches rr_loader");
     } else if (errno != ENOENT && errno != ESRCH) {
         return refuse("Cannot inspect a process executable; MCU disable refused.");
     }
@@ -238,7 +262,7 @@ static int loader_absent(int proc)
         return refuse("Cannot read a process name; MCU disable refused.");
     text[n] = '\0';
     if (!strcmp(text, "rr_loader\n"))
-        return refuse("Loader still exists; MCU disable refused.");
+        return loader_refused(proc, pid, tid, "comm matches rr_loader");
     return READY;
 }
 
@@ -286,7 +310,7 @@ static int uart_absent(int proc, const struct stat nodes[2])
 }
 
 /* Threads can unshare descriptor tables, so inspect every task, not only leaders. */
-static int tasks_absent(int proc, const struct stat nodes[2])
+static int tasks_absent(int proc, const struct stat nodes[2], const char *pid)
 {
     int fd = openat(proc, "task", O_RDONLY | O_DIRECTORY | O_CLOEXEC);
     DIR *tasks;
@@ -321,7 +345,7 @@ static int tasks_absent(int proc, const struct stat nodes[2])
             result = refuse("Cannot inspect a process task; MCU disable refused.");
             break;
         }
-        result = loader_absent(task);
+        result = loader_absent(task, pid, entry->d_name);
         if (result == READY)
             result = uart_absent(task, nodes);
         close(task);
@@ -364,7 +388,7 @@ static int owners_absent(void)
             result = refuse("Cannot inspect a process; MCU disable refused.");
             break;
         }
-        result = tasks_absent(proc, nodes);
+        result = tasks_absent(proc, nodes, entry->d_name);
         close(proc);
         if (result != READY)
             break;
