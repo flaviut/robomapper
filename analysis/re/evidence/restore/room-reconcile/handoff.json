@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "lane": "room-reconcile",
+  "status": "bounded-static-checkpoint-review-required",
+  "base_commit": "6cd68d68070400ddd8a327f1c3e09538df01fd63",
+  "commits": [
+    "11c1b2191235e744a01f158c1192433816842b0c"
+  ],
+  "handoff_commit": "Resolve with git log -1 --format=%H -- analysis/re/evidence/restore/room-reconcile/handoff.json; no self-hash embedded.",
+  "scope": "Only analysis/re/evidence/restore/room-reconcile/**; post-ID helpers and actual room-name mapping writers. Prior setter ranges not re-investigated.",
+  "method": "Static local analysis, no firmware/device execution, internet, imports, entry creation, annotations or shared changes. retool.py copied closed baseline to new ignored scratch before opening private projects.",
+  "inputs": [
+    {
+      "program": "librrnavdrv.so",
+      "tracked_input": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+      "loader": {
+        "language": "ARM:LE:32:v8",
+        "compiler": "default",
+        "image_base": "0x00000000"
+      },
+      "selected_entries": [
+        "0x0012c860",
+        "0x0012ca58",
+        "0x0012cb14",
+        "0x0012dda4",
+        "0x0012e12c",
+        "0x0012e714",
+        "0x0012e95c",
+        "0x00132c30"
+      ]
+    },
+    {
+      "program": "AppProxy",
+      "tracked_input": "binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/AppProxy",
+      "sha256": "24b52f58fb96303225b9b9e2d2d8ff0b85792afe9f76d8255fb813381308c457",
+      "loader": {
+        "language": "ARM:LE:32:v8",
+        "compiler": "default",
+        "image_base": "0x00010000"
+      },
+      "selected_entries": [
+        "0x00018990",
+        "0x00018e6c",
+        "0x0003c148",
+        "0x0003c194",
+        "0x0003c2a0",
+        "0x000670dc",
+        "0x0006adfc"
+      ]
+    }
+  ],
+  "entry_validation": "All 15 entries already in baseline inventory; bounded entries.json retains exact metadata, selected.json retains callers/instructions/loader-derived file offsets. Validator checks ELF executable mappings and every instruction. No guessed entries or boundary recovery required.",
+  "supported_claims": [
+    {
+      "id": "R01",
+      "claim": "Post-ID helpers called in order at 0x133090/0x13309c/0x1330a6 perform coordinate/predicate-dependent neighborhood processing. Selected writes propagate nonzero low-six-bit IDs with 0x40; do not establish promotion or global ID stability. Radius/bounds/seed influence output even at fixed dimensions.",
+      "anchors": [
+        "evidence.json:ordered-postprocessing",
+        "evidence.json:coordinate-dependent-fill",
+        "evidence.json:second-neighbor-fill",
+        "evidence.json:third-stage-fill",
+        "exports/librrnavdrv.so/0x0012cb14.c"
+      ]
+    },
+    {
+      "id": "R02",
+      "claim": "AppProxy 0x3c194 filters out listed IDs while retaining other old names and IDs; 0x3c2a0 copies ordered 24-byte name fields and substitutes sequential response IDs, then calls SetRoomIdMapping. 0x670dc calls the latter only on its matching pending name-operation result and nonzero status. Not proof of automatic reconciliation on arbitrary edited grid load.",
+      "anchors": [
+        "evidence.json:preserve-filter-names",
+        "evidence.json:replace-id-preserve-name",
+        "evidence.json:name-transaction-match",
+        "evidence.json:matching-name-result",
+        "exports/AppProxy/0x000670dc.c"
+      ]
+    },
+    {
+      "id": "R03",
+      "claim": "Inference: fixed dimensions/checksum do not guarantee overlap, seed connectivity, final ID or ordered name/ID correspondence. Preserve coherent metadata/unknown bytes; no semantic edit or restore safety certification.",
+      "anchors": [
+        "FINDINGS.md:Edit contract and limits",
+        "predecessor metadata/handoff.json:M03"
+      ]
+    }
+  ],
+  "validation_commands": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/room-reconcile/validate.py",
+      "result": "passed",
+      "summary": "2 binary SHA256s; 15 existing entries, 3707 instruction records, 531 claim anchors and 2 float literals against original ELF; C/selected/entry hashes."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/room-reconcile -p test_validate.py -v",
+      "result": "passed",
+      "summary": "5 host provenance tests; reject non-ELF, non-executable/cross-boundary mappings, altered C and selected entry."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/room-reconcile/replay.py --out analysis/re/evidence/restore/room-reconcile/scratch/replay-final",
+      "result": "passed",
+      "summary": "Fresh private baseline copy; sequential exports of both programs; all 15 C and complete selected metadata identical. Logs/private invocation argv remain ignored."
+    },
+    {
+      "command": "git diff --cached --check before evidence commit",
+      "result": "passed",
+      "summary": "Lane-local generated-C whitespace policy; generated bytes unmodified."
+    }
+  ],
+  "checker_changes": "New lane-local checker/tests only; no encountered checker bug or shared fix.",
+  "limits": [
+    "No proof of final 1..15-to-16..31 promotion; complete postprocessor closure not traced.",
+    "No proven dataflow from navigation regeneration response to AppProxy returned IDs/pending ordered names; no automatic regeneration after RRSLAM edit/load.",
+    "Virtual coordinate predicates/XY conversion implementation, 0x12d884 fallback and callbacks reached through 0x12c860 remain unexpanded.",
+    "Opaque regions 6/13/14 not directly classified; no claim they are independent.",
+    "24-byte checked C-string copies and fixed allocations are not malformed-input/name ABI safety proof.",
+    "Replay and original-byte equality do not prove semantic/runtime safety, snapshot consistency, quiescence, cache freshness or durability."
+  ],
+  "next_bounded_target": "Trace producer of the successful AppProxy 0x670dc name-result ID array and population/order of pending vector +0x3dcc, then prove or reject correspondence to regenerated labels; separately resolve one concrete virtual coordinate predicate reached by 0x12e714.",
+  "privacy": "No saved captures, room names, coordinates or decoded map payloads committed. Full inventories/projects/logs ignored.",
+  "review_gate": "Independent reviewer required; static artifact acceptance only."
+}
