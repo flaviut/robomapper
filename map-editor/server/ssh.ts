@@ -1,7 +1,11 @@
-import { execFile } from 'node:child_process'
+import { execFile, spawn } from 'node:child_process'
+import { createHash } from 'node:crypto'
+import { createInterface } from 'node:readline'
+import { maxArchiveBytes } from './archive.ts'
 
 export const maxMapBytes = 16 * 1024 * 1024
 export const mapPath = '/mnt/data/rockrobo/last_map'
+type Limits = { bytes: number, timeout: number, report?: (line: string) => void }
 
 export function readMap(hostname: string): Promise<Buffer> {
   return readFile(hostname, mapPath)
@@ -21,53 +25,99 @@ export function checkHost(hostname: string) {
   }
 }
 
-export function runRemote(hostname: string, command: string, input: Buffer = Buffer.alloc(0),
-  limits = { bytes: maxMapBytes, timeout: 20_000 }): Promise<Buffer> {
-  return runSsh(hostname, [`root@${hostname}`, command], input, limits)
-}
-
-export async function readHttp(hostname: string, port: number, path: string, authorization: string): Promise<unknown> {
-  const request = Buffer.from(`GET ${path} HTTP/1.1\r\nHost: localhost\r\n${authorization ? `Authorization: ${authorization}\r\n` : ''}Connection: close\r\n\r\n`)
-  const response = await runSsh(hostname, ['-W', `127.0.0.1:${port}`, `root@${hostname}`], request,
-    { bytes: 1024 * 1024, timeout: 15_000 })
-  const end = response.indexOf('\r\n\r\n')
-  const headers = response.subarray(0, end).toString('ascii')
-  if (end < 0 || !/^HTTP\/1\.[01] 200 /.test(headers)) throw new Error('Could not read the robot state.')
-  let body = response.subarray(end + 4)
-  if (/transfer-encoding: chunked/i.test(headers)) {
-    const chunks: Buffer[] = []
-    while (body.length) {
-      const line = body.indexOf('\r\n')
-      const size = parseInt(body.subarray(0, line).toString('ascii'), 16)
-      if (line < 0 || !Number.isFinite(size) || size < 0 || size > body.length - line - 4) throw new Error('Invalid robot response.')
-      if (!size) break
-      chunks.push(body.subarray(line + 2, line + 2 + size))
-      body = body.subarray(line + 4 + size)
-    }
-    body = Buffer.concat(chunks)
-  }
-  return JSON.parse(body.toString('utf8'))
-}
-
-function runSsh(hostname: string, args: string[], input: Buffer, limits: { bytes: number, timeout: number }): Promise<Buffer> {
+function sshArgs(hostname: string, command: string): string[] {
   checkHost(hostname)
-  // Credentials travel on stdin, never in SSH arguments or logs.
-  return new Promise((resolve, reject) => {
-    const child = execFile('ssh', [
-      '-T', '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=yes',
-      '-o', 'ConnectTimeout=10', '-o', 'ConnectionAttempts=1',
-      '-o', 'ClearAllForwardings=yes', '-o', 'PermitLocalCommand=no',
-      ...args,
-    ], { encoding: 'buffer', timeout: limits.timeout, maxBuffer: limits.bytes }, (error, stdout, stderr) => {
-      if (error) {
-        const detail = stderr.toString('utf8').trim().slice(-2048)
-        reject(new Error(`SSH failed. ${detail || 'Check root SSH key access and known_hosts.'}`))
-        return
-      }
+  return ['-T', '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=yes',
+    '-o', 'ConnectTimeout=10', '-o', 'ConnectionAttempts=1',
+    '-o', 'ClearAllForwardings=yes', '-o', 'PermitLocalCommand=no', `root@${hostname}`, command]
+}
 
-      resolve(stdout)
-    })
+export function runRemote(hostname: string, command: string, input: Buffer = Buffer.alloc(0),
+  limits: Limits = { bytes: maxMapBytes, timeout: 20_000 }): Promise<Buffer> {
+  const args = sshArgs(hostname, command)
+  const started = Date.now()
+  return new Promise((resolve, reject) => {
+    const child = execFile('ssh', args,
+      { encoding: 'buffer', timeout: limits.timeout, maxBuffer: limits.bytes }, (error, stdout, stderr) => {
+        if (error) {
+          // Never include execFile's original error: it contains command arguments.
+          reject(new Error(`SSH failed: code=${error.code ?? 'none'} signal=${error.signal ?? 'none'} elapsed=${Date.now() - started}ms limit=${limits.timeout}ms. ${stderr.toString('utf8').trim().slice(-8192)}`))
+          return
+        }
+        resolve(stdout)
+      })
+    if (limits.report && child.stderr) createInterface({ input: child.stderr }).on('line', limits.report)
     child.stdin?.on('error', () => {})
     child.stdin?.end(input)
   })
+}
+
+export async function uploadSave(hostname: string, work: string, payload: Buffer, report: (line: string) => void): Promise<string> {
+  return (await runRemote(hostname, `set -eu
+umask 077
+mkdir -m 700 ${work}
+tar -xpf - -C ${work}
+chmod 700 ${work}/map-maint
+cat /proc/sys/kernel/random/boot_id`, payload, { bytes: maxMapBytes, timeout: 20_000, report })).toString().trim()
+}
+
+export async function readBoot(hostname: string): Promise<string> {
+  return (await runRemote(hostname, 'cat /proc/sys/kernel/random/boot_id')).toString().trim()
+}
+
+export async function runSave(hostname: string, work: string,
+  change: (archive: Buffer) => Promise<Buffer>, report: (line: string) => void): Promise<void> {
+  const started = Date.now()
+  const child = spawn('ssh', sshArgs(hostname, `/bin/sh ${work}/save.sh ${work}`), { timeout: 120_000, stdio: ['pipe', 'pipe', 'pipe'] })
+  const closed = new Promise<{ code: number | null, signal: string | null, error?: Error }>(resolve => {
+    child.once('error', error => resolve({ code: null, signal: null, error }))
+    child.once('close', (code, signal) => resolve({ code, signal }))
+  })
+  let stderr = ''
+  child.stderr.on('data', chunk => { stderr = (stderr + chunk.toString('utf8')).slice(-8192) })
+  createInterface({ input: child.stderr }).on('line', report)
+  child.stdin.on('error', () => {})
+  let buffer = Buffer.alloc(0)
+  let size: number | undefined
+  let digest = ''
+  let received = false
+
+  try {
+    // Only the framed backup travels on stdout; robot progress uses stderr.
+    for await (const chunk of child.stdout) {
+      buffer = Buffer.concat([buffer, chunk])
+      if (size === undefined) {
+        const end = buffer.indexOf('\n')
+        if (end < 0) {
+          if (buffer.length > 128) throw new Error('Invalid backup header.')
+          continue
+        }
+        const header = /^BACKUP\s+(\d+)\s+([a-f0-9]{32})$/.exec(buffer.subarray(0, end).toString('ascii'))
+        if (!header) throw new Error('Invalid backup header.')
+        size = Number(header[1])
+        digest = header[2]!
+        if (size < 1024 || size > maxArchiveBytes) throw new Error('Invalid backup size.')
+        buffer = buffer.subarray(end + 1)
+      }
+      if (!received) {
+        if (buffer.length < size) continue
+        const archive = buffer.subarray(0, size)
+        if (createHash('md5').update(archive).digest('hex') !== digest) throw new Error('Backup transfer checksum mismatch.')
+        const patch = await change(archive)
+        buffer = buffer.subarray(size)
+        received = true
+        child.stdin.end(Buffer.concat([Buffer.from('PATCH\n'), patch]))
+      }
+      if (buffer.length > 128) throw new Error('Unexpected save output.')
+    }
+    const status = await closed
+    if (status.error) throw new Error(`Could not start SSH: ${status.error.message}`)
+    if (!received || buffer.toString('ascii').trim() !== 'INSTALLED' || status.signal || (status.code !== 0 && status.code !== 255)) {
+      throw new Error(`Save script failed: code=${status.code} signal=${status.signal ?? 'none'} elapsed=${Date.now() - started}ms limit=120000ms. ${stderr.trim()}`)
+    }
+    report(`SSH closed: code=${status.code}; installation acknowledged`)
+  } finally {
+    child.stdin.destroy()
+    child.kill()
+  }
 }

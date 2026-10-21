@@ -3,10 +3,10 @@
 Use these scripts only inside the [stopped maintenance window](../../guides/stopped-backup.md), on the same robot and firmware. They preserve a whole disk epoch; they do not decode maps or invoke vendor recovery commands. The [successful unchanged restore](../../history/2026-10-21/unchanged-restore.md) used private boot-pinned launchers. Edited installations with these scripts still need hardware validation.
 
 ```text
-session.sh prepare: capture fresh identities and original supervision
+review fresh status, identities and stop.sh
   -> arm recover.sh in its own session (120-second uptime deadline)
   -> operations.sh records its separate group identity
-      -> session.sh stop: exclude hosts, confirm exit, obtain MCU hold-off
+      -> stop.sh: exclude hosts, confirm exit, obtain MCU hold-off
       -> matching-set.sh capture
       -> transfer archive off-device and compare hashes
       -> matching-set.sh install: stage, quarantine, replace, verify
@@ -16,7 +16,7 @@ session.sh prepare: capture fresh identities and original supervision
   -> observe real map, stationary pose and fresh quiet status
 ```
 
-Scripts do not run at boot. The editor launches them after Save confirmation. `approved-once` is an explicit invocation argument, not a substitute for checking readiness. Neither a deadline nor `sync` bounds blocked flash I/O or reboot time. Keep uninterrupted power and SSH available. A failed rollback or surviving operations child prevents normal reboot; services remain excluded and require intervention.
+The editor uses its own [`save.sh`](../../../tools/map-maint/save.sh); these scripts are for manual matching-set work. `approved-once` is an explicit invocation argument, not a substitute for checking readiness. Neither a deadline nor `sync` bounds blocked flash I/O or reboot time. Keep uninterrupted power and SSH available. A failed rollback or surviving operations child prevents normal reboot; services remain excluded and require intervention.
 
 ## File operations
 
@@ -41,41 +41,39 @@ Archives and manifests must come from a private, trusted session. MD5 detects ac
 
 ## Prepare a fresh session
 
-The [editor](../../../map-editor/README.md#save-changes) automates preparation and readiness checks. The steps below are for direct script use.
-
 [`operations.sh`](../../../tools/map-maint/operations.sh) and [`recover.sh`](../../../tools/map-maint/recover.sh) target the tested firmware and `/mnt/data/rockrobo`. They require a new private `/mnt/data/map-*` directory and the current boot ID. The cleaned recovery supports the demonstrated **present, nonempty, regular** original exclusion file, not absent/empty originals.
 
-Before any service stop, stage `session.sh`, `operations.sh`, `recover.sh`, `matching-set.sh`, `profile.md5` and the [native helper](map-maint.md) and their `tools.md5` manifest under `SESSION/editor-tools`. Check their hashes against your local copies. Run `sh SESSION/editor-tools/session.sh prepare SESSION` to capture:
+Before any service stop, stage the three shell scripts and the [native helper](map-maint.md) in a private tools directory. Check their hashes against your local copies. Prepare `SESSION` with:
 
 ```text
 boot-id                  current /proc/sys/kernel/random/boot_id
 exclude.original         exact current exclusion bytes
 original-exclusions.tar  root tar of exclude_process.conf, retaining metadata
 original.md5             hashes of the three files above, in that order
-processes                this boot's PID/start-time/executable/argv identities
+stop.sh                  reviewed prelude using this boot's process identities
 exclusions.content       complete exclusion content, preserving originals
-inputs.md5               hashes of editor-tools/session.sh, exclusions.content, processes
+inputs.md5               hashes of stop.sh and exclusions.content, in that order
 ```
 
 Create the hash records from within `SESSION`, so filenames are relative:
 
 ```sh
 md5sum boot-id exclude.original original-exclusions.tar > original.md5
-md5sum editor-tools/session.sh exclusions.content processes > inputs.md5
+md5sum stop.sh exclusions.content > inputs.md5
 ```
 
 Keep an independent off-device copy of the originals before arming recovery. Confirm current paths, firmware, process lists/modules, UART ownership, tmpfs layout, free space, quiet/docked status, battery and both updaters. Gate schedules and external automation throughout startup verification; the scripts do not do this for you.
 
-### Prepare and stop share one driver
+### The stop prelude is session-specific
 
-Preparation runs before recovery is armed; stopping runs afterward. Both phases use `session.sh`. Do not reuse historical PIDs or executable-only absence checks. `session.sh stop SESSION` must:
+Do not reuse historical PIDs or executable-only absence checks. `stop.sh` receives `SESSION` as its first argument and must:
 
 1. Validate fresh PID/start-tick/executable/argv/hash identities and original supervision bytes/metadata before any signal. Refuse changed inputs, unexpected process lists or the optional Wi-Fi rewrite branch described in the backup guide.
 2. TERM only the identified Valetudo process and confirm its exit. Send the complete exclusions once with `map-maint exclusions SESSION/exclude.original SESSION/exclusions.content`.
 3. Confirm actual map hosts, bridges, updaters and identified descendants have exited while WatchDoge, SSH, networking and logging remain alive. Inspect remaining managed-file handles/maps and every relevant task; delivery is not an exit/save acknowledgment.
 4. Run `map-maint mcu-disable` **once**, after UART ownership checks, and return success only on native return 0. Capture refusal diagnostics and fail rather than retrying or bypassing ownership checks.
 
-Set the helper's documented `LD_LIBRARY_PATH` in this prelude; the orchestration/recovery scripts clear inherited loader overrides. Stop nothing else, perform no map writes in the prelude, and never signal WatchDoge. The driver's process records must not be reused across sessions or boots.
+Set the helper's documented `LD_LIBRARY_PATH` in this prelude; the orchestration/recovery scripts clear inherited loader overrides. Stop nothing else, perform no map writes in the prelude, and never signal WatchDoge. Manual preludes must use current process identities and exclusion tokens.
 
 ## Arm, operate and verify
 

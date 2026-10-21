@@ -9,13 +9,14 @@ import { promisify } from 'node:util'
 import { test } from 'node:test'
 import { deflateSync } from 'node:zlib'
 import { applyEdit, parseEdit } from './edits.ts'
-import { packTar } from './archive.ts'
+import { packTar, readTar } from './archive.ts'
+import { runSave } from './ssh.ts'
 import { inspectMap } from './map.ts'
 import { inspectRooms } from './rooms.ts'
 import { readRegion } from './persistence.ts'
 
 const run = promisify(execFile)
-const script = fileURLToPath(new URL('../../tools/map-maint/matching-set.sh', import.meta.url))
+const script = fileURLToPath(new URL('../../tools/map-maint/save.sh', import.meta.url))
 
 function integer(value: number): Buffer {
   const bytes: number[] = []
@@ -65,34 +66,40 @@ test('edits preserve native headers, flags and every unrelated persistence byte'
   assert.deepEqual(readRegion(result.persistence, 5), expected)
 })
 
-test('an interrupted installation restores the whole captured set', async () => {
+test('an interrupted installation restores affected files and preserves backups', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'map-rollback-'))
   const root = join(dir, 'root')
   const work = join(dir, 'work')
-  const original = Object.fromEntries(['last_map', 'user_map0', 'user_map4', 'PersistData_1.data', 'PersistData_2.data', 'PersistData_6.data']
+  const path = process.env.PATH
+  const original = Object.fromEntries(['last_map', 'user_map0', 'user_map4', 'PersistData_1.data', 'PersistData_2.data', 'PersistData_6.data', 'SharedMultiMapInfo', 'exclude_process.conf']
     .map(name => [name, Buffer.from(`original ${name}`)]))
   try {
     await mkdir(join(dir, 'bin'))
-    await writeFile(join(dir, 'bin/sync'), '#!/bin/sh\nexit 0\n', { mode: 0o700 })
-    const env = { ...process.env, PATH: `${dir}/bin:${process.env.PATH}` }
-    const isolated = join(dir, 'matching-set.sh')
-    // Test file recovery without scanning unrelated host processes.
-    await writeFile(isolated, (await readFile(script, 'utf8')).replace(/stopped\(\) \{[\s\S]*?\n\}/, 'stopped() { :; }'))
     await mkdir(root)
+    await mkdir(work)
+    await writeFile(join(dir, 'bin/sync'), '#!/bin/sh\nexit 0\n', { mode: 0o700 })
+    const isolated = join(dir, 'save.sh')
+    // Isolate hardware operations; exercise the real transfer, installation and rollback.
+    await writeFile(isolated, (await readFile(script, 'utf8'))
+      .replace(/^ROOT=.*$/m, `ROOT='${root}'`)
+      .replace(/^PATH=.*$/m, `PATH='${dir}/bin:${path}'`)
+      .replace(/stop_writers\(\) \{[\s\S]*?\n\}/, 'stop_writers() { touched=1; }')
+      .replace('/sbin/reboot', ':'))
     for (const [name, data] of Object.entries(original)) await writeFile(join(root, name), data, { mode: 0o640 })
-    await run('sh', [isolated, 'capture', root, work], { env })
     const patch = Object.fromEntries(['last_map', 'user_map0', 'PersistData_1.data', 'PersistData_2.data'].map(name => [name, Buffer.from(`edited ${name}`)]))
-    await mkdir(join(work, 'patch'))
-    await writeFile(join(dir, 'patch.tar'), packTar(patch))
-    await run('tar', ['-xf', join(dir, 'patch.tar'), '-C', join(work, 'patch')])
-    await writeFile(join(work, 'patch.files'), Object.keys(patch).join('\n') + '\n')
-    await writeFile(join(work, 'patch.md5'), Object.entries(patch).map(([name, data]) => `${createHash('md5').update(data).digest('hex')}  ${name}\n`).join(''))
-    await writeFile(join(work, 'patch.ready'), '')
-    await writeFile(join(work, 'offdevice.verified'), '')
+    const hashes = Object.entries(patch).map(([name, data]) => `${createHash('md5').update(data).digest('hex')}  ${name}\n`).join('')
     const mv = (await run('sh', ['-c', 'command -v mv'])).stdout.trim()
-    await writeFile(join(dir, 'bin/mv'), `#!/bin/sh\nn=$(cat '${dir}/count' 2>/dev/null || echo 0)\nn=$((n + 1))\necho "$n" > '${dir}/count'\n[ "$n" -ne 8 ] || exit 1\nexec '${mv}' "$@"\n`, { mode: 0o700 })
-    await assert.rejects(run('sh', [isolated, 'apply', root, work], { env }))
-    await run('sh', [isolated, 'rollback', root, work], { env })
+    await writeFile(join(dir, 'bin/mv'), `#!/bin/sh\nn=$(cat '${dir}/count' 2>/dev/null || echo 0)\nn=$((n + 1))\necho "$n" > '${dir}/count'\n[ "$n" -ne 2 ] || exit 1\nexec '${mv}' "$@"\n`, { mode: 0o700 })
+    await writeFile(join(dir, 'bin/ssh'), `#!/bin/sh\nexec sh '${isolated}' '${work}'\n`, { mode: 0o700 })
+    process.env.PATH = `${dir}/bin:${path}`
+    await assert.rejects(runSave('robot.local', 'save', async archive => {
+      const snapshot = readTar(archive)
+      for (const name of Object.keys(patch)) assert.deepEqual(snapshot.get(name)!.data, original[name])
+      return packTar({ ...patch, 'patch.md5': Buffer.from(hashes) })
+    }, () => {}), /code=1/)
     for (const [name, data] of Object.entries(original)) assert.deepEqual(await readFile(join(root, name)), data)
-  } finally { await rm(dir, { recursive: true, force: true }) }
+  } finally {
+    process.env.PATH = path
+    await rm(dir, { recursive: true, force: true })
+  }
 })

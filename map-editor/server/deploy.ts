@@ -1,40 +1,21 @@
-import { createHash } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
 import { setTimeout as pause } from 'node:timers/promises'
 import { readTar, packTar } from './archive.ts'
 import { Backup } from './backup.ts'
 import { applyEdit, parseEdit, type EditInput, type MapEdit } from './edits.ts'
-import { Maintenance } from './maintenance.ts'
 import { inspectMap, loadMap } from './map.ts'
 import { readRegion } from './persistence.ts'
 import { inspectRooms } from './rooms.ts'
+import { checkHost, readBoot, runSave, uploadSave } from './ssh.ts'
 
-const active = new Set<string>()
-
+let saving = false
 type Snapshot = Map<string, { data: Buffer, type: 'file' | 'directory' }>
 
 function member(files: Snapshot, name: string): Buffer {
   const entry = files.get(name)
   if (!entry || entry.type !== 'file') throw new Error(`Missing backup file: ${name}`)
   return entry.data
-}
-
-export function readSnapshot(archive: Buffer): Snapshot {
-  const files = readTar(archive)
-  if (!files.has('capture.complete') || member(files, 'snapshot/root').toString() !== '/mnt/data/rockrobo\n') {
-    throw new Error('Invalid stopped backup.')
-  }
-  const seen = new Set<string>()
-  for (const line of member(files, 'snapshot.md5').toString().trim().split('\n')) {
-    const match = /^([a-f0-9]{32})  ([a-zA-Z0-9._-]+)$/.exec(line)
-    if (!match || seen.has(match[2]!)) throw new Error('Invalid backup manifest.')
-    seen.add(match[2]!)
-    const digest = createHash('md5').update(member(files, `snapshot/${match[2]}`)).digest('hex')
-    if (digest !== match[1]) throw new Error('Stopped backup checksum mismatch.')
-  }
-  for (const name of ['root', 'namespace', 'present', 'absent', 'interrupted', 'files.tar']) {
-    if (!seen.has(name)) throw new Error('Incomplete backup manifest.')
-  }
-  return readTar(member(files, 'snapshot/files.tar'))
 }
 
 export function makePatch(edit: MapEdit, snapshot: Snapshot): Record<string, Buffer> {
@@ -54,67 +35,74 @@ export function makePatch(edit: MapEdit, snapshot: Snapshot): Record<string, Buf
     [primary]: main.raster, [persistence]: main.persistence }
 }
 
-async function waitFor<T>(read: () => Promise<T | null>, milliseconds: number): Promise<T> {
-  const deadline = Date.now() + milliseconds
-  while (Date.now() < deadline) {
-    const result = await read()
-    if (result !== null) return result
-    await pause(500)
-  }
-  throw new Error('The robot did not finish the operation in time.')
-}
-
 export async function saveMap(hostname: string, input: EditInput) {
-  const edit = parseEdit(input)
-  // Validate the export before starting maintenance, including room-grid bounds.
-  applyEdit(edit)
-  if (active.size) throw new Error('A save is already running.')
-  const robot = new Maintenance(hostname)
-  const session = robot.path
-  active.add(hostname)
-  let armed = false
+  checkHost(hostname)
+  if (saving) throw new Error('A save is already running.')
+  saving = true
+  const started = Date.now()
+  const work = `/mnt/data/map-editor-${randomUUID()}`
+  const log = (line: string) => console.log(`${new Date().toISOString()} [map-save ${hostname}] ${line}`)
+  let stage = 'Validate edits'
+  const step = (name: string) => { stage = name; log(name) }
   let backup: Backup | undefined
+
   try {
+    step('Validate edits')
+    const edit = parseEdit(input)
+    const expected = applyEdit(edit)
+    const raster = expected.raster.toString('base64')
+    const rooms = inspectRooms(expected.persistence, inspectMap(expected.raster))
     backup = await Backup.create()
-    const boot = await robot.prepare()
-    await backup.save('original-exclusions.tar', await robot.originals())
-    await backup.save('request.json', Buffer.from(JSON.stringify({ hostname, session, boot,
+    log(`Robot files: ${work}; local backup: ${backup.path}`)
+
+    step('Upload save script and native helper')
+    const tools = new URL('../../tools/map-maint/', import.meta.url)
+    const payload = packTar({ 'save.sh': await readFile(new URL('save.sh', tools)),
+      'map-maint': await readFile(new URL('bin/map-maint', tools)) })
+    const boot = await uploadSave(hostname, work, payload, log)
+    await backup.save('request.json', Buffer.from(JSON.stringify({ hostname, work, boot,
       source: createHash('sha256').update(edit.raster).digest('hex') }) + '\n'))
-    armed = true
-    await robot.arm()
-    await waitFor(async () => await robot.ready() ? true : null, 10_000)
-    await robot.start()
-    const hash = await waitFor(() => robot.backupHash(), 60_000)
-    const archive = await robot.backup()
-    if (createHash('md5').update(archive).digest('hex') !== hash) throw new Error('Backup transfer checksum mismatch.')
-    const snapshot = readSnapshot(archive)
-    await backup.save('untouched-stopped-backup.tar', archive)
-    const patch = makePatch(edit, snapshot)
-    await backup.save('candidate.tar', packTar(patch))
-    await robot.install(patch)
-    const nextBoot = await waitFor(async () => {
+
+    step('Run save script')
+    await runSave(hostname, work, async archive => {
+      step(`Store verified stopped backup (${archive.length} bytes)`)
+      await backup!.save('untouched-stopped-backup.tar', archive)
+      step('Build edited map files')
+      const patch = makePatch(edit, readTar(archive))
+      const hashes = Object.entries(patch).map(([name, data]) => `${createHash('md5').update(data).digest('hex')}  ${name}\n`).join('')
+      const candidate = packTar({ ...patch, 'patch.md5': Buffer.from(hashes) })
+      await backup!.save('candidate.tar', candidate)
+      step(`Send patch: ${Object.keys(patch).join(', ')}`)
+      return candidate
+    }, log)
+
+    step('Wait for reboot and verify loaded map')
+    const deadline = Date.now() + 240_000
+    let lastError: unknown
+    let nextBoot = boot
+    let loaded: Awaited<ReturnType<typeof loadMap>> | undefined
+    while (Date.now() < deadline) {
       try {
-        const current = await robot.boot()
-        return /^[a-f0-9-]{36}$/.test(current) && current !== boot ? current : null
-      } catch { return null }
-    }, 240_000)
-    await robot.outcome()
-    const expectedRaster = patch.last_map!.toString('base64')
-    const expectedRooms = inspectRooms(patch['PersistData_1.data']!, inspectMap(patch.last_map!))
-    const loaded = await waitFor(async () => {
-      try {
-        const current = await loadMap(hostname)
-        return current.native.raster === expectedRaster && current.rooms === expectedRooms ? current : null
-      } catch { return null }
-    }, 60_000).catch(() => { throw new Error('The robot restarted, but the edited map could not be verified.') })
-    const receipt = { hostname, boot: nextBoot, backup: backup.path, session, completed: new Date().toISOString() }
-    await backup.save('receipt.json', Buffer.from(JSON.stringify(receipt, null, 2) + '\n'))
+        nextBoot = await readBoot(hostname)
+        if (nextBoot !== boot) {
+          const map = await loadMap(hostname)
+          if (map.native.raster === raster && map.rooms === rooms) { loaded = map; break }
+          lastError = new Error('The restarted robot loaded a different map.')
+        }
+      } catch (error) { lastError = error }
+      await pause(2000)
+    }
+    if (!loaded) throw new Error('Could not verify the edited map after reboot.', { cause: lastError })
+
+    step('Store receipt')
+    await backup.save('receipt.json', Buffer.from(JSON.stringify({ hostname, work, boot: nextBoot,
+      completed: new Date().toISOString() }) + '\n'))
+    log(`Saved and verified after reboot (${Date.now() - started}ms); backup: ${backup.path}`)
     return { map: loaded, backup: backup.path }
   } catch (error) {
-    if (armed) await robot.recover().catch(() => {})
-    console.error('Map save failed', { hostname, session, backup: backup?.path, error })
+    console.log(`${new Date().toISOString()} [map-save ${hostname}] FAILED: ${stage}; robot=${work}; backup=${backup?.path}`, error)
     throw error
   } finally {
-    active.delete(hostname)
+    saving = false
   }
 }

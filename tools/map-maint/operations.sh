@@ -1,5 +1,5 @@
 #!/bin/sh
-# Session preparation pins this boot's identities before recovery is armed.
+# stop.sh is a reviewed, boot-specific prelude, not a reusable PID list.
 set -eu
 umask 077
 PATH=/usr/sbin:/usr/bin:/sbin:/bin
@@ -23,8 +23,12 @@ WORK=$B/matching
 TOOLS=$(cd "$(dirname "$0")" && pwd -P)
 [ ! -e "$B/operations.identity" ] && [ ! -e "$WORK" ] || fail 'Session already used'
 [ "$(cat "$B/boot-id")" = "$(cat /proc/sys/kernel/random/boot_id)" ] || fail 'Wrong boot'
-[ -f "$TOOLS/session.sh" ] && [ ! -L "$TOOLS/session.sh" ] || fail 'Missing session driver'
-(cd "$B"; md5sum -c inputs.md5) >/dev/null
+[ -f "$B/stop.sh" ] && [ ! -L "$B/stop.sh" ] || fail 'Missing reviewed stop.sh'
+(
+    cd "$B"
+    md5sum stop.sh exclusions.content
+) > "$B/inputs-check.md5"
+cmp "$B/inputs.md5" "$B/inputs-check.md5"
 read -r recovery tick deadline < "$B/recovery.ready"
 case "$recovery:$tick:$deadline" in *[!0-9:]*|:*|*:) fail 'Invalid recovery identity';; esac
 [ "$(awk '{print $5 ":" $6 ":" $22}' "/proc/$recovery/stat")" = "$recovery:$recovery:$tick" ] || fail 'Recovery is not running'
@@ -44,7 +48,7 @@ failed() {
 trap failed EXIT
 trap 'trap - EXIT; exit 1' TERM HUP INT
 printf 'Service stop may begin.\n' > "$B/services.touched"
-/bin/sh "$TOOLS/session.sh" stop "$B"
+/bin/sh "$B/stop.sh" "$B"
 /bin/sh "$TOOLS/matching-set.sh" capture "$ROOT" "$WORK"
 tar -cpf "$B/untouched-stopped-backup.tar" -C "$WORK" snapshot snapshot.md5 capture.complete
 sync
