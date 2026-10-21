@@ -211,8 +211,7 @@ static int number(const char *s)
     return 1;
 }
 
-/* Best-effort state from the matched task; disappearance never cancels refusal. */
-static int loader_refused(int proc, const char *pid, const char *tid, const char *reason)
+static char task_state(int proc)
 {
     char text[512];
     char state = '?';
@@ -230,8 +229,13 @@ static int loader_refused(int proc, const char *pid, const char *tid, const char
                 state = end[2];
         }
     }
+    return state;
+}
+
+static int loader_refused(int proc, const char *pid, const char *tid, const char *reason)
+{
     fprintf(stderr, "Loader still exists; MCU disable refused. PID=%s TID=%s state=%c reason=%s\n",
-            pid, tid, state, reason);
+            pid, tid, task_state(proc), reason);
     return REFUSED;
 }
 
@@ -239,6 +243,7 @@ static int loader_absent(int proc, const char *pid, const char *tid)
 {
     char text[512];
     ssize_t n = readlinkat(proc, "exe", text, sizeof(text) - 1);
+    int missing = n < 0 && (errno == ENOENT || errno == ESRCH);
     int fd;
 
     if (n >= (ssize_t)sizeof(text) - 1)
@@ -247,7 +252,7 @@ static int loader_absent(int proc, const char *pid, const char *tid)
         text[n] = '\0';
         if (!strcmp(base(text), "rr_loader") || !strcmp(base(text), "rr_loader (deleted)"))
             return loader_refused(proc, pid, tid, "exe basename matches rr_loader");
-    } else if (errno != ENOENT && errno != ESRCH) {
+    } else if (!missing) {
         return refuse("Cannot inspect a process executable; MCU disable refused.");
     }
     fd = openat(proc, "comm", O_RDONLY | O_CLOEXEC);
@@ -261,7 +266,8 @@ static int loader_absent(int proc, const char *pid, const char *tid)
     if (n <= 0)
         return refuse("Cannot read a process name; MCU disable refused.");
     text[n] = '\0';
-    if (!strcmp(text, "rr_loader\n"))
+    /* A zombie cannot execute; sibling-task and descriptor checks still continue. */
+    if (!strcmp(text, "rr_loader\n") && !(missing && task_state(proc) == 'Z'))
         return loader_refused(proc, pid, tid, "comm matches rr_loader");
     return READY;
 }
