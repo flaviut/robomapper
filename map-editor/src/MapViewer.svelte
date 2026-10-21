@@ -249,9 +249,8 @@
   </div>
   {#if tool !== Tool.Pan}
     <p class="shrink-0 border-b border-base-300 px-4 py-1 text-xs text-base-content/70">
-      {tool === Tool.Rectangle ? 'Drag a rectangle; release to apply. Escape cancels.' : 'Click a room to fill every cell with that room ID.'}
+      {tool === Tool.Rectangle ? 'Drag a rectangle; release to apply. Escape cancels.' : 'Click a room to fill it.'}
       {#if fillType === FillType.Room}Assigns floor cells only; walls and unknown cells stay unchanged.{/if}
-      Local draft only.
     </p>
   {/if}
   <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions (Interactive map supports keyboard zoom and pan.) -->
