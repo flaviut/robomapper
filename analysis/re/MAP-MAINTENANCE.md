@@ -2,16 +2,16 @@
 
 For S7 firmware `4.3.5_1612`, use **whole-host stop → acknowledged MCU heartbeat hold-off → matching-set backup/replacement → cold start**. This avoids implementing live-map transactions or rebuilding opaque persistence regions. It is a source-derived plan, not an operation performed on the robot.
 
-The control mechanisms and file formats are identified. **The plan is not shell-ready:** the target-native maintenance helper is not implemented, and the running MCU/configuration has not been observed. Do not interpret the command fragments in the component documents as removing those entry requirements.
+We have identified the control mechanisms and file formats, built the native helper, and inspected the running robot. Its Linux libraries match the saved firmware. The reported MCU version matches the A14.G1 image once its timestamp formatting is accounted for; [the A14 explanation](A14-HEARTBEAT.md) follows the actual heartbeat handler. The helper has not been uploaded or run, and no services have been stopped. Before using it, we still need a fresh status reading and confirmation that the vendor software is not about to start a scheduled action or firmware update.
 
-## 1. Prepare the control helper before stopping anything
+## 1. Have the helper ready before stopping anything
 
 The helper has two small, distinct responsibilities, specified against existing device libraries:
 
 - [Application supervision](MAP-SERVICE-CONTROL.md): send WatchDoge event-8 exclusion content through the documented private native FIFO channel, without registering a second AppProxy receiver. Preserve the original exclusion file and enforce the 63-byte content bound. Do not send empty/short content: that selects destructive event 9. If the required content cannot fit, the documented maintenance-boot alternative avoids this limit but still needs the MCU gate on that boot.
 - [MCU supervision](MAP-HEARTBEAT-CONTROL.md): after the old loader/UART owner exits, call `rua_keep_mcu_heartbeat(-1)` and require return 0. This existing export handles temporary UART ownership, framing, retries and acknowledgment. Do not inject raw serial bytes, stop WatchDoge, or claim an installed helper command exists.
 
-Implementing this target-native caller is the next software task, not an unanswered packet-format question. Its prerequisites are the matching ARM ABI/libraries and the running MCU identification/gyro/version needed to establish applicability of the inspected protocol. The packaged A3.G1 consumer skips heartbeat-loss escalation for −1; all six packaged chassis images share the special-value conversion block, but their complete consumers and the installed image are not all established.
+The helper is in `tools/map-maint/`; [its instructions](MAINTENANCE-HELPER.md) explain how it was built against the robot's saved runtime libraries. It refuses malformed exclusion content and checks that the loader and UART owners are gone before requesting the hold-off. We have also traced the A14.G1 MCU's actual dispatch and consumer: −1 skips its missing-heartbeat handling. The reply confirms receipt of the framed request, not a readback of the stored value. Do not treat the local build or that reply as an observed service-off interval.
 
 ## 2. Obtain the offline window
 
@@ -54,10 +54,10 @@ Normal startup may load primary 2 during reboot recovery and runtime 1 during la
 
 Per-file replacement is not multi-file atomic. Keep the complete quarantine for rollback and uninterrupted power through installation. Do not resume consumers after a partial installation; restore one whole epoch while still excluded.
 
-## Remaining entry requirements—not hidden guarantees
+## What we still need before using it
 
-- **Software deliverable:** the target-native caller for the documented IPC/UART APIs. No such executable is supplied by this research.
-- **Device inputs:** installed MCU identification/gyro/version; actual process/env/library paths and tmpfs layout matching the saved configuration; a known-good matching snapshot.
-- **Scope decision:** untouched restore and bounded fixed-frame raster edits have a concrete candidate path. Arbitrary topology/frame changes do not have a complete offline transformation/import contract.
+The helper is built locally, but has not been deployed. Read [the live observations](DEVICE-FACTS.md) and [the current status](CURRENT-ROBOT-STATUS.md) before arranging a service stop. Those readings expire: the robot was idle at 96% and discharging, not reported docked, and the vendor schedule/update state had not yet been established. Leave it running until those checks and the reversible command controls are ready.
+
+Take a new stopped backup before editing; the live persistence files no longer have the historical sizes, so do not reuse the old assumption that the runtime and primary copies are identical. An unchanged matching-set restore or a small fixed-frame patch remains the intended first operation. If the edit changes connectivity, dimensions or coordinates, this procedure does not supply the necessary transformation or import sequence.
 
 No tests, validators, replay suites, review agents or device operations were run for this investigation. The four component documents contain the source/function addresses behind these conclusions.
