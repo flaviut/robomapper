@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { untrack } from 'svelte'
+  import { untrack, type Snippet } from 'svelte'
   import type { RobotMap } from './lib/maps'
   import { fitView, zoomView, mapImage, roomLabels, type View } from './lib/view'
   import { Cell, CellEditor, cellRect, type CellRect, type Fill, type Point } from './lib/editor'
@@ -9,7 +9,8 @@
   const FillType = { Floor: 'Floor', Wall: 'Wall', Unknown: 'Unknown', Room: 'Room' } as const
   type FillType = typeof FillType[keyof typeof FillType]
 
-  let { map, source, initialView, initialCells, initialRooms, onview, onedit }: {
+  let { map, source, initialView, initialCells, initialRooms, onview, onedit, controls }: {
+    controls?: Snippet
     map: RobotMap
     source: string
     initialView?: View
@@ -219,13 +220,9 @@
         <button class="btn btn-sm join-item" disabled={!canRedo} onclick={redo}>Redo</button>
       </div>
     </div>
-    <div class="join" role="group" aria-label="Zoom">
-      <button class="btn btn-sm join-item" onclick={() => zoom(0.8)} aria-label="Zoom out">−</button>
-      <button class="btn btn-sm join-item" onclick={fit}>Fit</button>
-      <button class="btn btn-sm join-item" onclick={() => zoom(1.25)} aria-label="Zoom in">+</button>
-    </div>
+    {@render controls?.()}
   </div>
-  <div class="flex min-h-0 flex-1">
+  <div class="relative flex min-h-0 flex-1">
     {#if tool === Tool.Rectangle}
       <aside class="w-40 shrink-0 overflow-y-auto border-r border-base-300 bg-base-100 p-3" aria-label="Rectangle fills">
         <fieldset class="flex min-w-0 flex-col gap-3">
@@ -266,6 +263,11 @@
           style:width="{(selection.right - selection.left + 1) * view.scale}px"
           style:height="{(selection.bottom - selection.top + 1) * view.scale}px"></div>
       {/if}
+    </div>
+    <div class="join absolute bottom-4 right-4" role="group" aria-label="Zoom">
+      <button class="btn btn-sm join-item" onclick={() => zoom(0.8)} aria-label="Zoom out">−</button>
+      <button class="btn btn-sm join-item" onclick={fit}>Fit</button>
+      <button class="btn btn-sm join-item" onclick={() => zoom(1.25)} aria-label="Zoom in">+</button>
     </div>
   </div>
 </div>

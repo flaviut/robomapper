@@ -136,8 +136,8 @@
 </script>
 
 <div data-theme="dark" class="flex h-dvh flex-col bg-base-200">
-  <header class="flex flex-wrap items-center gap-4 border-b border-base-300 bg-base-100 px-4 py-3">
-    <h1 class="mr-auto text-lg font-semibold">robomapper</h1>
+  {#snippet controls()}
+    <div class="flex flex-wrap items-center gap-2">
     <form onsubmit={openMap} class="flex flex-wrap items-center gap-2">
       {#if homeAssistant}
         <label for="robot" class="text-sm">Robot</label>
@@ -158,7 +158,8 @@
     <button class="btn btn-sm" disabled={!map || loading || action !== 'idle'} onclick={() => confirmation?.showModal()}>
       {action === 'save' ? 'Saving…' : 'Save'}
     </button>
-  </header>
+    </div>
+  {/snippet}
 
   {#if error}<p class="alert alert-error m-4" role="alert">{error}</p>{/if}
   {#if status}<p class="px-4 py-2 text-sm" role="status">{status}</p>{/if}
@@ -166,10 +167,15 @@
   <main class="flex min-h-0 flex-1 justify-center" aria-busy={loading || action !== 'idle'} inert={action !== 'idle'}>
     {#if map}
       {#key sessionId}
-        <MapViewer {map} source={sourceName} {initialView} {initialCells} {initialRooms} onview={rememberView} onedit={rememberEdit} />
+        <MapViewer {controls} {map} source={sourceName} {initialView} {initialCells} {initialRooms} onview={rememberView} onedit={rememberEdit} />
       {/key}
     {:else}
-      <p class="self-center text-sm text-base-content/50">No map loaded</p>
+      <div class="flex min-h-0 flex-1 flex-col">
+        <div class="flex justify-end border-b border-base-300 bg-base-100 px-4 py-3">
+          {@render controls()}
+        </div>
+        <p class="flex flex-1 items-center justify-center text-sm text-base-content/50">No map loaded</p>
+      </div>
     {/if}
   </main>
   <dialog bind:this={confirmation} class="modal" aria-labelledby="save-title">
