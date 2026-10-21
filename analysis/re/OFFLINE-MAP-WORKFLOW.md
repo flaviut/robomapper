@@ -1,5 +1,7 @@
 # Offline map maintenance: a practical service window
 
+Start with [the integrated maintenance path](MAP-MAINTENANCE.md). The component documents now trace MCU hold-off, native exclusion IPC, cold-start slot selection and room-command routing. This earlier feasibility assessment is retained as context; the integrated path states the remaining implementation and device inputs.
+
 **Conditional yes: stopping the map hosts is a realistic route to byte-preserving backup and matching-set restore. Small occupancy-only edits are plausible experiments; arbitrary room/geometry edits are not yet a supported offline operation.** We do not need a live-map transaction protocol or complete decoding of every persistence region to copy existing bytes.
 
 This is a static feasibility finding for `4.3.5_1612`, **NOT a device-tested procedure or executable stop recipe**. No robot, firmware, configuration, prior evidence or shared analysis was changed. No tests, validators or replay suites were run. References below are local; saved rootfs and `map_codec.py` are in the source root `/home/user/tmp/illegalplainape/analysis`, not necessarily tracked here.

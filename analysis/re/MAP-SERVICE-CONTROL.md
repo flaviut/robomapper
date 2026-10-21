@@ -82,7 +82,7 @@ Similarly, saved `/etc/init/S04wdgenv` has empty `stop` and `restart` arms. `/et
 
 ## Candidate operational sequence
 
-**Hardware prerequisite:** [MAP-HEARTBEAT-CONTROL.md](MAP-HEARTBEAT-CONTROL.md) owns whether the actual MCU permits a period without this `rr_loader`/chassis host, or requires an independent heartbeat producer. Nothing here establishes that absence is safe or that command `0xd3` grants a timed window. The Linux `/dev/watchdog` feeder remains WatchDoge throughout the maintenance interval. A deliberate reboot ends that interval and runs normal shutdown/startup; it is not a promise that watchdog liveness survives arbitrary boot configurations.
+**Hardware prerequisite:** [MAP-HEARTBEAT-CONTROL.md](MAP-HEARTBEAT-CONTROL.md) identifies the candidate gate: after `rr_loader` and its UART ownership are gone, invoke the existing native `rua_keep_mcu_heartbeat(-1)` API and require return 0. The inspected MCU consumer skips missing-heartbeat escalation for that sentinel; installed-image applicability remains a device input. A target-native invoker is not yet supplied. Exclusions alone, including the sender-free maintenance boot below, do not establish heartbeat liveness. Do not enter file maintenance until that invocation succeeds; do not assume the sentinel survives reboot or that the finite value 120 grants 120 seconds. The Linux `/dev/watchdog` feeder remains WatchDoge throughout the maintenance interval. A deliberate reboot ends that interval and runs normal shutdown/startup; it is not a promise that watchdog liveness survives arbitrary boot configurations.
 
 ### 1. Gate commands and identify this deployment
 
@@ -135,11 +135,13 @@ The first inserted newline separates any unterminated original final line; each 
 
 After event 8 or the maintenance boot, confirm WatchDoge is still running and the **actual** writer hosts, their known descendants/extra map consumers and command bridges are gone. `pidof rr_loader`, `pidof RoboController`, `pidof AppProxy`, and the bridge/updater names provide a first name-based observation, not proof of identity or descendant exit. Follow the PIDs/executable paths and children recorded before stopping; inspect their `/proc/PID/task`/`status` while present and establish their exit. The host's threads stop with it; a detached writer thread does not outlive process exit. A zombie has no executing writer threads, but its unreaped parent/remaining children must not be confused with successful whole-tree shutdown.
 
+Once the old loader/UART owner is gone, run the acknowledged MCU gate above before copying or replacing files. Do not send it while chassis still runs: its next raw-zero heartbeat overwrites the sentinel. An init/TTY-lock/send failure means no maintenance entry. After a maintenance reboot, obtain this gate on that boot rather than assuming an earlier request remains effective.
+
 Do not proceed while a process remains in uninterruptible sleep, a surviving child still maps the map libraries/opens the target files, or a writer returns. A reply, a successful FIFO write, tracked PID=−1 and a fixed sleep are insufficient. Do not introduce a universal-concurrency proof: the practical boundary is the observed stopped writer-host set plus gated producers, with no open or mapped target files in any identified surviving consumer. Keep WatchDoge running and avoid reloading exclusions during the window.
 
 ### 4. Back up, replace, and prepare next boot
 
-Only now take the matching-set snapshot and perform the bounded restore/edit from [OFFLINE-MAP-WORKFLOW.md](OFFLINE-MAP-WORKFLOW.md). Stopping writers does not complete an interrupted save. Retain original file identities/companions, untouched rollback bytes and the independent supervision backup. Finish every intended replacement and flush storage **before** preparing normal boot. If a copy fails or a writer returns, restore the untouched matching set while still excluded, or remain in the maintenance state; do not enable consumers against a partly replaced set.
+Only now take the matching-set snapshot and perform the matching-set [backup/restore](MAP-FILE-CONTRACT.md) or bounded [edit](MAP-EDIT-CONTRACT.md). Stopping writers does not complete an interrupted save. Retain original file identities/companions, untouched rollback bytes and the independent supervision backup. Finish every intended replacement and flush storage **before** preparing normal boot. If a copy fails or a writer returns, restore the untouched matching set while still excluded, or remain in the maintenance state; do not enable consumers against a partly replaced set.
 
 Restore the current deployment's original exclusion file **on disk only**, without IPC/reload. For an originally present file:
 
