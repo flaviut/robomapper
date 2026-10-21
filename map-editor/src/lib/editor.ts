@@ -77,24 +77,11 @@ export class CellEditor {
   get canUndo(): boolean { return this.past.length > 0 }
   get canRedo(): boolean { return this.future.length > 0 }
 
-  roomAt(point: Point): number {
-    if (point.x < 0 || point.y < 0 || point.x >= this.width || point.y >= this.height) return 0
-    return this.roomData[point.y * this.width + point.x] ?? 0
-  }
-
   fill(rect: CellRect, value: Fill) {
     for (let y = Math.max(0, rect.top); y <= Math.min(this.height - 1, rect.bottom); y++) {
       for (let x = Math.max(0, rect.left); x <= Math.min(this.width - 1, rect.right); x++) {
         this.paint(y * this.width + x, value)
       }
-    }
-  }
-
-  fillRoom(room: number, value: Fill) {
-    if (!Number.isInteger(room) || room < 1 || room > 63) return
-    // Membership, not connectivity, includes disconnected parts of the same room.
-    for (let index = 0; index < this.roomData.length; index++) {
-      if (this.roomData[index] === room) this.paint(index, value)
     }
   }
 

@@ -35,49 +35,29 @@ test('rectangle room assignment changes only floor labels', () => {
   assert.deepEqual([...editor.rooms], [2, 2, 2, 1, 2, 0])
 })
 
-test('whole-room fills include disconnected members but exclude other IDs', () => {
-  const cells = Uint8Array.of(0, 255, 128, 32, 64, 96)
-  const rooms = Uint8Array.of(1, 1, 2, 0, 2, 1)
-  const editor = new CellEditor(3, 2, cells, rooms)
-  assert.equal(editor.roomAt({ x: 2, y: 1 }), 1)
-  assert.equal(editor.roomAt({ x: -1, y: 1 }), 0)
-  assert.equal(editor.roomAt({ x: 3, y: 0 }), 0)
-  editor.fillRoom(1, Cell.Unknown)
-  editor.commit()
-  assert.deepEqual([...editor.cells], [128, 128, 128, 32, 64, 128])
-  assert.deepEqual(editor.rooms, rooms)
-  editor.undo()
-  assert.deepEqual(editor.cells, cells)
-  editor.redo()
-  assert.equal(editor.cells[5], Cell.Unknown)
-})
-
-test('whole-room reassignment preserves occupancy and non-floor labels', () => {
-  const cells = Uint8Array.of(0, 255, 128, 32, 64, 96)
-  const rooms = Uint8Array.of(1, 1, 1, 0, 2, 1)
-  const editor = new CellEditor(3, 2, cells, rooms)
-  editor.fillRoom(1, { room: 2 })
-  editor.commit()
-  assert.deepEqual([...editor.rooms], [2, 1, 1, 0, 2, 2])
-  assert.deepEqual(editor.cells, cells)
-  editor.undo()
-  assert.deepEqual(editor.rooms, rooms)
-  editor.redo()
-  assert.deepEqual([...editor.rooms], [2, 1, 1, 0, 2, 2])
+test('rectangle room assignment accepts IDs absent from the source map', () => {
+  const editor = new CellEditor(2, 1, Uint8Array.of(32, 64))
+  const rect = { left: 0, top: 0, right: 1, bottom: 0 }
+  for (const room of [1, 17, 63]) {
+    editor.fill(rect, { room })
+    assert.equal(editor.commit(), true)
+    assert.deepEqual([...editor.rooms], [room, room])
+    editor.undo()
+    assert.deepEqual([...editor.rooms], [0, 0])
+  }
 })
 
 test('invalid, empty, and cancelled fills preserve redo', () => {
   const editor = new CellEditor(2, 1, Uint8Array.of(32, 64), Uint8Array.of(1, 2))
   const rect = { left: 0, top: 0, right: 1, bottom: 0 }
-  editor.fillRoom(1, Cell.Wall)
+  editor.fill(rect, Cell.Wall)
   editor.commit()
   editor.undo()
   for (const room of [0, -1, 64, 1.5, NaN]) {
-    editor.fillRoom(room, Cell.Unknown)
     editor.fill(rect, { room })
     assert.equal(editor.commit(), false)
   }
-  editor.fillRoom(3, Cell.Unknown)
+  editor.fill({ left: 3, top: 0, right: 4, bottom: 0 }, Cell.Unknown)
   assert.equal(editor.commit(), false)
   editor.fill(rect, { room: 2 })
   editor.cancel()

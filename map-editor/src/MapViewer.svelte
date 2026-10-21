@@ -4,7 +4,7 @@
   import { fitView, zoomView, mapImage, roomLabels, type View } from './lib/view'
   import { Cell, CellEditor, cellRect, type CellRect, type Fill, type Point } from './lib/editor'
 
-  const Tool = { Pan: 'Pan', Rectangle: 'Rectangle', RoomFill: 'Room fill' } as const
+  const Tool = { Pan: 'Pan', Rectangle: 'Rectangle' } as const
   type Tool = typeof Tool[keyof typeof Tool]
   const FillType = { Floor: 'Floor', Wall: 'Wall', Unknown: 'Unknown', Room: 'Room' } as const
   type FillType = typeof FillType[keyof typeof FillType]
@@ -27,16 +27,18 @@
   let ready = $state(false)
   let fittedMap: RobotMap | null = null
   let size = { width: 0, height: 0 }
-  let pointer: { id: number, point: Point, screen: Point, tool: Tool, fill: Fill, room: number } | null = null
+  let pointer: { id: number, point: Point, screen: Point, tool: Tool, fill: Fill | null } | null = null
   let tool = $state<Tool>(Tool.Pan)
   let fillType = $state<FillType>(FillType.Wall)
-  let room = $state(0)
+  let room = $state<number | undefined>(1)
   let selection = $state<CellRect | null>(null)
   let editVersion = $state(0)
   const editor = $derived(new CellEditor(map.width, map.height, initialCells ?? map.cells, initialRooms ?? map.rooms))
-  const rooms = $derived([...new Set(map.rooms)].filter(id => id > 0).sort((a, b) => a - b))
-  const targetRoom = $derived(rooms.includes(room) ? room : rooms[0] ?? 0)
-  const fill = $derived<Fill>(fillType === FillType.Room ? { room: targetRoom } : Cell[fillType])
+  const fill = $derived.by<Fill | null>(() => {
+    if (fillType !== FillType.Room) return Cell[fillType]
+    if (typeof room !== 'number' || !Number.isInteger(room) || room < 1 || room > 63) return null
+    return { room }
+  })
   const editedMap = $derived.by(() => {
     editVersion
     return { ...map, cells: editor.cells, rooms: editor.rooms }
@@ -130,27 +132,23 @@
     const active = event.button === 1 || event.altKey ? Tool.Pan : tool
     const point = pointAt(event)
     if (active !== Tool.Pan && (point.x < 0 || point.y < 0 || point.x >= map.width || point.y >= map.height)) return
-    if (active !== Tool.Pan && fillType === FillType.Room && !targetRoom) return
-    const sourceRoom = editor.roomAt(point)
-    if (active === Tool.RoomFill && !sourceRoom) return
+    if (active === Tool.Rectangle && fill === null) return
 
     event.preventDefault()
     viewport.focus()
     viewport.setPointerCapture(event.pointerId)
     pointer = { id: event.pointerId, point, screen: { x: event.clientX, y: event.clientY },
-      tool: active, fill, room: sourceRoom }
+      tool: active, fill }
     dragging = active === Tool.Pan
     preview(point)
   }
 
   function preview(point: Point) {
-    if (!pointer || pointer.tool === Tool.Pan) return
+    if (!pointer || pointer.tool === Tool.Pan || pointer.fill === null) return
     // Replace previews so shrinking a rectangle restores the underlying map.
     editor.cancel()
-    if (pointer.tool === Tool.Rectangle) {
-      selection = cellRect(pointer.point, point, map.width, map.height)
-      editor.fill(selection, pointer.fill)
-    } else editor.fillRoom(pointer.room, pointer.fill)
+    selection = cellRect(pointer.point, point, map.width, map.height)
+    editor.fill(selection, pointer.fill)
     editVersion++
   }
 
@@ -213,29 +211,9 @@
       <div class="join" role="group" aria-label="Tools">
         {#each Object.values(Tool) as mode}
           <button class="btn btn-sm join-item" class:btn-primary={tool === mode}
-            aria-pressed={tool === mode} disabled={mode === Tool.RoomFill && !rooms.length}
-            onclick={() => tool = mode}>{mode}</button>
+            aria-pressed={tool === mode} onclick={() => tool = mode}>{mode}</button>
         {/each}
       </div>
-      {#if tool !== Tool.Pan}
-        <label class="flex items-center gap-2 text-sm">
-          Fill type
-          <select class="select select-sm w-32" bind:value={fillType}>
-            {#each Object.values(FillType) as type}
-              <option value={type} disabled={type === FillType.Room && !rooms.length}>{type}</option>
-            {/each}
-          </select>
-        </label>
-        {#if fillType === FillType.Room}
-          <label class="flex items-center gap-2 text-sm">
-            Target room
-            <select class="select select-sm w-32" value={targetRoom}
-              onchange={event => room = Number(event.currentTarget.value)}>
-              {#each rooms as id}<option value={id}>Room {id}</option>{/each}
-            </select>
-          </label>
-        {/if}
-      {/if}
       <div class="join" role="group" aria-label="Edits">
         <button class="btn btn-sm join-item" disabled={!canUndo} onclick={undo}>Undo</button>
         <button class="btn btn-sm join-item" disabled={!canRedo} onclick={redo}>Redo</button>
@@ -247,36 +225,47 @@
       <button class="btn btn-sm join-item" onclick={() => zoom(1.25)} aria-label="Zoom in">+</button>
     </div>
   </div>
-  {#if tool !== Tool.Pan}
-    <p class="shrink-0 border-b border-base-300 px-4 py-1 text-xs text-base-content/70">
-      {tool === Tool.Rectangle ? 'Drag a rectangle; release to apply. Escape cancels.' : 'Click a room to fill it.'}
-      {#if fillType === FillType.Room}Assigns floor cells only; walls and unknown cells stay unchanged.{/if}
-    </p>
-  {/if}
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions (Interactive map supports keyboard zoom and pan.) -->
-  <div bind:this={viewport} use:wheelZoom
-    class="relative min-h-0 flex-1 touch-none overflow-hidden outline-offset-[-2px]"
-    class:cursor-grab={tool === Tool.Pan && !dragging} class:cursor-grabbing={dragging}
-    class:cursor-crosshair={tool !== Tool.Pan && !dragging}
-    role="application" aria-label="Map from {source}" tabindex="0"
-    onpointerdown={startDrag} onpointermove={moveDrag} onpointerup={endDrag}
-    onpointercancel={cancelDrag} onlostpointercapture={cancelDrag} onkeydown={keydown}>
-    <canvas bind:this={canvas} width={map.width} height={map.height}
-      class="pointer-events-none absolute left-0 top-0 origin-top-left [image-rendering:pixelated]"
-      style:transform="translate({view.x}px, {view.y}px) scale({view.scale})"
-      aria-label="Room map"></canvas>
-    {#each labels as label (label.id)}
-      <span class="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 select-none rounded bg-base-100/85 px-2 py-0.5 text-xs font-medium"
-        style:left="{view.x + label.x * view.scale}px" style:top="{view.y + label.y * view.scale}px">
-        Room {label.id}
-      </span>
-    {/each}
-    {#if selection}
-      <div class="pointer-events-none absolute border border-info bg-info/10" aria-hidden="true"
-        style:left="{view.x + selection.left * view.scale}px"
-        style:top="{view.y + selection.top * view.scale}px"
-        style:width="{(selection.right - selection.left + 1) * view.scale}px"
-        style:height="{(selection.bottom - selection.top + 1) * view.scale}px"></div>
+  <div class="flex min-h-0 flex-1">
+    {#if tool === Tool.Rectangle}
+      <aside class="w-40 shrink-0 overflow-y-auto border-r border-base-300 bg-base-100 p-3" aria-label="Rectangle fills">
+        <fieldset class="flex min-w-0 flex-col gap-3">
+          <legend class="mb-3 text-sm font-medium">Fill</legend>
+          {#each Object.values(FillType) as type}
+            <label class="flex cursor-pointer items-center gap-2 text-sm">
+              <input class="radio radio-sm" type="radio" bind:group={fillType} value={type} />
+              {type === FillType.Room ? 'Room ID' : type}
+            </label>
+          {/each}
+          <input class="input input-sm w-full" type="number" aria-label="Room number"
+            min="1" max="63" step="1" required disabled={fillType !== FillType.Room} bind:value={room} />
+        </fieldset>
+      </aside>
     {/if}
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions (Interactive map supports keyboard zoom and pan.) -->
+    <div bind:this={viewport} use:wheelZoom
+      class="relative min-h-0 min-w-0 flex-1 touch-none overflow-hidden outline-offset-[-2px]"
+      class:cursor-grab={tool === Tool.Pan && !dragging} class:cursor-grabbing={dragging}
+      class:cursor-crosshair={tool !== Tool.Pan && !dragging}
+      role="application" aria-label="Map from {source}" tabindex="0"
+      onpointerdown={startDrag} onpointermove={moveDrag} onpointerup={endDrag}
+      onpointercancel={cancelDrag} onlostpointercapture={cancelDrag} onkeydown={keydown}>
+      <canvas bind:this={canvas} width={map.width} height={map.height}
+        class="pointer-events-none absolute left-0 top-0 origin-top-left [image-rendering:pixelated]"
+        style:transform="translate({view.x}px, {view.y}px) scale({view.scale})"
+        aria-label="Room map"></canvas>
+      {#each labels as label (label.id)}
+        <span class="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 select-none rounded bg-base-100/85 px-2 py-0.5 text-xs font-medium"
+          style:left="{view.x + label.x * view.scale}px" style:top="{view.y + label.y * view.scale}px">
+          Room {label.id}
+        </span>
+      {/each}
+      {#if selection}
+        <div class="pointer-events-none absolute border border-info bg-info/10" aria-hidden="true"
+          style:left="{view.x + selection.left * view.scale}px"
+          style:top="{view.y + selection.top * view.scale}px"
+          style:width="{(selection.right - selection.left + 1) * view.scale}px"
+          style:height="{(selection.bottom - selection.top + 1) * view.scale}px"></div>
+      {/if}
+    </div>
   </div>
 </div>
