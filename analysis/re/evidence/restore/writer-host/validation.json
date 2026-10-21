@@ -1,0 +1,55 @@
+{
+  "status": "passed",
+  "selected_functions": 19,
+  "instruction_records": 1299,
+  "pseudo_records": 99,
+  "configuration": "authenticated embedded default; deployment unproved",
+  "published_artifacts_identical": 23,
+  "commands": [
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/analysis/re/tooling/retool.py copy /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host/.scratch/final-replay/project",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host/import_export.py --project /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host/.scratch/final-replay/project --out /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host/.scratch/final-replay/import --functions 0x00015edc 0x00016874 0x00017038 0x000170d8 0x00017394 0x00017e24 0x00017fbc 0x000180e4 0x000181f0 0x000187fc 0x0001883c 0x000188f8 0x00018a68 0x00018ad4 0x00018c28 0x00019058 0x00019da8 0x00019fa0 0x0001d364 --import-program",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "/etc/profiles/per-user/user/bin/python3 /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host/import_export.py --project /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host/.scratch/final-replay/project --out /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host/.scratch/final-replay/reopened --functions 0x00015edc 0x00016874 0x00017038 0x000170d8 0x00017394 0x00017e24 0x00017fbc 0x000180e4 0x000181f0 0x000187fc 0x0001883c 0x000188f8 0x00018a68 0x00018ad4 0x00018c28 0x00019058 0x00019da8 0x00019fa0 0x0001d364",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "/nix/store/cw1zbnv33wxw1svbsw2a6jl0j6rq7jxh-ghidra-12.0.4/lib/ghidra/support/analyzeHeadless /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host/.scratch/final-replay/project pinned -process rr_loader -noanalysis -readOnly -max-cpu 2 -scriptPath /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host -postScript InspectHost.java /home/user/tmp/illegalplainape/worktrees/map-writer-host/analysis/re/evidence/restore/writer-host/.scratch/final-replay/inspect/thread.json",
+      "exit_code": 0,
+      "result": "passed"
+    }
+  ],
+  "limits": "Byte/reopen equality is not semantic correctness or runtime safety.",
+  "base_ref": "6cd68d68070400ddd8a327f1c3e09538df01fd63",
+  "scope": "static lane-only checkpoint; independent review required",
+  "tests": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/writer-host -p test_writer_host.py -v",
+    "result": "passed",
+    "count": 8
+  },
+  "focused_validation": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/writer-host/evidence.py",
+    "result": "passed"
+  },
+  "additional_checks": [
+    "Python AST and JSON parse passed",
+    "git diff --check passed",
+    "lane .scratch probe ignored"
+  ],
+  "dependency_retry": {
+    "initial_command": "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/writer-host/config_data.py",
+    "initial_result": "failed before decoding/loading: wrong ELF class: ELFCLASS32 for first host-libcrypto candidate",
+    "decision": "Supervisor explicitly approved selecting native ELF64 host libcrypto after architecture/hash verification; same static saved-data protocol only.",
+    "final_result": "authenticated CCM succeeded; ciphertext/tag/AAD corruption rejected in tests"
+  },
+  "checker_changes": "New lane checker only; no predecessor/shared checker changed or fixed.",
+  "review": "Required independent static review pending; not runtime/device acceptance"
+}

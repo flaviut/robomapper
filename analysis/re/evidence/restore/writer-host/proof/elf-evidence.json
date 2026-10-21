@@ -1,0 +1,341 @@
+{
+  "program": "binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/rr_loader",
+  "sha256": "020d6d7de7d282ecec3e845e4664113b11df82656701d42de7e901595c5f5125",
+  "pt_loads": [
+    {
+      "file_offset": "0x0",
+      "va": "0x10000",
+      "file_size": "0xe880",
+      "memory_size": "0xe880",
+      "flags": 5
+    },
+    {
+      "file_offset": "0xeed4",
+      "va": "0x2eed4",
+      "file_size": "0x1a1c",
+      "memory_size": "0x1b90",
+      "flags": 6
+    }
+  ],
+  "entries": [
+    {
+      "address": "0x00015edc",
+      "symbols": [
+        {
+          "name": "main",
+          "symbol_value": "0x15edd",
+          "size": 134
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e53c",
+        "table_file_offset": "0xe53c",
+        "bytes": "a079ff7fb0b0aa80"
+      }
+    },
+    {
+      "address": "0x00016874",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader14RRTimerManager5finalEv",
+          "symbol_value": "0x16875",
+          "size": 24
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e5d4",
+        "table_file_offset": "0xe5d4",
+        "bytes": "a082ff7fb0b0a880"
+      }
+    },
+    {
+      "address": "0x00017038",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader15RRPluginManager5finalEv",
+          "symbol_value": "0x17039",
+          "size": 128
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e624",
+        "table_file_offset": "0xe624",
+        "bytes": "148aff7fb0b0ac80"
+      }
+    },
+    {
+      "address": "0x000170d8",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader15RRPluginManager10loadPluginEhPK5cJSON",
+          "symbol_value": "0x170d9",
+          "size": 700
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e634",
+        "table_file_offset": "0xe634",
+        "bytes": "a48aff7f9cfdff7f"
+      }
+    },
+    {
+      "address": "0x00017394",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader15RRPluginManager4initEv",
+          "symbol_value": "0x17395",
+          "size": 176
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e63c",
+        "table_file_offset": "0xe63c",
+        "bytes": "588dff7fb0b0ac80"
+      }
+    },
+    {
+      "address": "0x00017e24",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader5RREnvC1Ev",
+          "symbol_value": "0x17e25",
+          "size": 152
+        },
+        {
+          "name": "_ZN8rrloader5RREnvC2Ev",
+          "symbol_value": "0x17e25",
+          "size": 152
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e69c",
+        "table_file_offset": "0xe69c",
+        "bytes": "8897ff7f5cfdff7f"
+      }
+    },
+    {
+      "address": "0x00017fbc",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader5RREnv8parseArgEiPPc",
+          "symbol_value": "0x17fbd",
+          "size": 296
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e6ac",
+        "table_file_offset": "0xe6ac",
+        "bytes": "1099ff7fb0af0280"
+      }
+    },
+    {
+      "address": "0x000180e4",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader5RREnv4initEv",
+          "symbol_value": "0x180e5",
+          "size": 140
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e6b4",
+        "table_file_offset": "0xe6b4",
+        "bytes": "309aff7fb0b0aa80"
+      }
+    },
+    {
+      "address": "0x000181f0",
+      "symbols": [
+        {
+          "name": "_ZNK8rrloader5RREnv17getConfigFilePathEv",
+          "symbol_value": "0x181f1",
+          "size": 14
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e6cc",
+        "table_file_offset": "0xe6cc",
+        "bytes": "249bff7fb0b0a880"
+      }
+    },
+    {
+      "address": "0x000187fc",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader8RRLoader5finalEv",
+          "symbol_value": "0x187fd",
+          "size": 56
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e73c",
+        "table_file_offset": "0xe73c",
+        "bytes": "c0a0ff7fb0b0a880"
+      }
+    },
+    {
+      "address": "0x0001883c",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader8RRLoader13initSigactionEv",
+          "symbol_value": "0x1883d",
+          "size": 186
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e74c",
+        "table_file_offset": "0xe74c",
+        "bytes": "f0a0ff7fb0aa2780"
+      }
+    },
+    {
+      "address": "0x000188f8",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader8RRLoader4initEv",
+          "symbol_value": "0x188f9",
+          "size": 366
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e754",
+        "table_file_offset": "0xe754",
+        "bytes": "a4a1ff7fb0b0aa80"
+      }
+    },
+    {
+      "address": "0x00018a68",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader8RRLoader10dealSignalEiP9siginfo_t",
+          "symbol_value": "0x18a69",
+          "size": 106
+        }
+      ],
+      "exidx": null
+    },
+    {
+      "address": "0x00018ad4",
+      "symbols": [],
+      "exidx": {
+        "table_va": "0x1e75c",
+        "table_file_offset": "0xe75c",
+        "bytes": "78a3ff7fa908b180"
+      }
+    },
+    {
+      "address": "0x00018c28",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader8RRPlugin4initEv",
+          "symbol_value": "0x18c29",
+          "size": 652
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e79c",
+        "table_file_offset": "0xe79c",
+        "bytes": "8ca4ff7ff0fcff7f"
+      }
+    },
+    {
+      "address": "0x00019058",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader8RRPlugin5finalEv",
+          "symbol_value": "0x19059",
+          "size": 108
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e7d4",
+        "table_file_offset": "0xe7d4",
+        "bytes": "84a8ff7fa908b180"
+      }
+    },
+    {
+      "address": "0x00019da8",
+      "symbols": [
+        {
+          "name": "_ZN8rrloader6RRConf4initEv",
+          "symbol_value": "0x19da9",
+          "size": 504
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e854",
+        "table_file_offset": "0xe854",
+        "bytes": "54b5ff7fb4fcff7f"
+      }
+    },
+    {
+      "address": "0x00019fa0",
+      "symbols": [
+        {
+          "name": "_ZNK8rrloader6RRConf7getNodeEPKc",
+          "symbol_value": "0x19fa1",
+          "size": 34
+        }
+      ],
+      "exidx": {
+        "table_va": "0x1e85c",
+        "table_file_offset": "0xe85c",
+        "bytes": "44b7ff7fa908b180"
+      }
+    },
+    {
+      "address": "0x0001d364",
+      "symbols": [
+        {
+          "name": "rr_unpacking",
+          "symbol_value": "0x1d365",
+          "size": 176
+        }
+      ],
+      "exidx": null
+    }
+  ],
+  "signal_table": {
+    "va": "0x2f1c8",
+    "file_offset": "0xf1c8",
+    "record_size": 16,
+    "first_record_bytes": "01000000f0dd0100f8dd0100d58a0100",
+    "first_signal": 1,
+    "thumb_handler_pointer": "0x18ad5"
+  },
+  "strings": [
+    {
+      "va": "0x1d6e4",
+      "text": "plugins"
+    },
+    {
+      "va": "0x1d8c0",
+      "text": "pluginsPath"
+    },
+    {
+      "va": "0x1df8c",
+      "text": "name"
+    },
+    {
+      "va": "0x1df3c",
+      "text": "rr_load_plugin"
+    },
+    {
+      "va": "0x1d8e4",
+      "text": "/"
+    }
+  ],
+  "unrecovered_thread": {
+    "ehabi": {
+      "table_va": "0x1e6fc",
+      "table_file_offset": "0xe6fc",
+      "bytes": "189cff7fb0ad0c80"
+    },
+    "next_ehabi": {
+      "table_va": "0x1e704",
+      "table_file_offset": "0xe704",
+      "bytes": "449dff7f58fdff7f"
+    },
+    "qualification": "Pseudo decode only; no function creation or recovered CFG claim."
+  }
+}

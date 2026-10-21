@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "program": "rr_loader",
+  "sha256": "020d6d7de7d282ecec3e845e4664113b11df82656701d42de7e901595c5f5125",
+  "classification": "bounded static evidence; no device-use or runtime-safety acceptance",
+  "claims": [
+    {
+      "id": "config-source-selection",
+      "statement": "RRConf::init branches on copied config path length: empty uses rr_unpacking(json_config,json_config_len), nonempty opens that path as rb and parses its bytes. parseArg accepts -c FILE or one positional path. The ./config.json string alone does not establish a default file open.",
+      "instruction_anchors": ["0x00017fbc", "0x000181f0", "0x00019dc4", "0x00019dce", "0x00019de4", "0x00019e1a", "0x00019e22"],
+      "limits": "C++ inferred return/hidden-result signatures are not ABI corrections; original names and signatures are unchanged. Active argv/path is unknown."
+    },
+    {
+      "id": "configured-navigation-host",
+      "statement": "Authenticated static decoding of this loader's embedded configuration selects seven plugins, including librrslamdrv.so at index 4 and librrnavdrv.so at index 5 under /opt/rockrobo/cleaner/lib. All seven tracked ELF candidates export rr_load_plugin. The existing reviewed navigation/grid/persistence code therefore has an explicit configured host candidate, not merely a dlopen string lead.",
+      "instruction_anchors": ["0x00019dd0", "0x00019de4", "0x0001d39e", "0x0001d3ae", "0x0001d3da"],
+      "data_evidence": "proof/configuration.json; config_data.py; predecessor lifecycle/writer-candidates.json and components/orchestration.json",
+      "limits": "Embedded default binding, not measured active deployment. librobopersist.so is not a separate named plugin here; navigation has a reviewed persistence dependency. No claim every writer is covered or loaded by this process."
+    },
+    {
+      "id": "plugin-loading-contract",
+      "statement": "The plugins node must be an array of objects; each array index is narrowed to an unsigned byte for loadPlugin. RREnv reads pluginsPath and appends '/'. RRPlugin::init reads common.name and common.plugin, constructs path+plugin, dlopens with numeric flags 0x102, resolves rr_load_plugin, checks callback slots +4,+8,+0x14 and calls slot +4 with plugin-control pointer. This is generic plugin capability, separate from configured ownership.",
+      "instruction_anchors": ["0x0001739e", "0x000173c6", "0x000173d0", "0x0001811e", "0x00018160", "0x00018c28"],
+      "limits": "No hand-renamed callback semantics or replacement struct ABI. Numeric flags are retained rather than asserting platform header definitions."
+    },
+    {
+      "id": "sighup-flag-only-handler",
+      "statement": "The first 16-byte signal-table record has signal 1 (SIGHUP) and Thumb handler pointer 0x18ad5. initSigaction installs table handlers; the trampoline forwards r0 signal into r1 of dealSignal after obtaining the loader in r0. For signal 1, the mask/shift branches reach the byte store 1 at loader+0x9c. This path does not directly flush persistence, join plugin workers, acknowledge writer exit, or send a heartbeat.",
+      "instruction_anchors": ["0x00018872", "0x00018886", "0x00018896", "0x00018ad4", "0x00018ae0", "0x00018ae6", "0x00018a74", "0x00018a82", "0x00018a88"],
+      "data_evidence": "proof/elf-evidence.json signal_table; raw first record at VA 0x2f1c8/file offset 0xf1c8",
+      "limits": "The surviving demangled dealSignal(int,siginfo_t*) prototype is misleading for register usage; it is preserved, not silently corrected. Signal installation success and actual delivery are unmeasured."
+    },
+    {
+      "id": "generic-final-is-not-map-barrier",
+      "statement": "main calls loader final after successful init. Loader final joins the timer thread through RRTimerManager::final before calling RRPluginManager::final. Manager final traverses plugins in reverse key order. RRPlugin::final sets its local quit byte, wakes conditions/queue, calls optional callback slot +0x10, joins the recorded thread +0x94 if nonzero, then calls callback +0x14. These local ordering facts do not establish persistence flush or all-worker completion.",
+      "instruction_anchors": ["0x00015edc", "0x000187fc", "0x00018802", "0x00018818", "0x00016874", "0x00017038", "0x00019070", "0x00019098", "0x000190be", "0x000190ac"],
+      "limits": "Timer quit-loop producer/consumer connection and nav/slam concrete final callbacks are not closed here. Join/callback return values are not a disk/cache/durability barrier. No external stop procedure is proposed."
+    }
+  ],
+  "unclosed": [
+    "Active process argv/modules/config and observed deployment identity.",
+    "Navigation/slam callback slots and asynchronous persistence writer termination/flush.",
+    "Normal MCU heartbeat producer and hardware watchdog acceptance; no MCU image selected.",
+    "0x18314 is only bounded pseudo instruction evidence with original EHABI starts; no new function was created and no CFG/runtime claim is made."
+  ]
+}

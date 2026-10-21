@@ -1,0 +1,174 @@
+{
+  "classification": "Authenticated static decode of embedded default configuration; NOT active deployment",
+  "program": "binaries/4.3.5_1612/opt/rockrobo/cleaner/bin/rr_loader",
+  "sha256": "020d6d7de7d282ecec3e845e4664113b11df82656701d42de7e901595c5f5125",
+  "host_crypto": {
+    "path": "/nix/store/14cfdqp8w2iw188vhjfaz2wg8pzbghp3-openssl-3.6.3/lib/libcrypto.so.3",
+    "sha256": "8918f69f4b445a460d7ec594aa5bfcbecaf898d335683b7468312c28cc2f2f8c",
+    "version": "OpenSSL 3.6.3 9 Jun 2026",
+    "architecture": "ELF64 little-endian x86_64"
+  },
+  "extract": {
+    "pointer_va": "0x2f2f4",
+    "payload_va": "0x2f2f8",
+    "payload_file_offset": "0xf2f8",
+    "length_va": "0x308ec",
+    "length_file_offset": "0x108ec",
+    "payload_size": 5619,
+    "key_source_vas": [
+      "0x1e304",
+      "0x1e314"
+    ],
+    "key_combination": "16-byte XOR",
+    "aad_va": "0x1e324",
+    "aad_size": 8,
+    "nonce_va": "0x1e32c",
+    "nonce_size": 13,
+    "tag_size": 4,
+    "cipher": "AES-128-CCM",
+    "tag_placement": "last four bytes",
+    "ccm_authentication": "verified by native host EVP_DecryptUpdate return 1"
+  },
+  "payload_sha256": "eeff02ae69d17af0a5b2918a042429646c5ffd77f50a121c580d177b652794da",
+  "plaintext_sha256": "04fc024d1ba91b448677c8882f36f63cb487cba0ca5ff166f3f1188de4b04ab7",
+  "config_keys": [
+    "debugLogLevel",
+    "pluginsPath",
+    "plugins"
+  ],
+  "debugLogLevel": 8,
+  "pluginsPath": "/opt/rockrobo/cleaner/lib",
+  "plugins": [
+    {
+      "index": 0,
+      "common": {
+        "name": "support",
+        "plugin": "librr_plugin_support.so",
+        "maxQueueCapacity": 10240
+      },
+      "tracked_path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librr_plugin_support.so",
+      "sha256": "564d8291ce9b615abfa12819342b18fda466585b20d36022ae18f7f413132ed5",
+      "rr_load_plugin_exports": [
+        {
+          "address": "0x1c94",
+          "name": "rr_load_plugin",
+          "symbol_value": "0x1c95",
+          "size": 12
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "common": {
+        "name": "logger",
+        "plugin": "librr_plugin_logger.so",
+        "maxQueueCapacity": 10240
+      },
+      "tracked_path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librr_plugin_logger.so",
+      "sha256": "9b575d54f6f088e69354f0262df1c7f7fc9874227d848d507e5b83f66ebcad1b",
+      "rr_load_plugin_exports": [
+        {
+          "address": "0xa80",
+          "name": "rr_load_plugin",
+          "symbol_value": "0xa81",
+          "size": 12
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "common": {
+        "name": "chassis",
+        "plugin": "librr_plugin_chassis.so",
+        "maxQueueCapacity": 10240
+      },
+      "tracked_path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librr_plugin_chassis.so",
+      "sha256": "aa6091221e16f0c32456539c025361d78b698b5522258d4f2d6af0e162ed67c0",
+      "rr_load_plugin_exports": [
+        {
+          "address": "0xddd4",
+          "name": "rr_load_plugin",
+          "symbol_value": "0xddd5",
+          "size": 12
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "common": {
+        "name": "laser",
+        "plugin": "librr_plugin_laser.so",
+        "maxQueueCapacity": 10240
+      },
+      "tracked_path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librr_plugin_laser.so",
+      "sha256": "c67773367db7bca4993f3aa5169b77e46b606bcd8ab9dcf6d9116406911d9563",
+      "rr_load_plugin_exports": [
+        {
+          "address": "0x6b60",
+          "name": "rr_load_plugin",
+          "symbol_value": "0x6b61",
+          "size": 12
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "common": {
+        "name": "slam",
+        "plugin": "librrslamdrv.so",
+        "maxQueueCapacity": 10240
+      },
+      "tracked_path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrslamdrv.so",
+      "sha256": "b48f5f56eb1b2d22abbf727725ea558762337f8f0103229d8da6c1ab6275608a",
+      "rr_load_plugin_exports": [
+        {
+          "address": "0x6c14",
+          "name": "rr_load_plugin",
+          "symbol_value": "0x6c15",
+          "size": 12
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "common": {
+        "name": "nav",
+        "plugin": "librrnavdrv.so",
+        "maxQueueCapacity": 10240
+      },
+      "tracked_path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librrnavdrv.so",
+      "sha256": "603a3b2f23034592569b5f4ab761a19bdbf5e51699805dea031def9453891475",
+      "rr_load_plugin_exports": [
+        {
+          "address": "0x5f830",
+          "name": "rr_load_plugin",
+          "symbol_value": "0x5f831",
+          "size": 12
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "common": {
+        "name": "carpet",
+        "plugin": "librr_plugin_carpet.so",
+        "maxQueueCapacity": 10240
+      },
+      "tracked_path": "binaries/4.3.5_1612/opt/rockrobo/cleaner/lib/librr_plugin_carpet.so",
+      "sha256": "7908cb8e41e1615554c1040ea13e7792c4adf105afe1fe2818665686d50750b1",
+      "rr_load_plugin_exports": [
+        {
+          "address": "0x21ac",
+          "name": "rr_load_plugin",
+          "symbol_value": "0x21ad",
+          "size": 12
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No full plaintext configuration is published.",
+    "CCM authentication here corroborates extraction/algorithm consistency, not trusted-origin or runtime deployment.",
+    "Plugin entry export presence is capability, not proof callback executes or finishes map writes."
+  ]
+}
