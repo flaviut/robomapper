@@ -23,12 +23,12 @@ async function main() {
   } })
   if (values.help) {
     console.log(`Usage:
-  pnpm screenshot --map FILE [--rooms FILE] [--tool Line] [--output FILE]
-  pnpm screenshot --hostname HOST [--tool Select] [--output FILE]
+  pnpm screenshot --map FILE [--rooms FILE] [--tool Rectangle] [--output FILE]
+  pnpm screenshot --hostname HOST [--tool "Room fill"] [--output FILE]
 
 Captures a 1440 × 1000 desktop view. Starts and stops its own local server.
 Local files never connect to a robot. --hostname explicitly loads over SSH.
-Tools: Pan, Select, Erase, Line. Output: artifacts/map-editor.png.
+Tools: Pan, Rectangle, "Room fill". Output: artifacts/map-editor.png.
 Uses Chromium on PATH, or Playwright's installed browser.
 Set CHROMIUM_PATH to choose another executable.`)
     return
@@ -36,7 +36,7 @@ Set CHROMIUM_PATH to choose another executable.`)
   if (Boolean(values.map) === Boolean(values.hostname)) throw new Error('Choose --map FILE or --hostname HOST.')
   if (values.rooms && !values.map) throw new Error('--rooms requires --map.')
   const tool = values.tool ?? 'Pan'
-  if (!['Pan', 'Select', 'Erase', 'Line'].includes(tool)) throw new Error('Unknown tool. Choose Pan, Select, Erase, or Line.')
+  if (!['Pan', 'Rectangle', 'Room fill'].includes(tool)) throw new Error('Unknown tool. Choose Pan, Rectangle, or Room fill.')
 
   let fixture: string | undefined
   if (values.map) {
@@ -71,7 +71,9 @@ Set CHROMIUM_PATH to choose another executable.`)
     }
     await page.locator('canvas').waitFor({ state: 'visible' })
     await page.getByRole('button', { name: 'Fit', exact: true }).click()
-    await page.getByRole('button', { name: tool, exact: true }).click()
+    const button = page.getByRole('button', { name: tool, exact: true })
+    if (await button.isDisabled()) throw new Error('Room fill requires room data.')
+    await button.click()
     await page.mouse.move(0, 0)
     await page.evaluate(() => document.fonts.ready)
     if (errors.length) throw new Error(errors.join('\n'))

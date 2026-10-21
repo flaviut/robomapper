@@ -13,6 +13,7 @@
   let sessionId = $state('')
   let initialView = $state<View>()
   let initialCells = $state<Uint8Array>()
+  let initialRooms = $state<Uint8Array>()
   let revision = 0
 
   onMount(() => {
@@ -24,6 +25,7 @@
       sessionId = saved.id
       initialView = saved.view
       initialCells = saved.draft
+      initialRooms = saved.draftRooms
       hostname ||= saved.source
     }).catch(() => {})
   })
@@ -33,9 +35,9 @@
     void saveView(sessionId, view).catch(() => {})
   }
 
-  function rememberEdit(cells: Uint8Array) {
+  function rememberEdit(cells: Uint8Array, rooms: Uint8Array) {
     if (!sessionId) return
-    void saveDraft(sessionId, cells).catch(() => {
+    void saveDraft(sessionId, cells, rooms).catch(() => {
       error = 'Could not save edits in this browser.'
     })
   }
@@ -56,6 +58,7 @@
       sessionId = session.id
       initialView = undefined
       initialCells = undefined
+      initialRooms = undefined
       map = loaded
       source = host
     } catch (cause) {
@@ -84,7 +87,7 @@
   <main class="flex min-h-0 flex-1 justify-center" aria-busy={loading}>
     {#if map}
       {#key sessionId}
-        <MapViewer {map} {source} {initialView} {initialCells} onview={rememberView} onedit={rememberEdit} />
+        <MapViewer {map} {source} {initialView} {initialCells} {initialRooms} onview={rememberView} onedit={rememberEdit} />
       {/key}
     {:else}
       <p class="self-center text-sm text-base-content/50">No map loaded</p>

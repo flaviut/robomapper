@@ -44,19 +44,31 @@ test('restore the cached map and only its own viewport', async () => {
     assert.deepEqual(await loadSession(), { ...session, view: { x: 40, y: -10, scale: 3 } })
 
     const cells = Uint8Array.of(128, 255)
-    const saving = saveDraft(session.id, cells)
+    const rooms = Uint8Array.of(17, 0)
+    const saving = saveDraft(session.id, cells, rooms)
     cells[0] = 255
+    rooms[0] = 18
     await saving
     const edited = await loadSession()
     assert.deepEqual(edited.draft, Uint8Array.of(128, 255))
+    assert.deepEqual(edited.draftRooms, Uint8Array.of(17, 0))
     assert.deepEqual(edited.map.cells, session.map.cells)
+    assert.deepEqual(edited.map.rooms, session.map.rooms)
     assert.deepEqual(edited.view, { x: 40, y: -10, scale: 3 })
+
+    await saveDraft(session.id, Uint8Array.of(128, 255))
+    const legacy = await loadSession()
+    assert.deepEqual(legacy.draft, Uint8Array.of(128, 255))
+    assert.equal(legacy.draftRooms, undefined)
+
+    await saveDraft(session.id, Uint8Array.of(128, 255), Uint8Array.of(1))
+    assert.equal((await loadSession()).draftRooms, undefined)
 
     const next = { ...session, id: 'second', source: 'other.local' }
     await saveSession(next)
     assert.deepEqual(await loadSession(), { ...next, view: undefined })
     await saveView(session.id, view)
-    await saveDraft(session.id, Uint8Array.of(255, 255))
+    await saveDraft(session.id, Uint8Array.of(255, 255), Uint8Array.of(19, 19))
     assert.deepEqual(await loadSession(), { ...next, view: undefined })
   } finally {
     if (original === undefined) delete globalThis.indexedDB

@@ -2,18 +2,21 @@
   import { untrack } from 'svelte'
   import type { RobotMap } from './lib/maps'
   import { fitView, zoomView, mapImage, roomLabels, type View } from './lib/view'
-  import { Cell, CellEditor, cellRect, type CellRect, type Point } from './lib/editor'
+  import { Cell, CellEditor, cellRect, type CellRect, type Fill, type Point } from './lib/editor'
 
-  const Tool = { Pan: 'Pan', Select: 'Select', Erase: 'Erase', Line: 'Line' } as const
+  const Tool = { Pan: 'Pan', Rectangle: 'Rectangle', RoomFill: 'Room fill' } as const
   type Tool = typeof Tool[keyof typeof Tool]
+  const FillType = { Floor: 'Floor', Wall: 'Wall', Unknown: 'Unknown', Room: 'Room' } as const
+  type FillType = typeof FillType[keyof typeof FillType]
 
-  let { map, source, initialView, initialCells, onview, onedit }: {
+  let { map, source, initialView, initialCells, initialRooms, onview, onedit }: {
     map: RobotMap
     source: string
     initialView?: View
     initialCells?: Uint8Array
+    initialRooms?: Uint8Array
     onview?: (view: View) => void
-    onedit?: (cells: Uint8Array) => void
+    onedit?: (cells: Uint8Array, rooms: Uint8Array) => void
   } = $props()
   let viewport = $state<HTMLDivElement>()
   let canvas = $state<HTMLCanvasElement>()
@@ -24,12 +27,21 @@
   let ready = $state(false)
   let fittedMap: RobotMap | null = null
   let size = { width: 0, height: 0 }
-  let pointer: { id: number, point: Point, screen: Point, tool: Tool } | null = null
+  let pointer: { id: number, point: Point, screen: Point, tool: Tool, fill: Fill, room: number } | null = null
   let tool = $state<Tool>(Tool.Pan)
+  let fillType = $state<FillType>(FillType.Wall)
+  let room = $state(0)
   let selection = $state<CellRect | null>(null)
   let editVersion = $state(0)
-  const editor = $derived(new CellEditor(map.width, map.height, initialCells ?? map.cells))
-  const labels = $derived(roomLabels(map))
+  const editor = $derived(new CellEditor(map.width, map.height, initialCells ?? map.cells, initialRooms ?? map.rooms))
+  const rooms = $derived([...new Set(map.rooms)].filter(id => id > 0).sort((a, b) => a - b))
+  const targetRoom = $derived(rooms.includes(room) ? room : rooms[0] ?? 0)
+  const fill = $derived<Fill>(fillType === FillType.Room ? { room: targetRoom } : Cell[fillType])
+  const editedMap = $derived.by(() => {
+    editVersion
+    return { ...map, cells: editor.cells, rooms: editor.rooms }
+  })
+  const labels = $derived(roomLabels(editedMap))
   const canUndo = $derived.by(() => { editVersion; return editor.canUndo })
   const canRedo = $derived.by(() => { editVersion; return editor.canRedo })
 
@@ -67,7 +79,7 @@
     editVersion
     const context = canvas?.getContext('2d')
     if (!context) return
-    const image = mapImage({ ...map, cells: editor.cells })
+    const image = mapImage(editedMap)
     context.putImageData(new ImageData(image, map.width, map.height), 0, 0)
   })
 
@@ -102,13 +114,7 @@
 
   function changed() {
     editVersion++
-    onedit?.(editor.cells)
-  }
-
-  function eraseSelection() {
-    if (!selection || pointer) return
-    editor.fill(selection, Cell.Unknown)
-    if (editor.commit()) changed()
+    onedit?.(editor.cells, editor.rooms)
   }
 
   function undo() {
@@ -123,21 +129,28 @@
     if ((event.button !== 0 && event.button !== 1) || pointer || !viewport) return
     const active = event.button === 1 || event.altKey ? Tool.Pan : tool
     const point = pointAt(event)
-    if (active !== Tool.Pan && (point.x < 0 || point.y < 0 || point.x >= map.width || point.y >= map.height)) {
-      selection = null
-      return
-    }
+    if (active !== Tool.Pan && (point.x < 0 || point.y < 0 || point.x >= map.width || point.y >= map.height)) return
+    if (active !== Tool.Pan && fillType === FillType.Room && !targetRoom) return
+    const sourceRoom = editor.roomAt(point)
+    if (active === Tool.RoomFill && !sourceRoom) return
 
     event.preventDefault()
     viewport.focus()
     viewport.setPointerCapture(event.pointerId)
-    pointer = { id: event.pointerId, point, screen: { x: event.clientX, y: event.clientY }, tool: active }
+    pointer = { id: event.pointerId, point, screen: { x: event.clientX, y: event.clientY },
+      tool: active, fill, room: sourceRoom }
     dragging = active === Tool.Pan
-    if (active === Tool.Select) selection = cellRect(point, point, map.width, map.height)
-    if (active === Tool.Pan || active === Tool.Select) return
+    preview(point)
+  }
 
-    selection = null
-    editor.line(point, point, active === Tool.Line ? Cell.Wall : Cell.Unknown)
+  function preview(point: Point) {
+    if (!pointer || pointer.tool === Tool.Pan) return
+    // Replace previews so shrinking a rectangle restores the underlying map.
+    editor.cancel()
+    if (pointer.tool === Tool.Rectangle) {
+      selection = cellRect(pointer.point, point, map.width, map.height)
+      editor.fill(selection, pointer.fill)
+    } else editor.fillRoom(pointer.room, pointer.fill)
     editVersion++
   }
 
@@ -149,21 +162,7 @@
       return
     }
 
-    const point = pointAt(event)
-    if (pointer.tool === Tool.Select) {
-      selection = cellRect(pointer.point, point, map.width, map.height)
-      return
-    }
-
-    if (pointer.tool === Tool.Line) {
-      // Replace the preview from the fixed anchor, preserving cells under old previews.
-      editor.cancel()
-      editor.line(pointer.point, point, Cell.Wall)
-    } else {
-      editor.line(pointer.point, point, Cell.Unknown)
-      pointer.point = point
-    }
-    editVersion++
+    if (pointer.tool === Tool.Rectangle) preview(pointAt(event))
   }
 
   function endDrag(event: PointerEvent) {
@@ -172,17 +171,18 @@
     const active = pointer.tool
     pointer = null
     dragging = false
-    if ((active === Tool.Erase || active === Tool.Line) && editor.commit()) changed()
+    selection = null
+    if (active !== Tool.Pan && editor.commit()) changed()
   }
 
   function cancelDrag() {
     if (!pointer) return
     const id = pointer.id
-    if (pointer.tool === Tool.Erase || pointer.tool === Tool.Line) {
+    if (pointer.tool !== Tool.Pan) {
       editor.cancel()
       editVersion++
     }
-    if (pointer.tool === Tool.Select) selection = null
+    selection = null
     pointer = null
     dragging = false
     if (viewport?.hasPointerCapture(id)) viewport.releasePointerCapture(id)
@@ -190,12 +190,11 @@
 
   function keydown(event: KeyboardEvent) {
     const key = event.key.toLowerCase()
-    if (key === 'escape') { cancelDrag(); selection = null }
+    if (key === 'escape') cancelDrag()
     else if (pointer) return
     else if ((event.ctrlKey || event.metaKey) && key === 'z') { if (event.shiftKey) redo(); else undo() }
     else if ((event.ctrlKey || event.metaKey) && key === 'y') redo()
     else if (event.ctrlKey || event.metaKey) return
-    else if ((key === 'delete' || key === 'backspace') && selection) eraseSelection()
     else if (event.key === '+' || event.key === '=') zoom(1.25)
     else if (event.key === '-') zoom(0.8)
     else if (event.key === '0') fit()
@@ -214,11 +213,30 @@
       <div class="join" role="group" aria-label="Tools">
         {#each Object.values(Tool) as mode}
           <button class="btn btn-sm join-item" class:btn-primary={tool === mode}
-            aria-pressed={tool === mode} onclick={() => tool = mode}>{mode}</button>
+            aria-pressed={tool === mode} disabled={mode === Tool.RoomFill && !rooms.length}
+            onclick={() => tool = mode}>{mode}</button>
         {/each}
       </div>
+      {#if tool !== Tool.Pan}
+        <label class="flex items-center gap-2 text-sm">
+          Fill type
+          <select class="select select-sm w-32" bind:value={fillType}>
+            {#each Object.values(FillType) as type}
+              <option value={type} disabled={type === FillType.Room && !rooms.length}>{type}</option>
+            {/each}
+          </select>
+        </label>
+        {#if fillType === FillType.Room}
+          <label class="flex items-center gap-2 text-sm">
+            Target room
+            <select class="select select-sm w-32" value={targetRoom}
+              onchange={event => room = Number(event.currentTarget.value)}>
+              {#each rooms as id}<option value={id}>Room {id}</option>{/each}
+            </select>
+          </label>
+        {/if}
+      {/if}
       <div class="join" role="group" aria-label="Edits">
-        <button class="btn btn-sm join-item" disabled={!selection} onclick={eraseSelection}>Delete</button>
         <button class="btn btn-sm join-item" disabled={!canUndo} onclick={undo}>Undo</button>
         <button class="btn btn-sm join-item" disabled={!canRedo} onclick={redo}>Redo</button>
       </div>
@@ -229,6 +247,13 @@
       <button class="btn btn-sm join-item" onclick={() => zoom(1.25)} aria-label="Zoom in">+</button>
     </div>
   </div>
+  {#if tool !== Tool.Pan}
+    <p class="shrink-0 border-b border-base-300 px-4 py-1 text-xs text-base-content/70">
+      {tool === Tool.Rectangle ? 'Drag a rectangle; release to apply. Escape cancels.' : 'Click a room to fill every cell with that room ID.'}
+      {#if fillType === FillType.Room}Assigns floor cells only; walls and unknown cells stay unchanged.{/if}
+      Local draft only.
+    </p>
+  {/if}
   <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions (Interactive map supports keyboard zoom and pan.) -->
   <div bind:this={viewport} use:wheelZoom
     class="relative min-h-0 flex-1 touch-none overflow-hidden outline-offset-[-2px]"

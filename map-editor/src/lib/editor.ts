@@ -1,5 +1,7 @@
-export const Cell = { Unknown: 128, Wall: 255 } as const
+export const Cell = { Floor: 0, Unknown: 128, Wall: 255 } as const
 export type CellValue = typeof Cell[keyof typeof Cell]
+export type Fill = CellValue | { room: number }
+type Layer = 'cells' | 'rooms'
 
 export interface Point {
   x: number
@@ -14,6 +16,7 @@ export interface CellRect {
 }
 
 interface Change {
+  layer: Layer
   index: number
   before: number
   after: number
@@ -53,29 +56,45 @@ function clipLine(from: Point, to: Point, width: number, height: number): [Point
 
 export class CellEditor {
   private data: Uint8Array
+  private roomData: Uint8Array
   private width: number
   private height: number
   private past: Change[][] = []
   private future: Change[][] = []
   private stroke = new Map<number, Change>()
 
-  constructor(width: number, height: number, cells: Uint8Array) {
+  constructor(width: number, height: number, cells: Uint8Array, rooms: Uint8Array = new Uint8Array(cells.length)) {
     if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0
-      || cells.length !== width * height) throw new Error('Invalid map dimensions.')
+      || cells.length !== width * height || rooms.length !== cells.length) throw new Error('Invalid map dimensions.')
     this.width = width
     this.height = height
     this.data = cells.slice()
+    this.roomData = rooms.slice()
   }
 
   get cells(): Uint8Array { return this.data }
+  get rooms(): Uint8Array { return this.roomData }
   get canUndo(): boolean { return this.past.length > 0 }
   get canRedo(): boolean { return this.future.length > 0 }
 
-  fill(rect: CellRect, value: CellValue) {
+  roomAt(point: Point): number {
+    if (point.x < 0 || point.y < 0 || point.x >= this.width || point.y >= this.height) return 0
+    return this.roomData[point.y * this.width + point.x] ?? 0
+  }
+
+  fill(rect: CellRect, value: Fill) {
     for (let y = Math.max(0, rect.top); y <= Math.min(this.height - 1, rect.bottom); y++) {
       for (let x = Math.max(0, rect.left); x <= Math.min(this.width - 1, rect.right); x++) {
-        this.setCell(x, y, value)
+        this.paint(y * this.width + x, value)
       }
+    }
+  }
+
+  fillRoom(room: number, value: Fill) {
+    if (!Number.isInteger(room) || room < 1 || room > 63) return
+    // Membership, not connectivity, includes disconnected parts of the same room.
+    for (let index = 0; index < this.roomData.length; index++) {
+      if (this.roomData[index] === room) this.paint(index, value)
     }
   }
 
@@ -132,17 +151,36 @@ export class CellEditor {
     return true
   }
 
+  private paint(index: number, value: Fill) {
+    if (typeof value === 'number') {
+      this.setValue(index, value, 'cells')
+      return
+    }
+
+    // Room assignment changes segmentation only, never walls or unknown cells.
+    if (this.data[index]! >= Cell.Unknown || !Number.isInteger(value.room) || value.room < 1 || value.room > 63) return
+    this.setValue(index, value.room, 'rooms')
+  }
+
   private setCell(x: number, y: number, value: CellValue) {
-    const index = y * this.width + x
-    const before = this.data[index]!
+    this.setValue(y * this.width + x, value, 'cells')
+  }
+
+  private setValue(index: number, value: number, layer: Layer) {
+    const data = layer === 'cells' ? this.data : this.roomData
+    const before = data[index]!
     if (before === value) return
-    const change = this.stroke.get(index) ?? { index, before, after: value }
+    const key = index + (layer === 'rooms' ? this.data.length : 0)
+    const change = this.stroke.get(key) ?? { layer, index, before, after: value }
     change.after = value
-    this.stroke.set(index, change)
-    this.data[index] = value
+    this.stroke.set(key, change)
+    data[index] = value
   }
 
   private restore(changes: Change[], side: 'before' | 'after') {
-    for (const change of changes) this.data[change.index] = change[side]
+    for (const change of changes) {
+      const data = change.layer === 'cells' ? this.data : this.roomData
+      data[change.index] = change[side]
+    }
   }
 }
