@@ -35,5 +35,6 @@ export function inspectMap(data: Buffer) {
 export async function loadMap(hostname: string) {
   const [raster, persistence] = await Promise.all([readMap(hostname), readRooms(hostname)])
   const map = inspectMap(raster)
-  return { ...map, rooms: inspectRooms(persistence, map) }
+  return { ...map, rooms: inspectRooms(persistence, map),
+    native: { raster: raster.toString('base64'), persistence: persistence.toString('base64') } }
 }

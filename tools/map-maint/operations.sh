@@ -62,6 +62,8 @@ while [ ! -e "$WORK/offdevice.verified" ]; do
 done
 read -r uptime rest < /proc/uptime
 [ "$((deadline - ${uptime%%.*}))" -ge 30 ] || fail 'Insufficient recovery budget'
-/bin/sh "$TOOLS/matching-set.sh" install "$ROOT" "$WORK"
+action=install
+[ ! -e "$B/editor-upload" ] || action=apply
+/bin/sh "$TOOLS/matching-set.sh" "$action" "$ROOT" "$WORK"
 trap - EXIT
 while :; do sleep 1; done

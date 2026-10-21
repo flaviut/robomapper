@@ -143,7 +143,14 @@ process.stdout.write(Buffer.from(files[args.at(-1)], 'base64'));
     const response = await request(origin)
     assert.equal(response.status, 200)
     assert.equal(response.headers.get('cache-control'), 'no-store')
-    assert.deepEqual(await response.json(), { ...inspectMap(fixture()), rooms: 'EBESAA==' })
+    assert.deepEqual(await response.json(), { ...inspectMap(fixture()), rooms: 'EBESAA==',
+      native: { raster: fixture().toString('base64'), persistence: persistence().toString('base64') } })
+    const save = (source: string, input: unknown) => fetch(`${origin}/api/map/save`, {
+      method: 'POST', headers: { Origin: source, 'Content-Type': 'application/json' }, body: JSON.stringify(input),
+    })
+    assert.equal((await save('http://foreign.example', {})).status, 403)
+    assert.equal((await save(origin, { hostname: 'robot.local' })).status, 400)
+    assert.equal((await save(origin, { hostname: 'robot.local', confirmation: 'install-and-reboot' })).status, 400)
   } finally {
     process.env.PATH = path
     await server.close()

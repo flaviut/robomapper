@@ -8,9 +8,9 @@ fail() {
     exit 1
 }
 
-[ "$#" = 3 ] || fail "Usage: $0 capture|check|install|verify|rollback ROOT WORK"
+[ "$#" = 3 ] || fail "Usage: $0 capture|check|install|apply|verify|rollback ROOT WORK"
 action=$1
-case "$action" in capture|check|install|verify|rollback) ;; *) fail 'Unknown action';; esac
+case "$action" in capture|check|install|apply|verify|rollback) ;; *) fail 'Unknown action';; esac
 [ -d "$2" ] && [ ! -L "$2" ] || fail 'ROOT must be a real directory'
 ROOT=$(cd "$2" && pwd -P)
 [ "$ROOT" != / ] || fail 'ROOT cannot be /'
@@ -119,7 +119,12 @@ verify() {
         [ ! -e "$ROOT/$name" ] && [ ! -L "$ROOT/$name" ] || fail "Expected absence: $name"
     done < "$W/absent"
     pack "$ROOT" "$WORK/verified.tar"
-    cmp "$W/files.tar" "$WORK/verified.tar"
+    reference=$W/files.tar
+    if [ -f "$WORK/candidate.tar" ] && [ ! -e "$WORK/rollback.started" ]; then
+        (cd "$WORK" && md5sum -c candidate.md5)
+        reference=$WORK/candidate.tar
+    fi
+    cmp "$reference" "$WORK/verified.tar"
 }
 
 stage() {
@@ -195,10 +200,33 @@ check_set
 stopped
 [ "$action" != verify ] || { verify; exit 0; }
 
-if [ "$action" = install ]; then
+if [ "$action" = install ] || [ "$action" = apply ]; then
     [ ! -e "$WORK/install.started" ] || fail 'Installation already started; inspect or roll back'
     [ -f "$WORK/offdevice.verified" ] || fail 'Verify an off-device copy before installation'
+    [ ! -e "$WORK/candidate.tar" ] || fail 'Candidate already exists'
     stage "$WORK/stage"
+    if [ "$action" = apply ]; then
+        [ -f "$WORK/patch.ready" ] || fail 'Missing verified patch'
+        [ -d "$WORK/patch" ] && [ ! -L "$WORK/patch" ] || fail 'Invalid patch directory'
+        [ "$(wc -l < "$WORK/patch.files")" -eq 4 ] || fail 'Expected runtime and primary pairs'
+        primary=$(grep '^user_map[0-3]$' "$WORK/patch.files")
+        case "$primary" in user_map[0-3]) ;; *) fail 'Invalid primary patch';; esac
+        flag=$((${primary#user_map} + 2))
+        printf '%s\n' last_map PersistData_1.data "$primary" "PersistData_$flag.data" | sort > "$WORK/expected-patch"
+        sort "$WORK/patch.files" > "$WORK/sorted-patch"
+        cmp "$WORK/expected-patch" "$WORK/sorted-patch"
+        (cd "$WORK/patch" && md5sum -c ../patch.md5)
+        while IFS= read -r name; do
+            member_ok "$WORK/patch/$name" "$name"
+            member_ok "$WORK/stage/$name" "$name"
+            cat "$WORK/patch/$name" > "$WORK/stage/$name"
+            touch -r "$ROOT/$name" "$WORK/stage/$name"
+            cmp "$WORK/patch/$name" "$WORK/stage/$name"
+        done < "$WORK/patch.files"
+        pack "$WORK/stage" "$WORK/candidate.tar"
+        (cd "$WORK" && md5sum candidate.tar > candidate.md5)
+        sync
+    fi
     mkdir -m 700 "$WORK/quarantine" "$WORK/interrupted-work"
     printf 'Whole-set installation begun.\n' > "$WORK/install.started"
     sync
@@ -219,6 +247,8 @@ if [ "$action" = install ]; then
 fi
 
 [ -f "$WORK/install.started" ] || fail 'No installation to roll back'
+printf 'Restore the original snapshot.\n' > "$WORK/rollback.started"
+sync
 # Re-extract before removal so recovery can retry an interrupted rollback.
 rm -rf "$WORK/rollback-stage"
 stage "$WORK/rollback-stage"

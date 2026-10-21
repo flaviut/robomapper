@@ -23,7 +23,7 @@ No script starts automatically. `approved-once` is an explicit invocation argume
 [`matching-set.sh`](../../../tools/map-maint/matching-set.sh) takes:
 
 ```text
-sh matching-set.sh capture|check|install|verify|rollback ROOT WORK
+sh matching-set.sh capture|check|install|apply|verify|rollback ROOT WORK
 ```
 
 `ROOT` is the actual map directory; `WORK` must be a private sibling/outside directory on the same filesystem. `capture` creates it and refuses an existing path. The supported namespace is the [finite matching set](../maps/matching-set.md#inclusionexclusion-manifest). The script deliberately refuses symlinks, special files and a nonempty `map/`; review any changed device layout before extending it.
@@ -31,7 +31,8 @@ sh matching-set.sh capture|check|install|verify|rollback ROOT WORK
 - `capture` records presence, absence, root path, interrupted-work names and tar archives. It preserves numeric ownership, permissions and tar timestamps, then hashes the snapshot and writes `capture.complete` after flushing.
 - `check` validates snapshot hashes, canonical namespace, manifest partition and archive membership/types. It does not require services to be stopped and does not inspect map contents.
 - `install` requires `WORK/offdevice.verified`, stages and repacks the archive, quarantines current members and managed `.cache`/`.tmp*` files, then installs exactly the snapshot's present members. It verifies archive equality and absence before writing `install.complete`. A failed installation leaves `install.started` for recovery; do not resume consumers.
-- `verify` compares the current stopped set against the snapshot, including recorded absence and archived metadata. It is not a post-boot verifier: startup may legitimately update configuration companions.
+- `apply` installs a verified four-file patch over the captured set: `last_map`, `PersistData_1.data`, and one primary raster/persistence pair. It preserves existing metadata, retains the original snapshot for rollback, and records the complete candidate archive before replacement. The editor supplies `patch/`, `patch.files`, `patch.md5`, `patch.ready` and the off-device verification marker.
+- `verify` compares the current stopped set against the installed candidate, or the original snapshot after rollback or unchanged installation, including recorded absence and archived metadata. It is not a post-boot verifier: startup may legitimately update configuration companions.
 - `rollback` reinstalls the **captured snapshot**, not selected quarantine files. It requires `install.started`, re-extracts before removing any active member and can be retried after interruption. Remaining managed work products move to `rollback-work/`; quarantine remains available for diagnosis.
 
 Except for `check`, the script refuses known live hosts, mapped files beneath `ROOT`, or managed paths open in visible process descriptors. These observations are not an atomic barrier or a complete per-thread descriptor audit. The caller must still gate respawn/commands, check identified descendants and obtain MCU hold-off with the native helper. Run as root on the robot; do not extract/repack the deployed snapshot as an unprivileged host user.
@@ -90,7 +91,7 @@ Wait for `recovery.ready`. Its fields are PID, start tick and uptime deadline. V
     </dev/null >"$SESSION/operations.log" 2>&1 &
 ```
 
-Operations publishes `backup.ready` after creating `untouched-stopped-backup.tar`. Transfer that archive privately, compare the robot/local digest, validate its snapshot and flush the off-device copy. **Only then** create `SESSION/matching/offdevice.verified`. The marker is operator attestation, not an automatic transfer check. Operations waits up to 40 seconds and refuses installation with less than 30 seconds left before recovery's deadline.
+Operations publishes `backup.ready` after creating `untouched-stopped-backup.tar`. Transfer that archive privately, compare the robot/local digest, validate its snapshot and flush the off-device copy. **Only then** create `SESSION/matching/offdevice.verified`. The marker is operator attestation, not an automatic transfer check. Operations waits up to 40 seconds and refuses installation with less than 30 seconds left before recovery's deadline. A session containing `editor-upload` uses `apply` instead of unchanged `install`; the editor writes this marker before arming recovery.
 
 Recovery runs independently of SSH, stops only the identified operations group and refuses to proceed while a non-zombie child remains. It restores an incomplete installation from the whole snapshot before restoring supervision. It never live-reloads exclusions, starts consumers manually or forces reboot. If no services were touched, it exits without rebooting. `recover.now` requests early recovery on failure or operator abort.
 
