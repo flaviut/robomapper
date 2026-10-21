@@ -44,5 +44,9 @@
   "handoff": "Each lane writes handoff.json with commits, identities, supported claims, checks, limits and next bounded targets. Parent acceptance follows execution and independent review.",
   "workflow_run": "b4b541c7-70d1-4635-88ba-475c1e60f203",
   "start_ref": "6cd68d6",
-  "state": "running"
+  "integrated_ref": "416aef9",
+  "integrated_commits": ["99c9c93", "c963590", "42b8e6f", "dd35169", "b98803e", "db36f84", "821f2e2", "416aef9"],
+  "validation": "second-validation.json",
+  "review_run": "551e0f85-a23c-4971-bf1a-9c12573ce6f8",
+  "state": "integrated-awaiting-review"
 }

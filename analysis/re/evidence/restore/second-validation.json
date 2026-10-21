@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "tested_commit": "416aef9",
+  "executor": "parent",
+  "scope": "Static original-ELF checks, host checker tests, authenticated saved configuration decoding and sequential fresh private Ghidra replays. No firmware execution or device access.",
+  "status": "passed",
+  "checks": {
+    "native_route": "2616 instruction-byte checks, 9 anchors, 6 ELF-boundary checks; 6 tests passed",
+    "writer_host": "19 ELF function identities, 1299 selected plus 99 pseudo instruction records, authenticated embedded CCM config; 8 tests passed",
+    "room_reconcile": "2 binaries, 15 entries, 3707 instruction records, 531 focused anchors, 2 literals; 5 tests passed",
+    "backup_dependencies": "3 binaries, 4363 instruction records, 36 literals/pointers; 7 tests passed",
+    "diff_check": "git diff 9dc8abc 416aef9 --check passed",
+    "fresh_sequential_replays": "native-route, writer-host, room-reconcile, backup-dependencies all passed from integrated main"
+  },
+  "reproduction": [
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/native-route/validate.py",
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/writer-host/evidence.py",
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/room-reconcile/validate.py",
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/backup-dependencies/validate.py",
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/native-route -p test_native_route.py -v",
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/writer-host -p test_writer_host.py -v",
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/room-reconcile -p test_validate.py -v",
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s analysis/re/evidence/restore/backup-dependencies -p test_validate.py -v"
+  ],
+  "replay_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/native-route/replay.py --out analysis/re/evidence/restore/native-route/scratch/parent-review-416aef9",
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/writer-host/replay.py --out analysis/re/evidence/restore/writer-host/.scratch/parent-review-416aef9",
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/room-reconcile/replay.py --out analysis/re/evidence/restore/room-reconcile/scratch/parent-review-416aef9",
+    "PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/restore/backup-dependencies/replay.py --out analysis/re/evidence/restore/backup-dependencies/scratch/parent-review-416aef9"
+  ],
+  "replay_limits": "Use NEW ignored lane-local output directories. Helpers compare selected C and helper-defined records; not all entry metadata is independently regenerated. Replays require the recorded local source-root harness, closed baseline and pinned tools; clean-checkout/no-cache portability is not established for these new slices.",
+  "logs": "/tmp/map-restore-review-416aef9 (temporary; includes execution-status.json, replay-status.json and independently parsed original-ELF hex/LLVM disassembly)",
+  "review": "Independent semantic review of exact416aef9 pending; reviewers inspect parent execution logs and original-ELF readouts, not independent execution.",
+  "limits": [
+    "Native scheduler/subscriber edges and complete result provenance remain unclosed.",
+    "Embedded loader defaults do not prove active deployment or all-writer ownership; generic joins/callbacks are not a proven persistence barrier.",
+    "Room-name response ordering is not linked to arbitrary grid regeneration or load.",
+    "Database base/journal mode and concrete vmap I/O remain unresolved; no coherent cross-file snapshot barrier or durability proof."
+  ]
+}

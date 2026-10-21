@@ -28,6 +28,19 @@ PYTHONDONTWRITEBYTECODE=1 python3 analysis/re/evidence/replay.py \
 
 The helper copies a closed local baseline if available, otherwise imports manifest binaries privately through the shared harness. It applies the two unchanged recovery requests before merged annotations and exports only index-selected entries. It uses no ignored lane, rootfs or private proof inputs. Both the cache-copy and clean-checkout import paths reproduced the indexed C hashes. `evidence/integrate.py` remains the historical integration builder, not the repository-only replay entry point.
 
+## Map restore follow-ups
+
+The [restore investigation board](evidence/restore/board.json) tracks additional evidence outside the original 154-function index. The [first follow-up review](evidence/restore/review/flow-lifecycle.md) accepts bounded controller/lifecycle findings; its [metadata/consistency companion](evidence/restore/review/metadata-consistency.md) accepts conditional segmentation and snapshot findings. Neither approves device restore. WatchDoge `0x1abd8` is now recovered as a bounded helper; it no longer remains an entry gap.
+
+The [second follow-up](evidence/restore/second-wave.json), with [parent validation](evidence/restore/second-validation.json), adds four static checkpoints pending independent review:
+
+- [Native route](evidence/restore/native-route/handoff.json): identifies the actual navigation request decoder, distinct from the controller route. Load-task capture, candidate completion dispatch and result encoding are bounded observations; intervening scheduler/subscriber edges remain unclosed.
+- [Writer host](evidence/restore/writer-host/handoff.json): authenticated decoding identifies navigation/SLAM in embedded loader defaults. SIGHUP sets a flag; generic cleanup joins threads and calls plugin callbacks. Active configuration and concrete persistence-worker completion remain unproved.
+- [Room reconciliation](evidence/restore/room-reconcile/handoff.json): post-ID fills depend on geometry and neighboring labels. AppProxy can retain names while replacing IDs from ordered response bytes; automatic reconciliation after arbitrary grid edits is not established.
+- [Backup dependencies](evidence/restore/backup-dependencies/handoff.json): identifies the `robot.db` opener and `slam_info.cfg` companion, including staged config writes. The deployed DB base, journal mode and concrete vmap I/O remain unresolved. A main-file-only backup is not established as sufficient.
+
 ## Remaining limits
 
-Startup seed `librrnavdrv.so:0x20bac0` is interior; candidate entry `0x20babc` remains unrecovered. Navigation completion callback `0x683e0`, AppProxy error callback `0x4afa8`, and WatchDoge target `0x1abd8` remain gaps. No substitute handwritten C is supplied. RoboController correlation, kernel/MCU behavior, malformed-input safety, concurrency, all-writer quiescence/restart and power-loss durability are not established. No firmware was executed, no device was accessed, and runtime restore safety remains unproven. Acceptance covers static-analysis artifacts only, not device use.
+Startup seed `librrnavdrv.so:0x20bac0` is interior; candidate entry `0x20babc` remains unrecovered. Navigation candidate `0x683e0` has bounded read-only instruction evidence, not a recovered function or complete completion route. AppProxy error callback `0x4afa8` remains a gap. No substitute handwritten C is supplied.
+
+Consistent backup still needs a complete dependency set and all-writer snapshot barrier. Safe editing needs validated metadata/room-identity transformations. Restore still needs cache invalidation, concrete plugin/persistence shutdown and restart contracts, cold-start recovery and durability checks. Kernel/MCU behavior, malformed-input safety and concurrency remain unverified. No firmware was executed or device accessed. Acceptance covers static-analysis artifacts only, not device use.
