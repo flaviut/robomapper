@@ -6,6 +6,7 @@ from types import MappingProxyType, SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 
+from homeassistant import loader
 from homeassistant.components import frontend
 from homeassistant.config_entries import ConfigEntries, ConfigEntry, ConfigEntryState
 from homeassistant.core import HomeAssistant
@@ -49,6 +50,16 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
     async def _call(self, action, **kwargs):
         _request(self.hass, self.connection, {"id": 1, "type": "map_editor", "action": action, **kwargs})
         await self.hass.async_block_till_done(wait_background_tasks=True)
+
+    async def test_manifest_loads_in_ha(self):
+        (Path(self.tmp.name) / "custom_components").symlink_to(
+            Path(__file__).resolve().parents[1] / "custom_components", target_is_directory=True,
+        )
+        loader.async_setup(self.hass)
+        with self.assertLogs("homeassistant.loader", level="WARNING"):
+            integration = await loader.async_get_integration(self.hass, "map_editor")
+        self.assertEqual(integration.domain, "map_editor")
+        self.assertEqual(integration.version, "0.1.0")
 
     async def test_setup_registers_bundled_assets_and_api(self):
         self.assertTrue(await map_editor.async_setup(self.hass, {}))

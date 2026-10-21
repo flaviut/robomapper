@@ -2,6 +2,8 @@
 
 Edit a robot’s occupancy map and room IDs, then save the changes over SSH.
 
+For installation in Home Assistant through HACS, see the [project instructions](../README.md). This page covers standalone development.
+
 ## Develop
 
 Requires Nix with flakes and direnv with nix-direnv integration.
